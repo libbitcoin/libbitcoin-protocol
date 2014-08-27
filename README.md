@@ -111,9 +111,9 @@ In the case of filters the caller provides as prefix only the full or partial ha
 - Get Transactions
   - in?:  block_id **start** (default = tx mempool only)
   - in?:  uint32_t **results_per_page** (default = all, 0 = start block only)
-  - in:   list of filter **query** (empty = all)
   - in?:  results **result_type** (default = hash)
   - in?:  locations **location_type** (default = none)
+  - in:   list of filter **query** (empty = all)
   - out:  list of {tx_hash_result} **hashes**
   - out:  list of {utxo_result} **outputs**
   - out:  list of {tx_result} **transactions**
