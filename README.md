@@ -55,11 +55,11 @@ The server signals the caller of a fork (or bad caller input input) by validatin
 
 ## Complex Types
 
-- llibbitcoin::data_chunk bytes
-- ibbitcoin::hash_digest digest
+- libbitcoin::data_chunk bytes
+- libbitcoin::hash_digest digest
 - libbitcoin::block_header_type header
 - libbitcoin::transaction_type tx
-- utput
+- output
   - uint32_t **index**
   - uint64_t **satoshis**
   - bytes **script**
