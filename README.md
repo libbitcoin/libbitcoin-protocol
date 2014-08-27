@@ -1,4 +1,4 @@
-# Bitcoin Server Interface Design
+# Bitcoin Server Protocol
 
 s_tec, pmienk, evoskuil
 
