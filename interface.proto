@@ -1,0 +1,130 @@
+package bc.interface;
+
+message block_header {
+    required uint32 version = 1; // protocol version
+    required bytes previous_block_hash = 2; // 32-byte previous block hash
+    required bytes merkle_root = 3; // 32-byte transactions hash
+    required uint32 timestamp = 4; // creation
+    required uint32 bits = 5; // difficulty
+    required uint32 nonce = 6;
+    required uint64 txn_count = 7; // variable length integer in protocol, not involved in hash computation
+}
+
+message block_id {
+    optional uint32 height = 1;
+    optional bytes hash = 2; // 32-bytes
+}
+
+message output {
+    required uint32 index = 1;
+    required uint64 satoshis = 2;
+    required bytes script = 3;
+}
+
+message tx_filter {
+    enum filter_context_type {
+        ADDRESS = 1;
+        TRANSACTION = 2;
+        STEALTH = 3;
+    }
+
+    required filter_context_type context = 1;
+    required uint32 prefix_bits = 2;
+    required bytes prefix = 3;
+}
+
+message block_location {
+    optional block_id identity = 1;
+    repeated bytes branches = 2;
+}
+
+message tx_hash_result {
+    required bytes tx_hash = 1;
+    required block_location location = 2;
+}
+
+message tx_result {
+    required bytes transaction = 1;
+    required block_location location = 2;
+}
+
+message utxo_result {
+    required bytes tx_hash = 1;
+    required block_location location = 2;
+    repeated output tx_outputs = 3;
+}
+
+message request {
+    optional uint32 id = 1;
+    
+    message block_headers {
+        optional block_id starting_block = 1;
+        optional uint32 results_per_page = 2;
+    }
+    
+    optional block_headers get_block_headers = 2;
+    
+    message transactions {
+        enum result_type {
+            TX_HASH = 1;
+            TX_RESULT = 2;
+            UTXO_RESULT = 3;
+        }
+        
+        optional block_id starting_block = 1;
+        optional uint32 results_per_page = 2;
+        repeated tx_filter filters = 3;
+        required result_type type = 4;
+        required bool with_block_identity = 5 [default = false];
+        required bool with_merkle_branch = 6 [default = false];
+    }
+    
+    optional transactions get_transactions = 3;
+    
+    optional bytes submit_transaction = 4;
+    
+    optional bytes validate_transaction = 5;
+}
+
+message response {
+    optional uint32 id = 1;
+
+    optional sint32 status = 2; // can encode both success/fail for broadcast operations and error codes for other calls
+    
+    // list response properties
+    optional block_id next = 3;
+    optional block_id top = 4;
+
+    repeated block_header headers = 5;
+    repeated tx_hash_result hashes = 6;
+    repeated tx_result transactions = 7;
+    repeated utxo_result utxos = 8;
+}
+
+message response_alternate {
+    optional uint32 id = 1;
+
+    optional sint32 status = 2; // can encode error codes for calls
+
+    message block_headers {
+        optional block_id next = 1;
+        optional block_id top = 2;
+        repeated block_header headers = 3;
+    }
+    
+    optional block_headers get_block_headers_response = 3;
+    
+    message transactions {
+        optional block_id next = 1;
+        optional block_id top = 2;
+        repeated tx_hash_result hashes = 3;
+        repeated tx_result transactions = 4;
+        repeated utxo_result utxos = 5;
+    }
+
+    optional transactions get_transactions_response = 4;
+    
+    optional bool submit_transaction_succeeded = 5;
+    
+    optional bool validate_transaction_succeeded = 6;
+}
