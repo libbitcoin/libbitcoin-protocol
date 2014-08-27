@@ -80,7 +80,7 @@ The server signals the caller of a fork (or bad caller input input) by validatin
   - tx **transaction**
   - block_location **location**
 - utxo_result
-  - digest **tx_hash**
+  - digest **hash**
   - block_location **location**
   - list of **output**
 
