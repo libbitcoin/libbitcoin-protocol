@@ -224,7 +224,7 @@ get_transactions
 ```
 ## Old Obelisk Protocol
 
-Here is the old obelisk protocol for comparison:
+The old obelisk protocol is included for comparison:
 
 ### Blockchain
 
