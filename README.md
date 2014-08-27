@@ -6,7 +6,7 @@ s_tec, pmienk, evoskuil
 
 ## Concepts
 
-The client's two major areas of interest are transaction discovery and transaction maintenance. Transaction discovery involves searching the blockchain for transactions that are of interest to the wallet. Once the client identifies the transactions it cares about, it needs to track their state as they become broadcast, confirmed, and so forth. Doing this generally involves tracking the state of the blockchain itself.
+A client's two major areas of interest are transaction discovery and transaction maintenance. Transaction discovery involves searching the blockchain for transactions that are of interest to the wallet. Once the client identifies the transactions it cares about, it needs to track their state as they become broadcast, confirmed, and so forth. Doing this generally involves tracking the state of the blockchain itself.
 
 ## Goals
 
@@ -26,17 +26,17 @@ The client's two major areas of interest are transaction discovery and transacti
 
 ## Encoding
 
-The focus of this document is not the wire encoding, but the messaging semantics. The protocol may be encoded via any means. For example, it is possible to encode in JSON, served over WebSockets. The initial implementation will likely encode using Google Protocol Buffers, using ZeroMQ transport with privacy and compression. Additional protocols may be efficiently layered over ZMQ (e.g. using in-process communication).
+The focus of this document is not the wire encoding, but the messaging semantics. The protocol may be encoded via any means. For example, it is possible to encode in JSON and serve up over WebSockets. The initial libbitcoin implementation will likely encode using Google Protocol Buffers, using ZeroMQ transport with privacy and compression. Additional protocols may be efficiently layered over ZMQ (e.g. using in-process communication).
 
 ## Principles
 
-All queries involving sensitive data use prefixes. This way, the client can select its desired level of privacy. Fewer bits give more privacy at the expense of efficiency. Prefixes are anticipated for bitcoin addresses, stealth addresses and transaction hashes.
+All queries involving sensitive data use prefixes. This allows a client to select its desired level of privacy. Fewer bits give more privacy at the expense of efficiency. Prefixes are anticipated for bitcoin addresses, stealth addresses and transaction hashes.
 
 The server always returns the block height and hash together. Both are useful for different reasons, and returning either one by itself would be a complicating denormalization.
 
-All data requests use a pagination scheme. The client specifies an optional starting point and an optional hint indicating the number of desired results per page. The server returns results in whole-block increments of increasing block height, and always returns at least one block's worth of data (which may be an empty list if there is none to return).
+All data requests use a pagination scheme. The client specifies an optional starting point and an optional hint indicating the number of desired results per page. The server returns results in whole-block increments of increasing block height, and always returns at least one block's worth of data (which may be an empty list if there is none to return) unless zero results per page is specified (in which case an empty list is returned).
 
-Each paginated result contains the height and hash of the next-higher block, which the client can use for its next query. This will be some block above the last result in the output list.
+Each paginated result contains the height and hash of next block not included in the results, which a client can use for the subsequent query in paging. The last page of results always includes any matching transactions from the mempool and includes the top block id instead of the next block id.
 
 If the starting point is missing, the query only includes the mempool. A missing hint means "return as many results as possible." If there are multiple items in the filter list, the server returns the union of the results. An empty filter list returns all transactions.
 
@@ -148,30 +148,31 @@ get_headers
   results_per_page = 0
 }
 ```
-Download as many block headers as possible, starting from the genesis block:
+Download all block headers, starting from the genesis block:
 ```
 get_headers
 {
   start = { height = 0 }
 }
 ```
-Download as many block headers as possible, starting where the previous query left off:
+Download all block headers, starting where the previous query left off:
 ```
 get_headers
 {
   start = { height, hash }
 }
 ```
-Get all transaction hashes for a wallet with two addresses, starting at the genesis block:
+Get all transaction hashes for a wallet with two addresses, starting at the genesis block, with a target page size of 10 transactions:
 ```
 get_transactions
 {
   start = { height = 0 }
   filter = 
     [
-      { context = address, prefix = 0x21 }, 
+      { context = address, prefix = 0x21 }
       { context = address, bits = 12, prefix = 0x08b7 }
     ]
+    results_per_page = 10
 }
 ```
 Get all transaction data for a wallet with two addresses, starting at a particular block:
@@ -181,7 +182,7 @@ get_transactions
   start = { height, hash }
   filter =
   [
-    { context = address, prefix = 0x21 }, 
+    { context = address, prefix = 0x21 }
     { context = address, bits = 12, prefix = 0x08b7 }
   ]
   result_type = tx_data
