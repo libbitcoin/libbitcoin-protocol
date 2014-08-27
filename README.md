@@ -162,7 +162,7 @@ get_headers
   start = { height, hash }
 }
 ```
-Get all transactions hashes for a wallet with two addresses, starting at the genesis block:
+Get all transaction hashes for a wallet with two addresses, starting at the genesis block:
 ```
 get_transactions
 {
@@ -201,7 +201,8 @@ Has my transaction been confirmed yet?
 get_transactions
 {
   start = { height = 0 }
-  filter = [{ prefix = 0x94b43df27e205d8a261531fe1fc0c2e5fc226a87e6a9e1c68ab9113eb36cbf4a }]
+  filter = 
+    [{ prefix = 0x94b43df27e205d8a261531fe1fc0c2e5fc226a87e6a9e1c68ab9113eb36cbf4a }]
   result_type = tx_hash
   location_format = block_id
 }
