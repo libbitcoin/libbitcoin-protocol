@@ -59,6 +59,9 @@ The server signals the caller of a fork (or bad caller input input) by validatin
 - libbitcoin::hash_digest digest
 - libbitcoin::block_header_type header
 - libbitcoin::transaction_type tx
+- enum {none | block | merkle} locations
+- enum {hash | utxo | transaction} results
+- enum {address | stealth | transaction} filters
 - output
   - uint32_t **index**
   - uint64_t **satoshis**
@@ -70,7 +73,7 @@ The server signals the caller of a fork (or bad caller input input) by validatin
   - block_id? **identity** (missing unless requested)
   - list of digest **branch** (empty unless requested)
 - filter
-  - enum **context** {transaction | address | stealth} (default = transaction)
+  - filters **filter_type** (default = transaction)
   - uint32_t? **bits** (default = all)
   - bytes **prefix**
 - tx_hash_result
@@ -109,8 +112,8 @@ In the case of filters the caller provides as prefix only the full or partial ha
   - in?:  block_id **start** (default = tx mempool only)
   - in?:  uint32_t **results_per_page** (default = all, 0 = start block only)
   - in:   list of filter **query** (empty = all)
-  - in?:  enum {hash | utxo | transaction} **result-type** (default = hash)
-  - in?:  enum {none | block | merkle} **location-format** (default = none)
+  - in?:  results **result_type** (default = hash)
+  - in?:  locations **location_type** (default = none)
   - out:  list of {tx_hash_result} **hashes**
   - out:  list of {utxo_result} **outputs**
   - out:  list of {tx_result} **transactions**
