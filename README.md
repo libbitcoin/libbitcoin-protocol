@@ -55,8 +55,8 @@ The server signals the caller of a fork (or bad caller input input) by validatin
 
 ## Complex Types
 
-- header (see libbitcoin block_header_type)
-- tx (see libbitcoin transaction_type)
+- libbitcoin::transaction_type tx
+- libbitcoin::block_header_type header
 - utput
   - uint32_t **index**
   - uint64_t **satoshis**
