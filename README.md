@@ -29,8 +29,14 @@ A client's two major areas of interest are transaction discovery and transaction
 The focus of this document is not the wire encoding, but the messaging semantics. The protocol may be encoded via any means. For example, it is possible to encode in [JSON](http://en.wikipedia.org/wiki/JSON) and serve up over [WebSockets](http://en.wikipedia.org/wiki/WebSocket). The initial libbitcoin implementation will likely encode using [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/proto) and a [ZeroMQ](http://zeromq.org) transport with [privacy](http://curvezmq.org/), [compression](http://www.zlib.net) and support [onion routing](https://www.torproject.org). Additional protocols may be efficiently layered over ZMQ (e.g. using in-process communication).
 
 ## Principles
-### Anonymizable Queries
-All queries involving taintable data use `prefix` filters. This allows a caller to select its desired level of privacy. Fewer bits give more privacy at the expense of efficiency. Prefixes are defined for a bitcoin `address`, `stealth` addresses and `transaction` hashes.
+### Privacy
+Transaction queries, all of which would otherwise carry [taintable](https://bitcointalk.org/index.php?topic=92416.0) information, use `prefix` filters. This allows a caller to select its desired level of privacy to prevent correlation of transactions with the caller's IP address or against each other. Fewer bits give more privacy at the expense of efficiency. Prefixes are defined for a bitcoin `address`, `stealth` addresses and `transaction` hashes.
+
+Note that without prefix filters transaction query taint cannot be avoided using onion routing alone unless each individual request is made on a distinct channel, as the requests can still be correlated to each other.
+
+Send/Verify calls are inherently compromising as they allow correlation of the caller's IP address with the transaction. This can only be avoided using an onion router, such as [Tor](https://www.torproject.org) or [I2P](https://geti2p.net/en), to proxy the communication to the server.
+
+Block header queries are not considered privacy-compromising, with the exception that, without using opion routing, the caller identifies the calling IP address as hosting a bitcoin client.
 
 ### Pagination
 All queries use a pagination scheme. The caller specifies an optional starting point and an optional target for the desired number of results per page. The server returns results in whole-block increments of increasing block height. The server always returns at least one block's worth of data (which may be an empty list if there is none to return) unless zero results per page is specified (in which case an empty list is returned).
