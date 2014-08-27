@@ -60,7 +60,7 @@ The server signals the caller of a fork (or bad caller input input) by validatin
 - utput
   - uint32_t **index**
   - uint64_t **satoshis**
-  - data_chunk **script**
+  - libbitcoin::data_chunk **script**
 - block_id
   - uint32_t? **height** (default = unverified, use hash)
   - uint8_t[32]? **hash** (default = unverified, use height)
