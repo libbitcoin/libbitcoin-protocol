@@ -55,30 +55,32 @@ The server signals the caller of a fork (or bad caller input input) by validatin
 
 ## Complex Types
 
-- libbitcoin::transaction_type tx
+- llibbitcoin::data_chunk bytes
+- ibbitcoin::hash_digest digest
 - libbitcoin::block_header_type header
+- libbitcoin::transaction_type tx
 - utput
   - uint32_t **index**
   - uint64_t **satoshis**
-  - libbitcoin::data_chunk **script**
+  - bytes **script**
 - block_id
   - uint32_t? **height** (default = unverified, use hash)
-  - libbitcoin::hash_digest? **hash** (default = unverified, use height)
+  - digest? **hash** (default = unverified, use height)
 - block_location
   - block_id? **identity** (missing unless requested)
-  - list of libbitcoin::hash_digest? **branch** (missing unless requested)
+  - list of digest? **branch** (missing unless requested)
 - tx_filter
   - enum uint8_t **context** {transaction | address | stealth} (default=transaction)
   - uint32_t? **bits** (default = all)
-  - data_chunk **prefix**
+  - bytes **prefix**
 - tx_hash_result
-  - libbitcoin::hash_digest **hash**
+  - digest **hash**
   - block_location **location**
 - tx_result
   - tx **transaction**
   - block_location **location**
 - utxo_result
-  - libbitcoin::hash_digest **tx_hash**
+  - digest **tx_hash**
   - block_location **location**
   - list of **output**
 
