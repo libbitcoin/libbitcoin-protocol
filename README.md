@@ -98,7 +98,7 @@ In the case of filters the caller provides as prefix only the full or partial ha
 
 - Get Block Headers
   - in?:  block_id **start** (default = get block height)
-  - in?:  uint32_t **results_per_page (hint, default = all)
+  - in?:  uint32_t **results_per_page (default = all, 0 = none)
   - out:  list of header **headers** (empty = zero page requested)
   - out?: block_id **next** (missing = last page)
   - out?: block_id **top** (missing = not last page)
@@ -107,7 +107,7 @@ In the case of filters the caller provides as prefix only the full or partial ha
 
 - Get Transactions
   - in?:  block_id **start** (default = tx mempool only)
-  - in?:  uint32_t **results_per_page** (hint, default = all)
+  - in?:  uint32_t **results_per_page** (default = all, 0 = start block only)
   - in:   list of filter **query** (empty = all)
   - in?:  enum {hash | transaction | utxo} **result-type** (default = hash)
   - in?:  enum {none | block | merkle} **location-format** (default = none)
@@ -132,7 +132,7 @@ Determine if a particular block is still on the main chain:
 ```
 get_headers
 {
-  start = { height, hash }
+  start = { height = 317792, hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8 }
   results_per_page = 0
 }
 ```
@@ -147,7 +147,7 @@ Download all block headers, starting where the previous query left off:
 ```
 get_headers
 {
-  start = { height, hash }
+  start = { height = 317792, hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8 }
 }
 ```
 Get all transaction hashes for a wallet with two addresses, starting at the genesis block, with a target page size of 10 transactions:
@@ -167,13 +167,13 @@ Get all transaction data for a wallet with two addresses, starting at a particul
 ```
 get_transactions
 {
-  start = { height, hash }
+  start = { height = 317792, hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8 }
   filter =
   [
     { context = address, prefix = 0x21 }
     { context = address, bits = 12, prefix = 0x08b7 }
   ]
-  result_type = tx_data
+  result_type = transaction
 }
 ```
 Get all utxo's for a single address:
@@ -200,7 +200,7 @@ Get all the transactions in a particular block:
 ```
 get_transactions
 {
-  start = { height, hash }
+  start = { height = 317792, hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8 }
   results_per_page = 0
 }
 ```
