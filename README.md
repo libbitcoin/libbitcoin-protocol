@@ -82,7 +82,7 @@ The server signals the caller of a fork (or bad caller input input) by validatin
 - utxo_result
   - digest **hash**
   - block_location **location**
-  - list of **output**
+  - list of output **outputs**
 
 ## Merkle Branch Encoding
 
