@@ -36,14 +36,14 @@ Note that without prefix filters transaction query taint cannot be avoided using
 
 Send/Verify calls are inherently compromising as they allow correlation of the caller's IP address with the transaction. This can only be avoided using an onion router, such as [Tor](https://www.torproject.org) or [I2P](https://geti2p.net/en), to proxy the communication to the server.
 
-Block header queries are not considered privacy-compromising, with the exception that, without using opion routing, the caller identifies the calling IP address as hosting a bitcoin client.
+Block header queries are not considered privacy-compromising with the exception that, without using opion routing, the caller exposes the calling IP address as hosting a bitcoin client.
 
 ### Pagination
 All queries use a pagination scheme. The caller specifies an optional starting point and an optional target for the desired number of results per page. The server returns results in whole-block increments of increasing block height. The server always returns at least one block's worth of data (which may be an empty list if there is none to return) unless zero results per page is specified (in which case an empty list is returned).
 
 
 ### Block Correlation
-The server always returns block height and hash as a tuple `block_id` to uniquely identify blocks. A caller may specify one, the other, or both. If both are specified the server validates the block id against the current chain and returns an error if the request is off-chain.
+The server always returns block height and hash as a `block_id` tuple to uniquely identify blocks. A caller may specify one, the other, or both of `block_id.hash` and `block_id.height`. The server validates whatever parts of `block_id`  are specified against the current chain and each other, returning an error if the request is off-chain.
 
 Each paginated result contains the height and hash of the **next** block not included in the result set, which a client can use for chaining page requests. The last page always includes any matching transactions from the transaction memory pool and includes the **top** `block_id` instead of the **next** `block_id`.
 
@@ -84,7 +84,7 @@ The server signals the caller of a fork (or bad caller input input) by validatin
 
 ## Merkle Branch Encoding
 
-block_location.branch is a hash list in depth-first order such that a properly-ordered combination with the hash of the corresponding transaction produces the Merkle root of the corresponding block.
+The transaction's [Merkle branch](https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki#Partial_Merkle_branch_format) is encoded in `block_location.branch` as a hash list in depth-first order such that a properly-ordered combination with the hash of the corresponding transaction produces the [Merkle root](https://en.bitcoin.it/wiki/Protocol_specification#Merkle_Trees) of the corresponding `block_location.identity.hash`.
 
 ## Prefix Filters
 
