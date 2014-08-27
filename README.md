@@ -141,18 +141,18 @@ get_headers
   {
     height = 317792, 
     hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8
-  }
+  },
   results_per_page = 0
 }
 ```
-Download all block headers, starting from the genesis block:
+Get all block headers, starting from the genesis block:
 ```
 get_headers
 {
   start = { height = 0 }
 }
 ```
-Download all block headers, starting where the previous query left off:
+Get all block headers, starting where the previous query left off:
 ```
 get_headers
 {
@@ -167,13 +167,13 @@ Get all transaction hashes for a wallet with two addresses, starting at the gene
 ```
 get_transactions
 {
-  start = { height = 0 }
+  start = { height = 0 },
   filter = 
-    [
-      { context = address, prefix = 0x21 }
-      { context = address, bits = 12, prefix = 0x08b7 }
-    ]
-    results_per_page = 10
+  [
+    { prefix = 0x21 },
+    { bits = 12, prefix = 0x08b7 }
+  ],
+  results_per_page = 10
 }
 ```
 Get all transaction data for a wallet with two addresses, starting at a particular block:
@@ -184,12 +184,12 @@ get_transactions
   {
     height = 317792, 
     hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8
-  }
+  },
   filter =
   [
-    { context = address, prefix = 0x21 }
-    { context = address, bits = 12, prefix = 0x08b7 }
-  ]
+    { prefix = 0x21 },
+    { bits = 12, prefix = 0x08b7 }
+  ],
   result_type = transaction
 }
 ```
@@ -197,8 +197,8 @@ Get all utxo's for a single address:
 ```
 get_transactions
 {
-  start = { height = 0 }
-  filter = [{ context = address, bits = 12, prefix = 0x08b7 }]
+  start = { height = 0 },
+  query = [{ bits = 12, prefix = 0x08b7 }],
   result_type = utxo
 }
 ```
@@ -206,11 +206,16 @@ Has my transaction been confirmed yet?
 ```
 get_transactions
 {
-  start = { height = 0 }
-  filter = 
-    [{ prefix = 0x94b43df27e205d8a261531fe1fc0c2e5fc226a87e6a9e1c68ab9113eb36cbf4a }]
+  start = { height = 0 },
+  query = 
+  [
+    {
+      filter_type = address, 
+      prefix = 0x94b43df27e205d8a261531fe1fc0c2e5fc226a87e6a9e1c68ab9113eb36cbf4a 
+    }
+  ],
   result_type = hash
-  location_format = block_id
+  location_type = block
 }
 ```
 Get all the transactions in a particular block:
@@ -221,7 +226,7 @@ get_transactions
   {
     height = 317792, 
     hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8
-  }
+  },
   results_per_page = 0
 }
 ```
@@ -229,7 +234,7 @@ Get all stealth transactions in the mempool:
 ```
 get_transactions
 {
-  filter = [{ context = stealth }]
+  query = [{ filter_type = stealth }]
 }
 ```
 
