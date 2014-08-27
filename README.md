@@ -75,10 +75,10 @@ The server signals the caller of a fork (or bad caller input input) by validatin
   - uint8_t[32] **hash**
   - block_location **location**
 - tx_result
-  - tx transaction
+  - tx **transaction**
   - block_location **location**
 - utxo_result
-  - uint8_t[32] tx_hash
+  - uint8_t[32] **tx_hash**
   - block_location **location**
   - list of **output**
 
