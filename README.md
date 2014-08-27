@@ -30,7 +30,7 @@ The focus of this document is not the wire encoding, but the messaging semantics
 
 ## Principles
 ### Privacy
-Transaction queries, all of which would otherwise carry [taintable](https://bitcointalk.org/index.php?topic=92416.0) information, use `prefix` filters. This allows a caller to select its desired level of privacy to prevent correlation of transactions with the caller's IP address or against each other. Fewer bits give more privacy at the expense of efficiency. Prefixes are defined for a bitcoin `address`, `stealth` addresses and `transaction` hashes.
+Transaction queries, all of which would otherwise carry [taintable](https://bitcointalk.org/index.php?topic=92416.0) information, use `prefix` filters. This allows a caller to select its desired level of privacy to prevent correlation of transactions with the caller's IP address, or with each other. Fewer bits give more privacy at the expense of efficiency. Prefixes are defined for a bitcoin `address`, `stealth` addresses and `transaction` hashes.
 
 Note that without prefix filters transaction query taint cannot be avoided using onion routing alone unless each individual request is made on a distinct channel, as the requests can still be correlated to each other.
 
