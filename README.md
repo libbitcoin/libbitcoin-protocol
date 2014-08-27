@@ -84,7 +84,7 @@ The server signals the caller of a fork (or bad caller input input) by validatin
 
 ## Merkle Branch Encoding
 
-The transaction's [Merkle branch](https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki#Partial_Merkle_branch_format) is encoded in `block_location.branch` as a hash list in depth-first order such that a properly-ordered combination with the hash of the corresponding transaction produces the [Merkle root](https://en.bitcoin.it/wiki/Protocol_specification#Merkle_Trees) of the corresponding `block_location.identity.hash`.
+The transaction's [Merkle branch](https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki#Partial_Merkle_branch_format) is encoded in `block_location.branch` as a hash list in depth-first order such that a properly-ordered combination with the hash of the corresponding transaction produces the [Merkle root](https://en.bitcoin.it/wiki/Protocol_specification#Merkle_Trees) of the corresponding block.
 
 ## Prefix Filters
 
@@ -122,24 +122,24 @@ In the case of filters the caller provides as prefix only the full or partial ha
 
 ## Client Types
 
-### This protocol targets four major client types:
+### This protocol supports four common client types:
 
 - Full-chain caching clients
 - SPV caching clients
 - Server-trusting caching clients
 - Server-trusting stateless clients
 
-Caching clients store transactions locally, while stateless clients do not (they might store addresses or other things, though). Aside from reduced user interface latency and enabling verification, maintaining a local transaction database creates a place to store per-transaction non-blockchain meta-data, such as categories, payee names, and so forth.
+Caching clients store transactions locally, while stateless clients do not (they might store addresses or other metadata). Aside from reduced user interface latency and enabling verification, maintaining a local transaction database allows maintenance of per-transaction non-blockchain meta-data, such as categories, counterparty names, etc.
 
-SPV and full-chain clients can verify the contents of their transaction database by checking transaction hashes against block headers. Additionally, full-chain clients can verify that inputs connect to outputs. Server-trusting clients don't maintain any of this information, so a malicious server can easily convince them that they have received non-existent payments. Non-trusting clients are immune to these attacks.
+SPV and full-chain clients can verify the contents of their transaction database by checking transaction hashes against block headers. Additionally, full-chain clients can verify that inputs connect to outputs. Server-trusting clients don't maintain the blockchain, so a malicious server can easily convince them that they have received non-existent payments. With basic precautions non-trusting clients are immune to this class of attack.
 
-Server-trusting caching clients are doubly-sensitive to attack, since they will happily store the incorrect data in their local database where it might persist for a long time. Stateless clients are somewhat less sensitive, since they will recover as soon as they connect to an honest server.
+Server-trusting caching clients are doubly-sensitive to attack, since they may receive and cache invalid data locally where it would persist until the cache is refreshed or a possibly if a blockchain fork is signalled. Stateless clients are somewhat less sensitive, since they will recover as soon as they connect to an honest server.
 
-There are some realistic scenarios where a trusting client makes sense. For example, an e-commerce platform might run its own internal obelisk servers. In this case, there is no need to verify data coming from the same security zone.
+There are realistic scenarios where a trusting client makes sense. For example, an e-commerce platform might run its own internal bitcoin servers. In this case there is no need to verify data coming from the same security zone.
 
-All caching client types stay up-to-date with the blockchain in a similar way. The client runs a periodic polling process that checks for new blocks. Upon discovering a new block, the polling process probes for chain forks. To do this, the polling process works backwards from the newest block, making queries with the starting block_id set to known points along the chain. A fork exists as long as these queries fail. Once this is done, the caching client re-queries any transactions or addresses, starting from the highest level it is still synced to.
+All caching client types stay up-to-date with the blockchain in a similar way. The client periodically polls for new blocks. Upon discovering a new block the client probes its cache for a chain fork. To do this, the client walks down the chain from its highest block, making server queries with the **start** `block_id` set to blocks along the chain. Each block that produces a failure response is identified as being on a pruned fork. Once the highest non-forked block in the cache is located the client queries the server in order to update the block information for all transactions (or addresses) that are associated with pruned blocks.
 
-Although SPV clients can verify any information the server provides, they cannot detect missing data. Therefore, SPV clients may still choose to periodically re-scan their addresses starting from the genesis block. Full-chain clients don't need this re-scan, and trusting clients have no reason to assume that new data would be any more reliable than old data.
+Although SPV clients can verify information the server provides, only a full-chain client can detect missing transactions. Therefore SPV clients may still choose to periodically re-scan their addresses starting from the genesis block. Trusting clients have no reason to assume that new data would be any more reliable than old data, although a periodic update can mitigate perpetuating errors, as previously described.
 
 ## Usage Examples
 
