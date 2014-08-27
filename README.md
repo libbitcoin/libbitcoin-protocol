@@ -132,7 +132,11 @@ Determine if a particular block is still on the main chain:
 ```
 get_headers
 {
-  start = { height = 317792, hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8 }
+  start = 
+  {
+    height = 317792, 
+    hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8
+  }
   results_per_page = 0
 }
 ```
@@ -147,7 +151,11 @@ Download all block headers, starting where the previous query left off:
 ```
 get_headers
 {
-  start = { height = 317792, hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8 }
+  start = 
+  {
+    height = 317792, 
+    hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8
+  }
 }
 ```
 Get all transaction hashes for a wallet with two addresses, starting at the genesis block, with a target page size of 10 transactions:
@@ -167,7 +175,11 @@ Get all transaction data for a wallet with two addresses, starting at a particul
 ```
 get_transactions
 {
-  start = { height = 317792, hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8 }
+  start = 
+  {
+    height = 317792, 
+    hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8
+  }
   filter =
   [
     { context = address, prefix = 0x21 }
@@ -200,7 +212,11 @@ Get all the transactions in a particular block:
 ```
 get_transactions
 {
-  start = { height = 317792, hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8 }
+  start = 
+  {
+    height = 317792, 
+    hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8
+  }
   results_per_page = 0
 }
 ```
