@@ -35,25 +35,25 @@ message output {
     required bytes script = 3;
 }
 
-message tx_filter {
-    enum filter_context_type {
+message filter {
+    enum filters {
         ADDRESS = 1;
         TRANSACTION = 2;
         STEALTH = 3;
     }
 
-    required filter_context_type context = 1;
-    required uint32 prefix_bits = 2;
+    required filters filter_type = 1;
+    optional uint32 bits = 2;
     required bytes prefix = 3;
 }
 
 message block_location {
     optional block_id identity = 1;
-    repeated bytes branches = 2;
+    repeated bytes branch = 2;
 }
 
 message tx_hash_result {
-    required bytes tx_hash = 1;
+    required bytes hash = 1;
     required block_location location = 2;
 }
 
@@ -62,70 +62,73 @@ message point {
     required uint32 index = 2;
 }
 
-message transaction_input {
+message tx_input {
     required point previous_output = 1;
     required bytes script = 2;
     required uint32 sequence = 3;
 }
 
-message transaction_output {
+message tx_output {
     required uint64 value = 1;
     required bytes script = 2;
 }
 
-message transaction {
+message tx {
     required uint32 version = 1;
     required uint32 locktime = 2;
-    repeated transaction_input inputs = 3;
-    repeated transaction_output outputs = 4;
+    repeated tx_input inputs = 3;
+    repeated tx_output outputs = 4;
 }
 
 message tx_result {
-    required transaction tx = 1;
+    required tx transaction = 1;
     required block_location location = 2;
 }
 
 message utxo_result {
     required bytes tx_hash = 1;
     required block_location location = 2;
-    repeated output tx_outputs = 3;
+    repeated output outputs = 3;
 }
 
 message request {
     optional uint32 id = 1;
-    
-    message block_headers {
-        optional block_id starting_block = 1;
+
+    message block_headers_request {
+        optional block_id start = 1;
         optional uint32 results_per_page = 2;
     }
     
-    optional block_headers get_block_headers = 2;
+    optional block_headers_request get_block_headers = 2;
     
-    message transactions {
-        enum result_type {
+    message transactions_request {
+        enum results {
             TX_HASH = 1;
             TX_RESULT = 2;
             UTXO_RESULT = 3;
         }
-        
-        optional block_id starting_block = 1;
+                
+        enum locations {
+            NONE = 0;
+            BLOCK = 1;
+            MERKLE = 2;
+        }
+
+        optional block_id start = 1;
         optional uint32 results_per_page = 2;
-        repeated tx_filter filters = 3;
-        required result_type type = 4;
-        required bool with_block_identity = 5 [default = false];
-        required bool with_merkle_branch = 6 [default = false];
+        repeated filter query = 3;
+        optional results result_type = 4 [default = TX_HASH];
+        optional locations location_type = 5 [default = NONE];
     }
     
-    optional transactions get_transactions = 3;
+    optional transactions_request get_transactions = 3;
     
-    optional bytes submit_transaction = 4;
+    optional tx send_transaction = 4;
     
-    optional bytes validate_transaction = 5;
+    optional tx validate_transaction = 5;
 }
 
 message response {
-    optional uint32 id = 1;
-
     // can encode both success/fail for broadcast operations and error codes
     // for other calls
     optional sint32 status = 2;
@@ -141,8 +144,6 @@ message response {
 }
 
 message response_alternate {
-    optional uint32 id = 1;
-
     // can encode error codes for calls
     optional sint32 status = 2;
 
@@ -164,7 +165,57 @@ message response_alternate {
 
     optional transactions get_transactions_response = 4;
     
-    optional bool submit_transaction_succeeded = 5;
+    optional bool send_transaction_succeeded = 5;
     
     optional bool validate_transaction_succeeded = 6;
+}
+
+message stealth_message {
+    optional uint32 id = 1;
+
+    message block_headers_request {
+        optional block_id start = 1;
+        optional uint32 results_per_page = 2;
+    }
+    
+    optional block_headers_request get_block_headers = 2;
+    
+    message transactions_request {
+        enum results {
+            TX_HASH = 1;
+            TX_RESULT = 2;
+            UTXO_RESULT = 3;
+        }
+                
+        enum locations {
+            NONE = 0;
+            BLOCK = 1;
+            MERKLE = 2;
+        }
+
+        optional block_id start = 1;
+        optional uint32 results_per_page = 2;
+        repeated filter query = 3;
+        optional results result_type = 4 [default = TX_HASH];
+        optional locations location_type = 5 [default = NONE];
+    }
+    
+    optional transactions_request get_transactions = 3;
+    
+    optional tx send_transaction = 4;
+    
+    optional tx validate_transaction = 5;
+    
+    // can encode both success/fail for broadcast operations and error codes
+    // for other calls
+    optional sint32 status = 6;
+    
+    // list response properties
+    optional block_id next = 7;
+    optional block_id top = 8;
+
+    repeated block_header headers = 9;
+    repeated tx_hash_result hashes = 10;
+    repeated tx_result transactions = 11;
+    repeated utxo_result utxos = 12;
 }
