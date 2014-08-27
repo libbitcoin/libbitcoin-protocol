@@ -263,25 +263,24 @@ Although SPV clients can verify information the server provides, only a full-cha
 
 The old obelisk protocol is included for comparison:
 
-### Blockchain
+### Fetch
 
-- fetch_last_height()
-- fetch_block_header(height)
 - fetch_block_header(hash)
-
-### Transactions
-
+- fetch_block_header(height)
 - fetch_history(const payment_address& address, size_t from_height=0)
-- fetch_stealth(const stealth_prefix& prefix, size_t from_height=0)
-- fetch_transaction_index(const hash_digest& tx_hash)
+- fetch_last_height()
 - fetch_transaction(const hash_digest& tx_hash)
+- fetch_transaction_index(const hash_digest& tx_hash)
+- fetch_stealth(const stealth_prefix& prefix, size_t from_height=0)
 - fetch_unconfirmed_transaction(const hash_digest& tx_hash)
-- fetch_history(const payment_address& address, size_t from_height=0)
-- subscribe(const address_prefix& prefix)
 
-### Broadcast
+### Send
 
 - validate(tx_data)
 - broadcast(tx_data)
+
+### Subscribe
+
+- subscribe(const address_prefix& prefix)
 
 These features are a subset of new protocol with the exception of address.subscribe, which has been removed. The subscription required per caller session-state to be maintained by the server. The new protocol is stateless and therefore requires callers to poll for the same information.
