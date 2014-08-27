@@ -68,9 +68,9 @@ The server signals the caller of a fork (or bad caller input input) by validatin
   - digest? **hash** (default = unverified, use height)
 - block_location
   - block_id? **identity** (missing unless requested)
-  - list of digest? **branch** (missing unless requested)
+  - list of digest **branch** (empty unless requested)
 - filter
-  - enum **context** {transaction | address | stealth} (default=transaction)
+  - enum **context** {transaction | address | stealth} (default = transaction)
   - uint32_t? **bits** (default = all)
   - bytes **prefix**
 - tx_hash_result
@@ -98,7 +98,7 @@ In the case of filters the caller provides as prefix only the full or partial ha
 
 - Get Block Headers
   - in?:  block_id **start** (default = get block height)
-  - in?:  uint32_t **results_per_page (default = all, 0 = none)
+  - in?:  uint32_t **results_per_page** (default = all, 0 = none)
   - out:  list of header **headers** (empty = zero page requested)
   - out?: block_id **next** (missing = last page)
   - out?: block_id **top** (missing = not last page)
@@ -109,9 +109,11 @@ In the case of filters the caller provides as prefix only the full or partial ha
   - in?:  block_id **start** (default = tx mempool only)
   - in?:  uint32_t **results_per_page** (default = all, 0 = start block only)
   - in:   list of filter **query** (empty = all)
-  - in?:  enum {hash | transaction | utxo} **result-type** (default = hash)
+  - in?:  enum {hash | utxo | transaction} **result-type** (default = hash)
   - in?:  enum {none | block | merkle} **location-format** (default = none)
-  - out:  list of {tx_hash_result | tx_result | utxo_result} **transactions** (empty = none found or zero page requested)
+  - out:  list of {tx_hash_result} **hashes**
+  - out:  list of {utxo_result} **outputs**
+  - out:  list of {tx_result} **transactions**
   - out?: block_id **next** (missing = last page)
   - out?: block_id **top** (missing = not last page)
 
