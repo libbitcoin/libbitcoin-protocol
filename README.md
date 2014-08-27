@@ -39,7 +39,7 @@ Send/Verify calls are inherently compromising as they allow correlation of the c
 Block header queries are not considered privacy-compromising with the exception that, without using opion routing, the caller exposes the calling IP address as hosting a bitcoin client.
 
 ### Pagination
-All queries use a pagination scheme. The caller specifies an optional starting point and an optional target for the desired number of results per page. The server returns results in whole-block increments of increasing block height. The server always returns at least one block's worth of data (which may be an empty list if there is none to return) unless zero results per page is specified (in which case an empty list is returned).
+All queries use a pagination scheme. The caller specifies an optional starting point and an optional target for the desired number of results per page. The server returns results in whole-block increments of increasing block height. The server has the option to return a smaller result set than specified but always returns at least one block's worth of data (which may be an empty list if there is none to return) unless zero results per page is specified (in which case an empty list is returned).
 
 
 ### Block Correlation
