@@ -168,7 +168,7 @@ Get all transaction hashes for a wallet with two addresses, starting at the gene
 get_transactions
 {
   start = { height = 0 },
-  filter = 
+  query = 
   [
     { prefix = 0x21 },
     { bits = 12, prefix = 0x08b7 }
@@ -185,7 +185,7 @@ get_transactions
     height = 317792, 
     hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8
   },
-  filter =
+  query =
   [
     { prefix = 0x21 },
     { bits = 12, prefix = 0x08b7 }
