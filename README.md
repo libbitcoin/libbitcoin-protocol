@@ -63,22 +63,22 @@ The server signals the caller of a fork (or bad caller input input) by validatin
   - libbitcoin::data_chunk **script**
 - block_id
   - uint32_t? **height** (default = unverified, use hash)
-  - uint8_t[32]? **hash** (default = unverified, use height)
+  - libbitcoin::hash_digest? **hash** (default = unverified, use height)
 - block_location
   - block_id? **identity** (missing unless requested)
-  - list of uint8_t[32]? **branch** (missing unless requested)
+  - list of libbitcoin::hash_digest? **branch** (missing unless requested)
 - tx_filter
   - enum uint8_t **context** {transaction | address | stealth} (default=transaction)
   - uint32_t? **bits** (default = all)
   - data_chunk **prefix**
 - tx_hash_result
-  - uint8_t[32] **hash**
+  - libbitcoin::hash_digest **hash**
   - block_location **location**
 - tx_result
   - tx **transaction**
   - block_location **location**
 - utxo_result
-  - uint8_t[32] **tx_hash**
+  - libbitcoin::hash_digest **tx_hash**
   - block_location **location**
   - list of **output**
 
