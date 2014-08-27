@@ -69,7 +69,7 @@ The server signals the caller of a fork (or bad caller input input) by validatin
 - block_location
   - block_id? **identity** (missing unless requested)
   - list of digest? **branch** (missing unless requested)
-- tx_filter
+- filter
   - enum uint8_t **context** {transaction | address | stealth} (default=transaction)
   - uint32_t? **bits** (default = all)
   - bytes **prefix**
@@ -108,7 +108,7 @@ In the case of filters the caller provides as prefix only the full or partial ha
 - Get Transactions
   - in?:  block_id **start** (default = tx mempool only)
   - in?:  uint32_t **results_per_page** (hint, default = all)
-  - in:   list of tx_filter **query** (empty = all)
+  - in:   list of filter **query** (empty = all)
   - in?:  enum {tx_hash | tx_data | utxo} **result-type** (default = tx_hash)
   - in?:  enum **location-format** {none | block | merkle} (default = none)
   - out:  list of {tx_hash_result | tx_result | utxo_result} **transactions** (empty = none found or zero page requested)
