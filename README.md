@@ -26,7 +26,7 @@ A client's two major areas of interest are transaction discovery and transaction
 
 ## Wire Encoding
 
-The focus of this document is not the wire encoding, but the messaging semantics. The protocol may be encoded via any means. For example, it is possible to encode in [JSON](http://en.wikipedia.org/wiki/JSON) and serve up over [WebSockets](http://en.wikipedia.org/wiki/WebSocket). The initial libbitcoin implementation will likely encode using [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/proto) and a [ZeroMQ](http://zeromq.org) transport with [privacy](http://curvezmq.org/), [compression](http://www.zlib.net) and support [onion routing](https://www.torproject.org). Additional protocols may be efficiently layered over ZMQ (e.g. using in-process communication).
+The focus of this document is not the wire encoding, but the messaging semantics. The protocol may be encoded via any means. For example, it is possible to encode in [JSON](http://en.wikipedia.org/wiki/JSON) and serve up over [WebSockets](http://en.wikipedia.org/wiki/WebSocket). The initial libbitcoin implementation will likely encode using [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/proto) and a [ZeroMQ](http://zeromq.org) transport with [privacy](http://curvezmq.org/), [compression](http://www.zlib.net), and support for [onion routing](https://www.torproject.org). Additional protocols may be efficiently layered over ZMQ (e.g. using in-process communication).
 
 ## Principles
 ### Privacy
@@ -36,7 +36,7 @@ Note that without prefix filters transaction query taint cannot be avoided using
 
 Send/Verify calls are inherently compromising as they allow correlation of the caller's IP address with the transaction. This can only be avoided using an onion router, such as [Tor](https://www.torproject.org) or [I2P](https://geti2p.net/en), to proxy the communication to the server.
 
-Block header queries are not considered privacy-compromising with the exception that, without using opion routing, the caller exposes the calling IP address as hosting a bitcoin client.
+Block header queries are not considered privacy-compromising with the exception that, without using onion routing, the caller exposes the calling IP address as hosting a bitcoin client.
 
 ### Pagination
 All queries use a pagination scheme. The caller specifies an optional starting point and an optional target for the desired number of results per page. The server returns results in whole-block increments of increasing block height. The server has the option to return a smaller result set than specified but always returns at least one block's worth of data (which may be an empty list if there is none to return) unless zero results per page is specified (in which case an empty list is returned).
@@ -240,16 +240,16 @@ get_transactions
 
 ## Client Types
 
-### This protocol supports four common client types:
+This protocol supports four common client types:
 
 - Full-chain caching clients
 - SPV caching clients
 - Server-trusting caching clients
 - Server-trusting stateless clients
 
-Caching clients store transactions locally, while stateless clients do not (they might store addresses or other metadata). Aside from reduced user interface latency and enabling verification, maintaining a local transaction database allows maintenance of per-transaction non-blockchain meta-data, such as categories, counterparty names, etc.
+Caching clients store transactions locally, while stateless clients do not (although they might store addresses or other metadata). Aside from reducing latency and enabling verification, maintaining a local transaction database allows maintenance of per-transaction non-blockchain meta-data, such as categories, counterparty names, etc.
 
-SPV and full-chain clients can verify the contents of their transaction database by checking transaction hashes against block headers. Additionally, full-chain clients can verify that inputs connect to outputs. Server-trusting clients don't maintain the blockchain, so a malicious server can easily convince them that they have received non-existent payments. With basic precautions non-trusting clients are immune to this class of attack.
+SPV and full-chain clients can verify the contents of their transaction database by checking transaction hashes against block headers. Additionally, full-chain clients can verify that inputs connect to outputs. Server-trusting clients don't maintain the blockchain, so a malicious server can easily convince them that they have received non-existent payments. Correctly-written non-trusting clients are immune to this class of attack.
 
 Server-trusting caching clients are doubly-sensitive to attack, since they may receive and cache invalid data locally where it would persist until the cache is refreshed or a possibly if a blockchain fork is signalled. Stateless clients are somewhat less sensitive, since they will recover as soon as they connect to an honest server.
 
@@ -257,7 +257,7 @@ There are realistic scenarios where a trusting client makes sense. For example, 
 
 All caching client types stay up-to-date with the blockchain in a similar way. The client periodically polls for new blocks. Upon discovering a new block the client probes its cache for a chain fork. To do this, the client walks down the chain from its highest block, making server queries with the **start** `block_id` set to blocks along the chain. Each block that produces a failure response is identified as being on a pruned fork. Once the highest non-forked block in the cache is located the client queries the server in order to update the block information for all transactions (or addresses) that are associated with pruned blocks.
 
-Although SPV clients can verify information the server provides, only a full-chain client can detect missing transactions. Therefore SPV clients may still choose to periodically re-scan their addresses starting from the genesis block. Trusting clients have no reason to assume that new data would be any more reliable than old data, although a periodic update can mitigate perpetuating errors, as previously described.
+Although SPV clients can verify information the server provides, only a full-chain client can detect missing transactions. Therefore SPV clients may still choose to periodically re-scan their addresses starting from the genesis block. Trusting clients have no reason to assume that new data would be any more reliable than old data, so automated periodic updates may actually be harmful.
 
 ## Old Obelisk Protocol
 
@@ -265,22 +265,23 @@ The old obelisk protocol is included for comparison:
 
 ### Fetch
 
-- fetch_block_header(hash)
-- fetch_block_header(height)
-- fetch_history(const payment_address& address, size_t from_height=0)
-- fetch_last_height()
-- fetch_transaction(const hash_digest& tx_hash)
-- fetch_transaction_index(const hash_digest& tx_hash)
-- fetch_stealth(const stealth_prefix& prefix, size_t from_height=0)
-- fetch_unconfirmed_transaction(const hash_digest& tx_hash)
+- blockchain.fetch_history(address, from_height)
+- blockchain.fetch_transaction(tx_hash)
+- blockchain.fetch_last_height()
+- blockchain.fetch_block_header(height)
+- blockchain.fetch_block_header(blk_hash)
+- blockchain.fetch_transaction_index(tx_hash)
+- blockchain.fetch_stealth(prefix, from_height)
+- address.fetch_history(address, from_height)
+- transaction_pool.fetch_transaction(tx_hash)
 
 ### Send
 
-- validate(tx_data)
-- broadcast(tx_data)
+- transaction_pool.validate(tx_data)
+- protocol.broadcast_transaction(tx_data)
 
 ### Subscribe
 
-- subscribe(const address_prefix& prefix)
+- address.subscribe(prefix)
 
 These features are a subset of new protocol with the exception of address.subscribe, which has been removed. The subscription required per caller session-state to be maintained by the server. The new protocol is stateless and therefore requires callers to poll for the same information.
