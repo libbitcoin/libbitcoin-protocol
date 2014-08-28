@@ -102,7 +102,7 @@ In the case of filters the caller provides as prefix only the full or partial ha
 - Get Block Headers
   - in?:  block_id **start** (default = get block height)
   - in?:  uint32_t **results_per_page** (default = all, 0 = none)
-  - out:  list of header **headers** (empty = zero page requested)
+  - out:  list of header **headers** (empty = zero pages requested)
   - out?: block_id **next** (missing = last page)
   - out?: block_id **top** (missing = not last page)
 
