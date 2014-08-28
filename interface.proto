@@ -1,5 +1,13 @@
 package bc.protocol;
 
+// Bitcoin types mapped from descriptions found at
+// https://en.bitcoin.it/wiki/Protocol_specification
+// where names have been normalized against libbitcoin
+// existing implementation/usage.
+
+//
+// Block Header
+//
 message block_header {
     // protocol version
     required uint32 version = 1;
@@ -22,19 +30,49 @@ message block_header {
     required uint64 tx_count = 7;
 }
 
-message block_id {
-    optional uint32 height = 1;
-    
-    // 32-bytes
-    optional bytes hash = 2;
+//
+// OutPoint corresponding object.
+//
+message point {
+    required bytes hash = 1;
+    required uint32 index = 2;
 }
 
-message output {
-    required uint32 index = 1;
-    required uint64 satoshis = 2;
-    required bytes script = 3;
+//
+// TxIn corresponding object.
+//
+message tx_input {
+    required point previous_output = 1;
+    required bytes script = 2;
+    required uint32 sequence = 3;
 }
 
+//
+// TxOut corresponding object.
+//
+message tx_output {
+    required uint64 value = 1;
+    required bytes script = 2;
+}
+
+//
+// Transaction
+//
+message tx {
+    required uint32 version = 1;
+    required uint32 locktime = 2;
+    repeated tx_input inputs = 3;
+    repeated tx_output outputs = 4;
+}
+
+
+
+// Protocol unique members
+
+//
+// Query filter type, allowing prefix matching against addresses,
+// transactions or stealth addresses.
+//
 message filter {
     enum filters {
         ADDRESS = 1;
@@ -47,52 +85,69 @@ message filter {
     required bytes prefix = 3;
 }
 
+//
+// A block height, hash tuple.
+//
+message block_id {
+    optional uint32 height = 1;
+    
+    // 32-bytes
+    optional bytes hash = 2;
+}
+
+//
+// A block identity, merkle branch tuple.
+//
 message block_location {
     optional block_id identity = 1;
     repeated bytes branch = 2;
 }
 
+//
+// Minimal transaction identification query response,
+// meant to correspond with request.transactions.results.TX_HASH
+// query result_type.
+//
 message tx_hash_result {
     required bytes hash = 1;
     required block_location location = 2;
 }
 
-message point {
-    required bytes hash = 1;
-    required uint32 index = 2;
-}
-
-message tx_input {
-    required point previous_output = 1;
-    required bytes script = 2;
-    required uint32 sequence = 3;
-}
-
-message tx_output {
-    required uint64 value = 1;
-    required bytes script = 2;
-}
-
-message tx {
-    required uint32 version = 1;
-    required uint32 locktime = 2;
-    repeated tx_input inputs = 3;
-    repeated tx_output outputs = 4;
-}
-
+//
+// Full transaction instance query response,
+// meant to correspond with request.transactions.results.TX_RESULT
+// query result_type.
+//
 message tx_result {
     required tx transaction = 1;
     required block_location location = 2;
 }
 
+//
+// A transaction output.
+//
+message output {
+    required uint32 index = 1;
+    required uint64 satoshis = 2;
+    required bytes script = 3;
+}
+
+//
+// Unspent transaction output query response,
+// meant to correspond with request.transactions.results.UTXO_RESULT
+// query result_type.
+//
 message utxo_result {
     required bytes tx_hash = 1;
     required block_location location = 2;
     repeated output outputs = 3;
 }
 
+//
+// Client request
+//
 message request {
-    optional uint32 id = 1;
+    required uint32 id = 1;
 
     message block_headers_request {
         optional block_id start = 1;
@@ -128,22 +183,12 @@ message request {
     optional tx validate_transaction = 5;
 }
 
+//
+// Server response
+//
 message response {
-    // can encode both success/fail for broadcast operations and error codes
-    // for other calls
-    optional sint32 status = 2;
-    
-    // list response properties
-    optional block_id next = 3;
-    optional block_id top = 4;
+    required uint32 id = 1;
 
-    repeated block_header headers = 5;
-    repeated tx_hash_result hashes = 6;
-    repeated tx_result transactions = 7;
-    repeated utxo_result utxos = 8;
-}
-
-message response_alternate {
     // can encode error codes for calls
     optional sint32 status = 2;
 
@@ -170,8 +215,12 @@ message response_alternate {
     optional bool validate_transaction_succeeded = 6;
 }
 
+//
+// Unified request and response message model allowing mixed
+// client behavior with universal deserialization.
+//
 message stealth_message {
-    optional uint32 id = 1;
+    required uint32 id = 1;
 
     message block_headers_request {
         optional block_id start = 1;
@@ -206,16 +255,38 @@ message stealth_message {
     
     optional tx validate_transaction = 5;
     
-    // can encode both success/fail for broadcast operations and error codes
-    // for other calls
+    // can encode both success/fail for broadcast operations and
+    // error codes for other calls
     optional sint32 status = 6;
     
-    // list response properties
-    optional block_id next = 7;
-    optional block_id top = 8;
+    message block_headers_response {
+        optional block_id next = 1;
+        optional block_id top = 2;
+        repeated block_header headers = 3;
+    }
+    
+    optional block_headers_response get_block_headers_response = 7;
+    
+    message transactions_response {
+        optional block_id next = 1;
+        optional block_id top = 2;
+        repeated tx_hash_result hashes = 3;
+        repeated tx_result transactions = 4;
+        repeated utxo_result utxos = 5;
+    }
 
-    repeated block_header headers = 9;
-    repeated tx_hash_result hashes = 10;
-    repeated tx_result transactions = 11;
-    repeated utxo_result utxos = 12;
+    optional transactions_response get_transactions_response = 8;
+    
+    optional bool send_transaction_succeeded = 9;
+    
+    optional bool validate_transaction_succeeded = 10;
 }
+
+//
+// Unifying request/response message utilizing existing 
+// message objects.
+//
+//~ message stealth_message_alt {
+    //~ optional request request = 1;
+    //~ optional response response = 2;
+//~ }
