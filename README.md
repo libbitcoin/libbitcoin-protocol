@@ -87,11 +87,11 @@ The server signals the caller of a fork (or bad caller input input) by validatin
   - block_location **location**
   - list of output **outputs**
 
-## Merkle Branch Encoding
+### Merkle Branch Encoding
 
 The transaction's [Merkle branch](https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki#Partial_Merkle_branch_format) is encoded in `block_location.branch` as a hash list in depth-first order such that a properly-ordered combination with the hash of the corresponding transaction produces the [Merkle root](https://en.bitcoin.it/wiki/Protocol_specification#Merkle_Trees) of the corresponding block.
 
-## Prefix Filters
+### Prefix Filters
 
 In the case of filters the caller provides as prefix only the full or partial hash (byte-aligned). In other words, for addresses the prefix is against the RIPEMD160 hash payload, not the Base58Check encoding wrapper. Prefix comparisons for stealth addresses are independently documented. Address and transaction prefix comparisons are performed in a similar manner (TBD).
 
@@ -137,9 +137,9 @@ Determine if a particular block is still on the main chain:
 ```
 get_headers
 {
-  start = 
+  start =
   {
-    height = 317792, 
+    height = 317792,
     hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8
   },
   results_per_page = 0
@@ -156,9 +156,9 @@ Get all block headers, starting where the previous query left off:
 ```
 get_headers
 {
-  start = 
+  start =
   {
-    height = 317792, 
+    height = 317792,
     hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8
   }
 }
@@ -168,7 +168,7 @@ Get all transaction hashes for a wallet with two addresses, starting at the gene
 get_transactions
 {
   start = { height = 0 },
-  query = 
+  query =
   [
     { prefix = 0x21 },
     { bits = 12, prefix = 0x08b7 }
@@ -180,9 +180,9 @@ Get all transaction data for a wallet with two addresses, starting at a particul
 ```
 get_transactions
 {
-  start = 
+  start =
   {
-    height = 317792, 
+    height = 317792,
     hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8
   },
   query =
@@ -207,11 +207,11 @@ Has my transaction been confirmed yet?
 get_transactions
 {
   start = { height = 0 },
-  query = 
+  query =
   [
     {
-      filter_type = address, 
-      prefix = 0x94b43df27e205d8a261531fe1fc0c2e5fc226a87e6a9e1c68ab9113eb36cbf4a 
+      filter_type = transaction,
+      prefix = 0x94b43df27e205d8a261531fe1fc0c2e5fc226a87e6a9e1c68ab9113eb36cbf4a
     }
   ],
   result_type = hash
@@ -222,9 +222,9 @@ Get all the transactions in a particular block:
 ```
 get_transactions
 {
-  start = 
+  start =
   {
-    height = 317792, 
+    height = 317792,
     hash = 0x000000000000000018b01e93c7caaed765b7ff478f2dcc7ae6364bfcf97fe2f8
   },
   results_per_page = 0
