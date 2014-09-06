@@ -181,6 +181,8 @@ message request {
     optional tx send_transaction = 4;
     
     optional tx validate_transaction = 5;
+    
+    extensions 100 to 199;
 }
 
 //
@@ -213,5 +215,7 @@ message response {
     optional bool send_transaction_succeeded = 5;
     
     optional bool validate_transaction_succeeded = 6;
+    
+    extensions 100 to 199;
 }
 
