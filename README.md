@@ -257,7 +257,7 @@ There are realistic scenarios where a trusting client makes sense. For example, 
 
 All caching client types stay up-to-date with the blockchain in a similar way. The client periodically polls for new blocks. Upon discovering a new block the client probes its cache for a chain fork. To do this, the client walks down the chain from its highest block, making server queries with the **start** `block_id` set to blocks along the chain. Each block that produces a failure response is identified as being on a pruned fork. Once the highest non-forked block in the cache is located the client queries the server in order to update the block information for all transactions (or addresses) that are associated with pruned blocks.
 
-Although SPV clients can verify information the server provides, only a full-chain client can detect missing transactions. Therefore SPV clients may still choose to periodically re-scan their addresses starting from the genesis block. Trusting clients have no reason to assume that new data would be any more reliable than old data, so automated periodic updates may actually be harmful.
+Although SPV clients can verify information the server provides, only a full-chain client can detect missing transactions. Therefore SPV clients may still choose to periodically re-scan their addresses starting from the genesis block. Trusting clients have no reason to assume that new data would be any more reliable than old data, so automated periodic updates may actually be harmful. On the other hand, depending on the trust model, periodic updates can mitigate perpetuating errors, as previously described.
 
 ## Old Obelisk Protocol
 
