@@ -51,7 +51,7 @@ If the **start** `block_id` is not specified the server returns results only fro
 
 The presence of the **next** `block_id.hash` allows the server to detect the presence of an apparent block fork between two page requests. The server will return an error, and the client can restart its queries from an earlier point. The server will always return results that are consistent with respect to the ending block hash.
 
-The server signals the caller of a fork (or bad caller input input) by validating **start** `block_id` against the current chain, returning an error code if the specified `block_id` is not on the chain. There is no other possibility of pareseable input causing an error result (although server failures can produce errors). If a `tx_filter.bits` value that exceeds the length in bits of the corresponding `tx_filter.prefix` it is treated as a valid sentinel for "all bits" of the prefix.
+The server signals the caller of a fork (or bad caller input input) by validating **start** `block_id` against the current chain, returning an error code if the specified `block_id` is not on the chain. There is no other possibility of parseable input causing an error result (although server failures can produce errors). If a `tx_filter.bits` value that exceeds the length in bits of the corresponding `tx_filter.prefix` it is treated as a valid sentinel for "all bits" of the prefix.
 
 ## Complex Types
 
