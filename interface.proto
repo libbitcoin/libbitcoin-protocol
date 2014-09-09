@@ -65,6 +65,13 @@ message tx {
     repeated tx_output outputs = 4;
 }
 
+//
+// Block
+//
+message block {
+    required block_header header = 1;
+    repeated tx transactions = 2;
+}
 
 
 // Protocol unique members
@@ -182,6 +189,8 @@ message request {
         tx send_transaction = 4;
 
         tx validate_transaction = 5;
+
+        block send_block = 6;
     }
     
     extensions 100 to 199;
@@ -218,6 +227,8 @@ message response {
         bool send_transaction_succeeded = 5;
 
         bool validate_transaction_succeeded = 6;
+
+        bool send_block_succeeded = 7;
     }
 
     extensions 100 to 199;
