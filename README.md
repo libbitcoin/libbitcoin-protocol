@@ -69,8 +69,8 @@ The server signals the caller of a fork (or bad caller input input) by validatin
   - uint64_t **satoshis**
   - bytes **script**
 - block
-  - header header
-  - list of tx (ordered)
+  - header **header**
+  - list of tx **transactions** (ordered)
 - block_id
   - uint32_t? **height** (default = unverified, use hash)
   - digest? **hash** (default = unverified, use height)
