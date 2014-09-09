@@ -16,8 +16,6 @@ A client's two major areas of interest are transaction discovery and transaction
   - [Server-Trusting](https://bitcoin.it/wiki/Thin_Client_Security#Server-Trusting_Clients) (see below for details)
     - Caching
     - Stateless
-  - Spender
-  - Miner
 - The server should not be required to maintain any session state.
 - The client should not be required to provide any identifying information.
 - The protocol should allow client privacy, leaving tradeoffs between privacy and performance to the caller.
