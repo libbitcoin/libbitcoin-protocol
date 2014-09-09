@@ -64,10 +64,6 @@ The server signals the caller of a fork (or bad caller input input) by validatin
 - enum {none | block | merkle} locations
 - enum {hash | utxo | transaction} results
 - enum {address | stealth | transaction} filters
-- output
-  - uint32_t **index**
-  - uint64_t **satoshis**
-  - bytes **script**
 - block
   - header **header**
   - list of tx **transactions** (ordered)
@@ -81,6 +77,10 @@ The server signals the caller of a fork (or bad caller input input) by validatin
   - filters **filter_type** (default = transaction)
   - uint32_t? **bits** (default = all)
   - bytes **prefix**
+- output
+  - uint32_t **index**
+  - uint64_t **satoshis**
+  - bytes **script**
 - tx_hash_result
   - digest **hash**
   - block_location **location**
