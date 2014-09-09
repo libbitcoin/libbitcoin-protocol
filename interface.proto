@@ -154,8 +154,6 @@ message request {
         optional uint32 results_per_page = 2;
     }
     
-    optional block_headers_request get_block_headers = 2;
-    
     message transactions_request {
         enum results {
             TX_HASH = 1;
@@ -175,12 +173,16 @@ message request {
         optional results result_type = 4 [default = TX_HASH];
         optional locations location_type = 5 [default = NONE];
     }
-    
-    optional transactions_request get_transactions = 3;
-    
-    optional tx send_transaction = 4;
-    
-    optional tx validate_transaction = 5;
+
+    oneof request_type {
+        block_headers_request get_block_headers = 2;
+
+        transactions_request get_transactions = 3;
+
+        tx send_transaction = 4;
+
+        tx validate_transaction = 5;
+    }
     
     extensions 100 to 199;
 }
@@ -200,8 +202,6 @@ message response {
         repeated block_header headers = 3;
     }
     
-    optional block_headers get_block_headers_response = 3;
-    
     message transactions {
         optional block_id next = 1;
         optional block_id top = 2;
@@ -210,12 +210,16 @@ message response {
         repeated utxo_result utxos = 5;
     }
 
-    optional transactions get_transactions_response = 4;
-    
-    optional bool send_transaction_succeeded = 5;
-    
-    optional bool validate_transaction_succeeded = 6;
-    
+    oneof response_type {
+        block_headers get_block_headers_response = 3;
+
+        transactions get_transactions_response = 4;
+
+        bool send_transaction_succeeded = 5;
+
+        bool validate_transaction_succeeded = 6;
+    }
+
     extensions 100 to 199;
 }
 
