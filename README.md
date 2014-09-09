@@ -134,6 +134,15 @@ In the case of filters the caller provides as prefix only the full or partial ha
 - Validate Transaction (primarily for client-side debugging)
   - in:   tx **transaction**
 
+### Validate
+
+> These are designed for client-side debugging.
+
+- Validate Block
+  - in:   block **block**
+- Validate Transaction
+  - in:   tx **transaction**
+
 ## Usage Examples
 
 Get the current block height, and nothing more:
