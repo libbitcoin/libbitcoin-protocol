@@ -11,22 +11,22 @@ A client's two major areas of interest are transaction discovery and transaction
 ## Goals
 
 - Provide support for optimal implementation of common bitcoin clients.
-  - [Full-Chain](https://en.bitcoin.it/wiki/Thin_Client_Security#Full-Chain_Clients)
-  - [Header-Only](https://en.bitcoin.it/wiki/Thin_Client_Security#Header-Only_Clients) (SPV)
-  - [Server-Trusting](https://en.bitcoin.it/wiki/Thin_Client_Security#Server-Trusting_Clients) (see below for details)
+  - [Full-Chain](https://bitcoin.it/wiki/Thin_Client_Security#Full-Chain_Clients)
+  - [Header-Only](https://bitcoin.it/wiki/Thin_Client_Security#Header-Only_Clients) (SPV)
+  - [Server-Trusting](https://bitcoin.it/wiki/Thin_Client_Security#Server-Trusting_Clients) (see below for details)
     - Caching
     - Stateless
 - The server should not be required to maintain any session state.
 - The client should not be required to provide any identifying information.
 - The protocol should allow client privacy, leaving tradeoffs between privacy and performance to the caller.
 - The protocol should be extensible while allowing backward and forward compatibility without version negotiation.
-- The protocol should be defined in an IDL.
-- Available IDL should provide tooling for generation of client-server stubs in C/C++.
-- Available IDL tooling should implement marshalling in C/C++.
+- The protocol should be defined in a format [interface definition language](http://wikipedia.org/wiki/Interface_description_language) (IDL).
+- The IDL should provide tooling for generation of client-server stubs in C/C++.
+- The IDL tooling should implement marshalling in C/C++.
 
 ## Wire Encoding
 
-The focus of this document is not the wire encoding, but the messaging semantics. The protocol may be encoded via any means. For example, it is possible to encode in [JSON](http://en.wikipedia.org/wiki/JSON) and serve up over [WebSockets](http://en.wikipedia.org/wiki/WebSocket). The initial libbitcoin implementation will likely encode using [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/proto) and a [ZeroMQ](http://zeromq.org) transport with [privacy](http://curvezmq.org/), [compression](http://www.zlib.net), and support for [onion routing](https://www.torproject.org). Additional protocols may be efficiently layered over ZMQ (e.g. using in-process communication).
+The focus of this document is not the wire encoding, but the messaging semantics. The protocol may be encoded via any means. For example, it is possible to encode in [JSON](http://wikipedia.org/wiki/JSON) and serve up over [WebSockets](http://wikipedia.org/wiki/WebSocket). The initial libbitcoin implementation will likely encode using [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/proto) and a [ZeroMQ](http://zeromq.org) transport with [privacy](http://curvezmq.org/), [compression](http://www.zlib.net), and support for [onion routing](https://www.torproject.org). Additional protocols may be efficiently layered over ZMQ (e.g. using in-process communication).
 
 ## Principles
 ### Privacy
@@ -43,7 +43,7 @@ All queries use a pagination scheme. The caller specifies an optional starting p
 
 
 ### Block Correlation
-The server always returns block height and hash as a `block_id` tuple to uniquely identify blocks. A caller may specify one, the other, or both of `block_id.hash` and `block_id.height`. The server validates whatever parts of `block_id`  are specified against the current chain and each other, returning an error if the request is off-chain.
+The server always returns block height and hash as a `block_id` tuple to uniquely identify blocks. A caller may specify one, the other, or both of `block_id.hash` and `block_id.height`. The server validates whatever parts of `block_id`  are specified, against each other and its current chain, returning an error if the request is off-chain.
 
 Each paginated result contains the height and hash of the **next** block not included in the result set, which a client can use for chaining page requests. The last page always includes any matching transactions from the transaction memory pool and includes the **top** `block_id` instead of the **next** `block_id`.
 
@@ -62,10 +62,9 @@ The server signals the caller of a fork (or bad caller input input) by validatin
 - enum {none | block | merkle} locations
 - enum {hash | utxo | transaction} results
 - enum {address | stealth | transaction} filters
-- output
-  - uint32_t **index**
-  - uint64_t **satoshis**
-  - bytes **script**
+- block
+  - header **header**
+  - list of tx **transactions** (ordered)
 - block_id
   - uint32_t? **height** (default = unverified, use hash)
   - digest? **hash** (default = unverified, use height)
@@ -76,6 +75,10 @@ The server signals the caller of a fork (or bad caller input input) by validatin
   - filters **filter_type** (default = transaction)
   - uint32_t? **bits** (default = all)
   - bytes **prefix**
+- output
+  - uint32_t **index**
+  - uint64_t **satoshis**
+  - bytes **script**
 - tx_hash_result
   - digest **hash**
   - block_location **location**
@@ -89,7 +92,7 @@ The server signals the caller of a fork (or bad caller input input) by validatin
 
 ### Merkle Branch Encoding
 
-The transaction's [Merkle branch](https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki#Partial_Merkle_branch_format) is encoded in `block_location.branch` as a hash list in depth-first order such that a properly-ordered combination with the hash of the corresponding transaction produces the [Merkle root](https://en.bitcoin.it/wiki/Protocol_specification#Merkle_Trees) of the corresponding block.
+The transaction's [Merkle branch](https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki#Partial_Merkle_branch_format) is encoded in `block_location.branch` as a hash list in depth-first order such that a properly-ordered combination with the hash of the corresponding transaction produces the [Merkle root](https://bitcoin.it/wiki/Protocol_specification#Merkle_Trees) of the corresponding block.
 
 ### Prefix Filters
 
@@ -97,7 +100,7 @@ In the case of filters the caller provides as prefix only the full or partial ha
 
 ## Messages
 
-### Blockchain
+### Blocks
 
 - Get Block Headers
   - in?:  block_id **start** (default = get block height)
@@ -105,6 +108,10 @@ In the case of filters the caller provides as prefix only the full or partial ha
   - out:  list of header **headers** (empty = zero pages requested)
   - out?: block_id **next** (missing = last page)
   - out?: block_id **top** (missing = not last page)
+- Post Block
+  - in:   block **block**
+- Validate Block
+  - in:   block **block**  
 
 ### Transactions
 
@@ -119,13 +126,12 @@ In the case of filters the caller provides as prefix only the full or partial ha
   - out:  list of {tx_result} **transactions**
   - out?: block_id **next** (missing = last page)
   - out?: block_id **top** (missing = not last page)
-
-### Broadcast
-
-- Validate Transaction (primarily for client-side debugging)
+- Post Transaction
   - in:   tx **transaction**
-- Send Transaction
+- Validate Transaction
   - in:   tx **transaction**
+
+> *Validate* calls are designed for client-side debugging.
 
 ## Usage Examples
 
@@ -257,7 +263,7 @@ There are realistic scenarios where a trusting client makes sense. For example, 
 
 All caching client types stay up-to-date with the blockchain in a similar way. The client periodically polls for new blocks. Upon discovering a new block the client probes its cache for a chain fork. To do this, the client walks down the chain from its highest block, making server queries with the **start** `block_id` set to blocks along the chain. Each block that produces a failure response is identified as being on a pruned fork. Once the highest non-forked block in the cache is located the client queries the server in order to update the block information for all transactions (or addresses) that are associated with pruned blocks.
 
-Although SPV clients can verify information the server provides, only a full-chain client can detect missing transactions. Therefore SPV clients may still choose to periodically re-scan their addresses starting from the genesis block. Trusting clients have no reason to assume that new data would be any more reliable than old data, so automated periodic updates may actually be harmful.
+Although SPV clients can verify information the server provides, only a full-chain client can detect missing transactions. Therefore SPV clients may still choose to periodically re-scan their addresses starting from the genesis block. Trusting clients have no reason to assume that new data would be any more reliable than old data, so automated periodic updates may actually be harmful. On the other hand, depending on the trust model, periodic updates can mitigate perpetuating errors, as previously described.
 
 ## Old Obelisk Protocol
 
