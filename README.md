@@ -43,7 +43,7 @@ All queries use a pagination scheme. The caller specifies an optional starting p
 
 
 ### Block Correlation
-The server always returns block height and hash as a `block_id` tuple to uniquely identify blocks. A caller may specify one, the other, or both of `block_id.hash` and `block_id.height`. The server validates whatever parts of `block_id`  are specified against the current chain and each other, returning an error if the request is off-chain.
+The server always returns block height and hash as a `block_id` tuple to uniquely identify blocks. A caller may specify one, the other, or both of `block_id.hash` and `block_id.height`. The server validates whatever parts of `block_id`  are specified, against each other and its current chain, returning an error if the request is off-chain.
 
 Each paginated result contains the height and hash of the **next** block not included in the result set, which a client can use for chaining page requests. The last page always includes any matching transactions from the transaction memory pool and includes the **top** `block_id` instead of the **next** `block_id`.
 
