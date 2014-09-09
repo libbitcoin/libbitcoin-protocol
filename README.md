@@ -16,6 +16,8 @@ A client's two major areas of interest are transaction discovery and transaction
   - [Server-Trusting](https://bitcoin.it/wiki/Thin_Client_Security#Server-Trusting_Clients) (see below for details)
     - Caching
     - Stateless
+  - Spender
+  - Miner
 - The server should not be required to maintain any session state.
 - The client should not be required to provide any identifying information.
 - The protocol should allow client privacy, leaving tradeoffs between privacy and performance to the caller.
@@ -66,6 +68,9 @@ The server signals the caller of a fork (or bad caller input input) by validatin
   - uint32_t **index**
   - uint64_t **satoshis**
   - bytes **script**
+- block
+  - header header
+  - list of tx (ordered)
 - block_id
   - uint32_t? **height** (default = unverified, use hash)
   - digest? **hash** (default = unverified, use height)
@@ -122,9 +127,11 @@ In the case of filters the caller provides as prefix only the full or partial ha
 
 ### Broadcast
 
-- Validate Transaction (primarily for client-side debugging)
-  - in:   tx **transaction**
+- Send Block
+  - in:   block **block**
 - Send Transaction
+  - in:   tx **transaction**
+- Validate Transaction (primarily for client-side debugging)
   - in:   tx **transaction**
 
 ## Usage Examples
