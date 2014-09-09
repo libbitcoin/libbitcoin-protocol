@@ -133,7 +133,7 @@ In the case of filters the caller provides as prefix only the full or partial ha
 - Validate Transaction
   - in:   tx **transaction**
 
-> **Validate** calls are designed for client-side debugging.
+> *Validate* calls are designed for client-side debugging.
 
 ## Usage Examples
 
