@@ -111,6 +111,12 @@ In the case of filters the caller provides as prefix only the full or partial ha
   - out?: block_id **next** (missing = last page)
   - out?: block_id **top** (missing = not last page)
 
+- Post Block
+  - in:   block **block**
+
+- Validate Block
+  - in:   block **block**  
+
 ### Transactions
 
 - Get Transactions
@@ -125,21 +131,9 @@ In the case of filters the caller provides as prefix only the full or partial ha
   - out?: block_id **next** (missing = last page)
   - out?: block_id **top** (missing = not last page)
 
-### Broadcast
-
-- Send Block
-  - in:   block **block**
-- Send Transaction
-  - in:   tx **transaction**
-- Validate Transaction (primarily for client-side debugging)
+- Post Transaction
   - in:   tx **transaction**
 
-### Validate
-
-> These are designed for client-side debugging.
-
-- Validate Block
-  - in:   block **block**
 - Validate Transaction
   - in:   tx **transaction**
 
