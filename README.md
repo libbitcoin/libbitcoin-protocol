@@ -34,7 +34,7 @@ Transaction queries, all of which would otherwise carry [taintable](https://bitc
 
 Note that without prefix filters transaction query taint cannot be avoided using onion routing alone unless each individual request is made on a distinct channel, as the requests can still be correlated to each other.
 
-Post/Verify calls are inherently compromising as they allow correlation of the caller's IP address with the new transaction or block. This can only be avoided using an onion router, such as [Tor](https://www.torproject.org) or [I2P](https://geti2p.net/en), to proxy the communication to the server.
+Send/Verify calls are inherently compromising as they allow correlation of the caller's IP address with the transaction. This can only be avoided using an onion router, such as [Tor](https://www.torproject.org) or [I2P](https://geti2p.net/en), to proxy the communication to the server.
 
 Block header queries are not considered privacy-compromising with the exception that, without using onion routing, the caller exposes the calling IP address as hosting a bitcoin client.
 
@@ -51,7 +51,7 @@ If the **start** `block_id` is not specified the server returns results only fro
 
 The presence of the **next** `block_id.hash` allows the server to detect the presence of an apparent block fork between two page requests. The server will return an error, and the client can restart its queries from an earlier point. The server will always return results that are consistent with respect to the ending block hash.
 
-The server signals the caller of a fork (or bad caller input input) by validating **start** `block_id` against the current chain, returning an error code if the specified `block_id` is not on the chain. There is no other possibility of parseable input causing an error result (although server failures can produce errors). If a `tx_filter.bits` value that exceeds the length in bits of the corresponding `tx_filter.prefix` it is treated as a valid sentinel for "all bits" of the prefix.
+The server signals the caller of a fork (or bad caller input input) by validating **start** `block_id` against the current chain, returning an error code if the specified `block_id` is not on the chain. There is no other possibility of pareseable input causing an error result (although server failures can produce errors). If a `tx_filter.bits` value that exceeds the length in bits of the corresponding `tx_filter.prefix` it is treated as a valid sentinel for "all bits" of the prefix.
 
 ## Complex Types
 
@@ -65,6 +65,7 @@ The server signals the caller of a fork (or bad caller input input) by validatin
 - block
   - header **header**
   - list of tx **transactions** (ordered)
+  - list of branch **tree** (ordered)
 - block_id
   - uint32_t? **height** (default = unverified, use hash)
   - digest? **hash** (default = unverified, use height)
