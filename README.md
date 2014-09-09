@@ -34,7 +34,7 @@ Transaction queries, all of which would otherwise carry [taintable](https://bitc
 
 Note that without prefix filters transaction query taint cannot be avoided using onion routing alone unless each individual request is made on a distinct channel, as the requests can still be correlated to each other.
 
-Send/Verify calls are inherently compromising as they allow correlation of the caller's IP address with the transaction. This can only be avoided using an onion router, such as [Tor](https://www.torproject.org) or [I2P](https://geti2p.net/en), to proxy the communication to the server.
+Post/Verify calls are inherently compromising as they allow correlation of the caller's IP address with the new transaction or block. This can only be avoided using an onion router, such as [Tor](https://www.torproject.org) or [I2P](https://geti2p.net/en), to proxy the communication to the server.
 
 Block header queries are not considered privacy-compromising with the exception that, without using onion routing, the caller exposes the calling IP address as hosting a bitcoin client.
 
