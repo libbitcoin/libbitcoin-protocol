@@ -102,6 +102,8 @@ In the case of filters the caller provides as prefix only the full or partial ha
 
 ## Messages
 
+> Validate calls are designed for client-side debugging.
+
 ### Blockchain
 
 - Get Block Headers
@@ -110,10 +112,8 @@ In the case of filters the caller provides as prefix only the full or partial ha
   - out:  list of header **headers** (empty = zero pages requested)
   - out?: block_id **next** (missing = last page)
   - out?: block_id **top** (missing = not last page)
-
 - Post Block
   - in:   block **block**
-
 - Validate Block
   - in:   block **block**  
 
@@ -130,10 +130,8 @@ In the case of filters the caller provides as prefix only the full or partial ha
   - out:  list of {tx_result} **transactions**
   - out?: block_id **next** (missing = last page)
   - out?: block_id **top** (missing = not last page)
-
 - Post Transaction
   - in:   tx **transaction**
-
 - Validate Transaction
   - in:   tx **transaction**
 
