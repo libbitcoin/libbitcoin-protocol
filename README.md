@@ -21,8 +21,8 @@ A client's two major areas of interest are transaction discovery and transaction
 - The protocol should allow client privacy, leaving tradeoffs between privacy and performance to the caller.
 - The protocol should be extensible while allowing backward and forward compatibility without version negotiation.
 - The protocol should be defined in an IDL.
-- Available IDL should provide tooling for generation of client-server stubs in C/C++.
-- Available IDL tooling should implement marshalling in C/C++.
+- The IDL should provide tooling for generation of client-server stubs in C/C++.
+- The IDL tooling should implement marshalling in C/C++.
 
 ## Wire Encoding
 
