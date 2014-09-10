@@ -71,6 +71,7 @@ message tx {
 message block {
     required block_header header = 1;
     repeated tx transactions = 2;
+    repeated bytes tree = 3;
 }
 
 
@@ -186,11 +187,11 @@ message request {
 
         transactions_request get_transactions = 3;
 
-        tx send_transaction = 4;
+        tx post_transaction = 4;
 
         tx validate_transaction = 5;
 
-        block send_block = 6;
+        block post_block = 6;
     }
     
     extensions 100 to 199;
@@ -224,11 +225,11 @@ message response {
 
         transactions get_transactions_response = 4;
 
-        bool send_transaction_succeeded = 5;
+        bool post_transaction_succeeded = 5;
 
         bool validate_transaction_succeeded = 6;
 
-        bool send_block_succeeded = 7;
+        bool post_block_succeeded = 7;
     }
 
     extensions 100 to 199;
