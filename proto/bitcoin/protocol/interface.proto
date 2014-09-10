@@ -1,4 +1,4 @@
-package bc.protocol;
+package libbitcoin.protocol;
 
 // Bitcoin types mapped from descriptions found at
 // https://en.bitcoin.it/wiki/Protocol_specification
