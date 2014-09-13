@@ -137,11 +137,11 @@ In the case of filters the caller provides as prefix only the full or partial ha
 ## Usage Examples
 
 Get the current block height, and nothing more:
-```
+```js 
 get_headers {}
 ```
 Determine if a particular block is still on the main chain:
-```
+```js
 get_headers
 {
   start =
@@ -153,14 +153,14 @@ get_headers
 }
 ```
 Get all block headers, starting from the genesis block:
-```
+```js
 get_headers
 {
   start = { height = 0 }
 }
 ```
 Get all block headers, starting where the previous query left off:
-```
+```js
 get_headers
 {
   start =
@@ -171,7 +171,7 @@ get_headers
 }
 ```
 Get all transaction hashes for a wallet with two addresses, starting at the genesis block, with a target page size of 10 transactions:
-```
+```js
 get_transactions
 {
   start = { height = 0 },
@@ -184,7 +184,7 @@ get_transactions
 }
 ```
 Get all transaction data for a wallet with two addresses, starting at a particular block:
-```
+```js
 get_transactions
 {
   start =
@@ -201,7 +201,7 @@ get_transactions
 }
 ```
 Get all utxo's for a single address:
-```
+```js
 get_transactions
 {
   start = { height = 0 },
@@ -210,7 +210,7 @@ get_transactions
 }
 ```
 Has my transaction been confirmed yet?
-```
+```js
 get_transactions
 {
   start = { height = 0 },
@@ -226,7 +226,7 @@ get_transactions
 }
 ```
 Get all the transactions in a particular block:
-```
+```js
 get_transactions
 {
   start =
@@ -238,7 +238,7 @@ get_transactions
 }
 ```
 Get all stealth transactions in the mempool:
-```
+```js
 get_transactions
 {
   query = [{ filter_type = stealth }]
