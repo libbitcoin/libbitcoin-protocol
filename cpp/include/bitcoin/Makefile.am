@@ -5,5 +5,7 @@ bitcoin_include_HEADERS = \
 bitcoin_protocol_includedir = $(includedir)/bitcoin/protocol
 bitcoin_protocol_include_HEADERS = \
     protocol/define.hpp \
-    protocol/interface.pb.h
+    protocol/interface.pb.h \
+    protocol/message.hpp \
+    protocol/primitives.hpp
 

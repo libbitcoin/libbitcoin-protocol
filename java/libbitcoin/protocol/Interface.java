@@ -8,6 +8,285 @@ public final class Interface {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
+  /**
+   * Protobuf enum {@code libbitcoin.protocol.filters}
+   */
+  public enum filters
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>ADDRESS = 1;</code>
+     */
+    ADDRESS(0, 1),
+    /**
+     * <code>TRANSACTION = 2;</code>
+     */
+    TRANSACTION(1, 2),
+    /**
+     * <code>STEALTH = 3;</code>
+     */
+    STEALTH(2, 3),
+    ;
+
+    /**
+     * <code>ADDRESS = 1;</code>
+     */
+    public static final int ADDRESS_VALUE = 1;
+    /**
+     * <code>TRANSACTION = 2;</code>
+     */
+    public static final int TRANSACTION_VALUE = 2;
+    /**
+     * <code>STEALTH = 3;</code>
+     */
+    public static final int STEALTH_VALUE = 3;
+
+
+    public final int getNumber() { return value; }
+
+    public static filters valueOf(int value) {
+      switch (value) {
+        case 1: return ADDRESS;
+        case 2: return TRANSACTION;
+        case 3: return STEALTH;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<filters>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<filters>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<filters>() {
+            public filters findValueByNumber(int number) {
+              return filters.valueOf(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return libbitcoin.protocol.Interface.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final filters[] VALUES = values();
+
+    public static filters valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int index;
+    private final int value;
+
+    private filters(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:libbitcoin.protocol.filters)
+  }
+
+  /**
+   * Protobuf enum {@code libbitcoin.protocol.transaction_results}
+   *
+   * <pre>
+   *
+   * Client request
+   *
+   * </pre>
+   */
+  public enum transaction_results
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>TX_HASH = 1;</code>
+     */
+    TX_HASH(0, 1),
+    /**
+     * <code>TX_RESULT = 2;</code>
+     */
+    TX_RESULT(1, 2),
+    /**
+     * <code>UTXO_RESULT = 3;</code>
+     */
+    UTXO_RESULT(2, 3),
+    ;
+
+    /**
+     * <code>TX_HASH = 1;</code>
+     */
+    public static final int TX_HASH_VALUE = 1;
+    /**
+     * <code>TX_RESULT = 2;</code>
+     */
+    public static final int TX_RESULT_VALUE = 2;
+    /**
+     * <code>UTXO_RESULT = 3;</code>
+     */
+    public static final int UTXO_RESULT_VALUE = 3;
+
+
+    public final int getNumber() { return value; }
+
+    public static transaction_results valueOf(int value) {
+      switch (value) {
+        case 1: return TX_HASH;
+        case 2: return TX_RESULT;
+        case 3: return UTXO_RESULT;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<transaction_results>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<transaction_results>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<transaction_results>() {
+            public transaction_results findValueByNumber(int number) {
+              return transaction_results.valueOf(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return libbitcoin.protocol.Interface.getDescriptor().getEnumTypes().get(1);
+    }
+
+    private static final transaction_results[] VALUES = values();
+
+    public static transaction_results valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int index;
+    private final int value;
+
+    private transaction_results(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:libbitcoin.protocol.transaction_results)
+  }
+
+  /**
+   * Protobuf enum {@code libbitcoin.protocol.locations}
+   */
+  public enum locations
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>NONE = 0;</code>
+     */
+    NONE(0, 0),
+    /**
+     * <code>BLOCK = 1;</code>
+     */
+    BLOCK(1, 1),
+    /**
+     * <code>MERKLE = 2;</code>
+     */
+    MERKLE(2, 2),
+    ;
+
+    /**
+     * <code>NONE = 0;</code>
+     */
+    public static final int NONE_VALUE = 0;
+    /**
+     * <code>BLOCK = 1;</code>
+     */
+    public static final int BLOCK_VALUE = 1;
+    /**
+     * <code>MERKLE = 2;</code>
+     */
+    public static final int MERKLE_VALUE = 2;
+
+
+    public final int getNumber() { return value; }
+
+    public static locations valueOf(int value) {
+      switch (value) {
+        case 0: return NONE;
+        case 1: return BLOCK;
+        case 2: return MERKLE;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<locations>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<locations>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<locations>() {
+            public locations findValueByNumber(int number) {
+              return locations.valueOf(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return libbitcoin.protocol.Interface.getDescriptor().getEnumTypes().get(2);
+    }
+
+    private static final locations[] VALUES = values();
+
+    public static locations valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int index;
+    private final int value;
+
+    private locations(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:libbitcoin.protocol.locations)
+  }
+
   public interface block_headerOrBuilder extends
       // @@protoc_insertion_point(interface_extends:libbitcoin.protocol.block_header)
       com.google.protobuf.MessageOrBuilder {
@@ -5170,13 +5449,13 @@ public final class Interface {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required .libbitcoin.protocol.filter.filters filter_type = 1;</code>
+     * <code>required .libbitcoin.protocol.filters filter_type = 1;</code>
      */
     boolean hasFilterType();
     /**
-     * <code>required .libbitcoin.protocol.filter.filters filter_type = 1;</code>
+     * <code>required .libbitcoin.protocol.filters filter_type = 1;</code>
      */
-    libbitcoin.protocol.Interface.filter.filters getFilterType();
+    libbitcoin.protocol.Interface.filters getFilterType();
 
     /**
      * <code>optional uint32 bits = 2;</code>
@@ -5257,7 +5536,7 @@ public final class Interface {
             }
             case 8: {
               int rawValue = input.readEnum();
-              libbitcoin.protocol.Interface.filter.filters value = libbitcoin.protocol.Interface.filter.filters.valueOf(rawValue);
+              libbitcoin.protocol.Interface.filters value = libbitcoin.protocol.Interface.filters.valueOf(rawValue);
               if (value == null) {
                 unknownFields.mergeVarintField(1, rawValue);
               } else {
@@ -5315,110 +5594,19 @@ public final class Interface {
       return PARSER;
     }
 
-    /**
-     * Protobuf enum {@code libbitcoin.protocol.filter.filters}
-     */
-    public enum filters
-        implements com.google.protobuf.ProtocolMessageEnum {
-      /**
-       * <code>ADDRESS = 1;</code>
-       */
-      ADDRESS(0, 1),
-      /**
-       * <code>TRANSACTION = 2;</code>
-       */
-      TRANSACTION(1, 2),
-      /**
-       * <code>STEALTH = 3;</code>
-       */
-      STEALTH(2, 3),
-      ;
-
-      /**
-       * <code>ADDRESS = 1;</code>
-       */
-      public static final int ADDRESS_VALUE = 1;
-      /**
-       * <code>TRANSACTION = 2;</code>
-       */
-      public static final int TRANSACTION_VALUE = 2;
-      /**
-       * <code>STEALTH = 3;</code>
-       */
-      public static final int STEALTH_VALUE = 3;
-
-
-      public final int getNumber() { return value; }
-
-      public static filters valueOf(int value) {
-        switch (value) {
-          case 1: return ADDRESS;
-          case 2: return TRANSACTION;
-          case 3: return STEALTH;
-          default: return null;
-        }
-      }
-
-      public static com.google.protobuf.Internal.EnumLiteMap<filters>
-          internalGetValueMap() {
-        return internalValueMap;
-      }
-      private static com.google.protobuf.Internal.EnumLiteMap<filters>
-          internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<filters>() {
-              public filters findValueByNumber(int number) {
-                return filters.valueOf(number);
-              }
-            };
-
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
-        return getDescriptor().getValues().get(index);
-      }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
-        return getDescriptor();
-      }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
-        return libbitcoin.protocol.Interface.filter.getDescriptor().getEnumTypes().get(0);
-      }
-
-      private static final filters[] VALUES = values();
-
-      public static filters valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-        if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
-        }
-        return VALUES[desc.getIndex()];
-      }
-
-      private final int index;
-      private final int value;
-
-      private filters(int index, int value) {
-        this.index = index;
-        this.value = value;
-      }
-
-      // @@protoc_insertion_point(enum_scope:libbitcoin.protocol.filter.filters)
-    }
-
     private int bitField0_;
     public static final int FILTER_TYPE_FIELD_NUMBER = 1;
-    private libbitcoin.protocol.Interface.filter.filters filterType_;
+    private libbitcoin.protocol.Interface.filters filterType_;
     /**
-     * <code>required .libbitcoin.protocol.filter.filters filter_type = 1;</code>
+     * <code>required .libbitcoin.protocol.filters filter_type = 1;</code>
      */
     public boolean hasFilterType() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required .libbitcoin.protocol.filter.filters filter_type = 1;</code>
+     * <code>required .libbitcoin.protocol.filters filter_type = 1;</code>
      */
-    public libbitcoin.protocol.Interface.filter.filters getFilterType() {
+    public libbitcoin.protocol.Interface.filters getFilterType() {
       return filterType_;
     }
 
@@ -5453,7 +5641,7 @@ public final class Interface {
     }
 
     private void initFields() {
-      filterType_ = libbitcoin.protocol.Interface.filter.filters.ADDRESS;
+      filterType_ = libbitcoin.protocol.Interface.filters.ADDRESS;
       bits_ = 0;
       prefix_ = com.google.protobuf.ByteString.EMPTY;
     }
@@ -5632,7 +5820,7 @@ public final class Interface {
 
       public Builder clear() {
         super.clear();
-        filterType_ = libbitcoin.protocol.Interface.filter.filters.ADDRESS;
+        filterType_ = libbitcoin.protocol.Interface.filters.ADDRESS;
         bitField0_ = (bitField0_ & ~0x00000001);
         bits_ = 0;
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -5738,23 +5926,23 @@ public final class Interface {
       }
       private int bitField0_;
 
-      private libbitcoin.protocol.Interface.filter.filters filterType_ = libbitcoin.protocol.Interface.filter.filters.ADDRESS;
+      private libbitcoin.protocol.Interface.filters filterType_ = libbitcoin.protocol.Interface.filters.ADDRESS;
       /**
-       * <code>required .libbitcoin.protocol.filter.filters filter_type = 1;</code>
+       * <code>required .libbitcoin.protocol.filters filter_type = 1;</code>
        */
       public boolean hasFilterType() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required .libbitcoin.protocol.filter.filters filter_type = 1;</code>
+       * <code>required .libbitcoin.protocol.filters filter_type = 1;</code>
        */
-      public libbitcoin.protocol.Interface.filter.filters getFilterType() {
+      public libbitcoin.protocol.Interface.filters getFilterType() {
         return filterType_;
       }
       /**
-       * <code>required .libbitcoin.protocol.filter.filters filter_type = 1;</code>
+       * <code>required .libbitcoin.protocol.filters filter_type = 1;</code>
        */
-      public Builder setFilterType(libbitcoin.protocol.Interface.filter.filters value) {
+      public Builder setFilterType(libbitcoin.protocol.Interface.filters value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -5764,11 +5952,11 @@ public final class Interface {
         return this;
       }
       /**
-       * <code>required .libbitcoin.protocol.filter.filters filter_type = 1;</code>
+       * <code>required .libbitcoin.protocol.filters filter_type = 1;</code>
        */
       public Builder clearFilterType() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        filterType_ = libbitcoin.protocol.Interface.filter.filters.ADDRESS;
+        filterType_ = libbitcoin.protocol.Interface.filters.ADDRESS;
         onChanged();
         return this;
       }
@@ -9984,6 +10172,1724 @@ public final class Interface {
     // @@protoc_insertion_point(class_scope:libbitcoin.protocol.utxo_result)
   }
 
+  public interface block_headers_requestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:libbitcoin.protocol.block_headers_request)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+     */
+    boolean hasStart();
+    /**
+     * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+     */
+    libbitcoin.protocol.Interface.block_id getStart();
+    /**
+     * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+     */
+    libbitcoin.protocol.Interface.block_idOrBuilder getStartOrBuilder();
+
+    /**
+     * <code>optional uint32 results_per_page = 2;</code>
+     */
+    boolean hasResultsPerPage();
+    /**
+     * <code>optional uint32 results_per_page = 2;</code>
+     */
+    int getResultsPerPage();
+  }
+  /**
+   * Protobuf type {@code libbitcoin.protocol.block_headers_request}
+   */
+  public static final class block_headers_request extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:libbitcoin.protocol.block_headers_request)
+      block_headers_requestOrBuilder {
+    // Use block_headers_request.newBuilder() to construct.
+    private block_headers_request(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private block_headers_request(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final block_headers_request defaultInstance;
+    public static block_headers_request getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public block_headers_request getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private block_headers_request(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              libbitcoin.protocol.Interface.block_id.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = start_.toBuilder();
+              }
+              start_ = input.readMessage(libbitcoin.protocol.Interface.block_id.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(start_);
+                start_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000001;
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              resultsPerPage_ = input.readUInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_block_headers_request_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_block_headers_request_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              libbitcoin.protocol.Interface.block_headers_request.class, libbitcoin.protocol.Interface.block_headers_request.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<block_headers_request> PARSER =
+        new com.google.protobuf.AbstractParser<block_headers_request>() {
+      public block_headers_request parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new block_headers_request(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<block_headers_request> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    public static final int START_FIELD_NUMBER = 1;
+    private libbitcoin.protocol.Interface.block_id start_;
+    /**
+     * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+     */
+    public boolean hasStart() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+     */
+    public libbitcoin.protocol.Interface.block_id getStart() {
+      return start_;
+    }
+    /**
+     * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+     */
+    public libbitcoin.protocol.Interface.block_idOrBuilder getStartOrBuilder() {
+      return start_;
+    }
+
+    public static final int RESULTS_PER_PAGE_FIELD_NUMBER = 2;
+    private int resultsPerPage_;
+    /**
+     * <code>optional uint32 results_per_page = 2;</code>
+     */
+    public boolean hasResultsPerPage() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional uint32 results_per_page = 2;</code>
+     */
+    public int getResultsPerPage() {
+      return resultsPerPage_;
+    }
+
+    private void initFields() {
+      start_ = libbitcoin.protocol.Interface.block_id.getDefaultInstance();
+      resultsPerPage_ = 0;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, start_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeUInt32(2, resultsPerPage_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, start_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(2, resultsPerPage_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static libbitcoin.protocol.Interface.block_headers_request parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static libbitcoin.protocol.Interface.block_headers_request parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static libbitcoin.protocol.Interface.block_headers_request parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static libbitcoin.protocol.Interface.block_headers_request parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static libbitcoin.protocol.Interface.block_headers_request parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static libbitcoin.protocol.Interface.block_headers_request parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static libbitcoin.protocol.Interface.block_headers_request parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static libbitcoin.protocol.Interface.block_headers_request parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static libbitcoin.protocol.Interface.block_headers_request parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static libbitcoin.protocol.Interface.block_headers_request parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(libbitcoin.protocol.Interface.block_headers_request prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code libbitcoin.protocol.block_headers_request}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:libbitcoin.protocol.block_headers_request)
+        libbitcoin.protocol.Interface.block_headers_requestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_block_headers_request_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_block_headers_request_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                libbitcoin.protocol.Interface.block_headers_request.class, libbitcoin.protocol.Interface.block_headers_request.Builder.class);
+      }
+
+      // Construct using libbitcoin.protocol.Interface.block_headers_request.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getStartFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        if (startBuilder_ == null) {
+          start_ = libbitcoin.protocol.Interface.block_id.getDefaultInstance();
+        } else {
+          startBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        resultsPerPage_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_block_headers_request_descriptor;
+      }
+
+      public libbitcoin.protocol.Interface.block_headers_request getDefaultInstanceForType() {
+        return libbitcoin.protocol.Interface.block_headers_request.getDefaultInstance();
+      }
+
+      public libbitcoin.protocol.Interface.block_headers_request build() {
+        libbitcoin.protocol.Interface.block_headers_request result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public libbitcoin.protocol.Interface.block_headers_request buildPartial() {
+        libbitcoin.protocol.Interface.block_headers_request result = new libbitcoin.protocol.Interface.block_headers_request(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (startBuilder_ == null) {
+          result.start_ = start_;
+        } else {
+          result.start_ = startBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.resultsPerPage_ = resultsPerPage_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof libbitcoin.protocol.Interface.block_headers_request) {
+          return mergeFrom((libbitcoin.protocol.Interface.block_headers_request)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(libbitcoin.protocol.Interface.block_headers_request other) {
+        if (other == libbitcoin.protocol.Interface.block_headers_request.getDefaultInstance()) return this;
+        if (other.hasStart()) {
+          mergeStart(other.getStart());
+        }
+        if (other.hasResultsPerPage()) {
+          setResultsPerPage(other.getResultsPerPage());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        libbitcoin.protocol.Interface.block_headers_request parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (libbitcoin.protocol.Interface.block_headers_request) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private libbitcoin.protocol.Interface.block_id start_ = libbitcoin.protocol.Interface.block_id.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          libbitcoin.protocol.Interface.block_id, libbitcoin.protocol.Interface.block_id.Builder, libbitcoin.protocol.Interface.block_idOrBuilder> startBuilder_;
+      /**
+       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+       */
+      public boolean hasStart() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+       */
+      public libbitcoin.protocol.Interface.block_id getStart() {
+        if (startBuilder_ == null) {
+          return start_;
+        } else {
+          return startBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+       */
+      public Builder setStart(libbitcoin.protocol.Interface.block_id value) {
+        if (startBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          start_ = value;
+          onChanged();
+        } else {
+          startBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+       */
+      public Builder setStart(
+          libbitcoin.protocol.Interface.block_id.Builder builderForValue) {
+        if (startBuilder_ == null) {
+          start_ = builderForValue.build();
+          onChanged();
+        } else {
+          startBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+       */
+      public Builder mergeStart(libbitcoin.protocol.Interface.block_id value) {
+        if (startBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              start_ != libbitcoin.protocol.Interface.block_id.getDefaultInstance()) {
+            start_ =
+              libbitcoin.protocol.Interface.block_id.newBuilder(start_).mergeFrom(value).buildPartial();
+          } else {
+            start_ = value;
+          }
+          onChanged();
+        } else {
+          startBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+       */
+      public Builder clearStart() {
+        if (startBuilder_ == null) {
+          start_ = libbitcoin.protocol.Interface.block_id.getDefaultInstance();
+          onChanged();
+        } else {
+          startBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+       */
+      public libbitcoin.protocol.Interface.block_id.Builder getStartBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getStartFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+       */
+      public libbitcoin.protocol.Interface.block_idOrBuilder getStartOrBuilder() {
+        if (startBuilder_ != null) {
+          return startBuilder_.getMessageOrBuilder();
+        } else {
+          return start_;
+        }
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          libbitcoin.protocol.Interface.block_id, libbitcoin.protocol.Interface.block_id.Builder, libbitcoin.protocol.Interface.block_idOrBuilder> 
+          getStartFieldBuilder() {
+        if (startBuilder_ == null) {
+          startBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              libbitcoin.protocol.Interface.block_id, libbitcoin.protocol.Interface.block_id.Builder, libbitcoin.protocol.Interface.block_idOrBuilder>(
+                  getStart(),
+                  getParentForChildren(),
+                  isClean());
+          start_ = null;
+        }
+        return startBuilder_;
+      }
+
+      private int resultsPerPage_ ;
+      /**
+       * <code>optional uint32 results_per_page = 2;</code>
+       */
+      public boolean hasResultsPerPage() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional uint32 results_per_page = 2;</code>
+       */
+      public int getResultsPerPage() {
+        return resultsPerPage_;
+      }
+      /**
+       * <code>optional uint32 results_per_page = 2;</code>
+       */
+      public Builder setResultsPerPage(int value) {
+        bitField0_ |= 0x00000002;
+        resultsPerPage_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint32 results_per_page = 2;</code>
+       */
+      public Builder clearResultsPerPage() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        resultsPerPage_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:libbitcoin.protocol.block_headers_request)
+    }
+
+    static {
+      defaultInstance = new block_headers_request(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:libbitcoin.protocol.block_headers_request)
+  }
+
+  public interface transactions_requestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:libbitcoin.protocol.transactions_request)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+     */
+    boolean hasStart();
+    /**
+     * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+     */
+    libbitcoin.protocol.Interface.block_id getStart();
+    /**
+     * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+     */
+    libbitcoin.protocol.Interface.block_idOrBuilder getStartOrBuilder();
+
+    /**
+     * <code>optional uint32 results_per_page = 2;</code>
+     */
+    boolean hasResultsPerPage();
+    /**
+     * <code>optional uint32 results_per_page = 2;</code>
+     */
+    int getResultsPerPage();
+
+    /**
+     * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+     */
+    java.util.List<libbitcoin.protocol.Interface.filter> 
+        getQueryList();
+    /**
+     * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+     */
+    libbitcoin.protocol.Interface.filter getQuery(int index);
+    /**
+     * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+     */
+    int getQueryCount();
+    /**
+     * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+     */
+    java.util.List<? extends libbitcoin.protocol.Interface.filterOrBuilder> 
+        getQueryOrBuilderList();
+    /**
+     * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+     */
+    libbitcoin.protocol.Interface.filterOrBuilder getQueryOrBuilder(
+        int index);
+
+    /**
+     * <code>optional .libbitcoin.protocol.transaction_results result_type = 4 [default = TX_HASH];</code>
+     */
+    boolean hasResultType();
+    /**
+     * <code>optional .libbitcoin.protocol.transaction_results result_type = 4 [default = TX_HASH];</code>
+     */
+    libbitcoin.protocol.Interface.transaction_results getResultType();
+
+    /**
+     * <code>optional .libbitcoin.protocol.locations location_type = 5 [default = NONE];</code>
+     */
+    boolean hasLocationType();
+    /**
+     * <code>optional .libbitcoin.protocol.locations location_type = 5 [default = NONE];</code>
+     */
+    libbitcoin.protocol.Interface.locations getLocationType();
+  }
+  /**
+   * Protobuf type {@code libbitcoin.protocol.transactions_request}
+   */
+  public static final class transactions_request extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:libbitcoin.protocol.transactions_request)
+      transactions_requestOrBuilder {
+    // Use transactions_request.newBuilder() to construct.
+    private transactions_request(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private transactions_request(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final transactions_request defaultInstance;
+    public static transactions_request getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public transactions_request getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private transactions_request(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              libbitcoin.protocol.Interface.block_id.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = start_.toBuilder();
+              }
+              start_ = input.readMessage(libbitcoin.protocol.Interface.block_id.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(start_);
+                start_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000001;
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              resultsPerPage_ = input.readUInt32();
+              break;
+            }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                query_ = new java.util.ArrayList<libbitcoin.protocol.Interface.filter>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              query_.add(input.readMessage(libbitcoin.protocol.Interface.filter.PARSER, extensionRegistry));
+              break;
+            }
+            case 32: {
+              int rawValue = input.readEnum();
+              libbitcoin.protocol.Interface.transaction_results value = libbitcoin.protocol.Interface.transaction_results.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(4, rawValue);
+              } else {
+                bitField0_ |= 0x00000004;
+                resultType_ = value;
+              }
+              break;
+            }
+            case 40: {
+              int rawValue = input.readEnum();
+              libbitcoin.protocol.Interface.locations value = libbitcoin.protocol.Interface.locations.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(5, rawValue);
+              } else {
+                bitField0_ |= 0x00000008;
+                locationType_ = value;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+          query_ = java.util.Collections.unmodifiableList(query_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_transactions_request_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_transactions_request_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              libbitcoin.protocol.Interface.transactions_request.class, libbitcoin.protocol.Interface.transactions_request.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<transactions_request> PARSER =
+        new com.google.protobuf.AbstractParser<transactions_request>() {
+      public transactions_request parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new transactions_request(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<transactions_request> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    public static final int START_FIELD_NUMBER = 1;
+    private libbitcoin.protocol.Interface.block_id start_;
+    /**
+     * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+     */
+    public boolean hasStart() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+     */
+    public libbitcoin.protocol.Interface.block_id getStart() {
+      return start_;
+    }
+    /**
+     * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+     */
+    public libbitcoin.protocol.Interface.block_idOrBuilder getStartOrBuilder() {
+      return start_;
+    }
+
+    public static final int RESULTS_PER_PAGE_FIELD_NUMBER = 2;
+    private int resultsPerPage_;
+    /**
+     * <code>optional uint32 results_per_page = 2;</code>
+     */
+    public boolean hasResultsPerPage() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional uint32 results_per_page = 2;</code>
+     */
+    public int getResultsPerPage() {
+      return resultsPerPage_;
+    }
+
+    public static final int QUERY_FIELD_NUMBER = 3;
+    private java.util.List<libbitcoin.protocol.Interface.filter> query_;
+    /**
+     * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+     */
+    public java.util.List<libbitcoin.protocol.Interface.filter> getQueryList() {
+      return query_;
+    }
+    /**
+     * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+     */
+    public java.util.List<? extends libbitcoin.protocol.Interface.filterOrBuilder> 
+        getQueryOrBuilderList() {
+      return query_;
+    }
+    /**
+     * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+     */
+    public int getQueryCount() {
+      return query_.size();
+    }
+    /**
+     * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+     */
+    public libbitcoin.protocol.Interface.filter getQuery(int index) {
+      return query_.get(index);
+    }
+    /**
+     * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+     */
+    public libbitcoin.protocol.Interface.filterOrBuilder getQueryOrBuilder(
+        int index) {
+      return query_.get(index);
+    }
+
+    public static final int RESULT_TYPE_FIELD_NUMBER = 4;
+    private libbitcoin.protocol.Interface.transaction_results resultType_;
+    /**
+     * <code>optional .libbitcoin.protocol.transaction_results result_type = 4 [default = TX_HASH];</code>
+     */
+    public boolean hasResultType() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional .libbitcoin.protocol.transaction_results result_type = 4 [default = TX_HASH];</code>
+     */
+    public libbitcoin.protocol.Interface.transaction_results getResultType() {
+      return resultType_;
+    }
+
+    public static final int LOCATION_TYPE_FIELD_NUMBER = 5;
+    private libbitcoin.protocol.Interface.locations locationType_;
+    /**
+     * <code>optional .libbitcoin.protocol.locations location_type = 5 [default = NONE];</code>
+     */
+    public boolean hasLocationType() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional .libbitcoin.protocol.locations location_type = 5 [default = NONE];</code>
+     */
+    public libbitcoin.protocol.Interface.locations getLocationType() {
+      return locationType_;
+    }
+
+    private void initFields() {
+      start_ = libbitcoin.protocol.Interface.block_id.getDefaultInstance();
+      resultsPerPage_ = 0;
+      query_ = java.util.Collections.emptyList();
+      resultType_ = libbitcoin.protocol.Interface.transaction_results.TX_HASH;
+      locationType_ = libbitcoin.protocol.Interface.locations.NONE;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      for (int i = 0; i < getQueryCount(); i++) {
+        if (!getQuery(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, start_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeUInt32(2, resultsPerPage_);
+      }
+      for (int i = 0; i < query_.size(); i++) {
+        output.writeMessage(3, query_.get(i));
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeEnum(4, resultType_.getNumber());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeEnum(5, locationType_.getNumber());
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, start_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(2, resultsPerPage_);
+      }
+      for (int i = 0; i < query_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, query_.get(i));
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(4, resultType_.getNumber());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(5, locationType_.getNumber());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static libbitcoin.protocol.Interface.transactions_request parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static libbitcoin.protocol.Interface.transactions_request parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static libbitcoin.protocol.Interface.transactions_request parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static libbitcoin.protocol.Interface.transactions_request parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static libbitcoin.protocol.Interface.transactions_request parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static libbitcoin.protocol.Interface.transactions_request parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static libbitcoin.protocol.Interface.transactions_request parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static libbitcoin.protocol.Interface.transactions_request parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static libbitcoin.protocol.Interface.transactions_request parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static libbitcoin.protocol.Interface.transactions_request parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(libbitcoin.protocol.Interface.transactions_request prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code libbitcoin.protocol.transactions_request}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:libbitcoin.protocol.transactions_request)
+        libbitcoin.protocol.Interface.transactions_requestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_transactions_request_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_transactions_request_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                libbitcoin.protocol.Interface.transactions_request.class, libbitcoin.protocol.Interface.transactions_request.Builder.class);
+      }
+
+      // Construct using libbitcoin.protocol.Interface.transactions_request.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getStartFieldBuilder();
+          getQueryFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        if (startBuilder_ == null) {
+          start_ = libbitcoin.protocol.Interface.block_id.getDefaultInstance();
+        } else {
+          startBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        resultsPerPage_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        if (queryBuilder_ == null) {
+          query_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+        } else {
+          queryBuilder_.clear();
+        }
+        resultType_ = libbitcoin.protocol.Interface.transaction_results.TX_HASH;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        locationType_ = libbitcoin.protocol.Interface.locations.NONE;
+        bitField0_ = (bitField0_ & ~0x00000010);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_transactions_request_descriptor;
+      }
+
+      public libbitcoin.protocol.Interface.transactions_request getDefaultInstanceForType() {
+        return libbitcoin.protocol.Interface.transactions_request.getDefaultInstance();
+      }
+
+      public libbitcoin.protocol.Interface.transactions_request build() {
+        libbitcoin.protocol.Interface.transactions_request result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public libbitcoin.protocol.Interface.transactions_request buildPartial() {
+        libbitcoin.protocol.Interface.transactions_request result = new libbitcoin.protocol.Interface.transactions_request(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (startBuilder_ == null) {
+          result.start_ = start_;
+        } else {
+          result.start_ = startBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.resultsPerPage_ = resultsPerPage_;
+        if (queryBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+            query_ = java.util.Collections.unmodifiableList(query_);
+            bitField0_ = (bitField0_ & ~0x00000004);
+          }
+          result.query_ = query_;
+        } else {
+          result.query_ = queryBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.resultType_ = resultType_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.locationType_ = locationType_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof libbitcoin.protocol.Interface.transactions_request) {
+          return mergeFrom((libbitcoin.protocol.Interface.transactions_request)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(libbitcoin.protocol.Interface.transactions_request other) {
+        if (other == libbitcoin.protocol.Interface.transactions_request.getDefaultInstance()) return this;
+        if (other.hasStart()) {
+          mergeStart(other.getStart());
+        }
+        if (other.hasResultsPerPage()) {
+          setResultsPerPage(other.getResultsPerPage());
+        }
+        if (queryBuilder_ == null) {
+          if (!other.query_.isEmpty()) {
+            if (query_.isEmpty()) {
+              query_ = other.query_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+            } else {
+              ensureQueryIsMutable();
+              query_.addAll(other.query_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.query_.isEmpty()) {
+            if (queryBuilder_.isEmpty()) {
+              queryBuilder_.dispose();
+              queryBuilder_ = null;
+              query_ = other.query_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+              queryBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getQueryFieldBuilder() : null;
+            } else {
+              queryBuilder_.addAllMessages(other.query_);
+            }
+          }
+        }
+        if (other.hasResultType()) {
+          setResultType(other.getResultType());
+        }
+        if (other.hasLocationType()) {
+          setLocationType(other.getLocationType());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        for (int i = 0; i < getQueryCount(); i++) {
+          if (!getQuery(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        libbitcoin.protocol.Interface.transactions_request parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (libbitcoin.protocol.Interface.transactions_request) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private libbitcoin.protocol.Interface.block_id start_ = libbitcoin.protocol.Interface.block_id.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          libbitcoin.protocol.Interface.block_id, libbitcoin.protocol.Interface.block_id.Builder, libbitcoin.protocol.Interface.block_idOrBuilder> startBuilder_;
+      /**
+       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+       */
+      public boolean hasStart() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+       */
+      public libbitcoin.protocol.Interface.block_id getStart() {
+        if (startBuilder_ == null) {
+          return start_;
+        } else {
+          return startBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+       */
+      public Builder setStart(libbitcoin.protocol.Interface.block_id value) {
+        if (startBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          start_ = value;
+          onChanged();
+        } else {
+          startBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+       */
+      public Builder setStart(
+          libbitcoin.protocol.Interface.block_id.Builder builderForValue) {
+        if (startBuilder_ == null) {
+          start_ = builderForValue.build();
+          onChanged();
+        } else {
+          startBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+       */
+      public Builder mergeStart(libbitcoin.protocol.Interface.block_id value) {
+        if (startBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              start_ != libbitcoin.protocol.Interface.block_id.getDefaultInstance()) {
+            start_ =
+              libbitcoin.protocol.Interface.block_id.newBuilder(start_).mergeFrom(value).buildPartial();
+          } else {
+            start_ = value;
+          }
+          onChanged();
+        } else {
+          startBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+       */
+      public Builder clearStart() {
+        if (startBuilder_ == null) {
+          start_ = libbitcoin.protocol.Interface.block_id.getDefaultInstance();
+          onChanged();
+        } else {
+          startBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+       */
+      public libbitcoin.protocol.Interface.block_id.Builder getStartBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getStartFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+       */
+      public libbitcoin.protocol.Interface.block_idOrBuilder getStartOrBuilder() {
+        if (startBuilder_ != null) {
+          return startBuilder_.getMessageOrBuilder();
+        } else {
+          return start_;
+        }
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          libbitcoin.protocol.Interface.block_id, libbitcoin.protocol.Interface.block_id.Builder, libbitcoin.protocol.Interface.block_idOrBuilder> 
+          getStartFieldBuilder() {
+        if (startBuilder_ == null) {
+          startBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              libbitcoin.protocol.Interface.block_id, libbitcoin.protocol.Interface.block_id.Builder, libbitcoin.protocol.Interface.block_idOrBuilder>(
+                  getStart(),
+                  getParentForChildren(),
+                  isClean());
+          start_ = null;
+        }
+        return startBuilder_;
+      }
+
+      private int resultsPerPage_ ;
+      /**
+       * <code>optional uint32 results_per_page = 2;</code>
+       */
+      public boolean hasResultsPerPage() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional uint32 results_per_page = 2;</code>
+       */
+      public int getResultsPerPage() {
+        return resultsPerPage_;
+      }
+      /**
+       * <code>optional uint32 results_per_page = 2;</code>
+       */
+      public Builder setResultsPerPage(int value) {
+        bitField0_ |= 0x00000002;
+        resultsPerPage_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint32 results_per_page = 2;</code>
+       */
+      public Builder clearResultsPerPage() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        resultsPerPage_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<libbitcoin.protocol.Interface.filter> query_ =
+        java.util.Collections.emptyList();
+      private void ensureQueryIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          query_ = new java.util.ArrayList<libbitcoin.protocol.Interface.filter>(query_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          libbitcoin.protocol.Interface.filter, libbitcoin.protocol.Interface.filter.Builder, libbitcoin.protocol.Interface.filterOrBuilder> queryBuilder_;
+
+      /**
+       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+       */
+      public java.util.List<libbitcoin.protocol.Interface.filter> getQueryList() {
+        if (queryBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(query_);
+        } else {
+          return queryBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+       */
+      public int getQueryCount() {
+        if (queryBuilder_ == null) {
+          return query_.size();
+        } else {
+          return queryBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+       */
+      public libbitcoin.protocol.Interface.filter getQuery(int index) {
+        if (queryBuilder_ == null) {
+          return query_.get(index);
+        } else {
+          return queryBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+       */
+      public Builder setQuery(
+          int index, libbitcoin.protocol.Interface.filter value) {
+        if (queryBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureQueryIsMutable();
+          query_.set(index, value);
+          onChanged();
+        } else {
+          queryBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+       */
+      public Builder setQuery(
+          int index, libbitcoin.protocol.Interface.filter.Builder builderForValue) {
+        if (queryBuilder_ == null) {
+          ensureQueryIsMutable();
+          query_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          queryBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+       */
+      public Builder addQuery(libbitcoin.protocol.Interface.filter value) {
+        if (queryBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureQueryIsMutable();
+          query_.add(value);
+          onChanged();
+        } else {
+          queryBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+       */
+      public Builder addQuery(
+          int index, libbitcoin.protocol.Interface.filter value) {
+        if (queryBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureQueryIsMutable();
+          query_.add(index, value);
+          onChanged();
+        } else {
+          queryBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+       */
+      public Builder addQuery(
+          libbitcoin.protocol.Interface.filter.Builder builderForValue) {
+        if (queryBuilder_ == null) {
+          ensureQueryIsMutable();
+          query_.add(builderForValue.build());
+          onChanged();
+        } else {
+          queryBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+       */
+      public Builder addQuery(
+          int index, libbitcoin.protocol.Interface.filter.Builder builderForValue) {
+        if (queryBuilder_ == null) {
+          ensureQueryIsMutable();
+          query_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          queryBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+       */
+      public Builder addAllQuery(
+          java.lang.Iterable<? extends libbitcoin.protocol.Interface.filter> values) {
+        if (queryBuilder_ == null) {
+          ensureQueryIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, query_);
+          onChanged();
+        } else {
+          queryBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+       */
+      public Builder clearQuery() {
+        if (queryBuilder_ == null) {
+          query_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+          onChanged();
+        } else {
+          queryBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+       */
+      public Builder removeQuery(int index) {
+        if (queryBuilder_ == null) {
+          ensureQueryIsMutable();
+          query_.remove(index);
+          onChanged();
+        } else {
+          queryBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+       */
+      public libbitcoin.protocol.Interface.filter.Builder getQueryBuilder(
+          int index) {
+        return getQueryFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+       */
+      public libbitcoin.protocol.Interface.filterOrBuilder getQueryOrBuilder(
+          int index) {
+        if (queryBuilder_ == null) {
+          return query_.get(index);  } else {
+          return queryBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+       */
+      public java.util.List<? extends libbitcoin.protocol.Interface.filterOrBuilder> 
+           getQueryOrBuilderList() {
+        if (queryBuilder_ != null) {
+          return queryBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(query_);
+        }
+      }
+      /**
+       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+       */
+      public libbitcoin.protocol.Interface.filter.Builder addQueryBuilder() {
+        return getQueryFieldBuilder().addBuilder(
+            libbitcoin.protocol.Interface.filter.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+       */
+      public libbitcoin.protocol.Interface.filter.Builder addQueryBuilder(
+          int index) {
+        return getQueryFieldBuilder().addBuilder(
+            index, libbitcoin.protocol.Interface.filter.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
+       */
+      public java.util.List<libbitcoin.protocol.Interface.filter.Builder> 
+           getQueryBuilderList() {
+        return getQueryFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          libbitcoin.protocol.Interface.filter, libbitcoin.protocol.Interface.filter.Builder, libbitcoin.protocol.Interface.filterOrBuilder> 
+          getQueryFieldBuilder() {
+        if (queryBuilder_ == null) {
+          queryBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              libbitcoin.protocol.Interface.filter, libbitcoin.protocol.Interface.filter.Builder, libbitcoin.protocol.Interface.filterOrBuilder>(
+                  query_,
+                  ((bitField0_ & 0x00000004) == 0x00000004),
+                  getParentForChildren(),
+                  isClean());
+          query_ = null;
+        }
+        return queryBuilder_;
+      }
+
+      private libbitcoin.protocol.Interface.transaction_results resultType_ = libbitcoin.protocol.Interface.transaction_results.TX_HASH;
+      /**
+       * <code>optional .libbitcoin.protocol.transaction_results result_type = 4 [default = TX_HASH];</code>
+       */
+      public boolean hasResultType() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.transaction_results result_type = 4 [default = TX_HASH];</code>
+       */
+      public libbitcoin.protocol.Interface.transaction_results getResultType() {
+        return resultType_;
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.transaction_results result_type = 4 [default = TX_HASH];</code>
+       */
+      public Builder setResultType(libbitcoin.protocol.Interface.transaction_results value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000008;
+        resultType_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.transaction_results result_type = 4 [default = TX_HASH];</code>
+       */
+      public Builder clearResultType() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        resultType_ = libbitcoin.protocol.Interface.transaction_results.TX_HASH;
+        onChanged();
+        return this;
+      }
+
+      private libbitcoin.protocol.Interface.locations locationType_ = libbitcoin.protocol.Interface.locations.NONE;
+      /**
+       * <code>optional .libbitcoin.protocol.locations location_type = 5 [default = NONE];</code>
+       */
+      public boolean hasLocationType() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.locations location_type = 5 [default = NONE];</code>
+       */
+      public libbitcoin.protocol.Interface.locations getLocationType() {
+        return locationType_;
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.locations location_type = 5 [default = NONE];</code>
+       */
+      public Builder setLocationType(libbitcoin.protocol.Interface.locations value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000010;
+        locationType_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.locations location_type = 5 [default = NONE];</code>
+       */
+      public Builder clearLocationType() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        locationType_ = libbitcoin.protocol.Interface.locations.NONE;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:libbitcoin.protocol.transactions_request)
+    }
+
+    static {
+      defaultInstance = new transactions_request(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:libbitcoin.protocol.transactions_request)
+  }
+
   public interface requestOrBuilder extends
       // @@protoc_insertion_point(interface_extends:libbitcoin.protocol.request)
       com.google.protobuf.GeneratedMessage.
@@ -9999,30 +11905,30 @@ public final class Interface {
     int getId();
 
     /**
-     * <code>optional .libbitcoin.protocol.request.block_headers_request get_block_headers = 2;</code>
+     * <code>optional .libbitcoin.protocol.block_headers_request get_block_headers = 2;</code>
      */
     boolean hasGetBlockHeaders();
     /**
-     * <code>optional .libbitcoin.protocol.request.block_headers_request get_block_headers = 2;</code>
+     * <code>optional .libbitcoin.protocol.block_headers_request get_block_headers = 2;</code>
      */
-    libbitcoin.protocol.Interface.request.block_headers_request getGetBlockHeaders();
+    libbitcoin.protocol.Interface.block_headers_request getGetBlockHeaders();
     /**
-     * <code>optional .libbitcoin.protocol.request.block_headers_request get_block_headers = 2;</code>
+     * <code>optional .libbitcoin.protocol.block_headers_request get_block_headers = 2;</code>
      */
-    libbitcoin.protocol.Interface.request.block_headers_requestOrBuilder getGetBlockHeadersOrBuilder();
+    libbitcoin.protocol.Interface.block_headers_requestOrBuilder getGetBlockHeadersOrBuilder();
 
     /**
-     * <code>optional .libbitcoin.protocol.request.transactions_request get_transactions = 3;</code>
+     * <code>optional .libbitcoin.protocol.transactions_request get_transactions = 3;</code>
      */
     boolean hasGetTransactions();
     /**
-     * <code>optional .libbitcoin.protocol.request.transactions_request get_transactions = 3;</code>
+     * <code>optional .libbitcoin.protocol.transactions_request get_transactions = 3;</code>
      */
-    libbitcoin.protocol.Interface.request.transactions_request getGetTransactions();
+    libbitcoin.protocol.Interface.transactions_request getGetTransactions();
     /**
-     * <code>optional .libbitcoin.protocol.request.transactions_request get_transactions = 3;</code>
+     * <code>optional .libbitcoin.protocol.transactions_request get_transactions = 3;</code>
      */
-    libbitcoin.protocol.Interface.request.transactions_requestOrBuilder getGetTransactionsOrBuilder();
+    libbitcoin.protocol.Interface.transactions_requestOrBuilder getGetTransactionsOrBuilder();
 
     /**
      * <code>optional .libbitcoin.protocol.tx post_transaction = 4;</code>
@@ -10065,12 +11971,6 @@ public final class Interface {
   }
   /**
    * Protobuf type {@code libbitcoin.protocol.request}
-   *
-   * <pre>
-   *
-   * Client request
-   *
-   * </pre>
    */
   public static final class request extends
       com.google.protobuf.GeneratedMessage.ExtendableMessage<
@@ -10128,26 +12028,26 @@ public final class Interface {
               break;
             }
             case 18: {
-              libbitcoin.protocol.Interface.request.block_headers_request.Builder subBuilder = null;
+              libbitcoin.protocol.Interface.block_headers_request.Builder subBuilder = null;
               if (requestTypeCase_ == 2) {
-                subBuilder = ((libbitcoin.protocol.Interface.request.block_headers_request) requestType_).toBuilder();
+                subBuilder = ((libbitcoin.protocol.Interface.block_headers_request) requestType_).toBuilder();
               }
-              requestType_ = input.readMessage(libbitcoin.protocol.Interface.request.block_headers_request.PARSER, extensionRegistry);
+              requestType_ = input.readMessage(libbitcoin.protocol.Interface.block_headers_request.PARSER, extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom((libbitcoin.protocol.Interface.request.block_headers_request) requestType_);
+                subBuilder.mergeFrom((libbitcoin.protocol.Interface.block_headers_request) requestType_);
                 requestType_ = subBuilder.buildPartial();
               }
               requestTypeCase_ = 2;
               break;
             }
             case 26: {
-              libbitcoin.protocol.Interface.request.transactions_request.Builder subBuilder = null;
+              libbitcoin.protocol.Interface.transactions_request.Builder subBuilder = null;
               if (requestTypeCase_ == 3) {
-                subBuilder = ((libbitcoin.protocol.Interface.request.transactions_request) requestType_).toBuilder();
+                subBuilder = ((libbitcoin.protocol.Interface.transactions_request) requestType_).toBuilder();
               }
-              requestType_ = input.readMessage(libbitcoin.protocol.Interface.request.transactions_request.PARSER, extensionRegistry);
+              requestType_ = input.readMessage(libbitcoin.protocol.Interface.transactions_request.PARSER, extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom((libbitcoin.protocol.Interface.request.transactions_request) requestType_);
+                subBuilder.mergeFrom((libbitcoin.protocol.Interface.transactions_request) requestType_);
                 requestType_ = subBuilder.buildPartial();
               }
               requestTypeCase_ = 3;
@@ -10231,1906 +12131,6 @@ public final class Interface {
       return PARSER;
     }
 
-    public interface block_headers_requestOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:libbitcoin.protocol.request.block_headers_request)
-        com.google.protobuf.MessageOrBuilder {
-
-      /**
-       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-       */
-      boolean hasStart();
-      /**
-       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-       */
-      libbitcoin.protocol.Interface.block_id getStart();
-      /**
-       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-       */
-      libbitcoin.protocol.Interface.block_idOrBuilder getStartOrBuilder();
-
-      /**
-       * <code>optional uint32 results_per_page = 2;</code>
-       */
-      boolean hasResultsPerPage();
-      /**
-       * <code>optional uint32 results_per_page = 2;</code>
-       */
-      int getResultsPerPage();
-    }
-    /**
-     * Protobuf type {@code libbitcoin.protocol.request.block_headers_request}
-     */
-    public static final class block_headers_request extends
-        com.google.protobuf.GeneratedMessage implements
-        // @@protoc_insertion_point(message_implements:libbitcoin.protocol.request.block_headers_request)
-        block_headers_requestOrBuilder {
-      // Use block_headers_request.newBuilder() to construct.
-      private block_headers_request(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-        super(builder);
-        this.unknownFields = builder.getUnknownFields();
-      }
-      private block_headers_request(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-      private static final block_headers_request defaultInstance;
-      public static block_headers_request getDefaultInstance() {
-        return defaultInstance;
-      }
-
-      public block_headers_request getDefaultInstanceForType() {
-        return defaultInstance;
-      }
-
-      private final com.google.protobuf.UnknownFieldSet unknownFields;
-      @java.lang.Override
-      public final com.google.protobuf.UnknownFieldSet
-          getUnknownFields() {
-        return this.unknownFields;
-      }
-      private block_headers_request(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        initFields();
-        int mutable_bitField0_ = 0;
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-            com.google.protobuf.UnknownFieldSet.newBuilder();
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              default: {
-                if (!parseUnknownField(input, unknownFields,
-                                       extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
-              case 10: {
-                libbitcoin.protocol.Interface.block_id.Builder subBuilder = null;
-                if (((bitField0_ & 0x00000001) == 0x00000001)) {
-                  subBuilder = start_.toBuilder();
-                }
-                start_ = input.readMessage(libbitcoin.protocol.Interface.block_id.PARSER, extensionRegistry);
-                if (subBuilder != null) {
-                  subBuilder.mergeFrom(start_);
-                  start_ = subBuilder.buildPartial();
-                }
-                bitField0_ |= 0x00000001;
-                break;
-              }
-              case 16: {
-                bitField0_ |= 0x00000002;
-                resultsPerPage_ = input.readUInt32();
-                break;
-              }
-            }
-          }
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(this);
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(
-              e.getMessage()).setUnfinishedMessage(this);
-        } finally {
-          this.unknownFields = unknownFields.build();
-          makeExtensionsImmutable();
-        }
-      }
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_request_block_headers_request_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_request_block_headers_request_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                libbitcoin.protocol.Interface.request.block_headers_request.class, libbitcoin.protocol.Interface.request.block_headers_request.Builder.class);
-      }
-
-      public static com.google.protobuf.Parser<block_headers_request> PARSER =
-          new com.google.protobuf.AbstractParser<block_headers_request>() {
-        public block_headers_request parsePartialFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          return new block_headers_request(input, extensionRegistry);
-        }
-      };
-
-      @java.lang.Override
-      public com.google.protobuf.Parser<block_headers_request> getParserForType() {
-        return PARSER;
-      }
-
-      private int bitField0_;
-      public static final int START_FIELD_NUMBER = 1;
-      private libbitcoin.protocol.Interface.block_id start_;
-      /**
-       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-       */
-      public boolean hasStart() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-       */
-      public libbitcoin.protocol.Interface.block_id getStart() {
-        return start_;
-      }
-      /**
-       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-       */
-      public libbitcoin.protocol.Interface.block_idOrBuilder getStartOrBuilder() {
-        return start_;
-      }
-
-      public static final int RESULTS_PER_PAGE_FIELD_NUMBER = 2;
-      private int resultsPerPage_;
-      /**
-       * <code>optional uint32 results_per_page = 2;</code>
-       */
-      public boolean hasResultsPerPage() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional uint32 results_per_page = 2;</code>
-       */
-      public int getResultsPerPage() {
-        return resultsPerPage_;
-      }
-
-      private void initFields() {
-        start_ = libbitcoin.protocol.Interface.block_id.getDefaultInstance();
-        resultsPerPage_ = 0;
-      }
-      private byte memoizedIsInitialized = -1;
-      public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-      }
-
-      public void writeTo(com.google.protobuf.CodedOutputStream output)
-                          throws java.io.IOException {
-        getSerializedSize();
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          output.writeMessage(1, start_);
-        }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          output.writeUInt32(2, resultsPerPage_);
-        }
-        getUnknownFields().writeTo(output);
-      }
-
-      private int memoizedSerializedSize = -1;
-      public int getSerializedSize() {
-        int size = memoizedSerializedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(1, start_);
-        }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeUInt32Size(2, resultsPerPage_);
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSerializedSize = size;
-        return size;
-      }
-
-      private static final long serialVersionUID = 0L;
-      @java.lang.Override
-      protected java.lang.Object writeReplace()
-          throws java.io.ObjectStreamException {
-        return super.writeReplace();
-      }
-
-      public static libbitcoin.protocol.Interface.request.block_headers_request parseFrom(
-          com.google.protobuf.ByteString data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static libbitcoin.protocol.Interface.request.block_headers_request parseFrom(
-          com.google.protobuf.ByteString data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static libbitcoin.protocol.Interface.request.block_headers_request parseFrom(byte[] data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static libbitcoin.protocol.Interface.request.block_headers_request parseFrom(
-          byte[] data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static libbitcoin.protocol.Interface.request.block_headers_request parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input);
-      }
-      public static libbitcoin.protocol.Interface.request.block_headers_request parseFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
-      }
-      public static libbitcoin.protocol.Interface.request.block_headers_request parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input);
-      }
-      public static libbitcoin.protocol.Interface.request.block_headers_request parseDelimitedFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input, extensionRegistry);
-      }
-      public static libbitcoin.protocol.Interface.request.block_headers_request parseFrom(
-          com.google.protobuf.CodedInputStream input)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input);
-      }
-      public static libbitcoin.protocol.Interface.request.block_headers_request parseFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
-      }
-
-      public static Builder newBuilder() { return Builder.create(); }
-      public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(libbitcoin.protocol.Interface.request.block_headers_request prototype) {
-        return newBuilder().mergeFrom(prototype);
-      }
-      public Builder toBuilder() { return newBuilder(this); }
-
-      @java.lang.Override
-      protected Builder newBuilderForType(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        Builder builder = new Builder(parent);
-        return builder;
-      }
-      /**
-       * Protobuf type {@code libbitcoin.protocol.request.block_headers_request}
-       */
-      public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:libbitcoin.protocol.request.block_headers_request)
-          libbitcoin.protocol.Interface.request.block_headers_requestOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-          return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_request_block_headers_request_descriptor;
-        }
-
-        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-          return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_request_block_headers_request_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                  libbitcoin.protocol.Interface.request.block_headers_request.class, libbitcoin.protocol.Interface.request.block_headers_request.Builder.class);
-        }
-
-        // Construct using libbitcoin.protocol.Interface.request.block_headers_request.newBuilder()
-        private Builder() {
-          maybeForceBuilderInitialization();
-        }
-
-        private Builder(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-          super(parent);
-          maybeForceBuilderInitialization();
-        }
-        private void maybeForceBuilderInitialization() {
-          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-            getStartFieldBuilder();
-          }
-        }
-        private static Builder create() {
-          return new Builder();
-        }
-
-        public Builder clear() {
-          super.clear();
-          if (startBuilder_ == null) {
-            start_ = libbitcoin.protocol.Interface.block_id.getDefaultInstance();
-          } else {
-            startBuilder_.clear();
-          }
-          bitField0_ = (bitField0_ & ~0x00000001);
-          resultsPerPage_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000002);
-          return this;
-        }
-
-        public Builder clone() {
-          return create().mergeFrom(buildPartial());
-        }
-
-        public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-          return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_request_block_headers_request_descriptor;
-        }
-
-        public libbitcoin.protocol.Interface.request.block_headers_request getDefaultInstanceForType() {
-          return libbitcoin.protocol.Interface.request.block_headers_request.getDefaultInstance();
-        }
-
-        public libbitcoin.protocol.Interface.request.block_headers_request build() {
-          libbitcoin.protocol.Interface.request.block_headers_request result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(result);
-          }
-          return result;
-        }
-
-        public libbitcoin.protocol.Interface.request.block_headers_request buildPartial() {
-          libbitcoin.protocol.Interface.request.block_headers_request result = new libbitcoin.protocol.Interface.request.block_headers_request(this);
-          int from_bitField0_ = bitField0_;
-          int to_bitField0_ = 0;
-          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-            to_bitField0_ |= 0x00000001;
-          }
-          if (startBuilder_ == null) {
-            result.start_ = start_;
-          } else {
-            result.start_ = startBuilder_.build();
-          }
-          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-            to_bitField0_ |= 0x00000002;
-          }
-          result.resultsPerPage_ = resultsPerPage_;
-          result.bitField0_ = to_bitField0_;
-          onBuilt();
-          return result;
-        }
-
-        public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof libbitcoin.protocol.Interface.request.block_headers_request) {
-            return mergeFrom((libbitcoin.protocol.Interface.request.block_headers_request)other);
-          } else {
-            super.mergeFrom(other);
-            return this;
-          }
-        }
-
-        public Builder mergeFrom(libbitcoin.protocol.Interface.request.block_headers_request other) {
-          if (other == libbitcoin.protocol.Interface.request.block_headers_request.getDefaultInstance()) return this;
-          if (other.hasStart()) {
-            mergeStart(other.getStart());
-          }
-          if (other.hasResultsPerPage()) {
-            setResultsPerPage(other.getResultsPerPage());
-          }
-          this.mergeUnknownFields(other.getUnknownFields());
-          return this;
-        }
-
-        public final boolean isInitialized() {
-          return true;
-        }
-
-        public Builder mergeFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          libbitcoin.protocol.Interface.request.block_headers_request parsedMessage = null;
-          try {
-            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            parsedMessage = (libbitcoin.protocol.Interface.request.block_headers_request) e.getUnfinishedMessage();
-            throw e;
-          } finally {
-            if (parsedMessage != null) {
-              mergeFrom(parsedMessage);
-            }
-          }
-          return this;
-        }
-        private int bitField0_;
-
-        private libbitcoin.protocol.Interface.block_id start_ = libbitcoin.protocol.Interface.block_id.getDefaultInstance();
-        private com.google.protobuf.SingleFieldBuilder<
-            libbitcoin.protocol.Interface.block_id, libbitcoin.protocol.Interface.block_id.Builder, libbitcoin.protocol.Interface.block_idOrBuilder> startBuilder_;
-        /**
-         * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-         */
-        public boolean hasStart() {
-          return ((bitField0_ & 0x00000001) == 0x00000001);
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-         */
-        public libbitcoin.protocol.Interface.block_id getStart() {
-          if (startBuilder_ == null) {
-            return start_;
-          } else {
-            return startBuilder_.getMessage();
-          }
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-         */
-        public Builder setStart(libbitcoin.protocol.Interface.block_id value) {
-          if (startBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            start_ = value;
-            onChanged();
-          } else {
-            startBuilder_.setMessage(value);
-          }
-          bitField0_ |= 0x00000001;
-          return this;
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-         */
-        public Builder setStart(
-            libbitcoin.protocol.Interface.block_id.Builder builderForValue) {
-          if (startBuilder_ == null) {
-            start_ = builderForValue.build();
-            onChanged();
-          } else {
-            startBuilder_.setMessage(builderForValue.build());
-          }
-          bitField0_ |= 0x00000001;
-          return this;
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-         */
-        public Builder mergeStart(libbitcoin.protocol.Interface.block_id value) {
-          if (startBuilder_ == null) {
-            if (((bitField0_ & 0x00000001) == 0x00000001) &&
-                start_ != libbitcoin.protocol.Interface.block_id.getDefaultInstance()) {
-              start_ =
-                libbitcoin.protocol.Interface.block_id.newBuilder(start_).mergeFrom(value).buildPartial();
-            } else {
-              start_ = value;
-            }
-            onChanged();
-          } else {
-            startBuilder_.mergeFrom(value);
-          }
-          bitField0_ |= 0x00000001;
-          return this;
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-         */
-        public Builder clearStart() {
-          if (startBuilder_ == null) {
-            start_ = libbitcoin.protocol.Interface.block_id.getDefaultInstance();
-            onChanged();
-          } else {
-            startBuilder_.clear();
-          }
-          bitField0_ = (bitField0_ & ~0x00000001);
-          return this;
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-         */
-        public libbitcoin.protocol.Interface.block_id.Builder getStartBuilder() {
-          bitField0_ |= 0x00000001;
-          onChanged();
-          return getStartFieldBuilder().getBuilder();
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-         */
-        public libbitcoin.protocol.Interface.block_idOrBuilder getStartOrBuilder() {
-          if (startBuilder_ != null) {
-            return startBuilder_.getMessageOrBuilder();
-          } else {
-            return start_;
-          }
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-         */
-        private com.google.protobuf.SingleFieldBuilder<
-            libbitcoin.protocol.Interface.block_id, libbitcoin.protocol.Interface.block_id.Builder, libbitcoin.protocol.Interface.block_idOrBuilder> 
-            getStartFieldBuilder() {
-          if (startBuilder_ == null) {
-            startBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-                libbitcoin.protocol.Interface.block_id, libbitcoin.protocol.Interface.block_id.Builder, libbitcoin.protocol.Interface.block_idOrBuilder>(
-                    getStart(),
-                    getParentForChildren(),
-                    isClean());
-            start_ = null;
-          }
-          return startBuilder_;
-        }
-
-        private int resultsPerPage_ ;
-        /**
-         * <code>optional uint32 results_per_page = 2;</code>
-         */
-        public boolean hasResultsPerPage() {
-          return ((bitField0_ & 0x00000002) == 0x00000002);
-        }
-        /**
-         * <code>optional uint32 results_per_page = 2;</code>
-         */
-        public int getResultsPerPage() {
-          return resultsPerPage_;
-        }
-        /**
-         * <code>optional uint32 results_per_page = 2;</code>
-         */
-        public Builder setResultsPerPage(int value) {
-          bitField0_ |= 0x00000002;
-          resultsPerPage_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>optional uint32 results_per_page = 2;</code>
-         */
-        public Builder clearResultsPerPage() {
-          bitField0_ = (bitField0_ & ~0x00000002);
-          resultsPerPage_ = 0;
-          onChanged();
-          return this;
-        }
-
-        // @@protoc_insertion_point(builder_scope:libbitcoin.protocol.request.block_headers_request)
-      }
-
-      static {
-        defaultInstance = new block_headers_request(true);
-        defaultInstance.initFields();
-      }
-
-      // @@protoc_insertion_point(class_scope:libbitcoin.protocol.request.block_headers_request)
-    }
-
-    public interface transactions_requestOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:libbitcoin.protocol.request.transactions_request)
-        com.google.protobuf.MessageOrBuilder {
-
-      /**
-       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-       */
-      boolean hasStart();
-      /**
-       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-       */
-      libbitcoin.protocol.Interface.block_id getStart();
-      /**
-       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-       */
-      libbitcoin.protocol.Interface.block_idOrBuilder getStartOrBuilder();
-
-      /**
-       * <code>optional uint32 results_per_page = 2;</code>
-       */
-      boolean hasResultsPerPage();
-      /**
-       * <code>optional uint32 results_per_page = 2;</code>
-       */
-      int getResultsPerPage();
-
-      /**
-       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-       */
-      java.util.List<libbitcoin.protocol.Interface.filter> 
-          getQueryList();
-      /**
-       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-       */
-      libbitcoin.protocol.Interface.filter getQuery(int index);
-      /**
-       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-       */
-      int getQueryCount();
-      /**
-       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-       */
-      java.util.List<? extends libbitcoin.protocol.Interface.filterOrBuilder> 
-          getQueryOrBuilderList();
-      /**
-       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-       */
-      libbitcoin.protocol.Interface.filterOrBuilder getQueryOrBuilder(
-          int index);
-
-      /**
-       * <code>optional .libbitcoin.protocol.request.transactions_request.results result_type = 4 [default = TX_HASH];</code>
-       */
-      boolean hasResultType();
-      /**
-       * <code>optional .libbitcoin.protocol.request.transactions_request.results result_type = 4 [default = TX_HASH];</code>
-       */
-      libbitcoin.protocol.Interface.request.transactions_request.results getResultType();
-
-      /**
-       * <code>optional .libbitcoin.protocol.request.transactions_request.locations location_type = 5 [default = NONE];</code>
-       */
-      boolean hasLocationType();
-      /**
-       * <code>optional .libbitcoin.protocol.request.transactions_request.locations location_type = 5 [default = NONE];</code>
-       */
-      libbitcoin.protocol.Interface.request.transactions_request.locations getLocationType();
-    }
-    /**
-     * Protobuf type {@code libbitcoin.protocol.request.transactions_request}
-     */
-    public static final class transactions_request extends
-        com.google.protobuf.GeneratedMessage implements
-        // @@protoc_insertion_point(message_implements:libbitcoin.protocol.request.transactions_request)
-        transactions_requestOrBuilder {
-      // Use transactions_request.newBuilder() to construct.
-      private transactions_request(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-        super(builder);
-        this.unknownFields = builder.getUnknownFields();
-      }
-      private transactions_request(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-      private static final transactions_request defaultInstance;
-      public static transactions_request getDefaultInstance() {
-        return defaultInstance;
-      }
-
-      public transactions_request getDefaultInstanceForType() {
-        return defaultInstance;
-      }
-
-      private final com.google.protobuf.UnknownFieldSet unknownFields;
-      @java.lang.Override
-      public final com.google.protobuf.UnknownFieldSet
-          getUnknownFields() {
-        return this.unknownFields;
-      }
-      private transactions_request(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        initFields();
-        int mutable_bitField0_ = 0;
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-            com.google.protobuf.UnknownFieldSet.newBuilder();
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              default: {
-                if (!parseUnknownField(input, unknownFields,
-                                       extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
-              case 10: {
-                libbitcoin.protocol.Interface.block_id.Builder subBuilder = null;
-                if (((bitField0_ & 0x00000001) == 0x00000001)) {
-                  subBuilder = start_.toBuilder();
-                }
-                start_ = input.readMessage(libbitcoin.protocol.Interface.block_id.PARSER, extensionRegistry);
-                if (subBuilder != null) {
-                  subBuilder.mergeFrom(start_);
-                  start_ = subBuilder.buildPartial();
-                }
-                bitField0_ |= 0x00000001;
-                break;
-              }
-              case 16: {
-                bitField0_ |= 0x00000002;
-                resultsPerPage_ = input.readUInt32();
-                break;
-              }
-              case 26: {
-                if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-                  query_ = new java.util.ArrayList<libbitcoin.protocol.Interface.filter>();
-                  mutable_bitField0_ |= 0x00000004;
-                }
-                query_.add(input.readMessage(libbitcoin.protocol.Interface.filter.PARSER, extensionRegistry));
-                break;
-              }
-              case 32: {
-                int rawValue = input.readEnum();
-                libbitcoin.protocol.Interface.request.transactions_request.results value = libbitcoin.protocol.Interface.request.transactions_request.results.valueOf(rawValue);
-                if (value == null) {
-                  unknownFields.mergeVarintField(4, rawValue);
-                } else {
-                  bitField0_ |= 0x00000004;
-                  resultType_ = value;
-                }
-                break;
-              }
-              case 40: {
-                int rawValue = input.readEnum();
-                libbitcoin.protocol.Interface.request.transactions_request.locations value = libbitcoin.protocol.Interface.request.transactions_request.locations.valueOf(rawValue);
-                if (value == null) {
-                  unknownFields.mergeVarintField(5, rawValue);
-                } else {
-                  bitField0_ |= 0x00000008;
-                  locationType_ = value;
-                }
-                break;
-              }
-            }
-          }
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(this);
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(
-              e.getMessage()).setUnfinishedMessage(this);
-        } finally {
-          if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-            query_ = java.util.Collections.unmodifiableList(query_);
-          }
-          this.unknownFields = unknownFields.build();
-          makeExtensionsImmutable();
-        }
-      }
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_request_transactions_request_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_request_transactions_request_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                libbitcoin.protocol.Interface.request.transactions_request.class, libbitcoin.protocol.Interface.request.transactions_request.Builder.class);
-      }
-
-      public static com.google.protobuf.Parser<transactions_request> PARSER =
-          new com.google.protobuf.AbstractParser<transactions_request>() {
-        public transactions_request parsePartialFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          return new transactions_request(input, extensionRegistry);
-        }
-      };
-
-      @java.lang.Override
-      public com.google.protobuf.Parser<transactions_request> getParserForType() {
-        return PARSER;
-      }
-
-      /**
-       * Protobuf enum {@code libbitcoin.protocol.request.transactions_request.results}
-       */
-      public enum results
-          implements com.google.protobuf.ProtocolMessageEnum {
-        /**
-         * <code>TX_HASH = 1;</code>
-         */
-        TX_HASH(0, 1),
-        /**
-         * <code>TX_RESULT = 2;</code>
-         */
-        TX_RESULT(1, 2),
-        /**
-         * <code>UTXO_RESULT = 3;</code>
-         */
-        UTXO_RESULT(2, 3),
-        ;
-
-        /**
-         * <code>TX_HASH = 1;</code>
-         */
-        public static final int TX_HASH_VALUE = 1;
-        /**
-         * <code>TX_RESULT = 2;</code>
-         */
-        public static final int TX_RESULT_VALUE = 2;
-        /**
-         * <code>UTXO_RESULT = 3;</code>
-         */
-        public static final int UTXO_RESULT_VALUE = 3;
-
-
-        public final int getNumber() { return value; }
-
-        public static results valueOf(int value) {
-          switch (value) {
-            case 1: return TX_HASH;
-            case 2: return TX_RESULT;
-            case 3: return UTXO_RESULT;
-            default: return null;
-          }
-        }
-
-        public static com.google.protobuf.Internal.EnumLiteMap<results>
-            internalGetValueMap() {
-          return internalValueMap;
-        }
-        private static com.google.protobuf.Internal.EnumLiteMap<results>
-            internalValueMap =
-              new com.google.protobuf.Internal.EnumLiteMap<results>() {
-                public results findValueByNumber(int number) {
-                  return results.valueOf(number);
-                }
-              };
-
-        public final com.google.protobuf.Descriptors.EnumValueDescriptor
-            getValueDescriptor() {
-          return getDescriptor().getValues().get(index);
-        }
-        public final com.google.protobuf.Descriptors.EnumDescriptor
-            getDescriptorForType() {
-          return getDescriptor();
-        }
-        public static final com.google.protobuf.Descriptors.EnumDescriptor
-            getDescriptor() {
-          return libbitcoin.protocol.Interface.request.transactions_request.getDescriptor().getEnumTypes().get(0);
-        }
-
-        private static final results[] VALUES = values();
-
-        public static results valueOf(
-            com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-          if (desc.getType() != getDescriptor()) {
-            throw new java.lang.IllegalArgumentException(
-              "EnumValueDescriptor is not for this type.");
-          }
-          return VALUES[desc.getIndex()];
-        }
-
-        private final int index;
-        private final int value;
-
-        private results(int index, int value) {
-          this.index = index;
-          this.value = value;
-        }
-
-        // @@protoc_insertion_point(enum_scope:libbitcoin.protocol.request.transactions_request.results)
-      }
-
-      /**
-       * Protobuf enum {@code libbitcoin.protocol.request.transactions_request.locations}
-       */
-      public enum locations
-          implements com.google.protobuf.ProtocolMessageEnum {
-        /**
-         * <code>NONE = 0;</code>
-         */
-        NONE(0, 0),
-        /**
-         * <code>BLOCK = 1;</code>
-         */
-        BLOCK(1, 1),
-        /**
-         * <code>MERKLE = 2;</code>
-         */
-        MERKLE(2, 2),
-        ;
-
-        /**
-         * <code>NONE = 0;</code>
-         */
-        public static final int NONE_VALUE = 0;
-        /**
-         * <code>BLOCK = 1;</code>
-         */
-        public static final int BLOCK_VALUE = 1;
-        /**
-         * <code>MERKLE = 2;</code>
-         */
-        public static final int MERKLE_VALUE = 2;
-
-
-        public final int getNumber() { return value; }
-
-        public static locations valueOf(int value) {
-          switch (value) {
-            case 0: return NONE;
-            case 1: return BLOCK;
-            case 2: return MERKLE;
-            default: return null;
-          }
-        }
-
-        public static com.google.protobuf.Internal.EnumLiteMap<locations>
-            internalGetValueMap() {
-          return internalValueMap;
-        }
-        private static com.google.protobuf.Internal.EnumLiteMap<locations>
-            internalValueMap =
-              new com.google.protobuf.Internal.EnumLiteMap<locations>() {
-                public locations findValueByNumber(int number) {
-                  return locations.valueOf(number);
-                }
-              };
-
-        public final com.google.protobuf.Descriptors.EnumValueDescriptor
-            getValueDescriptor() {
-          return getDescriptor().getValues().get(index);
-        }
-        public final com.google.protobuf.Descriptors.EnumDescriptor
-            getDescriptorForType() {
-          return getDescriptor();
-        }
-        public static final com.google.protobuf.Descriptors.EnumDescriptor
-            getDescriptor() {
-          return libbitcoin.protocol.Interface.request.transactions_request.getDescriptor().getEnumTypes().get(1);
-        }
-
-        private static final locations[] VALUES = values();
-
-        public static locations valueOf(
-            com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-          if (desc.getType() != getDescriptor()) {
-            throw new java.lang.IllegalArgumentException(
-              "EnumValueDescriptor is not for this type.");
-          }
-          return VALUES[desc.getIndex()];
-        }
-
-        private final int index;
-        private final int value;
-
-        private locations(int index, int value) {
-          this.index = index;
-          this.value = value;
-        }
-
-        // @@protoc_insertion_point(enum_scope:libbitcoin.protocol.request.transactions_request.locations)
-      }
-
-      private int bitField0_;
-      public static final int START_FIELD_NUMBER = 1;
-      private libbitcoin.protocol.Interface.block_id start_;
-      /**
-       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-       */
-      public boolean hasStart() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-       */
-      public libbitcoin.protocol.Interface.block_id getStart() {
-        return start_;
-      }
-      /**
-       * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-       */
-      public libbitcoin.protocol.Interface.block_idOrBuilder getStartOrBuilder() {
-        return start_;
-      }
-
-      public static final int RESULTS_PER_PAGE_FIELD_NUMBER = 2;
-      private int resultsPerPage_;
-      /**
-       * <code>optional uint32 results_per_page = 2;</code>
-       */
-      public boolean hasResultsPerPage() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional uint32 results_per_page = 2;</code>
-       */
-      public int getResultsPerPage() {
-        return resultsPerPage_;
-      }
-
-      public static final int QUERY_FIELD_NUMBER = 3;
-      private java.util.List<libbitcoin.protocol.Interface.filter> query_;
-      /**
-       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-       */
-      public java.util.List<libbitcoin.protocol.Interface.filter> getQueryList() {
-        return query_;
-      }
-      /**
-       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-       */
-      public java.util.List<? extends libbitcoin.protocol.Interface.filterOrBuilder> 
-          getQueryOrBuilderList() {
-        return query_;
-      }
-      /**
-       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-       */
-      public int getQueryCount() {
-        return query_.size();
-      }
-      /**
-       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-       */
-      public libbitcoin.protocol.Interface.filter getQuery(int index) {
-        return query_.get(index);
-      }
-      /**
-       * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-       */
-      public libbitcoin.protocol.Interface.filterOrBuilder getQueryOrBuilder(
-          int index) {
-        return query_.get(index);
-      }
-
-      public static final int RESULT_TYPE_FIELD_NUMBER = 4;
-      private libbitcoin.protocol.Interface.request.transactions_request.results resultType_;
-      /**
-       * <code>optional .libbitcoin.protocol.request.transactions_request.results result_type = 4 [default = TX_HASH];</code>
-       */
-      public boolean hasResultType() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional .libbitcoin.protocol.request.transactions_request.results result_type = 4 [default = TX_HASH];</code>
-       */
-      public libbitcoin.protocol.Interface.request.transactions_request.results getResultType() {
-        return resultType_;
-      }
-
-      public static final int LOCATION_TYPE_FIELD_NUMBER = 5;
-      private libbitcoin.protocol.Interface.request.transactions_request.locations locationType_;
-      /**
-       * <code>optional .libbitcoin.protocol.request.transactions_request.locations location_type = 5 [default = NONE];</code>
-       */
-      public boolean hasLocationType() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional .libbitcoin.protocol.request.transactions_request.locations location_type = 5 [default = NONE];</code>
-       */
-      public libbitcoin.protocol.Interface.request.transactions_request.locations getLocationType() {
-        return locationType_;
-      }
-
-      private void initFields() {
-        start_ = libbitcoin.protocol.Interface.block_id.getDefaultInstance();
-        resultsPerPage_ = 0;
-        query_ = java.util.Collections.emptyList();
-        resultType_ = libbitcoin.protocol.Interface.request.transactions_request.results.TX_HASH;
-        locationType_ = libbitcoin.protocol.Interface.request.transactions_request.locations.NONE;
-      }
-      private byte memoizedIsInitialized = -1;
-      public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        for (int i = 0; i < getQueryCount(); i++) {
-          if (!getQuery(i).isInitialized()) {
-            memoizedIsInitialized = 0;
-            return false;
-          }
-        }
-        memoizedIsInitialized = 1;
-        return true;
-      }
-
-      public void writeTo(com.google.protobuf.CodedOutputStream output)
-                          throws java.io.IOException {
-        getSerializedSize();
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          output.writeMessage(1, start_);
-        }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          output.writeUInt32(2, resultsPerPage_);
-        }
-        for (int i = 0; i < query_.size(); i++) {
-          output.writeMessage(3, query_.get(i));
-        }
-        if (((bitField0_ & 0x00000004) == 0x00000004)) {
-          output.writeEnum(4, resultType_.getNumber());
-        }
-        if (((bitField0_ & 0x00000008) == 0x00000008)) {
-          output.writeEnum(5, locationType_.getNumber());
-        }
-        getUnknownFields().writeTo(output);
-      }
-
-      private int memoizedSerializedSize = -1;
-      public int getSerializedSize() {
-        int size = memoizedSerializedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(1, start_);
-        }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeUInt32Size(2, resultsPerPage_);
-        }
-        for (int i = 0; i < query_.size(); i++) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(3, query_.get(i));
-        }
-        if (((bitField0_ & 0x00000004) == 0x00000004)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeEnumSize(4, resultType_.getNumber());
-        }
-        if (((bitField0_ & 0x00000008) == 0x00000008)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeEnumSize(5, locationType_.getNumber());
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSerializedSize = size;
-        return size;
-      }
-
-      private static final long serialVersionUID = 0L;
-      @java.lang.Override
-      protected java.lang.Object writeReplace()
-          throws java.io.ObjectStreamException {
-        return super.writeReplace();
-      }
-
-      public static libbitcoin.protocol.Interface.request.transactions_request parseFrom(
-          com.google.protobuf.ByteString data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static libbitcoin.protocol.Interface.request.transactions_request parseFrom(
-          com.google.protobuf.ByteString data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static libbitcoin.protocol.Interface.request.transactions_request parseFrom(byte[] data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static libbitcoin.protocol.Interface.request.transactions_request parseFrom(
-          byte[] data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static libbitcoin.protocol.Interface.request.transactions_request parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input);
-      }
-      public static libbitcoin.protocol.Interface.request.transactions_request parseFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
-      }
-      public static libbitcoin.protocol.Interface.request.transactions_request parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input);
-      }
-      public static libbitcoin.protocol.Interface.request.transactions_request parseDelimitedFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input, extensionRegistry);
-      }
-      public static libbitcoin.protocol.Interface.request.transactions_request parseFrom(
-          com.google.protobuf.CodedInputStream input)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input);
-      }
-      public static libbitcoin.protocol.Interface.request.transactions_request parseFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
-      }
-
-      public static Builder newBuilder() { return Builder.create(); }
-      public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(libbitcoin.protocol.Interface.request.transactions_request prototype) {
-        return newBuilder().mergeFrom(prototype);
-      }
-      public Builder toBuilder() { return newBuilder(this); }
-
-      @java.lang.Override
-      protected Builder newBuilderForType(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        Builder builder = new Builder(parent);
-        return builder;
-      }
-      /**
-       * Protobuf type {@code libbitcoin.protocol.request.transactions_request}
-       */
-      public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:libbitcoin.protocol.request.transactions_request)
-          libbitcoin.protocol.Interface.request.transactions_requestOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-          return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_request_transactions_request_descriptor;
-        }
-
-        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-          return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_request_transactions_request_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                  libbitcoin.protocol.Interface.request.transactions_request.class, libbitcoin.protocol.Interface.request.transactions_request.Builder.class);
-        }
-
-        // Construct using libbitcoin.protocol.Interface.request.transactions_request.newBuilder()
-        private Builder() {
-          maybeForceBuilderInitialization();
-        }
-
-        private Builder(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-          super(parent);
-          maybeForceBuilderInitialization();
-        }
-        private void maybeForceBuilderInitialization() {
-          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-            getStartFieldBuilder();
-            getQueryFieldBuilder();
-          }
-        }
-        private static Builder create() {
-          return new Builder();
-        }
-
-        public Builder clear() {
-          super.clear();
-          if (startBuilder_ == null) {
-            start_ = libbitcoin.protocol.Interface.block_id.getDefaultInstance();
-          } else {
-            startBuilder_.clear();
-          }
-          bitField0_ = (bitField0_ & ~0x00000001);
-          resultsPerPage_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000002);
-          if (queryBuilder_ == null) {
-            query_ = java.util.Collections.emptyList();
-            bitField0_ = (bitField0_ & ~0x00000004);
-          } else {
-            queryBuilder_.clear();
-          }
-          resultType_ = libbitcoin.protocol.Interface.request.transactions_request.results.TX_HASH;
-          bitField0_ = (bitField0_ & ~0x00000008);
-          locationType_ = libbitcoin.protocol.Interface.request.transactions_request.locations.NONE;
-          bitField0_ = (bitField0_ & ~0x00000010);
-          return this;
-        }
-
-        public Builder clone() {
-          return create().mergeFrom(buildPartial());
-        }
-
-        public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-          return libbitcoin.protocol.Interface.internal_static_libbitcoin_protocol_request_transactions_request_descriptor;
-        }
-
-        public libbitcoin.protocol.Interface.request.transactions_request getDefaultInstanceForType() {
-          return libbitcoin.protocol.Interface.request.transactions_request.getDefaultInstance();
-        }
-
-        public libbitcoin.protocol.Interface.request.transactions_request build() {
-          libbitcoin.protocol.Interface.request.transactions_request result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(result);
-          }
-          return result;
-        }
-
-        public libbitcoin.protocol.Interface.request.transactions_request buildPartial() {
-          libbitcoin.protocol.Interface.request.transactions_request result = new libbitcoin.protocol.Interface.request.transactions_request(this);
-          int from_bitField0_ = bitField0_;
-          int to_bitField0_ = 0;
-          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-            to_bitField0_ |= 0x00000001;
-          }
-          if (startBuilder_ == null) {
-            result.start_ = start_;
-          } else {
-            result.start_ = startBuilder_.build();
-          }
-          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-            to_bitField0_ |= 0x00000002;
-          }
-          result.resultsPerPage_ = resultsPerPage_;
-          if (queryBuilder_ == null) {
-            if (((bitField0_ & 0x00000004) == 0x00000004)) {
-              query_ = java.util.Collections.unmodifiableList(query_);
-              bitField0_ = (bitField0_ & ~0x00000004);
-            }
-            result.query_ = query_;
-          } else {
-            result.query_ = queryBuilder_.build();
-          }
-          if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-            to_bitField0_ |= 0x00000004;
-          }
-          result.resultType_ = resultType_;
-          if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-            to_bitField0_ |= 0x00000008;
-          }
-          result.locationType_ = locationType_;
-          result.bitField0_ = to_bitField0_;
-          onBuilt();
-          return result;
-        }
-
-        public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof libbitcoin.protocol.Interface.request.transactions_request) {
-            return mergeFrom((libbitcoin.protocol.Interface.request.transactions_request)other);
-          } else {
-            super.mergeFrom(other);
-            return this;
-          }
-        }
-
-        public Builder mergeFrom(libbitcoin.protocol.Interface.request.transactions_request other) {
-          if (other == libbitcoin.protocol.Interface.request.transactions_request.getDefaultInstance()) return this;
-          if (other.hasStart()) {
-            mergeStart(other.getStart());
-          }
-          if (other.hasResultsPerPage()) {
-            setResultsPerPage(other.getResultsPerPage());
-          }
-          if (queryBuilder_ == null) {
-            if (!other.query_.isEmpty()) {
-              if (query_.isEmpty()) {
-                query_ = other.query_;
-                bitField0_ = (bitField0_ & ~0x00000004);
-              } else {
-                ensureQueryIsMutable();
-                query_.addAll(other.query_);
-              }
-              onChanged();
-            }
-          } else {
-            if (!other.query_.isEmpty()) {
-              if (queryBuilder_.isEmpty()) {
-                queryBuilder_.dispose();
-                queryBuilder_ = null;
-                query_ = other.query_;
-                bitField0_ = (bitField0_ & ~0x00000004);
-                queryBuilder_ = 
-                  com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
-                     getQueryFieldBuilder() : null;
-              } else {
-                queryBuilder_.addAllMessages(other.query_);
-              }
-            }
-          }
-          if (other.hasResultType()) {
-            setResultType(other.getResultType());
-          }
-          if (other.hasLocationType()) {
-            setLocationType(other.getLocationType());
-          }
-          this.mergeUnknownFields(other.getUnknownFields());
-          return this;
-        }
-
-        public final boolean isInitialized() {
-          for (int i = 0; i < getQueryCount(); i++) {
-            if (!getQuery(i).isInitialized()) {
-              
-              return false;
-            }
-          }
-          return true;
-        }
-
-        public Builder mergeFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          libbitcoin.protocol.Interface.request.transactions_request parsedMessage = null;
-          try {
-            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            parsedMessage = (libbitcoin.protocol.Interface.request.transactions_request) e.getUnfinishedMessage();
-            throw e;
-          } finally {
-            if (parsedMessage != null) {
-              mergeFrom(parsedMessage);
-            }
-          }
-          return this;
-        }
-        private int bitField0_;
-
-        private libbitcoin.protocol.Interface.block_id start_ = libbitcoin.protocol.Interface.block_id.getDefaultInstance();
-        private com.google.protobuf.SingleFieldBuilder<
-            libbitcoin.protocol.Interface.block_id, libbitcoin.protocol.Interface.block_id.Builder, libbitcoin.protocol.Interface.block_idOrBuilder> startBuilder_;
-        /**
-         * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-         */
-        public boolean hasStart() {
-          return ((bitField0_ & 0x00000001) == 0x00000001);
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-         */
-        public libbitcoin.protocol.Interface.block_id getStart() {
-          if (startBuilder_ == null) {
-            return start_;
-          } else {
-            return startBuilder_.getMessage();
-          }
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-         */
-        public Builder setStart(libbitcoin.protocol.Interface.block_id value) {
-          if (startBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            start_ = value;
-            onChanged();
-          } else {
-            startBuilder_.setMessage(value);
-          }
-          bitField0_ |= 0x00000001;
-          return this;
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-         */
-        public Builder setStart(
-            libbitcoin.protocol.Interface.block_id.Builder builderForValue) {
-          if (startBuilder_ == null) {
-            start_ = builderForValue.build();
-            onChanged();
-          } else {
-            startBuilder_.setMessage(builderForValue.build());
-          }
-          bitField0_ |= 0x00000001;
-          return this;
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-         */
-        public Builder mergeStart(libbitcoin.protocol.Interface.block_id value) {
-          if (startBuilder_ == null) {
-            if (((bitField0_ & 0x00000001) == 0x00000001) &&
-                start_ != libbitcoin.protocol.Interface.block_id.getDefaultInstance()) {
-              start_ =
-                libbitcoin.protocol.Interface.block_id.newBuilder(start_).mergeFrom(value).buildPartial();
-            } else {
-              start_ = value;
-            }
-            onChanged();
-          } else {
-            startBuilder_.mergeFrom(value);
-          }
-          bitField0_ |= 0x00000001;
-          return this;
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-         */
-        public Builder clearStart() {
-          if (startBuilder_ == null) {
-            start_ = libbitcoin.protocol.Interface.block_id.getDefaultInstance();
-            onChanged();
-          } else {
-            startBuilder_.clear();
-          }
-          bitField0_ = (bitField0_ & ~0x00000001);
-          return this;
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-         */
-        public libbitcoin.protocol.Interface.block_id.Builder getStartBuilder() {
-          bitField0_ |= 0x00000001;
-          onChanged();
-          return getStartFieldBuilder().getBuilder();
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-         */
-        public libbitcoin.protocol.Interface.block_idOrBuilder getStartOrBuilder() {
-          if (startBuilder_ != null) {
-            return startBuilder_.getMessageOrBuilder();
-          } else {
-            return start_;
-          }
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.block_id start = 1;</code>
-         */
-        private com.google.protobuf.SingleFieldBuilder<
-            libbitcoin.protocol.Interface.block_id, libbitcoin.protocol.Interface.block_id.Builder, libbitcoin.protocol.Interface.block_idOrBuilder> 
-            getStartFieldBuilder() {
-          if (startBuilder_ == null) {
-            startBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-                libbitcoin.protocol.Interface.block_id, libbitcoin.protocol.Interface.block_id.Builder, libbitcoin.protocol.Interface.block_idOrBuilder>(
-                    getStart(),
-                    getParentForChildren(),
-                    isClean());
-            start_ = null;
-          }
-          return startBuilder_;
-        }
-
-        private int resultsPerPage_ ;
-        /**
-         * <code>optional uint32 results_per_page = 2;</code>
-         */
-        public boolean hasResultsPerPage() {
-          return ((bitField0_ & 0x00000002) == 0x00000002);
-        }
-        /**
-         * <code>optional uint32 results_per_page = 2;</code>
-         */
-        public int getResultsPerPage() {
-          return resultsPerPage_;
-        }
-        /**
-         * <code>optional uint32 results_per_page = 2;</code>
-         */
-        public Builder setResultsPerPage(int value) {
-          bitField0_ |= 0x00000002;
-          resultsPerPage_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>optional uint32 results_per_page = 2;</code>
-         */
-        public Builder clearResultsPerPage() {
-          bitField0_ = (bitField0_ & ~0x00000002);
-          resultsPerPage_ = 0;
-          onChanged();
-          return this;
-        }
-
-        private java.util.List<libbitcoin.protocol.Interface.filter> query_ =
-          java.util.Collections.emptyList();
-        private void ensureQueryIsMutable() {
-          if (!((bitField0_ & 0x00000004) == 0x00000004)) {
-            query_ = new java.util.ArrayList<libbitcoin.protocol.Interface.filter>(query_);
-            bitField0_ |= 0x00000004;
-           }
-        }
-
-        private com.google.protobuf.RepeatedFieldBuilder<
-            libbitcoin.protocol.Interface.filter, libbitcoin.protocol.Interface.filter.Builder, libbitcoin.protocol.Interface.filterOrBuilder> queryBuilder_;
-
-        /**
-         * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-         */
-        public java.util.List<libbitcoin.protocol.Interface.filter> getQueryList() {
-          if (queryBuilder_ == null) {
-            return java.util.Collections.unmodifiableList(query_);
-          } else {
-            return queryBuilder_.getMessageList();
-          }
-        }
-        /**
-         * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-         */
-        public int getQueryCount() {
-          if (queryBuilder_ == null) {
-            return query_.size();
-          } else {
-            return queryBuilder_.getCount();
-          }
-        }
-        /**
-         * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-         */
-        public libbitcoin.protocol.Interface.filter getQuery(int index) {
-          if (queryBuilder_ == null) {
-            return query_.get(index);
-          } else {
-            return queryBuilder_.getMessage(index);
-          }
-        }
-        /**
-         * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-         */
-        public Builder setQuery(
-            int index, libbitcoin.protocol.Interface.filter value) {
-          if (queryBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensureQueryIsMutable();
-            query_.set(index, value);
-            onChanged();
-          } else {
-            queryBuilder_.setMessage(index, value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-         */
-        public Builder setQuery(
-            int index, libbitcoin.protocol.Interface.filter.Builder builderForValue) {
-          if (queryBuilder_ == null) {
-            ensureQueryIsMutable();
-            query_.set(index, builderForValue.build());
-            onChanged();
-          } else {
-            queryBuilder_.setMessage(index, builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-         */
-        public Builder addQuery(libbitcoin.protocol.Interface.filter value) {
-          if (queryBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensureQueryIsMutable();
-            query_.add(value);
-            onChanged();
-          } else {
-            queryBuilder_.addMessage(value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-         */
-        public Builder addQuery(
-            int index, libbitcoin.protocol.Interface.filter value) {
-          if (queryBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensureQueryIsMutable();
-            query_.add(index, value);
-            onChanged();
-          } else {
-            queryBuilder_.addMessage(index, value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-         */
-        public Builder addQuery(
-            libbitcoin.protocol.Interface.filter.Builder builderForValue) {
-          if (queryBuilder_ == null) {
-            ensureQueryIsMutable();
-            query_.add(builderForValue.build());
-            onChanged();
-          } else {
-            queryBuilder_.addMessage(builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-         */
-        public Builder addQuery(
-            int index, libbitcoin.protocol.Interface.filter.Builder builderForValue) {
-          if (queryBuilder_ == null) {
-            ensureQueryIsMutable();
-            query_.add(index, builderForValue.build());
-            onChanged();
-          } else {
-            queryBuilder_.addMessage(index, builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-         */
-        public Builder addAllQuery(
-            java.lang.Iterable<? extends libbitcoin.protocol.Interface.filter> values) {
-          if (queryBuilder_ == null) {
-            ensureQueryIsMutable();
-            com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                values, query_);
-            onChanged();
-          } else {
-            queryBuilder_.addAllMessages(values);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-         */
-        public Builder clearQuery() {
-          if (queryBuilder_ == null) {
-            query_ = java.util.Collections.emptyList();
-            bitField0_ = (bitField0_ & ~0x00000004);
-            onChanged();
-          } else {
-            queryBuilder_.clear();
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-         */
-        public Builder removeQuery(int index) {
-          if (queryBuilder_ == null) {
-            ensureQueryIsMutable();
-            query_.remove(index);
-            onChanged();
-          } else {
-            queryBuilder_.remove(index);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-         */
-        public libbitcoin.protocol.Interface.filter.Builder getQueryBuilder(
-            int index) {
-          return getQueryFieldBuilder().getBuilder(index);
-        }
-        /**
-         * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-         */
-        public libbitcoin.protocol.Interface.filterOrBuilder getQueryOrBuilder(
-            int index) {
-          if (queryBuilder_ == null) {
-            return query_.get(index);  } else {
-            return queryBuilder_.getMessageOrBuilder(index);
-          }
-        }
-        /**
-         * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-         */
-        public java.util.List<? extends libbitcoin.protocol.Interface.filterOrBuilder> 
-             getQueryOrBuilderList() {
-          if (queryBuilder_ != null) {
-            return queryBuilder_.getMessageOrBuilderList();
-          } else {
-            return java.util.Collections.unmodifiableList(query_);
-          }
-        }
-        /**
-         * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-         */
-        public libbitcoin.protocol.Interface.filter.Builder addQueryBuilder() {
-          return getQueryFieldBuilder().addBuilder(
-              libbitcoin.protocol.Interface.filter.getDefaultInstance());
-        }
-        /**
-         * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-         */
-        public libbitcoin.protocol.Interface.filter.Builder addQueryBuilder(
-            int index) {
-          return getQueryFieldBuilder().addBuilder(
-              index, libbitcoin.protocol.Interface.filter.getDefaultInstance());
-        }
-        /**
-         * <code>repeated .libbitcoin.protocol.filter query = 3;</code>
-         */
-        public java.util.List<libbitcoin.protocol.Interface.filter.Builder> 
-             getQueryBuilderList() {
-          return getQueryFieldBuilder().getBuilderList();
-        }
-        private com.google.protobuf.RepeatedFieldBuilder<
-            libbitcoin.protocol.Interface.filter, libbitcoin.protocol.Interface.filter.Builder, libbitcoin.protocol.Interface.filterOrBuilder> 
-            getQueryFieldBuilder() {
-          if (queryBuilder_ == null) {
-            queryBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-                libbitcoin.protocol.Interface.filter, libbitcoin.protocol.Interface.filter.Builder, libbitcoin.protocol.Interface.filterOrBuilder>(
-                    query_,
-                    ((bitField0_ & 0x00000004) == 0x00000004),
-                    getParentForChildren(),
-                    isClean());
-            query_ = null;
-          }
-          return queryBuilder_;
-        }
-
-        private libbitcoin.protocol.Interface.request.transactions_request.results resultType_ = libbitcoin.protocol.Interface.request.transactions_request.results.TX_HASH;
-        /**
-         * <code>optional .libbitcoin.protocol.request.transactions_request.results result_type = 4 [default = TX_HASH];</code>
-         */
-        public boolean hasResultType() {
-          return ((bitField0_ & 0x00000008) == 0x00000008);
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.request.transactions_request.results result_type = 4 [default = TX_HASH];</code>
-         */
-        public libbitcoin.protocol.Interface.request.transactions_request.results getResultType() {
-          return resultType_;
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.request.transactions_request.results result_type = 4 [default = TX_HASH];</code>
-         */
-        public Builder setResultType(libbitcoin.protocol.Interface.request.transactions_request.results value) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          bitField0_ |= 0x00000008;
-          resultType_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.request.transactions_request.results result_type = 4 [default = TX_HASH];</code>
-         */
-        public Builder clearResultType() {
-          bitField0_ = (bitField0_ & ~0x00000008);
-          resultType_ = libbitcoin.protocol.Interface.request.transactions_request.results.TX_HASH;
-          onChanged();
-          return this;
-        }
-
-        private libbitcoin.protocol.Interface.request.transactions_request.locations locationType_ = libbitcoin.protocol.Interface.request.transactions_request.locations.NONE;
-        /**
-         * <code>optional .libbitcoin.protocol.request.transactions_request.locations location_type = 5 [default = NONE];</code>
-         */
-        public boolean hasLocationType() {
-          return ((bitField0_ & 0x00000010) == 0x00000010);
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.request.transactions_request.locations location_type = 5 [default = NONE];</code>
-         */
-        public libbitcoin.protocol.Interface.request.transactions_request.locations getLocationType() {
-          return locationType_;
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.request.transactions_request.locations location_type = 5 [default = NONE];</code>
-         */
-        public Builder setLocationType(libbitcoin.protocol.Interface.request.transactions_request.locations value) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          bitField0_ |= 0x00000010;
-          locationType_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>optional .libbitcoin.protocol.request.transactions_request.locations location_type = 5 [default = NONE];</code>
-         */
-        public Builder clearLocationType() {
-          bitField0_ = (bitField0_ & ~0x00000010);
-          locationType_ = libbitcoin.protocol.Interface.request.transactions_request.locations.NONE;
-          onChanged();
-          return this;
-        }
-
-        // @@protoc_insertion_point(builder_scope:libbitcoin.protocol.request.transactions_request)
-      }
-
-      static {
-        defaultInstance = new transactions_request(true);
-        defaultInstance.initFields();
-      }
-
-      // @@protoc_insertion_point(class_scope:libbitcoin.protocol.request.transactions_request)
-    }
-
     private int bitField0_;
     private int requestTypeCase_ = 0;
     private java.lang.Object requestType_;
@@ -12186,54 +12186,54 @@ public final class Interface {
 
     public static final int GET_BLOCK_HEADERS_FIELD_NUMBER = 2;
     /**
-     * <code>optional .libbitcoin.protocol.request.block_headers_request get_block_headers = 2;</code>
+     * <code>optional .libbitcoin.protocol.block_headers_request get_block_headers = 2;</code>
      */
     public boolean hasGetBlockHeaders() {
       return requestTypeCase_ == 2;
     }
     /**
-     * <code>optional .libbitcoin.protocol.request.block_headers_request get_block_headers = 2;</code>
+     * <code>optional .libbitcoin.protocol.block_headers_request get_block_headers = 2;</code>
      */
-    public libbitcoin.protocol.Interface.request.block_headers_request getGetBlockHeaders() {
+    public libbitcoin.protocol.Interface.block_headers_request getGetBlockHeaders() {
       if (requestTypeCase_ == 2) {
-         return (libbitcoin.protocol.Interface.request.block_headers_request) requestType_;
+         return (libbitcoin.protocol.Interface.block_headers_request) requestType_;
       }
-      return libbitcoin.protocol.Interface.request.block_headers_request.getDefaultInstance();
+      return libbitcoin.protocol.Interface.block_headers_request.getDefaultInstance();
     }
     /**
-     * <code>optional .libbitcoin.protocol.request.block_headers_request get_block_headers = 2;</code>
+     * <code>optional .libbitcoin.protocol.block_headers_request get_block_headers = 2;</code>
      */
-    public libbitcoin.protocol.Interface.request.block_headers_requestOrBuilder getGetBlockHeadersOrBuilder() {
+    public libbitcoin.protocol.Interface.block_headers_requestOrBuilder getGetBlockHeadersOrBuilder() {
       if (requestTypeCase_ == 2) {
-         return (libbitcoin.protocol.Interface.request.block_headers_request) requestType_;
+         return (libbitcoin.protocol.Interface.block_headers_request) requestType_;
       }
-      return libbitcoin.protocol.Interface.request.block_headers_request.getDefaultInstance();
+      return libbitcoin.protocol.Interface.block_headers_request.getDefaultInstance();
     }
 
     public static final int GET_TRANSACTIONS_FIELD_NUMBER = 3;
     /**
-     * <code>optional .libbitcoin.protocol.request.transactions_request get_transactions = 3;</code>
+     * <code>optional .libbitcoin.protocol.transactions_request get_transactions = 3;</code>
      */
     public boolean hasGetTransactions() {
       return requestTypeCase_ == 3;
     }
     /**
-     * <code>optional .libbitcoin.protocol.request.transactions_request get_transactions = 3;</code>
+     * <code>optional .libbitcoin.protocol.transactions_request get_transactions = 3;</code>
      */
-    public libbitcoin.protocol.Interface.request.transactions_request getGetTransactions() {
+    public libbitcoin.protocol.Interface.transactions_request getGetTransactions() {
       if (requestTypeCase_ == 3) {
-         return (libbitcoin.protocol.Interface.request.transactions_request) requestType_;
+         return (libbitcoin.protocol.Interface.transactions_request) requestType_;
       }
-      return libbitcoin.protocol.Interface.request.transactions_request.getDefaultInstance();
+      return libbitcoin.protocol.Interface.transactions_request.getDefaultInstance();
     }
     /**
-     * <code>optional .libbitcoin.protocol.request.transactions_request get_transactions = 3;</code>
+     * <code>optional .libbitcoin.protocol.transactions_request get_transactions = 3;</code>
      */
-    public libbitcoin.protocol.Interface.request.transactions_requestOrBuilder getGetTransactionsOrBuilder() {
+    public libbitcoin.protocol.Interface.transactions_requestOrBuilder getGetTransactionsOrBuilder() {
       if (requestTypeCase_ == 3) {
-         return (libbitcoin.protocol.Interface.request.transactions_request) requestType_;
+         return (libbitcoin.protocol.Interface.transactions_request) requestType_;
       }
-      return libbitcoin.protocol.Interface.request.transactions_request.getDefaultInstance();
+      return libbitcoin.protocol.Interface.transactions_request.getDefaultInstance();
     }
 
     public static final int POST_TRANSACTION_FIELD_NUMBER = 4;
@@ -12369,10 +12369,10 @@ public final class Interface {
         output.writeUInt32(1, id_);
       }
       if (requestTypeCase_ == 2) {
-        output.writeMessage(2, (libbitcoin.protocol.Interface.request.block_headers_request) requestType_);
+        output.writeMessage(2, (libbitcoin.protocol.Interface.block_headers_request) requestType_);
       }
       if (requestTypeCase_ == 3) {
-        output.writeMessage(3, (libbitcoin.protocol.Interface.request.transactions_request) requestType_);
+        output.writeMessage(3, (libbitcoin.protocol.Interface.transactions_request) requestType_);
       }
       if (requestTypeCase_ == 4) {
         output.writeMessage(4, (libbitcoin.protocol.Interface.tx) requestType_);
@@ -12399,11 +12399,11 @@ public final class Interface {
       }
       if (requestTypeCase_ == 2) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, (libbitcoin.protocol.Interface.request.block_headers_request) requestType_);
+          .computeMessageSize(2, (libbitcoin.protocol.Interface.block_headers_request) requestType_);
       }
       if (requestTypeCase_ == 3) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, (libbitcoin.protocol.Interface.request.transactions_request) requestType_);
+          .computeMessageSize(3, (libbitcoin.protocol.Interface.transactions_request) requestType_);
       }
       if (requestTypeCase_ == 4) {
         size += com.google.protobuf.CodedOutputStream
@@ -12498,12 +12498,6 @@ public final class Interface {
     }
     /**
      * Protobuf type {@code libbitcoin.protocol.request}
-     *
-     * <pre>
-     *
-     * Client request
-     *
-     * </pre>
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.ExtendableBuilder<
@@ -12766,33 +12760,33 @@ public final class Interface {
       }
 
       private com.google.protobuf.SingleFieldBuilder<
-          libbitcoin.protocol.Interface.request.block_headers_request, libbitcoin.protocol.Interface.request.block_headers_request.Builder, libbitcoin.protocol.Interface.request.block_headers_requestOrBuilder> getBlockHeadersBuilder_;
+          libbitcoin.protocol.Interface.block_headers_request, libbitcoin.protocol.Interface.block_headers_request.Builder, libbitcoin.protocol.Interface.block_headers_requestOrBuilder> getBlockHeadersBuilder_;
       /**
-       * <code>optional .libbitcoin.protocol.request.block_headers_request get_block_headers = 2;</code>
+       * <code>optional .libbitcoin.protocol.block_headers_request get_block_headers = 2;</code>
        */
       public boolean hasGetBlockHeaders() {
         return requestTypeCase_ == 2;
       }
       /**
-       * <code>optional .libbitcoin.protocol.request.block_headers_request get_block_headers = 2;</code>
+       * <code>optional .libbitcoin.protocol.block_headers_request get_block_headers = 2;</code>
        */
-      public libbitcoin.protocol.Interface.request.block_headers_request getGetBlockHeaders() {
+      public libbitcoin.protocol.Interface.block_headers_request getGetBlockHeaders() {
         if (getBlockHeadersBuilder_ == null) {
           if (requestTypeCase_ == 2) {
-            return (libbitcoin.protocol.Interface.request.block_headers_request) requestType_;
+            return (libbitcoin.protocol.Interface.block_headers_request) requestType_;
           }
-          return libbitcoin.protocol.Interface.request.block_headers_request.getDefaultInstance();
+          return libbitcoin.protocol.Interface.block_headers_request.getDefaultInstance();
         } else {
           if (requestTypeCase_ == 2) {
             return getBlockHeadersBuilder_.getMessage();
           }
-          return libbitcoin.protocol.Interface.request.block_headers_request.getDefaultInstance();
+          return libbitcoin.protocol.Interface.block_headers_request.getDefaultInstance();
         }
       }
       /**
-       * <code>optional .libbitcoin.protocol.request.block_headers_request get_block_headers = 2;</code>
+       * <code>optional .libbitcoin.protocol.block_headers_request get_block_headers = 2;</code>
        */
-      public Builder setGetBlockHeaders(libbitcoin.protocol.Interface.request.block_headers_request value) {
+      public Builder setGetBlockHeaders(libbitcoin.protocol.Interface.block_headers_request value) {
         if (getBlockHeadersBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -12806,10 +12800,10 @@ public final class Interface {
         return this;
       }
       /**
-       * <code>optional .libbitcoin.protocol.request.block_headers_request get_block_headers = 2;</code>
+       * <code>optional .libbitcoin.protocol.block_headers_request get_block_headers = 2;</code>
        */
       public Builder setGetBlockHeaders(
-          libbitcoin.protocol.Interface.request.block_headers_request.Builder builderForValue) {
+          libbitcoin.protocol.Interface.block_headers_request.Builder builderForValue) {
         if (getBlockHeadersBuilder_ == null) {
           requestType_ = builderForValue.build();
           onChanged();
@@ -12820,13 +12814,13 @@ public final class Interface {
         return this;
       }
       /**
-       * <code>optional .libbitcoin.protocol.request.block_headers_request get_block_headers = 2;</code>
+       * <code>optional .libbitcoin.protocol.block_headers_request get_block_headers = 2;</code>
        */
-      public Builder mergeGetBlockHeaders(libbitcoin.protocol.Interface.request.block_headers_request value) {
+      public Builder mergeGetBlockHeaders(libbitcoin.protocol.Interface.block_headers_request value) {
         if (getBlockHeadersBuilder_ == null) {
           if (requestTypeCase_ == 2 &&
-              requestType_ != libbitcoin.protocol.Interface.request.block_headers_request.getDefaultInstance()) {
-            requestType_ = libbitcoin.protocol.Interface.request.block_headers_request.newBuilder((libbitcoin.protocol.Interface.request.block_headers_request) requestType_)
+              requestType_ != libbitcoin.protocol.Interface.block_headers_request.getDefaultInstance()) {
+            requestType_ = libbitcoin.protocol.Interface.block_headers_request.newBuilder((libbitcoin.protocol.Interface.block_headers_request) requestType_)
                 .mergeFrom(value).buildPartial();
           } else {
             requestType_ = value;
@@ -12842,7 +12836,7 @@ public final class Interface {
         return this;
       }
       /**
-       * <code>optional .libbitcoin.protocol.request.block_headers_request get_block_headers = 2;</code>
+       * <code>optional .libbitcoin.protocol.block_headers_request get_block_headers = 2;</code>
        */
       public Builder clearGetBlockHeaders() {
         if (getBlockHeadersBuilder_ == null) {
@@ -12861,37 +12855,37 @@ public final class Interface {
         return this;
       }
       /**
-       * <code>optional .libbitcoin.protocol.request.block_headers_request get_block_headers = 2;</code>
+       * <code>optional .libbitcoin.protocol.block_headers_request get_block_headers = 2;</code>
        */
-      public libbitcoin.protocol.Interface.request.block_headers_request.Builder getGetBlockHeadersBuilder() {
+      public libbitcoin.protocol.Interface.block_headers_request.Builder getGetBlockHeadersBuilder() {
         return getGetBlockHeadersFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .libbitcoin.protocol.request.block_headers_request get_block_headers = 2;</code>
+       * <code>optional .libbitcoin.protocol.block_headers_request get_block_headers = 2;</code>
        */
-      public libbitcoin.protocol.Interface.request.block_headers_requestOrBuilder getGetBlockHeadersOrBuilder() {
+      public libbitcoin.protocol.Interface.block_headers_requestOrBuilder getGetBlockHeadersOrBuilder() {
         if ((requestTypeCase_ == 2) && (getBlockHeadersBuilder_ != null)) {
           return getBlockHeadersBuilder_.getMessageOrBuilder();
         } else {
           if (requestTypeCase_ == 2) {
-            return (libbitcoin.protocol.Interface.request.block_headers_request) requestType_;
+            return (libbitcoin.protocol.Interface.block_headers_request) requestType_;
           }
-          return libbitcoin.protocol.Interface.request.block_headers_request.getDefaultInstance();
+          return libbitcoin.protocol.Interface.block_headers_request.getDefaultInstance();
         }
       }
       /**
-       * <code>optional .libbitcoin.protocol.request.block_headers_request get_block_headers = 2;</code>
+       * <code>optional .libbitcoin.protocol.block_headers_request get_block_headers = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          libbitcoin.protocol.Interface.request.block_headers_request, libbitcoin.protocol.Interface.request.block_headers_request.Builder, libbitcoin.protocol.Interface.request.block_headers_requestOrBuilder> 
+          libbitcoin.protocol.Interface.block_headers_request, libbitcoin.protocol.Interface.block_headers_request.Builder, libbitcoin.protocol.Interface.block_headers_requestOrBuilder> 
           getGetBlockHeadersFieldBuilder() {
         if (getBlockHeadersBuilder_ == null) {
           if (!(requestTypeCase_ == 2)) {
-            requestType_ = libbitcoin.protocol.Interface.request.block_headers_request.getDefaultInstance();
+            requestType_ = libbitcoin.protocol.Interface.block_headers_request.getDefaultInstance();
           }
           getBlockHeadersBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              libbitcoin.protocol.Interface.request.block_headers_request, libbitcoin.protocol.Interface.request.block_headers_request.Builder, libbitcoin.protocol.Interface.request.block_headers_requestOrBuilder>(
-                  (libbitcoin.protocol.Interface.request.block_headers_request) requestType_,
+              libbitcoin.protocol.Interface.block_headers_request, libbitcoin.protocol.Interface.block_headers_request.Builder, libbitcoin.protocol.Interface.block_headers_requestOrBuilder>(
+                  (libbitcoin.protocol.Interface.block_headers_request) requestType_,
                   getParentForChildren(),
                   isClean());
           requestType_ = null;
@@ -12901,33 +12895,33 @@ public final class Interface {
       }
 
       private com.google.protobuf.SingleFieldBuilder<
-          libbitcoin.protocol.Interface.request.transactions_request, libbitcoin.protocol.Interface.request.transactions_request.Builder, libbitcoin.protocol.Interface.request.transactions_requestOrBuilder> getTransactionsBuilder_;
+          libbitcoin.protocol.Interface.transactions_request, libbitcoin.protocol.Interface.transactions_request.Builder, libbitcoin.protocol.Interface.transactions_requestOrBuilder> getTransactionsBuilder_;
       /**
-       * <code>optional .libbitcoin.protocol.request.transactions_request get_transactions = 3;</code>
+       * <code>optional .libbitcoin.protocol.transactions_request get_transactions = 3;</code>
        */
       public boolean hasGetTransactions() {
         return requestTypeCase_ == 3;
       }
       /**
-       * <code>optional .libbitcoin.protocol.request.transactions_request get_transactions = 3;</code>
+       * <code>optional .libbitcoin.protocol.transactions_request get_transactions = 3;</code>
        */
-      public libbitcoin.protocol.Interface.request.transactions_request getGetTransactions() {
+      public libbitcoin.protocol.Interface.transactions_request getGetTransactions() {
         if (getTransactionsBuilder_ == null) {
           if (requestTypeCase_ == 3) {
-            return (libbitcoin.protocol.Interface.request.transactions_request) requestType_;
+            return (libbitcoin.protocol.Interface.transactions_request) requestType_;
           }
-          return libbitcoin.protocol.Interface.request.transactions_request.getDefaultInstance();
+          return libbitcoin.protocol.Interface.transactions_request.getDefaultInstance();
         } else {
           if (requestTypeCase_ == 3) {
             return getTransactionsBuilder_.getMessage();
           }
-          return libbitcoin.protocol.Interface.request.transactions_request.getDefaultInstance();
+          return libbitcoin.protocol.Interface.transactions_request.getDefaultInstance();
         }
       }
       /**
-       * <code>optional .libbitcoin.protocol.request.transactions_request get_transactions = 3;</code>
+       * <code>optional .libbitcoin.protocol.transactions_request get_transactions = 3;</code>
        */
-      public Builder setGetTransactions(libbitcoin.protocol.Interface.request.transactions_request value) {
+      public Builder setGetTransactions(libbitcoin.protocol.Interface.transactions_request value) {
         if (getTransactionsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -12941,10 +12935,10 @@ public final class Interface {
         return this;
       }
       /**
-       * <code>optional .libbitcoin.protocol.request.transactions_request get_transactions = 3;</code>
+       * <code>optional .libbitcoin.protocol.transactions_request get_transactions = 3;</code>
        */
       public Builder setGetTransactions(
-          libbitcoin.protocol.Interface.request.transactions_request.Builder builderForValue) {
+          libbitcoin.protocol.Interface.transactions_request.Builder builderForValue) {
         if (getTransactionsBuilder_ == null) {
           requestType_ = builderForValue.build();
           onChanged();
@@ -12955,13 +12949,13 @@ public final class Interface {
         return this;
       }
       /**
-       * <code>optional .libbitcoin.protocol.request.transactions_request get_transactions = 3;</code>
+       * <code>optional .libbitcoin.protocol.transactions_request get_transactions = 3;</code>
        */
-      public Builder mergeGetTransactions(libbitcoin.protocol.Interface.request.transactions_request value) {
+      public Builder mergeGetTransactions(libbitcoin.protocol.Interface.transactions_request value) {
         if (getTransactionsBuilder_ == null) {
           if (requestTypeCase_ == 3 &&
-              requestType_ != libbitcoin.protocol.Interface.request.transactions_request.getDefaultInstance()) {
-            requestType_ = libbitcoin.protocol.Interface.request.transactions_request.newBuilder((libbitcoin.protocol.Interface.request.transactions_request) requestType_)
+              requestType_ != libbitcoin.protocol.Interface.transactions_request.getDefaultInstance()) {
+            requestType_ = libbitcoin.protocol.Interface.transactions_request.newBuilder((libbitcoin.protocol.Interface.transactions_request) requestType_)
                 .mergeFrom(value).buildPartial();
           } else {
             requestType_ = value;
@@ -12977,7 +12971,7 @@ public final class Interface {
         return this;
       }
       /**
-       * <code>optional .libbitcoin.protocol.request.transactions_request get_transactions = 3;</code>
+       * <code>optional .libbitcoin.protocol.transactions_request get_transactions = 3;</code>
        */
       public Builder clearGetTransactions() {
         if (getTransactionsBuilder_ == null) {
@@ -12996,37 +12990,37 @@ public final class Interface {
         return this;
       }
       /**
-       * <code>optional .libbitcoin.protocol.request.transactions_request get_transactions = 3;</code>
+       * <code>optional .libbitcoin.protocol.transactions_request get_transactions = 3;</code>
        */
-      public libbitcoin.protocol.Interface.request.transactions_request.Builder getGetTransactionsBuilder() {
+      public libbitcoin.protocol.Interface.transactions_request.Builder getGetTransactionsBuilder() {
         return getGetTransactionsFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .libbitcoin.protocol.request.transactions_request get_transactions = 3;</code>
+       * <code>optional .libbitcoin.protocol.transactions_request get_transactions = 3;</code>
        */
-      public libbitcoin.protocol.Interface.request.transactions_requestOrBuilder getGetTransactionsOrBuilder() {
+      public libbitcoin.protocol.Interface.transactions_requestOrBuilder getGetTransactionsOrBuilder() {
         if ((requestTypeCase_ == 3) && (getTransactionsBuilder_ != null)) {
           return getTransactionsBuilder_.getMessageOrBuilder();
         } else {
           if (requestTypeCase_ == 3) {
-            return (libbitcoin.protocol.Interface.request.transactions_request) requestType_;
+            return (libbitcoin.protocol.Interface.transactions_request) requestType_;
           }
-          return libbitcoin.protocol.Interface.request.transactions_request.getDefaultInstance();
+          return libbitcoin.protocol.Interface.transactions_request.getDefaultInstance();
         }
       }
       /**
-       * <code>optional .libbitcoin.protocol.request.transactions_request get_transactions = 3;</code>
+       * <code>optional .libbitcoin.protocol.transactions_request get_transactions = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          libbitcoin.protocol.Interface.request.transactions_request, libbitcoin.protocol.Interface.request.transactions_request.Builder, libbitcoin.protocol.Interface.request.transactions_requestOrBuilder> 
+          libbitcoin.protocol.Interface.transactions_request, libbitcoin.protocol.Interface.transactions_request.Builder, libbitcoin.protocol.Interface.transactions_requestOrBuilder> 
           getGetTransactionsFieldBuilder() {
         if (getTransactionsBuilder_ == null) {
           if (!(requestTypeCase_ == 3)) {
-            requestType_ = libbitcoin.protocol.Interface.request.transactions_request.getDefaultInstance();
+            requestType_ = libbitcoin.protocol.Interface.transactions_request.getDefaultInstance();
           }
           getTransactionsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              libbitcoin.protocol.Interface.request.transactions_request, libbitcoin.protocol.Interface.request.transactions_request.Builder, libbitcoin.protocol.Interface.request.transactions_requestOrBuilder>(
-                  (libbitcoin.protocol.Interface.request.transactions_request) requestType_,
+              libbitcoin.protocol.Interface.transactions_request, libbitcoin.protocol.Interface.transactions_request.Builder, libbitcoin.protocol.Interface.transactions_requestOrBuilder>(
+                  (libbitcoin.protocol.Interface.transactions_request) requestType_,
                   getParentForChildren(),
                   isClean());
           requestType_ = null;
@@ -17686,20 +17680,20 @@ public final class Interface {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_libbitcoin_protocol_utxo_result_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_libbitcoin_protocol_block_headers_request_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_libbitcoin_protocol_block_headers_request_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_libbitcoin_protocol_transactions_request_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_libbitcoin_protocol_transactions_request_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_libbitcoin_protocol_request_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_libbitcoin_protocol_request_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_libbitcoin_protocol_request_block_headers_request_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_libbitcoin_protocol_request_block_headers_request_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_libbitcoin_protocol_request_transactions_request_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_libbitcoin_protocol_request_transactions_request_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_libbitcoin_protocol_response_descriptor;
   private static
@@ -17740,65 +17734,63 @@ public final class Interface {
       ".tx_output\"w\n\005block\0221\n\006header\030\001 \002(\0132!.li" +
       "bbitcoin.protocol.block_header\022-\n\014transa" +
       "ctions\030\002 \003(\0132\027.libbitcoin.protocol.tx\022\014\n" +
-      "\004tree\030\003 \003(\014\"\226\001\n\006filter\0228\n\013filter_type\030\001 " +
-      "\002(\0162#.libbitcoin.protocol.filter.filters" +
-      "\022\014\n\004bits\030\002 \001(\r\022\016\n\006prefix\030\003 \002(\014\"4\n\007filter" +
-      "s\022\013\n\007ADDRESS\020\001\022\017\n\013TRANSACTION\020\002\022\013\n\007STEAL",
-      "TH\020\003\"(\n\010block_id\022\016\n\006height\030\001 \001(\r\022\014\n\004hash" +
-      "\030\002 \001(\014\"Q\n\016block_location\022/\n\010identity\030\001 \001" +
-      "(\0132\035.libbitcoin.protocol.block_id\022\016\n\006bra" +
-      "nch\030\002 \003(\014\"U\n\016tx_hash_result\022\014\n\004hash\030\001 \002(" +
-      "\014\0225\n\010location\030\002 \002(\0132#.libbitcoin.protoco" +
-      "l.block_location\"p\n\ttx_result\022,\n\013transac" +
-      "tion\030\001 \002(\0132\027.libbitcoin.protocol.tx\0225\n\010l" +
-      "ocation\030\002 \002(\0132#.libbitcoin.protocol.bloc" +
-      "k_location\"9\n\006output\022\r\n\005index\030\001 \002(\r\022\020\n\010s" +
-      "atoshis\030\002 \002(\004\022\016\n\006script\030\003 \002(\014\"\203\001\n\013utxo_r",
-      "esult\022\017\n\007tx_hash\030\001 \002(\014\0225\n\010location\030\002 \002(\013" +
-      "2#.libbitcoin.protocol.block_location\022,\n" +
-      "\007outputs\030\003 \003(\0132\033.libbitcoin.protocol.out" +
-      "put\"\363\006\n\007request\022\n\n\002id\030\001 \002(\r\022O\n\021get_block" +
-      "_headers\030\002 \001(\01322.libbitcoin.protocol.req" +
-      "uest.block_headers_requestH\000\022M\n\020get_tran" +
-      "sactions\030\003 \001(\01321.libbitcoin.protocol.req" +
-      "uest.transactions_requestH\000\0223\n\020post_tran" +
-      "saction\030\004 \001(\0132\027.libbitcoin.protocol.txH\000" +
-      "\0227\n\024validate_transaction\030\005 \001(\0132\027.libbitc",
-      "oin.protocol.txH\000\0220\n\npost_block\030\006 \001(\0132\032." +
-      "libbitcoin.protocol.blockH\000\032_\n\025block_hea" +
-      "ders_request\022,\n\005start\030\001 \001(\0132\035.libbitcoin" +
-      ".protocol.block_id\022\030\n\020results_per_page\030\002" +
-      " \001(\r\032\243\003\n\024transactions_request\022,\n\005start\030\001" +
-      " \001(\0132\035.libbitcoin.protocol.block_id\022\030\n\020r" +
-      "esults_per_page\030\002 \001(\r\022*\n\005query\030\003 \003(\0132\033.l" +
-      "ibbitcoin.protocol.filter\022W\n\013result_type" +
-      "\030\004 \001(\01629.libbitcoin.protocol.request.tra" +
-      "nsactions_request.results:\007TX_HASH\022X\n\rlo",
-      "cation_type\030\005 \001(\0162;.libbitcoin.protocol." +
-      "request.transactions_request.locations:\004" +
-      "NONE\"6\n\007results\022\013\n\007TX_HASH\020\001\022\r\n\tTX_RESUL" +
-      "T\020\002\022\017\n\013UTXO_RESULT\020\003\",\n\tlocations\022\010\n\004NON" +
-      "E\020\000\022\t\n\005BLOCK\020\001\022\n\n\006MERKLE\020\002*\005\010d\020\310\001B\016\n\014req" +
-      "uest_type\"\367\005\n\010response\022\n\n\002id\030\001 \002(\r\022\016\n\006st" +
-      "atus\030\002 \001(\021\022Q\n\032get_block_headers_response" +
-      "\030\003 \001(\0132+.libbitcoin.protocol.response.bl" +
-      "ock_headersH\000\022O\n\031get_transactions_respon" +
-      "se\030\004 \001(\0132*.libbitcoin.protocol.response.",
-      "transactionsH\000\022$\n\032post_transaction_succe" +
-      "eded\030\005 \001(\010H\000\022(\n\036validate_transaction_suc" +
-      "ceeded\030\006 \001(\010H\000\022\036\n\024post_block_succeeded\030\007" +
-      " \001(\010H\000\032\234\001\n\rblock_headers\022+\n\004next\030\001 \001(\0132\035" +
-      ".libbitcoin.protocol.block_id\022*\n\003top\030\002 \001" +
-      "(\0132\035.libbitcoin.protocol.block_id\0222\n\007hea" +
-      "ders\030\003 \003(\0132!.libbitcoin.protocol.block_h" +
-      "eader\032\203\002\n\014transactions\022+\n\004next\030\001 \001(\0132\035.l" +
-      "ibbitcoin.protocol.block_id\022*\n\003top\030\002 \001(\013" +
-      "2\035.libbitcoin.protocol.block_id\0223\n\006hashe",
-      "s\030\003 \003(\0132#.libbitcoin.protocol.tx_hash_re" +
-      "sult\0224\n\014transactions\030\004 \003(\0132\036.libbitcoin." +
-      "protocol.tx_result\022/\n\005utxos\030\005 \003(\0132 .libb" +
-      "itcoin.protocol.utxo_result*\005\010d\020\310\001B\017\n\rre" +
-      "sponse_type"
+      "\004tree\030\003 \003(\014\"Y\n\006filter\0221\n\013filter_type\030\001 \002" +
+      "(\0162\034.libbitcoin.protocol.filters\022\014\n\004bits" +
+      "\030\002 \001(\r\022\016\n\006prefix\030\003 \002(\014\"(\n\010block_id\022\016\n\006he" +
+      "ight\030\001 \001(\r\022\014\n\004hash\030\002 \001(\014\"Q\n\016block_locati",
+      "on\022/\n\010identity\030\001 \001(\0132\035.libbitcoin.protoc" +
+      "ol.block_id\022\016\n\006branch\030\002 \003(\014\"U\n\016tx_hash_r" +
+      "esult\022\014\n\004hash\030\001 \002(\014\0225\n\010location\030\002 \002(\0132#." +
+      "libbitcoin.protocol.block_location\"p\n\ttx" +
+      "_result\022,\n\013transaction\030\001 \002(\0132\027.libbitcoi" +
+      "n.protocol.tx\0225\n\010location\030\002 \002(\0132#.libbit" +
+      "coin.protocol.block_location\"9\n\006output\022\r" +
+      "\n\005index\030\001 \002(\r\022\020\n\010satoshis\030\002 \002(\004\022\016\n\006scrip" +
+      "t\030\003 \002(\014\"\203\001\n\013utxo_result\022\017\n\007tx_hash\030\001 \002(\014" +
+      "\0225\n\010location\030\002 \002(\0132#.libbitcoin.protocol",
+      ".block_location\022,\n\007outputs\030\003 \003(\0132\033.libbi" +
+      "tcoin.protocol.output\"_\n\025block_headers_r" +
+      "equest\022,\n\005start\030\001 \001(\0132\035.libbitcoin.proto" +
+      "col.block_id\022\030\n\020results_per_page\030\002 \001(\r\"\217" +
+      "\002\n\024transactions_request\022,\n\005start\030\001 \001(\0132\035" +
+      ".libbitcoin.protocol.block_id\022\030\n\020results" +
+      "_per_page\030\002 \001(\r\022*\n\005query\030\003 \003(\0132\033.libbitc" +
+      "oin.protocol.filter\022F\n\013result_type\030\004 \001(\016" +
+      "2(.libbitcoin.protocol.transaction_resul" +
+      "ts:\007TX_HASH\022;\n\rlocation_type\030\005 \001(\0162\036.lib",
+      "bitcoin.protocol.locations:\004NONE\"\334\002\n\007req" +
+      "uest\022\n\n\002id\030\001 \002(\r\022G\n\021get_block_headers\030\002 " +
+      "\001(\0132*.libbitcoin.protocol.block_headers_" +
+      "requestH\000\022E\n\020get_transactions\030\003 \001(\0132).li" +
+      "bbitcoin.protocol.transactions_requestH\000" +
+      "\0223\n\020post_transaction\030\004 \001(\0132\027.libbitcoin." +
+      "protocol.txH\000\0227\n\024validate_transaction\030\005 " +
+      "\001(\0132\027.libbitcoin.protocol.txH\000\0220\n\npost_b" +
+      "lock\030\006 \001(\0132\032.libbitcoin.protocol.blockH\000" +
+      "*\005\010d\020\310\001B\016\n\014request_type\"\367\005\n\010response\022\n\n\002",
+      "id\030\001 \002(\r\022\016\n\006status\030\002 \001(\021\022Q\n\032get_block_he" +
+      "aders_response\030\003 \001(\0132+.libbitcoin.protoc" +
+      "ol.response.block_headersH\000\022O\n\031get_trans" +
+      "actions_response\030\004 \001(\0132*.libbitcoin.prot" +
+      "ocol.response.transactionsH\000\022$\n\032post_tra" +
+      "nsaction_succeeded\030\005 \001(\010H\000\022(\n\036validate_t" +
+      "ransaction_succeeded\030\006 \001(\010H\000\022\036\n\024post_blo" +
+      "ck_succeeded\030\007 \001(\010H\000\032\234\001\n\rblock_headers\022+" +
+      "\n\004next\030\001 \001(\0132\035.libbitcoin.protocol.block" +
+      "_id\022*\n\003top\030\002 \001(\0132\035.libbitcoin.protocol.b",
+      "lock_id\0222\n\007headers\030\003 \003(\0132!.libbitcoin.pr" +
+      "otocol.block_header\032\203\002\n\014transactions\022+\n\004" +
+      "next\030\001 \001(\0132\035.libbitcoin.protocol.block_i" +
+      "d\022*\n\003top\030\002 \001(\0132\035.libbitcoin.protocol.blo" +
+      "ck_id\0223\n\006hashes\030\003 \003(\0132#.libbitcoin.proto" +
+      "col.tx_hash_result\0224\n\014transactions\030\004 \003(\013" +
+      "2\036.libbitcoin.protocol.tx_result\022/\n\005utxo" +
+      "s\030\005 \003(\0132 .libbitcoin.protocol.utxo_resul" +
+      "t*\005\010d\020\310\001B\017\n\rresponse_type*4\n\007filters\022\013\n\007" +
+      "ADDRESS\020\001\022\017\n\013TRANSACTION\020\002\022\013\n\007STEALTH\020\003*",
+      "B\n\023transaction_results\022\013\n\007TX_HASH\020\001\022\r\n\tT" +
+      "X_RESULT\020\002\022\017\n\013UTXO_RESULT\020\003*,\n\tlocations" +
+      "\022\010\n\004NONE\020\000\022\t\n\005BLOCK\020\001\022\n\n\006MERKLE\020\002"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -17890,26 +17882,26 @@ public final class Interface {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_libbitcoin_protocol_utxo_result_descriptor,
         new java.lang.String[] { "TxHash", "Location", "Outputs", });
-    internal_static_libbitcoin_protocol_request_descriptor =
+    internal_static_libbitcoin_protocol_block_headers_request_descriptor =
       getDescriptor().getMessageTypes().get(13);
+    internal_static_libbitcoin_protocol_block_headers_request_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_libbitcoin_protocol_block_headers_request_descriptor,
+        new java.lang.String[] { "Start", "ResultsPerPage", });
+    internal_static_libbitcoin_protocol_transactions_request_descriptor =
+      getDescriptor().getMessageTypes().get(14);
+    internal_static_libbitcoin_protocol_transactions_request_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_libbitcoin_protocol_transactions_request_descriptor,
+        new java.lang.String[] { "Start", "ResultsPerPage", "Query", "ResultType", "LocationType", });
+    internal_static_libbitcoin_protocol_request_descriptor =
+      getDescriptor().getMessageTypes().get(15);
     internal_static_libbitcoin_protocol_request_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_libbitcoin_protocol_request_descriptor,
         new java.lang.String[] { "Id", "GetBlockHeaders", "GetTransactions", "PostTransaction", "ValidateTransaction", "PostBlock", "RequestType", });
-    internal_static_libbitcoin_protocol_request_block_headers_request_descriptor =
-      internal_static_libbitcoin_protocol_request_descriptor.getNestedTypes().get(0);
-    internal_static_libbitcoin_protocol_request_block_headers_request_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_libbitcoin_protocol_request_block_headers_request_descriptor,
-        new java.lang.String[] { "Start", "ResultsPerPage", });
-    internal_static_libbitcoin_protocol_request_transactions_request_descriptor =
-      internal_static_libbitcoin_protocol_request_descriptor.getNestedTypes().get(1);
-    internal_static_libbitcoin_protocol_request_transactions_request_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_libbitcoin_protocol_request_transactions_request_descriptor,
-        new java.lang.String[] { "Start", "ResultsPerPage", "Query", "ResultType", "LocationType", });
     internal_static_libbitcoin_protocol_response_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_libbitcoin_protocol_response_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_libbitcoin_protocol_response_descriptor,

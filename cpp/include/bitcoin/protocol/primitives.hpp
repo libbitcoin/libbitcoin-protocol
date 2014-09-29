@@ -17,13 +17,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef LIBBITCOIN_PROTOCOL_HPP
-#define LIBBITCOIN_PROTOCOL_HPP
 
-#include <bitcoin/protocol/define.hpp>
+#ifndef LIBBITCOIN_PROTOCOL_PRIMITIVES_HPP
+#define LIBBITCOIN_PROTOCOL_PRIMITIVES_HPP
+
 #include <bitcoin/protocol/interface.pb.h>
-#include <bitcoin/protocol/message.hpp>
-#include <bitcoin/protocol/primitives.hpp>
+
+namespace libbitcoin {
+namespace protocol {
+
+typedef std::vector<bc::protocol::block_header> block_header_list;
+
+typedef std::vector<bc::protocol::filter> filter_list;
+
+typedef std::vector<bc::protocol::tx_result> transaction_result_list;
+
+typedef std::vector<bc::protocol::tx_hash_result> transaction_hash_result_list;
+
+typedef std::vector<bc::protocol::utxo_result> utxo_result_list;
+
+}
+}
 
 #endif
 

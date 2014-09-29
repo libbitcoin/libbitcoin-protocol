@@ -77,17 +77,17 @@ message block {
 
 // Protocol unique members
 
+enum filters {
+    ADDRESS = 1;
+    TRANSACTION = 2;
+    STEALTH = 3;
+}
+
 //
 // Query filter type, allowing prefix matching against addresses,
 // transactions or stealth addresses.
 //
 message filter {
-    enum filters {
-        ADDRESS = 1;
-        TRANSACTION = 2;
-        STEALTH = 3;
-    }
-
     required filters filter_type = 1;
     optional uint32 bits = 2;
     required bytes prefix = 3;
@@ -154,33 +154,33 @@ message utxo_result {
 //
 // Client request
 //
+enum transaction_results {
+    TX_HASH = 1;
+    TX_RESULT = 2;
+    UTXO_RESULT = 3;
+}
+
+enum locations {
+    NONE = 0;
+    BLOCK = 1;
+    MERKLE = 2;
+}
+
+message block_headers_request {
+    optional block_id start = 1;
+    optional uint32 results_per_page = 2;
+}
+    
+message transactions_request {
+    optional block_id start = 1;
+    optional uint32 results_per_page = 2;
+    repeated filter query = 3;
+    optional transaction_results result_type = 4 [default = TX_HASH];
+    optional locations location_type = 5 [default = NONE];
+}
+
 message request {
     required uint32 id = 1;
-
-    message block_headers_request {
-        optional block_id start = 1;
-        optional uint32 results_per_page = 2;
-    }
-    
-    message transactions_request {
-        enum results {
-            TX_HASH = 1;
-            TX_RESULT = 2;
-            UTXO_RESULT = 3;
-        }
-                
-        enum locations {
-            NONE = 0;
-            BLOCK = 1;
-            MERKLE = 2;
-        }
-
-        optional block_id start = 1;
-        optional uint32 results_per_page = 2;
-        repeated filter query = 3;
-        optional results result_type = 4 [default = TX_HASH];
-        optional locations location_type = 5 [default = NONE];
-    }
 
     oneof request_type {
         block_headers_request get_block_headers = 2;

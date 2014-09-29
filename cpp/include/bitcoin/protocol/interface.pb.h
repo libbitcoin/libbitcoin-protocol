@@ -49,72 +49,72 @@ class tx_hash_result;
 class tx_result;
 class output;
 class utxo_result;
+class block_headers_request;
+class transactions_request;
 class request;
-class request_block_headers_request;
-class request_transactions_request;
 class response;
 class response_block_headers;
 class response_transactions;
 
-enum filter_filters {
-  filter_filters_ADDRESS = 1,
-  filter_filters_TRANSACTION = 2,
-  filter_filters_STEALTH = 3
+enum filters {
+  ADDRESS = 1,
+  TRANSACTION = 2,
+  STEALTH = 3
 };
-BCP_API bool filter_filters_IsValid(int value);
-const filter_filters filter_filters_filters_MIN = filter_filters_ADDRESS;
-const filter_filters filter_filters_filters_MAX = filter_filters_STEALTH;
-const int filter_filters_filters_ARRAYSIZE = filter_filters_filters_MAX + 1;
+BCP_API bool filters_IsValid(int value);
+const filters filters_MIN = ADDRESS;
+const filters filters_MAX = STEALTH;
+const int filters_ARRAYSIZE = filters_MAX + 1;
 
-BCP_API const ::google::protobuf::EnumDescriptor* filter_filters_descriptor();
-inline const ::std::string& filter_filters_Name(filter_filters value) {
+BCP_API const ::google::protobuf::EnumDescriptor* filters_descriptor();
+inline const ::std::string& filters_Name(filters value) {
   return ::google::protobuf::internal::NameOfEnum(
-    filter_filters_descriptor(), value);
+    filters_descriptor(), value);
 }
-inline bool filter_filters_Parse(
-    const ::std::string& name, filter_filters* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<filter_filters>(
-    filter_filters_descriptor(), name, value);
+inline bool filters_Parse(
+    const ::std::string& name, filters* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<filters>(
+    filters_descriptor(), name, value);
 }
-enum request_transactions_request_results {
-  request_transactions_request_results_TX_HASH = 1,
-  request_transactions_request_results_TX_RESULT = 2,
-  request_transactions_request_results_UTXO_RESULT = 3
+enum transaction_results {
+  TX_HASH = 1,
+  TX_RESULT = 2,
+  UTXO_RESULT = 3
 };
-BCP_API bool request_transactions_request_results_IsValid(int value);
-const request_transactions_request_results request_transactions_request_results_results_MIN = request_transactions_request_results_TX_HASH;
-const request_transactions_request_results request_transactions_request_results_results_MAX = request_transactions_request_results_UTXO_RESULT;
-const int request_transactions_request_results_results_ARRAYSIZE = request_transactions_request_results_results_MAX + 1;
+BCP_API bool transaction_results_IsValid(int value);
+const transaction_results transaction_results_MIN = TX_HASH;
+const transaction_results transaction_results_MAX = UTXO_RESULT;
+const int transaction_results_ARRAYSIZE = transaction_results_MAX + 1;
 
-BCP_API const ::google::protobuf::EnumDescriptor* request_transactions_request_results_descriptor();
-inline const ::std::string& request_transactions_request_results_Name(request_transactions_request_results value) {
+BCP_API const ::google::protobuf::EnumDescriptor* transaction_results_descriptor();
+inline const ::std::string& transaction_results_Name(transaction_results value) {
   return ::google::protobuf::internal::NameOfEnum(
-    request_transactions_request_results_descriptor(), value);
+    transaction_results_descriptor(), value);
 }
-inline bool request_transactions_request_results_Parse(
-    const ::std::string& name, request_transactions_request_results* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<request_transactions_request_results>(
-    request_transactions_request_results_descriptor(), name, value);
+inline bool transaction_results_Parse(
+    const ::std::string& name, transaction_results* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<transaction_results>(
+    transaction_results_descriptor(), name, value);
 }
-enum request_transactions_request_locations {
-  request_transactions_request_locations_NONE = 0,
-  request_transactions_request_locations_BLOCK = 1,
-  request_transactions_request_locations_MERKLE = 2
+enum locations {
+  NONE = 0,
+  BLOCK = 1,
+  MERKLE = 2
 };
-BCP_API bool request_transactions_request_locations_IsValid(int value);
-const request_transactions_request_locations request_transactions_request_locations_locations_MIN = request_transactions_request_locations_NONE;
-const request_transactions_request_locations request_transactions_request_locations_locations_MAX = request_transactions_request_locations_MERKLE;
-const int request_transactions_request_locations_locations_ARRAYSIZE = request_transactions_request_locations_locations_MAX + 1;
+BCP_API bool locations_IsValid(int value);
+const locations locations_MIN = NONE;
+const locations locations_MAX = MERKLE;
+const int locations_ARRAYSIZE = locations_MAX + 1;
 
-BCP_API const ::google::protobuf::EnumDescriptor* request_transactions_request_locations_descriptor();
-inline const ::std::string& request_transactions_request_locations_Name(request_transactions_request_locations value) {
+BCP_API const ::google::protobuf::EnumDescriptor* locations_descriptor();
+inline const ::std::string& locations_Name(locations value) {
   return ::google::protobuf::internal::NameOfEnum(
-    request_transactions_request_locations_descriptor(), value);
+    locations_descriptor(), value);
 }
-inline bool request_transactions_request_locations_Parse(
-    const ::std::string& name, request_transactions_request_locations* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<request_transactions_request_locations>(
-    request_transactions_request_locations_descriptor(), name, value);
+inline bool locations_Parse(
+    const ::std::string& name, locations* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<locations>(
+    locations_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -838,39 +838,14 @@ class BCP_API filter : public ::google::protobuf::Message {
 
   // nested types ----------------------------------------------------
 
-  typedef filter_filters filters;
-  static const filters ADDRESS = filter_filters_ADDRESS;
-  static const filters TRANSACTION = filter_filters_TRANSACTION;
-  static const filters STEALTH = filter_filters_STEALTH;
-  static inline bool filters_IsValid(int value) {
-    return filter_filters_IsValid(value);
-  }
-  static const filters filters_MIN =
-    filter_filters_filters_MIN;
-  static const filters filters_MAX =
-    filter_filters_filters_MAX;
-  static const int filters_ARRAYSIZE =
-    filter_filters_filters_ARRAYSIZE;
-  static inline const ::google::protobuf::EnumDescriptor*
-  filters_descriptor() {
-    return filter_filters_descriptor();
-  }
-  static inline const ::std::string& filters_Name(filters value) {
-    return filter_filters_Name(value);
-  }
-  static inline bool filters_Parse(const ::std::string& name,
-      filters* value) {
-    return filter_filters_Parse(name, value);
-  }
-
   // accessors -------------------------------------------------------
 
-  // required .libbitcoin.protocol.filter.filters filter_type = 1;
+  // required .libbitcoin.protocol.filters filter_type = 1;
   inline bool has_filter_type() const;
   inline void clear_filter_type();
   static const int kFilterTypeFieldNumber = 1;
-  inline ::libbitcoin::protocol::filter_filters filter_type() const;
-  inline void set_filter_type(::libbitcoin::protocol::filter_filters value);
+  inline ::libbitcoin::protocol::filters filter_type() const;
+  inline void set_filter_type(::libbitcoin::protocol::filters value);
 
   // optional uint32 bits = 2;
   inline bool has_bits() const;
@@ -1510,14 +1485,14 @@ class BCP_API utxo_result : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class BCP_API request_block_headers_request : public ::google::protobuf::Message {
+class BCP_API block_headers_request : public ::google::protobuf::Message {
  public:
-  request_block_headers_request();
-  virtual ~request_block_headers_request();
+  block_headers_request();
+  virtual ~block_headers_request();
 
-  request_block_headers_request(const request_block_headers_request& from);
+  block_headers_request(const block_headers_request& from);
 
-  inline request_block_headers_request& operator=(const request_block_headers_request& from) {
+  inline block_headers_request& operator=(const block_headers_request& from) {
     CopyFrom(from);
     return *this;
   }
@@ -1531,17 +1506,17 @@ class BCP_API request_block_headers_request : public ::google::protobuf::Message
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const request_block_headers_request& default_instance();
+  static const block_headers_request& default_instance();
 
-  void Swap(request_block_headers_request* other);
+  void Swap(block_headers_request* other);
 
   // implements Message ----------------------------------------------
 
-  request_block_headers_request* New() const;
+  block_headers_request* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const request_block_headers_request& from);
-  void MergeFrom(const request_block_headers_request& from);
+  void CopyFrom(const block_headers_request& from);
+  void MergeFrom(const block_headers_request& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -1579,7 +1554,7 @@ class BCP_API request_block_headers_request : public ::google::protobuf::Message
   inline ::google::protobuf::uint32 results_per_page() const;
   inline void set_results_per_page(::google::protobuf::uint32 value);
 
-  // @@protoc_insertion_point(class_scope:libbitcoin.protocol.request.block_headers_request)
+  // @@protoc_insertion_point(class_scope:libbitcoin.protocol.block_headers_request)
  private:
   inline void set_has_start();
   inline void clear_has_start();
@@ -1597,18 +1572,18 @@ class BCP_API request_block_headers_request : public ::google::protobuf::Message
   friend void protobuf_ShutdownFile_bitcoin_2fprotocol_2finterface_2eproto();
 
   void InitAsDefaultInstance();
-  static request_block_headers_request* default_instance_;
+  static block_headers_request* default_instance_;
 };
 // -------------------------------------------------------------------
 
-class BCP_API request_transactions_request : public ::google::protobuf::Message {
+class BCP_API transactions_request : public ::google::protobuf::Message {
  public:
-  request_transactions_request();
-  virtual ~request_transactions_request();
+  transactions_request();
+  virtual ~transactions_request();
 
-  request_transactions_request(const request_transactions_request& from);
+  transactions_request(const transactions_request& from);
 
-  inline request_transactions_request& operator=(const request_transactions_request& from) {
+  inline transactions_request& operator=(const transactions_request& from) {
     CopyFrom(from);
     return *this;
   }
@@ -1622,17 +1597,17 @@ class BCP_API request_transactions_request : public ::google::protobuf::Message 
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const request_transactions_request& default_instance();
+  static const transactions_request& default_instance();
 
-  void Swap(request_transactions_request* other);
+  void Swap(transactions_request* other);
 
   // implements Message ----------------------------------------------
 
-  request_transactions_request* New() const;
+  transactions_request* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const request_transactions_request& from);
-  void MergeFrom(const request_transactions_request& from);
+  void CopyFrom(const transactions_request& from);
+  void MergeFrom(const transactions_request& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -1651,56 +1626,6 @@ class BCP_API request_transactions_request : public ::google::protobuf::Message 
   ::google::protobuf::Metadata GetMetadata() const;
 
   // nested types ----------------------------------------------------
-
-  typedef request_transactions_request_results results;
-  static const results TX_HASH = request_transactions_request_results_TX_HASH;
-  static const results TX_RESULT = request_transactions_request_results_TX_RESULT;
-  static const results UTXO_RESULT = request_transactions_request_results_UTXO_RESULT;
-  static inline bool results_IsValid(int value) {
-    return request_transactions_request_results_IsValid(value);
-  }
-  static const results results_MIN =
-    request_transactions_request_results_results_MIN;
-  static const results results_MAX =
-    request_transactions_request_results_results_MAX;
-  static const int results_ARRAYSIZE =
-    request_transactions_request_results_results_ARRAYSIZE;
-  static inline const ::google::protobuf::EnumDescriptor*
-  results_descriptor() {
-    return request_transactions_request_results_descriptor();
-  }
-  static inline const ::std::string& results_Name(results value) {
-    return request_transactions_request_results_Name(value);
-  }
-  static inline bool results_Parse(const ::std::string& name,
-      results* value) {
-    return request_transactions_request_results_Parse(name, value);
-  }
-
-  typedef request_transactions_request_locations locations;
-  static const locations NONE = request_transactions_request_locations_NONE;
-  static const locations BLOCK = request_transactions_request_locations_BLOCK;
-  static const locations MERKLE = request_transactions_request_locations_MERKLE;
-  static inline bool locations_IsValid(int value) {
-    return request_transactions_request_locations_IsValid(value);
-  }
-  static const locations locations_MIN =
-    request_transactions_request_locations_locations_MIN;
-  static const locations locations_MAX =
-    request_transactions_request_locations_locations_MAX;
-  static const int locations_ARRAYSIZE =
-    request_transactions_request_locations_locations_ARRAYSIZE;
-  static inline const ::google::protobuf::EnumDescriptor*
-  locations_descriptor() {
-    return request_transactions_request_locations_descriptor();
-  }
-  static inline const ::std::string& locations_Name(locations value) {
-    return request_transactions_request_locations_Name(value);
-  }
-  static inline bool locations_Parse(const ::std::string& name,
-      locations* value) {
-    return request_transactions_request_locations_Parse(name, value);
-  }
 
   // accessors -------------------------------------------------------
 
@@ -1732,21 +1657,21 @@ class BCP_API request_transactions_request : public ::google::protobuf::Message 
   inline ::google::protobuf::RepeatedPtrField< ::libbitcoin::protocol::filter >*
       mutable_query();
 
-  // optional .libbitcoin.protocol.request.transactions_request.results result_type = 4 [default = TX_HASH];
+  // optional .libbitcoin.protocol.transaction_results result_type = 4 [default = TX_HASH];
   inline bool has_result_type() const;
   inline void clear_result_type();
   static const int kResultTypeFieldNumber = 4;
-  inline ::libbitcoin::protocol::request_transactions_request_results result_type() const;
-  inline void set_result_type(::libbitcoin::protocol::request_transactions_request_results value);
+  inline ::libbitcoin::protocol::transaction_results result_type() const;
+  inline void set_result_type(::libbitcoin::protocol::transaction_results value);
 
-  // optional .libbitcoin.protocol.request.transactions_request.locations location_type = 5 [default = NONE];
+  // optional .libbitcoin.protocol.locations location_type = 5 [default = NONE];
   inline bool has_location_type() const;
   inline void clear_location_type();
   static const int kLocationTypeFieldNumber = 5;
-  inline ::libbitcoin::protocol::request_transactions_request_locations location_type() const;
-  inline void set_location_type(::libbitcoin::protocol::request_transactions_request_locations value);
+  inline ::libbitcoin::protocol::locations location_type() const;
+  inline void set_location_type(::libbitcoin::protocol::locations value);
 
-  // @@protoc_insertion_point(class_scope:libbitcoin.protocol.request.transactions_request)
+  // @@protoc_insertion_point(class_scope:libbitcoin.protocol.transactions_request)
  private:
   inline void set_has_start();
   inline void clear_has_start();
@@ -1771,7 +1696,7 @@ class BCP_API request_transactions_request : public ::google::protobuf::Message 
   friend void protobuf_ShutdownFile_bitcoin_2fprotocol_2finterface_2eproto();
 
   void InitAsDefaultInstance();
-  static request_transactions_request* default_instance_;
+  static transactions_request* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -1835,9 +1760,6 @@ class BCP_API request : public ::google::protobuf::Message {
 
   // nested types ----------------------------------------------------
 
-  typedef request_block_headers_request block_headers_request;
-  typedef request_transactions_request transactions_request;
-
   // accessors -------------------------------------------------------
 
   // required uint32 id = 1;
@@ -1847,23 +1769,23 @@ class BCP_API request : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 id() const;
   inline void set_id(::google::protobuf::uint32 value);
 
-  // optional .libbitcoin.protocol.request.block_headers_request get_block_headers = 2;
+  // optional .libbitcoin.protocol.block_headers_request get_block_headers = 2;
   inline bool has_get_block_headers() const;
   inline void clear_get_block_headers();
   static const int kGetBlockHeadersFieldNumber = 2;
-  inline const ::libbitcoin::protocol::request_block_headers_request& get_block_headers() const;
-  inline ::libbitcoin::protocol::request_block_headers_request* mutable_get_block_headers();
-  inline ::libbitcoin::protocol::request_block_headers_request* release_get_block_headers();
-  inline void set_allocated_get_block_headers(::libbitcoin::protocol::request_block_headers_request* get_block_headers);
+  inline const ::libbitcoin::protocol::block_headers_request& get_block_headers() const;
+  inline ::libbitcoin::protocol::block_headers_request* mutable_get_block_headers();
+  inline ::libbitcoin::protocol::block_headers_request* release_get_block_headers();
+  inline void set_allocated_get_block_headers(::libbitcoin::protocol::block_headers_request* get_block_headers);
 
-  // optional .libbitcoin.protocol.request.transactions_request get_transactions = 3;
+  // optional .libbitcoin.protocol.transactions_request get_transactions = 3;
   inline bool has_get_transactions() const;
   inline void clear_get_transactions();
   static const int kGetTransactionsFieldNumber = 3;
-  inline const ::libbitcoin::protocol::request_transactions_request& get_transactions() const;
-  inline ::libbitcoin::protocol::request_transactions_request* mutable_get_transactions();
-  inline ::libbitcoin::protocol::request_transactions_request* release_get_transactions();
-  inline void set_allocated_get_transactions(::libbitcoin::protocol::request_transactions_request* get_transactions);
+  inline const ::libbitcoin::protocol::transactions_request& get_transactions() const;
+  inline ::libbitcoin::protocol::transactions_request* mutable_get_transactions();
+  inline ::libbitcoin::protocol::transactions_request* release_get_transactions();
+  inline void set_allocated_get_transactions(::libbitcoin::protocol::transactions_request* get_transactions);
 
   // optional .libbitcoin.protocol.tx post_transaction = 4;
   inline bool has_post_transaction() const;
@@ -1916,8 +1838,8 @@ class BCP_API request : public ::google::protobuf::Message {
   mutable int _cached_size_;
   ::google::protobuf::uint32 id_;
   union RequestTypeUnion {
-    ::libbitcoin::protocol::request_block_headers_request* get_block_headers_;
-    ::libbitcoin::protocol::request_transactions_request* get_transactions_;
+    ::libbitcoin::protocol::block_headers_request* get_block_headers_;
+    ::libbitcoin::protocol::transactions_request* get_transactions_;
     ::libbitcoin::protocol::tx* post_transaction_;
     ::libbitcoin::protocol::tx* validate_transaction_;
     ::libbitcoin::protocol::block* post_block_;
@@ -3208,7 +3130,7 @@ block::mutable_tree() {
 
 // filter
 
-// required .libbitcoin.protocol.filter.filters filter_type = 1;
+// required .libbitcoin.protocol.filters filter_type = 1;
 inline bool filter::has_filter_type() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -3222,12 +3144,12 @@ inline void filter::clear_filter_type() {
   filter_type_ = 1;
   clear_has_filter_type();
 }
-inline ::libbitcoin::protocol::filter_filters filter::filter_type() const {
+inline ::libbitcoin::protocol::filters filter::filter_type() const {
   // @@protoc_insertion_point(field_get:libbitcoin.protocol.filter.filter_type)
-  return static_cast< ::libbitcoin::protocol::filter_filters >(filter_type_);
+  return static_cast< ::libbitcoin::protocol::filters >(filter_type_);
 }
-inline void filter::set_filter_type(::libbitcoin::protocol::filter_filters value) {
-  assert(::libbitcoin::protocol::filter_filters_IsValid(value));
+inline void filter::set_filter_type(::libbitcoin::protocol::filters value) {
+  assert(::libbitcoin::protocol::filters_IsValid(value));
   set_has_filter_type();
   filter_type_ = value;
   // @@protoc_insertion_point(field_set:libbitcoin.protocol.filter.filter_type)
@@ -4024,39 +3946,39 @@ utxo_result::mutable_outputs() {
 
 // -------------------------------------------------------------------
 
-// request_block_headers_request
+// block_headers_request
 
 // optional .libbitcoin.protocol.block_id start = 1;
-inline bool request_block_headers_request::has_start() const {
+inline bool block_headers_request::has_start() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void request_block_headers_request::set_has_start() {
+inline void block_headers_request::set_has_start() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void request_block_headers_request::clear_has_start() {
+inline void block_headers_request::clear_has_start() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void request_block_headers_request::clear_start() {
+inline void block_headers_request::clear_start() {
   if (start_ != NULL) start_->::libbitcoin::protocol::block_id::Clear();
   clear_has_start();
 }
-inline const ::libbitcoin::protocol::block_id& request_block_headers_request::start() const {
-  // @@protoc_insertion_point(field_get:libbitcoin.protocol.request.block_headers_request.start)
+inline const ::libbitcoin::protocol::block_id& block_headers_request::start() const {
+  // @@protoc_insertion_point(field_get:libbitcoin.protocol.block_headers_request.start)
   return start_ != NULL ? *start_ : *default_instance_->start_;
 }
-inline ::libbitcoin::protocol::block_id* request_block_headers_request::mutable_start() {
+inline ::libbitcoin::protocol::block_id* block_headers_request::mutable_start() {
   set_has_start();
   if (start_ == NULL) start_ = new ::libbitcoin::protocol::block_id;
-  // @@protoc_insertion_point(field_mutable:libbitcoin.protocol.request.block_headers_request.start)
+  // @@protoc_insertion_point(field_mutable:libbitcoin.protocol.block_headers_request.start)
   return start_;
 }
-inline ::libbitcoin::protocol::block_id* request_block_headers_request::release_start() {
+inline ::libbitcoin::protocol::block_id* block_headers_request::release_start() {
   clear_has_start();
   ::libbitcoin::protocol::block_id* temp = start_;
   start_ = NULL;
   return temp;
 }
-inline void request_block_headers_request::set_allocated_start(::libbitcoin::protocol::block_id* start) {
+inline void block_headers_request::set_allocated_start(::libbitcoin::protocol::block_id* start) {
   delete start_;
   start_ = start;
   if (start) {
@@ -4064,68 +3986,68 @@ inline void request_block_headers_request::set_allocated_start(::libbitcoin::pro
   } else {
     clear_has_start();
   }
-  // @@protoc_insertion_point(field_set_allocated:libbitcoin.protocol.request.block_headers_request.start)
+  // @@protoc_insertion_point(field_set_allocated:libbitcoin.protocol.block_headers_request.start)
 }
 
 // optional uint32 results_per_page = 2;
-inline bool request_block_headers_request::has_results_per_page() const {
+inline bool block_headers_request::has_results_per_page() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void request_block_headers_request::set_has_results_per_page() {
+inline void block_headers_request::set_has_results_per_page() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void request_block_headers_request::clear_has_results_per_page() {
+inline void block_headers_request::clear_has_results_per_page() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void request_block_headers_request::clear_results_per_page() {
+inline void block_headers_request::clear_results_per_page() {
   results_per_page_ = 0u;
   clear_has_results_per_page();
 }
-inline ::google::protobuf::uint32 request_block_headers_request::results_per_page() const {
-  // @@protoc_insertion_point(field_get:libbitcoin.protocol.request.block_headers_request.results_per_page)
+inline ::google::protobuf::uint32 block_headers_request::results_per_page() const {
+  // @@protoc_insertion_point(field_get:libbitcoin.protocol.block_headers_request.results_per_page)
   return results_per_page_;
 }
-inline void request_block_headers_request::set_results_per_page(::google::protobuf::uint32 value) {
+inline void block_headers_request::set_results_per_page(::google::protobuf::uint32 value) {
   set_has_results_per_page();
   results_per_page_ = value;
-  // @@protoc_insertion_point(field_set:libbitcoin.protocol.request.block_headers_request.results_per_page)
+  // @@protoc_insertion_point(field_set:libbitcoin.protocol.block_headers_request.results_per_page)
 }
 
 // -------------------------------------------------------------------
 
-// request_transactions_request
+// transactions_request
 
 // optional .libbitcoin.protocol.block_id start = 1;
-inline bool request_transactions_request::has_start() const {
+inline bool transactions_request::has_start() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void request_transactions_request::set_has_start() {
+inline void transactions_request::set_has_start() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void request_transactions_request::clear_has_start() {
+inline void transactions_request::clear_has_start() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void request_transactions_request::clear_start() {
+inline void transactions_request::clear_start() {
   if (start_ != NULL) start_->::libbitcoin::protocol::block_id::Clear();
   clear_has_start();
 }
-inline const ::libbitcoin::protocol::block_id& request_transactions_request::start() const {
-  // @@protoc_insertion_point(field_get:libbitcoin.protocol.request.transactions_request.start)
+inline const ::libbitcoin::protocol::block_id& transactions_request::start() const {
+  // @@protoc_insertion_point(field_get:libbitcoin.protocol.transactions_request.start)
   return start_ != NULL ? *start_ : *default_instance_->start_;
 }
-inline ::libbitcoin::protocol::block_id* request_transactions_request::mutable_start() {
+inline ::libbitcoin::protocol::block_id* transactions_request::mutable_start() {
   set_has_start();
   if (start_ == NULL) start_ = new ::libbitcoin::protocol::block_id;
-  // @@protoc_insertion_point(field_mutable:libbitcoin.protocol.request.transactions_request.start)
+  // @@protoc_insertion_point(field_mutable:libbitcoin.protocol.transactions_request.start)
   return start_;
 }
-inline ::libbitcoin::protocol::block_id* request_transactions_request::release_start() {
+inline ::libbitcoin::protocol::block_id* transactions_request::release_start() {
   clear_has_start();
   ::libbitcoin::protocol::block_id* temp = start_;
   start_ = NULL;
   return temp;
 }
-inline void request_transactions_request::set_allocated_start(::libbitcoin::protocol::block_id* start) {
+inline void transactions_request::set_allocated_start(::libbitcoin::protocol::block_id* start) {
   delete start_;
   start_ = start;
   if (start) {
@@ -4133,111 +4055,111 @@ inline void request_transactions_request::set_allocated_start(::libbitcoin::prot
   } else {
     clear_has_start();
   }
-  // @@protoc_insertion_point(field_set_allocated:libbitcoin.protocol.request.transactions_request.start)
+  // @@protoc_insertion_point(field_set_allocated:libbitcoin.protocol.transactions_request.start)
 }
 
 // optional uint32 results_per_page = 2;
-inline bool request_transactions_request::has_results_per_page() const {
+inline bool transactions_request::has_results_per_page() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void request_transactions_request::set_has_results_per_page() {
+inline void transactions_request::set_has_results_per_page() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void request_transactions_request::clear_has_results_per_page() {
+inline void transactions_request::clear_has_results_per_page() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void request_transactions_request::clear_results_per_page() {
+inline void transactions_request::clear_results_per_page() {
   results_per_page_ = 0u;
   clear_has_results_per_page();
 }
-inline ::google::protobuf::uint32 request_transactions_request::results_per_page() const {
-  // @@protoc_insertion_point(field_get:libbitcoin.protocol.request.transactions_request.results_per_page)
+inline ::google::protobuf::uint32 transactions_request::results_per_page() const {
+  // @@protoc_insertion_point(field_get:libbitcoin.protocol.transactions_request.results_per_page)
   return results_per_page_;
 }
-inline void request_transactions_request::set_results_per_page(::google::protobuf::uint32 value) {
+inline void transactions_request::set_results_per_page(::google::protobuf::uint32 value) {
   set_has_results_per_page();
   results_per_page_ = value;
-  // @@protoc_insertion_point(field_set:libbitcoin.protocol.request.transactions_request.results_per_page)
+  // @@protoc_insertion_point(field_set:libbitcoin.protocol.transactions_request.results_per_page)
 }
 
 // repeated .libbitcoin.protocol.filter query = 3;
-inline int request_transactions_request::query_size() const {
+inline int transactions_request::query_size() const {
   return query_.size();
 }
-inline void request_transactions_request::clear_query() {
+inline void transactions_request::clear_query() {
   query_.Clear();
 }
-inline const ::libbitcoin::protocol::filter& request_transactions_request::query(int index) const {
-  // @@protoc_insertion_point(field_get:libbitcoin.protocol.request.transactions_request.query)
+inline const ::libbitcoin::protocol::filter& transactions_request::query(int index) const {
+  // @@protoc_insertion_point(field_get:libbitcoin.protocol.transactions_request.query)
   return query_.Get(index);
 }
-inline ::libbitcoin::protocol::filter* request_transactions_request::mutable_query(int index) {
-  // @@protoc_insertion_point(field_mutable:libbitcoin.protocol.request.transactions_request.query)
+inline ::libbitcoin::protocol::filter* transactions_request::mutable_query(int index) {
+  // @@protoc_insertion_point(field_mutable:libbitcoin.protocol.transactions_request.query)
   return query_.Mutable(index);
 }
-inline ::libbitcoin::protocol::filter* request_transactions_request::add_query() {
-  // @@protoc_insertion_point(field_add:libbitcoin.protocol.request.transactions_request.query)
+inline ::libbitcoin::protocol::filter* transactions_request::add_query() {
+  // @@protoc_insertion_point(field_add:libbitcoin.protocol.transactions_request.query)
   return query_.Add();
 }
 inline const ::google::protobuf::RepeatedPtrField< ::libbitcoin::protocol::filter >&
-request_transactions_request::query() const {
-  // @@protoc_insertion_point(field_list:libbitcoin.protocol.request.transactions_request.query)
+transactions_request::query() const {
+  // @@protoc_insertion_point(field_list:libbitcoin.protocol.transactions_request.query)
   return query_;
 }
 inline ::google::protobuf::RepeatedPtrField< ::libbitcoin::protocol::filter >*
-request_transactions_request::mutable_query() {
-  // @@protoc_insertion_point(field_mutable_list:libbitcoin.protocol.request.transactions_request.query)
+transactions_request::mutable_query() {
+  // @@protoc_insertion_point(field_mutable_list:libbitcoin.protocol.transactions_request.query)
   return &query_;
 }
 
-// optional .libbitcoin.protocol.request.transactions_request.results result_type = 4 [default = TX_HASH];
-inline bool request_transactions_request::has_result_type() const {
+// optional .libbitcoin.protocol.transaction_results result_type = 4 [default = TX_HASH];
+inline bool transactions_request::has_result_type() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void request_transactions_request::set_has_result_type() {
+inline void transactions_request::set_has_result_type() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void request_transactions_request::clear_has_result_type() {
+inline void transactions_request::clear_has_result_type() {
   _has_bits_[0] &= ~0x00000008u;
 }
-inline void request_transactions_request::clear_result_type() {
+inline void transactions_request::clear_result_type() {
   result_type_ = 1;
   clear_has_result_type();
 }
-inline ::libbitcoin::protocol::request_transactions_request_results request_transactions_request::result_type() const {
-  // @@protoc_insertion_point(field_get:libbitcoin.protocol.request.transactions_request.result_type)
-  return static_cast< ::libbitcoin::protocol::request_transactions_request_results >(result_type_);
+inline ::libbitcoin::protocol::transaction_results transactions_request::result_type() const {
+  // @@protoc_insertion_point(field_get:libbitcoin.protocol.transactions_request.result_type)
+  return static_cast< ::libbitcoin::protocol::transaction_results >(result_type_);
 }
-inline void request_transactions_request::set_result_type(::libbitcoin::protocol::request_transactions_request_results value) {
-  assert(::libbitcoin::protocol::request_transactions_request_results_IsValid(value));
+inline void transactions_request::set_result_type(::libbitcoin::protocol::transaction_results value) {
+  assert(::libbitcoin::protocol::transaction_results_IsValid(value));
   set_has_result_type();
   result_type_ = value;
-  // @@protoc_insertion_point(field_set:libbitcoin.protocol.request.transactions_request.result_type)
+  // @@protoc_insertion_point(field_set:libbitcoin.protocol.transactions_request.result_type)
 }
 
-// optional .libbitcoin.protocol.request.transactions_request.locations location_type = 5 [default = NONE];
-inline bool request_transactions_request::has_location_type() const {
+// optional .libbitcoin.protocol.locations location_type = 5 [default = NONE];
+inline bool transactions_request::has_location_type() const {
   return (_has_bits_[0] & 0x00000010u) != 0;
 }
-inline void request_transactions_request::set_has_location_type() {
+inline void transactions_request::set_has_location_type() {
   _has_bits_[0] |= 0x00000010u;
 }
-inline void request_transactions_request::clear_has_location_type() {
+inline void transactions_request::clear_has_location_type() {
   _has_bits_[0] &= ~0x00000010u;
 }
-inline void request_transactions_request::clear_location_type() {
+inline void transactions_request::clear_location_type() {
   location_type_ = 0;
   clear_has_location_type();
 }
-inline ::libbitcoin::protocol::request_transactions_request_locations request_transactions_request::location_type() const {
-  // @@protoc_insertion_point(field_get:libbitcoin.protocol.request.transactions_request.location_type)
-  return static_cast< ::libbitcoin::protocol::request_transactions_request_locations >(location_type_);
+inline ::libbitcoin::protocol::locations transactions_request::location_type() const {
+  // @@protoc_insertion_point(field_get:libbitcoin.protocol.transactions_request.location_type)
+  return static_cast< ::libbitcoin::protocol::locations >(location_type_);
 }
-inline void request_transactions_request::set_location_type(::libbitcoin::protocol::request_transactions_request_locations value) {
-  assert(::libbitcoin::protocol::request_transactions_request_locations_IsValid(value));
+inline void transactions_request::set_location_type(::libbitcoin::protocol::locations value) {
+  assert(::libbitcoin::protocol::locations_IsValid(value));
   set_has_location_type();
   location_type_ = value;
-  // @@protoc_insertion_point(field_set:libbitcoin.protocol.request.transactions_request.location_type)
+  // @@protoc_insertion_point(field_set:libbitcoin.protocol.transactions_request.location_type)
 }
 
 // -------------------------------------------------------------------
@@ -4268,7 +4190,7 @@ inline void request::set_id(::google::protobuf::uint32 value) {
   // @@protoc_insertion_point(field_set:libbitcoin.protocol.request.id)
 }
 
-// optional .libbitcoin.protocol.request.block_headers_request get_block_headers = 2;
+// optional .libbitcoin.protocol.block_headers_request get_block_headers = 2;
 inline bool request::has_get_block_headers() const {
   return request_type_case() == kGetBlockHeaders;
 }
@@ -4281,29 +4203,29 @@ inline void request::clear_get_block_headers() {
     clear_has_request_type();
   }
 }
-inline const ::libbitcoin::protocol::request_block_headers_request& request::get_block_headers() const {
+inline const ::libbitcoin::protocol::block_headers_request& request::get_block_headers() const {
   return has_get_block_headers() ? *request_type_.get_block_headers_
-                      : ::libbitcoin::protocol::request_block_headers_request::default_instance();
+                      : ::libbitcoin::protocol::block_headers_request::default_instance();
 }
-inline ::libbitcoin::protocol::request_block_headers_request* request::mutable_get_block_headers() {
+inline ::libbitcoin::protocol::block_headers_request* request::mutable_get_block_headers() {
   if (!has_get_block_headers()) {
     clear_request_type();
     set_has_get_block_headers();
-    request_type_.get_block_headers_ = new ::libbitcoin::protocol::request_block_headers_request;
+    request_type_.get_block_headers_ = new ::libbitcoin::protocol::block_headers_request;
   }
   return request_type_.get_block_headers_;
 }
-inline ::libbitcoin::protocol::request_block_headers_request* request::release_get_block_headers() {
+inline ::libbitcoin::protocol::block_headers_request* request::release_get_block_headers() {
   if (has_get_block_headers()) {
     clear_has_request_type();
-    ::libbitcoin::protocol::request_block_headers_request* temp = request_type_.get_block_headers_;
+    ::libbitcoin::protocol::block_headers_request* temp = request_type_.get_block_headers_;
     request_type_.get_block_headers_ = NULL;
     return temp;
   } else {
     return NULL;
   }
 }
-inline void request::set_allocated_get_block_headers(::libbitcoin::protocol::request_block_headers_request* get_block_headers) {
+inline void request::set_allocated_get_block_headers(::libbitcoin::protocol::block_headers_request* get_block_headers) {
   clear_request_type();
   if (get_block_headers) {
     set_has_get_block_headers();
@@ -4311,7 +4233,7 @@ inline void request::set_allocated_get_block_headers(::libbitcoin::protocol::req
   }
 }
 
-// optional .libbitcoin.protocol.request.transactions_request get_transactions = 3;
+// optional .libbitcoin.protocol.transactions_request get_transactions = 3;
 inline bool request::has_get_transactions() const {
   return request_type_case() == kGetTransactions;
 }
@@ -4324,29 +4246,29 @@ inline void request::clear_get_transactions() {
     clear_has_request_type();
   }
 }
-inline const ::libbitcoin::protocol::request_transactions_request& request::get_transactions() const {
+inline const ::libbitcoin::protocol::transactions_request& request::get_transactions() const {
   return has_get_transactions() ? *request_type_.get_transactions_
-                      : ::libbitcoin::protocol::request_transactions_request::default_instance();
+                      : ::libbitcoin::protocol::transactions_request::default_instance();
 }
-inline ::libbitcoin::protocol::request_transactions_request* request::mutable_get_transactions() {
+inline ::libbitcoin::protocol::transactions_request* request::mutable_get_transactions() {
   if (!has_get_transactions()) {
     clear_request_type();
     set_has_get_transactions();
-    request_type_.get_transactions_ = new ::libbitcoin::protocol::request_transactions_request;
+    request_type_.get_transactions_ = new ::libbitcoin::protocol::transactions_request;
   }
   return request_type_.get_transactions_;
 }
-inline ::libbitcoin::protocol::request_transactions_request* request::release_get_transactions() {
+inline ::libbitcoin::protocol::transactions_request* request::release_get_transactions() {
   if (has_get_transactions()) {
     clear_has_request_type();
-    ::libbitcoin::protocol::request_transactions_request* temp = request_type_.get_transactions_;
+    ::libbitcoin::protocol::transactions_request* temp = request_type_.get_transactions_;
     request_type_.get_transactions_ = NULL;
     return temp;
   } else {
     return NULL;
   }
 }
-inline void request::set_allocated_get_transactions(::libbitcoin::protocol::request_transactions_request* get_transactions) {
+inline void request::set_allocated_get_transactions(::libbitcoin::protocol::transactions_request* get_transactions) {
   clear_request_type();
   if (get_transactions) {
     set_has_get_transactions();
@@ -5022,20 +4944,20 @@ inline response::ResponseTypeCase response::response_type_case() const {
 namespace google {
 namespace protobuf {
 
-template <> struct is_proto_enum< ::libbitcoin::protocol::filter_filters> : ::google::protobuf::internal::true_type {};
+template <> struct is_proto_enum< ::libbitcoin::protocol::filters> : ::google::protobuf::internal::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::libbitcoin::protocol::filter_filters>() {
-  return ::libbitcoin::protocol::filter_filters_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::libbitcoin::protocol::filters>() {
+  return ::libbitcoin::protocol::filters_descriptor();
 }
-template <> struct is_proto_enum< ::libbitcoin::protocol::request_transactions_request_results> : ::google::protobuf::internal::true_type {};
+template <> struct is_proto_enum< ::libbitcoin::protocol::transaction_results> : ::google::protobuf::internal::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::libbitcoin::protocol::request_transactions_request_results>() {
-  return ::libbitcoin::protocol::request_transactions_request_results_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::libbitcoin::protocol::transaction_results>() {
+  return ::libbitcoin::protocol::transaction_results_descriptor();
 }
-template <> struct is_proto_enum< ::libbitcoin::protocol::request_transactions_request_locations> : ::google::protobuf::internal::true_type {};
+template <> struct is_proto_enum< ::libbitcoin::protocol::locations> : ::google::protobuf::internal::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::libbitcoin::protocol::request_transactions_request_locations>() {
-  return ::libbitcoin::protocol::request_transactions_request_locations_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::libbitcoin::protocol::locations>() {
+  return ::libbitcoin::protocol::locations_descriptor();
 }
 
 }  // namespace google

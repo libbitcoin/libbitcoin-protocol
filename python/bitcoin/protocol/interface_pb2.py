@@ -3,6 +3,7 @@
 
 import sys
 _b=sys.version_info[0]<3 and (lambda x:x) or (lambda x:x.encode('latin1'))
+from google.protobuf.internal import enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
@@ -18,15 +19,13 @@ _sym_db = _symbol_database.Default()
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='bitcoin/protocol/interface.proto',
   package='libbitcoin.protocol',
-  serialized_pb=_b('\n bitcoin/protocol/interface.proto\x12\x13libbitcoin.protocol\"\x93\x01\n\x0c\x62lock_header\x12\x0f\n\x07version\x18\x01 \x02(\r\x12\x1b\n\x13previous_block_hash\x18\x02 \x02(\x0c\x12\x13\n\x0bmerkle_root\x18\x03 \x02(\x0c\x12\x11\n\ttimestamp\x18\x04 \x02(\r\x12\x0c\n\x04\x62its\x18\x05 \x02(\r\x12\r\n\x05nonce\x18\x06 \x02(\r\x12\x10\n\x08tx_count\x18\x07 \x02(\x04\"$\n\x05point\x12\x0c\n\x04hash\x18\x01 \x02(\x0c\x12\r\n\x05index\x18\x02 \x02(\r\"a\n\x08tx_input\x12\x33\n\x0fprevious_output\x18\x01 \x02(\x0b\x32\x1a.libbitcoin.protocol.point\x12\x0e\n\x06script\x18\x02 \x02(\x0c\x12\x10\n\x08sequence\x18\x03 \x02(\r\"*\n\ttx_output\x12\r\n\x05value\x18\x01 \x02(\x04\x12\x0e\n\x06script\x18\x02 \x02(\x0c\"\x87\x01\n\x02tx\x12\x0f\n\x07version\x18\x01 \x02(\r\x12\x10\n\x08locktime\x18\x02 \x02(\r\x12-\n\x06inputs\x18\x03 \x03(\x0b\x32\x1d.libbitcoin.protocol.tx_input\x12/\n\x07outputs\x18\x04 \x03(\x0b\x32\x1e.libbitcoin.protocol.tx_output\"w\n\x05\x62lock\x12\x31\n\x06header\x18\x01 \x02(\x0b\x32!.libbitcoin.protocol.block_header\x12-\n\x0ctransactions\x18\x02 \x03(\x0b\x32\x17.libbitcoin.protocol.tx\x12\x0c\n\x04tree\x18\x03 \x03(\x0c\"\x96\x01\n\x06\x66ilter\x12\x38\n\x0b\x66ilter_type\x18\x01 \x02(\x0e\x32#.libbitcoin.protocol.filter.filters\x12\x0c\n\x04\x62its\x18\x02 \x01(\r\x12\x0e\n\x06prefix\x18\x03 \x02(\x0c\"4\n\x07\x66ilters\x12\x0b\n\x07\x41\x44\x44RESS\x10\x01\x12\x0f\n\x0bTRANSACTION\x10\x02\x12\x0b\n\x07STEALTH\x10\x03\"(\n\x08\x62lock_id\x12\x0e\n\x06height\x18\x01 \x01(\r\x12\x0c\n\x04hash\x18\x02 \x01(\x0c\"Q\n\x0e\x62lock_location\x12/\n\x08identity\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x0e\n\x06\x62ranch\x18\x02 \x03(\x0c\"U\n\x0etx_hash_result\x12\x0c\n\x04hash\x18\x01 \x02(\x0c\x12\x35\n\x08location\x18\x02 \x02(\x0b\x32#.libbitcoin.protocol.block_location\"p\n\ttx_result\x12,\n\x0btransaction\x18\x01 \x02(\x0b\x32\x17.libbitcoin.protocol.tx\x12\x35\n\x08location\x18\x02 \x02(\x0b\x32#.libbitcoin.protocol.block_location\"9\n\x06output\x12\r\n\x05index\x18\x01 \x02(\r\x12\x10\n\x08satoshis\x18\x02 \x02(\x04\x12\x0e\n\x06script\x18\x03 \x02(\x0c\"\x83\x01\n\x0butxo_result\x12\x0f\n\x07tx_hash\x18\x01 \x02(\x0c\x12\x35\n\x08location\x18\x02 \x02(\x0b\x32#.libbitcoin.protocol.block_location\x12,\n\x07outputs\x18\x03 \x03(\x0b\x32\x1b.libbitcoin.protocol.output\"\xf3\x06\n\x07request\x12\n\n\x02id\x18\x01 \x02(\r\x12O\n\x11get_block_headers\x18\x02 \x01(\x0b\x32\x32.libbitcoin.protocol.request.block_headers_requestH\x00\x12M\n\x10get_transactions\x18\x03 \x01(\x0b\x32\x31.libbitcoin.protocol.request.transactions_requestH\x00\x12\x33\n\x10post_transaction\x18\x04 \x01(\x0b\x32\x17.libbitcoin.protocol.txH\x00\x12\x37\n\x14validate_transaction\x18\x05 \x01(\x0b\x32\x17.libbitcoin.protocol.txH\x00\x12\x30\n\npost_block\x18\x06 \x01(\x0b\x32\x1a.libbitcoin.protocol.blockH\x00\x1a_\n\x15\x62lock_headers_request\x12,\n\x05start\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x18\n\x10results_per_page\x18\x02 \x01(\r\x1a\xa3\x03\n\x14transactions_request\x12,\n\x05start\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x18\n\x10results_per_page\x18\x02 \x01(\r\x12*\n\x05query\x18\x03 \x03(\x0b\x32\x1b.libbitcoin.protocol.filter\x12W\n\x0bresult_type\x18\x04 \x01(\x0e\x32\x39.libbitcoin.protocol.request.transactions_request.results:\x07TX_HASH\x12X\n\rlocation_type\x18\x05 \x01(\x0e\x32;.libbitcoin.protocol.request.transactions_request.locations:\x04NONE\"6\n\x07results\x12\x0b\n\x07TX_HASH\x10\x01\x12\r\n\tTX_RESULT\x10\x02\x12\x0f\n\x0bUTXO_RESULT\x10\x03\",\n\tlocations\x12\x08\n\x04NONE\x10\x00\x12\t\n\x05\x42LOCK\x10\x01\x12\n\n\x06MERKLE\x10\x02*\x05\x08\x64\x10\xc8\x01\x42\x0e\n\x0crequest_type\"\xf7\x05\n\x08response\x12\n\n\x02id\x18\x01 \x02(\r\x12\x0e\n\x06status\x18\x02 \x01(\x11\x12Q\n\x1aget_block_headers_response\x18\x03 \x01(\x0b\x32+.libbitcoin.protocol.response.block_headersH\x00\x12O\n\x19get_transactions_response\x18\x04 \x01(\x0b\x32*.libbitcoin.protocol.response.transactionsH\x00\x12$\n\x1apost_transaction_succeeded\x18\x05 \x01(\x08H\x00\x12(\n\x1evalidate_transaction_succeeded\x18\x06 \x01(\x08H\x00\x12\x1e\n\x14post_block_succeeded\x18\x07 \x01(\x08H\x00\x1a\x9c\x01\n\rblock_headers\x12+\n\x04next\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12*\n\x03top\x18\x02 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x32\n\x07headers\x18\x03 \x03(\x0b\x32!.libbitcoin.protocol.block_header\x1a\x83\x02\n\x0ctransactions\x12+\n\x04next\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12*\n\x03top\x18\x02 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x33\n\x06hashes\x18\x03 \x03(\x0b\x32#.libbitcoin.protocol.tx_hash_result\x12\x34\n\x0ctransactions\x18\x04 \x03(\x0b\x32\x1e.libbitcoin.protocol.tx_result\x12/\n\x05utxos\x18\x05 \x03(\x0b\x32 .libbitcoin.protocol.utxo_result*\x05\x08\x64\x10\xc8\x01\x42\x0f\n\rresponse_type')
+  serialized_pb=_b('\n bitcoin/protocol/interface.proto\x12\x13libbitcoin.protocol\"\x93\x01\n\x0c\x62lock_header\x12\x0f\n\x07version\x18\x01 \x02(\r\x12\x1b\n\x13previous_block_hash\x18\x02 \x02(\x0c\x12\x13\n\x0bmerkle_root\x18\x03 \x02(\x0c\x12\x11\n\ttimestamp\x18\x04 \x02(\r\x12\x0c\n\x04\x62its\x18\x05 \x02(\r\x12\r\n\x05nonce\x18\x06 \x02(\r\x12\x10\n\x08tx_count\x18\x07 \x02(\x04\"$\n\x05point\x12\x0c\n\x04hash\x18\x01 \x02(\x0c\x12\r\n\x05index\x18\x02 \x02(\r\"a\n\x08tx_input\x12\x33\n\x0fprevious_output\x18\x01 \x02(\x0b\x32\x1a.libbitcoin.protocol.point\x12\x0e\n\x06script\x18\x02 \x02(\x0c\x12\x10\n\x08sequence\x18\x03 \x02(\r\"*\n\ttx_output\x12\r\n\x05value\x18\x01 \x02(\x04\x12\x0e\n\x06script\x18\x02 \x02(\x0c\"\x87\x01\n\x02tx\x12\x0f\n\x07version\x18\x01 \x02(\r\x12\x10\n\x08locktime\x18\x02 \x02(\r\x12-\n\x06inputs\x18\x03 \x03(\x0b\x32\x1d.libbitcoin.protocol.tx_input\x12/\n\x07outputs\x18\x04 \x03(\x0b\x32\x1e.libbitcoin.protocol.tx_output\"w\n\x05\x62lock\x12\x31\n\x06header\x18\x01 \x02(\x0b\x32!.libbitcoin.protocol.block_header\x12-\n\x0ctransactions\x18\x02 \x03(\x0b\x32\x17.libbitcoin.protocol.tx\x12\x0c\n\x04tree\x18\x03 \x03(\x0c\"Y\n\x06\x66ilter\x12\x31\n\x0b\x66ilter_type\x18\x01 \x02(\x0e\x32\x1c.libbitcoin.protocol.filters\x12\x0c\n\x04\x62its\x18\x02 \x01(\r\x12\x0e\n\x06prefix\x18\x03 \x02(\x0c\"(\n\x08\x62lock_id\x12\x0e\n\x06height\x18\x01 \x01(\r\x12\x0c\n\x04hash\x18\x02 \x01(\x0c\"Q\n\x0e\x62lock_location\x12/\n\x08identity\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x0e\n\x06\x62ranch\x18\x02 \x03(\x0c\"U\n\x0etx_hash_result\x12\x0c\n\x04hash\x18\x01 \x02(\x0c\x12\x35\n\x08location\x18\x02 \x02(\x0b\x32#.libbitcoin.protocol.block_location\"p\n\ttx_result\x12,\n\x0btransaction\x18\x01 \x02(\x0b\x32\x17.libbitcoin.protocol.tx\x12\x35\n\x08location\x18\x02 \x02(\x0b\x32#.libbitcoin.protocol.block_location\"9\n\x06output\x12\r\n\x05index\x18\x01 \x02(\r\x12\x10\n\x08satoshis\x18\x02 \x02(\x04\x12\x0e\n\x06script\x18\x03 \x02(\x0c\"\x83\x01\n\x0butxo_result\x12\x0f\n\x07tx_hash\x18\x01 \x02(\x0c\x12\x35\n\x08location\x18\x02 \x02(\x0b\x32#.libbitcoin.protocol.block_location\x12,\n\x07outputs\x18\x03 \x03(\x0b\x32\x1b.libbitcoin.protocol.output\"_\n\x15\x62lock_headers_request\x12,\n\x05start\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x18\n\x10results_per_page\x18\x02 \x01(\r\"\x8f\x02\n\x14transactions_request\x12,\n\x05start\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x18\n\x10results_per_page\x18\x02 \x01(\r\x12*\n\x05query\x18\x03 \x03(\x0b\x32\x1b.libbitcoin.protocol.filter\x12\x46\n\x0bresult_type\x18\x04 \x01(\x0e\x32(.libbitcoin.protocol.transaction_results:\x07TX_HASH\x12;\n\rlocation_type\x18\x05 \x01(\x0e\x32\x1e.libbitcoin.protocol.locations:\x04NONE\"\xdc\x02\n\x07request\x12\n\n\x02id\x18\x01 \x02(\r\x12G\n\x11get_block_headers\x18\x02 \x01(\x0b\x32*.libbitcoin.protocol.block_headers_requestH\x00\x12\x45\n\x10get_transactions\x18\x03 \x01(\x0b\x32).libbitcoin.protocol.transactions_requestH\x00\x12\x33\n\x10post_transaction\x18\x04 \x01(\x0b\x32\x17.libbitcoin.protocol.txH\x00\x12\x37\n\x14validate_transaction\x18\x05 \x01(\x0b\x32\x17.libbitcoin.protocol.txH\x00\x12\x30\n\npost_block\x18\x06 \x01(\x0b\x32\x1a.libbitcoin.protocol.blockH\x00*\x05\x08\x64\x10\xc8\x01\x42\x0e\n\x0crequest_type\"\xf7\x05\n\x08response\x12\n\n\x02id\x18\x01 \x02(\r\x12\x0e\n\x06status\x18\x02 \x01(\x11\x12Q\n\x1aget_block_headers_response\x18\x03 \x01(\x0b\x32+.libbitcoin.protocol.response.block_headersH\x00\x12O\n\x19get_transactions_response\x18\x04 \x01(\x0b\x32*.libbitcoin.protocol.response.transactionsH\x00\x12$\n\x1apost_transaction_succeeded\x18\x05 \x01(\x08H\x00\x12(\n\x1evalidate_transaction_succeeded\x18\x06 \x01(\x08H\x00\x12\x1e\n\x14post_block_succeeded\x18\x07 \x01(\x08H\x00\x1a\x9c\x01\n\rblock_headers\x12+\n\x04next\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12*\n\x03top\x18\x02 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x32\n\x07headers\x18\x03 \x03(\x0b\x32!.libbitcoin.protocol.block_header\x1a\x83\x02\n\x0ctransactions\x12+\n\x04next\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12*\n\x03top\x18\x02 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x33\n\x06hashes\x18\x03 \x03(\x0b\x32#.libbitcoin.protocol.tx_hash_result\x12\x34\n\x0ctransactions\x18\x04 \x03(\x0b\x32\x1e.libbitcoin.protocol.tx_result\x12/\n\x05utxos\x18\x05 \x03(\x0b\x32 .libbitcoin.protocol.utxo_result*\x05\x08\x64\x10\xc8\x01\x42\x0f\n\rresponse_type*4\n\x07\x66ilters\x12\x0b\n\x07\x41\x44\x44RESS\x10\x01\x12\x0f\n\x0bTRANSACTION\x10\x02\x12\x0b\n\x07STEALTH\x10\x03*B\n\x13transaction_results\x12\x0b\n\x07TX_HASH\x10\x01\x12\r\n\tTX_RESULT\x10\x02\x12\x0f\n\x0bUTXO_RESULT\x10\x03*,\n\tlocations\x12\x08\n\x04NONE\x10\x00\x12\t\n\x05\x42LOCK\x10\x01\x12\n\n\x06MERKLE\x10\x02')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
-
-
-_FILTER_FILTERS = _descriptor.EnumDescriptor(
+_FILTERS = _descriptor.EnumDescriptor(
   name='filters',
-  full_name='libbitcoin.protocol.filter.filters',
+  full_name='libbitcoin.protocol.filters',
   filename=None,
   file=DESCRIPTOR,
   values=[
@@ -45,14 +44,15 @@ _FILTER_FILTERS = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=746,
-  serialized_end=798,
+  serialized_start=2741,
+  serialized_end=2793,
 )
-_sym_db.RegisterEnumDescriptor(_FILTER_FILTERS)
+_sym_db.RegisterEnumDescriptor(_FILTERS)
 
-_REQUEST_TRANSACTIONS_REQUEST_RESULTS = _descriptor.EnumDescriptor(
-  name='results',
-  full_name='libbitcoin.protocol.request.transactions_request.results',
+filters = enum_type_wrapper.EnumTypeWrapper(_FILTERS)
+_TRANSACTION_RESULTS = _descriptor.EnumDescriptor(
+  name='transaction_results',
+  full_name='libbitcoin.protocol.transaction_results',
   filename=None,
   file=DESCRIPTOR,
   values=[
@@ -71,14 +71,15 @@ _REQUEST_TRANSACTIONS_REQUEST_RESULTS = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2080,
-  serialized_end=2134,
+  serialized_start=2795,
+  serialized_end=2861,
 )
-_sym_db.RegisterEnumDescriptor(_REQUEST_TRANSACTIONS_REQUEST_RESULTS)
+_sym_db.RegisterEnumDescriptor(_TRANSACTION_RESULTS)
 
-_REQUEST_TRANSACTIONS_REQUEST_LOCATIONS = _descriptor.EnumDescriptor(
+transaction_results = enum_type_wrapper.EnumTypeWrapper(_TRANSACTION_RESULTS)
+_LOCATIONS = _descriptor.EnumDescriptor(
   name='locations',
-  full_name='libbitcoin.protocol.request.transactions_request.locations',
+  full_name='libbitcoin.protocol.locations',
   filename=None,
   file=DESCRIPTOR,
   values=[
@@ -97,10 +98,22 @@ _REQUEST_TRANSACTIONS_REQUEST_LOCATIONS = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2136,
-  serialized_end=2180,
+  serialized_start=2863,
+  serialized_end=2907,
 )
-_sym_db.RegisterEnumDescriptor(_REQUEST_TRANSACTIONS_REQUEST_LOCATIONS)
+_sym_db.RegisterEnumDescriptor(_LOCATIONS)
+
+locations = enum_type_wrapper.EnumTypeWrapper(_LOCATIONS)
+ADDRESS = 1
+TRANSACTION = 2
+STEALTH = 3
+TX_HASH = 1
+TX_RESULT = 2
+UTXO_RESULT = 3
+NONE = 0
+BLOCK = 1
+MERKLE = 2
+
 
 
 _BLOCK_HEADER = _descriptor.Descriptor(
@@ -421,15 +434,14 @@ _FILTER = _descriptor.Descriptor(
   ],
   nested_types=[],
   enum_types=[
-    _FILTER_FILTERS,
   ],
   options=None,
   is_extendable=False,
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=648,
-  serialized_end=798,
+  serialized_start=647,
+  serialized_end=736,
 )
 
 
@@ -465,8 +477,8 @@ _BLOCK_ID = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=800,
-  serialized_end=840,
+  serialized_start=738,
+  serialized_end=778,
 )
 
 
@@ -502,8 +514,8 @@ _BLOCK_LOCATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=842,
-  serialized_end=923,
+  serialized_start=780,
+  serialized_end=861,
 )
 
 
@@ -539,8 +551,8 @@ _TX_HASH_RESULT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=925,
-  serialized_end=1010,
+  serialized_start=863,
+  serialized_end=948,
 )
 
 
@@ -576,8 +588,8 @@ _TX_RESULT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1012,
-  serialized_end=1124,
+  serialized_start=950,
+  serialized_end=1062,
 )
 
 
@@ -620,8 +632,8 @@ _OUTPUT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1126,
-  serialized_end=1183,
+  serialized_start=1064,
+  serialized_end=1121,
 )
 
 
@@ -664,27 +676,27 @@ _UTXO_RESULT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1186,
-  serialized_end=1317,
+  serialized_start=1124,
+  serialized_end=1255,
 )
 
 
-_REQUEST_BLOCK_HEADERS_REQUEST = _descriptor.Descriptor(
+_BLOCK_HEADERS_REQUEST = _descriptor.Descriptor(
   name='block_headers_request',
-  full_name='libbitcoin.protocol.request.block_headers_request',
+  full_name='libbitcoin.protocol.block_headers_request',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='start', full_name='libbitcoin.protocol.request.block_headers_request.start', index=0,
+      name='start', full_name='libbitcoin.protocol.block_headers_request.start', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='results_per_page', full_name='libbitcoin.protocol.request.block_headers_request.results_per_page', index=1,
+      name='results_per_page', full_name='libbitcoin.protocol.block_headers_request.results_per_page', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -701,47 +713,48 @@ _REQUEST_BLOCK_HEADERS_REQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1663,
-  serialized_end=1758,
+  serialized_start=1257,
+  serialized_end=1352,
 )
 
-_REQUEST_TRANSACTIONS_REQUEST = _descriptor.Descriptor(
+
+_TRANSACTIONS_REQUEST = _descriptor.Descriptor(
   name='transactions_request',
-  full_name='libbitcoin.protocol.request.transactions_request',
+  full_name='libbitcoin.protocol.transactions_request',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='start', full_name='libbitcoin.protocol.request.transactions_request.start', index=0,
+      name='start', full_name='libbitcoin.protocol.transactions_request.start', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='results_per_page', full_name='libbitcoin.protocol.request.transactions_request.results_per_page', index=1,
+      name='results_per_page', full_name='libbitcoin.protocol.transactions_request.results_per_page', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='query', full_name='libbitcoin.protocol.request.transactions_request.query', index=2,
+      name='query', full_name='libbitcoin.protocol.transactions_request.query', index=2,
       number=3, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='result_type', full_name='libbitcoin.protocol.request.transactions_request.result_type', index=3,
+      name='result_type', full_name='libbitcoin.protocol.transactions_request.result_type', index=3,
       number=4, type=14, cpp_type=8, label=1,
       has_default_value=True, default_value=1,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='location_type', full_name='libbitcoin.protocol.request.transactions_request.location_type', index=4,
+      name='location_type', full_name='libbitcoin.protocol.transactions_request.location_type', index=4,
       number=5, type=14, cpp_type=8, label=1,
       has_default_value=True, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -752,17 +765,16 @@ _REQUEST_TRANSACTIONS_REQUEST = _descriptor.Descriptor(
   ],
   nested_types=[],
   enum_types=[
-    _REQUEST_TRANSACTIONS_REQUEST_RESULTS,
-    _REQUEST_TRANSACTIONS_REQUEST_LOCATIONS,
   ],
   options=None,
   is_extendable=False,
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1761,
-  serialized_end=2180,
+  serialized_start=1355,
+  serialized_end=1626,
 )
+
 
 _REQUEST = _descriptor.Descriptor(
   name='request',
@@ -816,7 +828,7 @@ _REQUEST = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_REQUEST_BLOCK_HEADERS_REQUEST, _REQUEST_TRANSACTIONS_REQUEST, ],
+  nested_types=[],
   enum_types=[
   ],
   options=None,
@@ -827,8 +839,8 @@ _REQUEST = _descriptor.Descriptor(
       name='request_type', full_name='libbitcoin.protocol.request.request_type',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=1320,
-  serialized_end=2203,
+  serialized_start=1629,
+  serialized_end=1977,
 )
 
 
@@ -871,8 +883,8 @@ _RESPONSE_BLOCK_HEADERS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2523,
-  serialized_end=2679,
+  serialized_start=2297,
+  serialized_end=2453,
 )
 
 _RESPONSE_TRANSACTIONS = _descriptor.Descriptor(
@@ -928,8 +940,8 @@ _RESPONSE_TRANSACTIONS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2682,
-  serialized_end=2941,
+  serialized_start=2456,
+  serialized_end=2715,
 )
 
 _RESPONSE = _descriptor.Descriptor(
@@ -1002,8 +1014,8 @@ _RESPONSE = _descriptor.Descriptor(
       name='response_type', full_name='libbitcoin.protocol.response.response_type',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=2206,
-  serialized_end=2965,
+  serialized_start=1980,
+  serialized_end=2739,
 )
 
 _TX_INPUT.fields_by_name['previous_output'].message_type = _POINT
@@ -1011,25 +1023,20 @@ _TX.fields_by_name['inputs'].message_type = _TX_INPUT
 _TX.fields_by_name['outputs'].message_type = _TX_OUTPUT
 _BLOCK.fields_by_name['header'].message_type = _BLOCK_HEADER
 _BLOCK.fields_by_name['transactions'].message_type = _TX
-_FILTER.fields_by_name['filter_type'].enum_type = _FILTER_FILTERS
-_FILTER_FILTERS.containing_type = _FILTER
+_FILTER.fields_by_name['filter_type'].enum_type = _FILTERS
 _BLOCK_LOCATION.fields_by_name['identity'].message_type = _BLOCK_ID
 _TX_HASH_RESULT.fields_by_name['location'].message_type = _BLOCK_LOCATION
 _TX_RESULT.fields_by_name['transaction'].message_type = _TX
 _TX_RESULT.fields_by_name['location'].message_type = _BLOCK_LOCATION
 _UTXO_RESULT.fields_by_name['location'].message_type = _BLOCK_LOCATION
 _UTXO_RESULT.fields_by_name['outputs'].message_type = _OUTPUT
-_REQUEST_BLOCK_HEADERS_REQUEST.fields_by_name['start'].message_type = _BLOCK_ID
-_REQUEST_BLOCK_HEADERS_REQUEST.containing_type = _REQUEST
-_REQUEST_TRANSACTIONS_REQUEST.fields_by_name['start'].message_type = _BLOCK_ID
-_REQUEST_TRANSACTIONS_REQUEST.fields_by_name['query'].message_type = _FILTER
-_REQUEST_TRANSACTIONS_REQUEST.fields_by_name['result_type'].enum_type = _REQUEST_TRANSACTIONS_REQUEST_RESULTS
-_REQUEST_TRANSACTIONS_REQUEST.fields_by_name['location_type'].enum_type = _REQUEST_TRANSACTIONS_REQUEST_LOCATIONS
-_REQUEST_TRANSACTIONS_REQUEST.containing_type = _REQUEST
-_REQUEST_TRANSACTIONS_REQUEST_RESULTS.containing_type = _REQUEST_TRANSACTIONS_REQUEST
-_REQUEST_TRANSACTIONS_REQUEST_LOCATIONS.containing_type = _REQUEST_TRANSACTIONS_REQUEST
-_REQUEST.fields_by_name['get_block_headers'].message_type = _REQUEST_BLOCK_HEADERS_REQUEST
-_REQUEST.fields_by_name['get_transactions'].message_type = _REQUEST_TRANSACTIONS_REQUEST
+_BLOCK_HEADERS_REQUEST.fields_by_name['start'].message_type = _BLOCK_ID
+_TRANSACTIONS_REQUEST.fields_by_name['start'].message_type = _BLOCK_ID
+_TRANSACTIONS_REQUEST.fields_by_name['query'].message_type = _FILTER
+_TRANSACTIONS_REQUEST.fields_by_name['result_type'].enum_type = _TRANSACTION_RESULTS
+_TRANSACTIONS_REQUEST.fields_by_name['location_type'].enum_type = _LOCATIONS
+_REQUEST.fields_by_name['get_block_headers'].message_type = _BLOCK_HEADERS_REQUEST
+_REQUEST.fields_by_name['get_transactions'].message_type = _TRANSACTIONS_REQUEST
 _REQUEST.fields_by_name['post_transaction'].message_type = _TX
 _REQUEST.fields_by_name['validate_transaction'].message_type = _TX
 _REQUEST.fields_by_name['post_block'].message_type = _BLOCK
@@ -1088,8 +1095,13 @@ DESCRIPTOR.message_types_by_name['tx_hash_result'] = _TX_HASH_RESULT
 DESCRIPTOR.message_types_by_name['tx_result'] = _TX_RESULT
 DESCRIPTOR.message_types_by_name['output'] = _OUTPUT
 DESCRIPTOR.message_types_by_name['utxo_result'] = _UTXO_RESULT
+DESCRIPTOR.message_types_by_name['block_headers_request'] = _BLOCK_HEADERS_REQUEST
+DESCRIPTOR.message_types_by_name['transactions_request'] = _TRANSACTIONS_REQUEST
 DESCRIPTOR.message_types_by_name['request'] = _REQUEST
 DESCRIPTOR.message_types_by_name['response'] = _RESPONSE
+DESCRIPTOR.enum_types_by_name['filters'] = _FILTERS
+DESCRIPTOR.enum_types_by_name['transaction_results'] = _TRANSACTION_RESULTS
+DESCRIPTOR.enum_types_by_name['locations'] = _LOCATIONS
 
 block_header = _reflection.GeneratedProtocolMessageType('block_header', (_message.Message,), dict(
   DESCRIPTOR = _BLOCK_HEADER,
@@ -1182,28 +1194,26 @@ utxo_result = _reflection.GeneratedProtocolMessageType('utxo_result', (_message.
   ))
 _sym_db.RegisterMessage(utxo_result)
 
+block_headers_request = _reflection.GeneratedProtocolMessageType('block_headers_request', (_message.Message,), dict(
+  DESCRIPTOR = _BLOCK_HEADERS_REQUEST,
+  __module__ = 'bitcoin.protocol.interface_pb2'
+  # @@protoc_insertion_point(class_scope:libbitcoin.protocol.block_headers_request)
+  ))
+_sym_db.RegisterMessage(block_headers_request)
+
+transactions_request = _reflection.GeneratedProtocolMessageType('transactions_request', (_message.Message,), dict(
+  DESCRIPTOR = _TRANSACTIONS_REQUEST,
+  __module__ = 'bitcoin.protocol.interface_pb2'
+  # @@protoc_insertion_point(class_scope:libbitcoin.protocol.transactions_request)
+  ))
+_sym_db.RegisterMessage(transactions_request)
+
 request = _reflection.GeneratedProtocolMessageType('request', (_message.Message,), dict(
-
-  block_headers_request = _reflection.GeneratedProtocolMessageType('block_headers_request', (_message.Message,), dict(
-    DESCRIPTOR = _REQUEST_BLOCK_HEADERS_REQUEST,
-    __module__ = 'bitcoin.protocol.interface_pb2'
-    # @@protoc_insertion_point(class_scope:libbitcoin.protocol.request.block_headers_request)
-    ))
-  ,
-
-  transactions_request = _reflection.GeneratedProtocolMessageType('transactions_request', (_message.Message,), dict(
-    DESCRIPTOR = _REQUEST_TRANSACTIONS_REQUEST,
-    __module__ = 'bitcoin.protocol.interface_pb2'
-    # @@protoc_insertion_point(class_scope:libbitcoin.protocol.request.transactions_request)
-    ))
-  ,
   DESCRIPTOR = _REQUEST,
   __module__ = 'bitcoin.protocol.interface_pb2'
   # @@protoc_insertion_point(class_scope:libbitcoin.protocol.request)
   ))
 _sym_db.RegisterMessage(request)
-_sym_db.RegisterMessage(request.block_headers_request)
-_sym_db.RegisterMessage(request.transactions_request)
 
 response = _reflection.GeneratedProtocolMessageType('response', (_message.Message,), dict(
 
