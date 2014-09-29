@@ -38,7 +38,7 @@ public:
 
     const bc::data_chunk origin() const;
 
-    std::shared_ptr<bc::protocol::request> get_request() const;
+    std::shared_ptr<request> get_request() const;
 
     bool receive(czmqpp::socket& socket);
 
@@ -46,7 +46,7 @@ private:
 
     bc::data_chunk origin_;
 
-    std::shared_ptr<bc::protocol::request> request_;
+    std::shared_ptr<request> request_;
 };
 
 
@@ -58,11 +58,11 @@ public:
 
     response_message(
         const bc::data_chunk& destination,
-        std::shared_ptr<bc::protocol::response> payload);
+        std::shared_ptr<response> payload);
 
     void set_destination(const bc::data_chunk& destination);
 
-    void set_response(std::shared_ptr<bc::protocol::response> payload);
+    void set_response(std::shared_ptr<response> payload);
 
     bool reply(czmqpp::socket& socket);
 
@@ -70,7 +70,7 @@ private:
 
     bc::data_chunk destination_;
 
-    std::shared_ptr<bc::protocol::response> response_;
+    std::shared_ptr<response> response_;
 };
 
 }

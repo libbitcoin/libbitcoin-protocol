@@ -14,7 +14,7 @@ const bc::data_chunk request_message::origin() const
     return origin_;
 }
 
-std::shared_ptr<bc::protocol::request> request_message::get_request() const
+std::shared_ptr<request> request_message::get_request() const
 {
     return request_;
 }
@@ -46,7 +46,7 @@ bool request_message::receive(czmqpp::socket& socket)
 
             // Parse request payload from data frame
             std::string payload = std::string((*it).begin(), (*it).end());
-            std::shared_ptr<bc::protocol::request> request(new bc::protocol::request());
+            std::shared_ptr<request> request(new request());
 
             if (request->ParseFromString(payload))
             {
@@ -72,7 +72,7 @@ response_message::response_message()
 
 response_message::response_message(
     const bc::data_chunk& destination,
-    std::shared_ptr<bc::protocol::response> payload)
+    std::shared_ptr<response> payload)
 : destination_(destination), response_(payload)
 {
 }
@@ -82,7 +82,7 @@ void response_message::set_destination(const bc::data_chunk& destination)
     destination_ = destination;
 }
 
-void response_message::set_response(std::shared_ptr<bc::protocol::response> payload)
+void response_message::set_response(std::shared_ptr<response> payload)
 {
     response_ = payload;
 }
