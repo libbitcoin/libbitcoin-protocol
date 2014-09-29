@@ -30,45 +30,80 @@
 namespace libbitcoin {
 namespace protocol {
 
-class BCP_API request_message
+class BCP_API message
+{
+public:
+
+    message();
+
+    virtual ~message();
+
+    const bc::data_chunk destination() const;
+
+    void set_destination(const bc::data_chunk& destination);
+
+    const bc::data_chunk origin() const;
+
+    bool receive(czmqpp::socket& socket);
+
+    bool send(czmqpp::socket& socket);
+
+protected:
+
+    virtual bool encode_payload(czmqpp::message& message) const = 0;
+
+    virtual bool decode_payload(const bc::data_chunk& payload) = 0;
+
+private:
+
+    bc::data_chunk destination_;
+
+    bc::data_chunk origin_;
+};
+
+class BCP_API request_message : public message
 {
 public:
 
     request_message();
 
-    const bc::data_chunk origin() const;
+    virtual ~request_message();
 
     std::shared_ptr<request> get_request() const;
 
-    bool receive(czmqpp::socket& socket);
+    void set_request(std::shared_ptr<request> request);
+
+protected:
+
+    virtual bool encode_payload(czmqpp::message& message) const;
+
+    virtual bool decode_payload(const bc::data_chunk& payload);
 
 private:
-
-    bc::data_chunk origin_;
 
     std::shared_ptr<request> request_;
 };
 
 
-class BCP_API response_message
+class BCP_API response_message : public message
 {
 public:
 
     response_message();
 
-    response_message(
-        const bc::data_chunk& destination,
-        std::shared_ptr<response> payload);
+    virtual ~response_message();
 
-    void set_destination(const bc::data_chunk& destination);
+    std::shared_ptr<response> get_response() const;
 
-    void set_response(std::shared_ptr<response> payload);
+    void set_response(std::shared_ptr<response> response);
 
-    bool reply(czmqpp::socket& socket);
+protected:
+
+    virtual bool encode_payload(czmqpp::message& message) const;
+
+    virtual bool decode_payload(const bc::data_chunk& payload);
 
 private:
-
-    bc::data_chunk destination_;
 
     std::shared_ptr<response> response_;
 };
