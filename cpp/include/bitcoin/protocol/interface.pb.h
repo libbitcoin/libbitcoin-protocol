@@ -1729,6 +1729,7 @@ class BCP_API request : public ::google::protobuf::Message {
     kPostTransaction = 4,
     kValidateTransaction = 5,
     kPostBlock = 6,
+    kValidateBlock = 7,
     REQUEST_TYPE_NOT_SET = 0,
   };
 
@@ -1814,6 +1815,15 @@ class BCP_API request : public ::google::protobuf::Message {
   inline ::libbitcoin::protocol::block* release_post_block();
   inline void set_allocated_post_block(::libbitcoin::protocol::block* post_block);
 
+  // optional .libbitcoin.protocol.block validate_block = 7;
+  inline bool has_validate_block() const;
+  inline void clear_validate_block();
+  static const int kValidateBlockFieldNumber = 7;
+  inline const ::libbitcoin::protocol::block& validate_block() const;
+  inline ::libbitcoin::protocol::block* mutable_validate_block();
+  inline ::libbitcoin::protocol::block* release_validate_block();
+  inline void set_allocated_validate_block(::libbitcoin::protocol::block* validate_block);
+
   GOOGLE_PROTOBUF_EXTENSION_ACCESSORS(request)
   inline RequestTypeCase request_type_case() const;
   // @@protoc_insertion_point(class_scope:libbitcoin.protocol.request)
@@ -1825,6 +1835,7 @@ class BCP_API request : public ::google::protobuf::Message {
   inline void set_has_post_transaction();
   inline void set_has_validate_transaction();
   inline void set_has_post_block();
+  inline void set_has_validate_block();
 
   inline bool has_request_type();
   void clear_request_type();
@@ -1843,6 +1854,7 @@ class BCP_API request : public ::google::protobuf::Message {
     ::libbitcoin::protocol::tx* post_transaction_;
     ::libbitcoin::protocol::tx* validate_transaction_;
     ::libbitcoin::protocol::block* post_block_;
+    ::libbitcoin::protocol::block* validate_block_;
   } request_type_;
   ::google::protobuf::uint32 _oneof_case_[1];
 
@@ -2122,6 +2134,7 @@ class BCP_API response : public ::google::protobuf::Message {
     kPostTransactionSucceeded = 5,
     kValidateTransactionSucceeded = 6,
     kPostBlockSucceeded = 7,
+    kValidateBlockSucceeded = 8,
     RESPONSE_TYPE_NOT_SET = 0,
   };
 
@@ -2211,6 +2224,13 @@ class BCP_API response : public ::google::protobuf::Message {
   inline bool post_block_succeeded() const;
   inline void set_post_block_succeeded(bool value);
 
+  // optional bool validate_block_succeeded = 8;
+  inline bool has_validate_block_succeeded() const;
+  inline void clear_validate_block_succeeded();
+  static const int kValidateBlockSucceededFieldNumber = 8;
+  inline bool validate_block_succeeded() const;
+  inline void set_validate_block_succeeded(bool value);
+
   GOOGLE_PROTOBUF_EXTENSION_ACCESSORS(response)
   inline ResponseTypeCase response_type_case() const;
   // @@protoc_insertion_point(class_scope:libbitcoin.protocol.response)
@@ -2224,6 +2244,7 @@ class BCP_API response : public ::google::protobuf::Message {
   inline void set_has_post_transaction_succeeded();
   inline void set_has_validate_transaction_succeeded();
   inline void set_has_post_block_succeeded();
+  inline void set_has_validate_block_succeeded();
 
   inline bool has_response_type();
   void clear_response_type();
@@ -2243,6 +2264,7 @@ class BCP_API response : public ::google::protobuf::Message {
     bool post_transaction_succeeded_;
     bool validate_transaction_succeeded_;
     bool post_block_succeeded_;
+    bool validate_block_succeeded_;
   } response_type_;
   ::google::protobuf::uint32 _oneof_case_[1];
 
@@ -4405,6 +4427,49 @@ inline void request::set_allocated_post_block(::libbitcoin::protocol::block* pos
   }
 }
 
+// optional .libbitcoin.protocol.block validate_block = 7;
+inline bool request::has_validate_block() const {
+  return request_type_case() == kValidateBlock;
+}
+inline void request::set_has_validate_block() {
+  _oneof_case_[0] = kValidateBlock;
+}
+inline void request::clear_validate_block() {
+  if (has_validate_block()) {
+    delete request_type_.validate_block_;
+    clear_has_request_type();
+  }
+}
+inline const ::libbitcoin::protocol::block& request::validate_block() const {
+  return has_validate_block() ? *request_type_.validate_block_
+                      : ::libbitcoin::protocol::block::default_instance();
+}
+inline ::libbitcoin::protocol::block* request::mutable_validate_block() {
+  if (!has_validate_block()) {
+    clear_request_type();
+    set_has_validate_block();
+    request_type_.validate_block_ = new ::libbitcoin::protocol::block;
+  }
+  return request_type_.validate_block_;
+}
+inline ::libbitcoin::protocol::block* request::release_validate_block() {
+  if (has_validate_block()) {
+    clear_has_request_type();
+    ::libbitcoin::protocol::block* temp = request_type_.validate_block_;
+    request_type_.validate_block_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void request::set_allocated_validate_block(::libbitcoin::protocol::block* validate_block) {
+  clear_request_type();
+  if (validate_block) {
+    set_has_validate_block();
+    request_type_.validate_block_ = validate_block;
+  }
+}
+
 inline bool request::has_request_type() {
   return request_type_case() != REQUEST_TYPE_NOT_SET;
 }
@@ -4923,6 +4988,33 @@ inline void response::set_post_block_succeeded(bool value) {
     set_has_post_block_succeeded();
   }
   response_type_.post_block_succeeded_ = value;
+}
+
+// optional bool validate_block_succeeded = 8;
+inline bool response::has_validate_block_succeeded() const {
+  return response_type_case() == kValidateBlockSucceeded;
+}
+inline void response::set_has_validate_block_succeeded() {
+  _oneof_case_[0] = kValidateBlockSucceeded;
+}
+inline void response::clear_validate_block_succeeded() {
+  if (has_validate_block_succeeded()) {
+    response_type_.validate_block_succeeded_ = false;
+    clear_has_response_type();
+  }
+}
+inline bool response::validate_block_succeeded() const {
+  if (has_validate_block_succeeded()) {
+    return response_type_.validate_block_succeeded_;
+  }
+  return false;
+}
+inline void response::set_validate_block_succeeded(bool value) {
+  if (!has_validate_block_succeeded()) {
+    clear_response_type();
+    set_has_validate_block_succeeded();
+  }
+  response_type_.validate_block_succeeded_ = value;
 }
 
 inline bool response::has_response_type() {

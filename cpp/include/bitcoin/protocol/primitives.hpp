@@ -26,15 +26,20 @@
 namespace libbitcoin {
 namespace protocol {
 
-typedef std::vector<bc::protocol::block_header> block_header_list;
+// typedef std::vector<bc::protocol::filter> filter_list;
+typedef google::protobuf::RepeatedPtrField<filter> filter_list;
 
-typedef std::vector<bc::protocol::filter> filter_list;
+// typedef std::vector<bc::protocol::block_header> block_header_list;
+typedef google::protobuf::RepeatedPtrField<block_header> block_header_list;
 
-typedef std::vector<bc::protocol::tx_result> transaction_result_list;
+// typedef std::vector<bc::protocol::tx_result> transaction_result_list;
+typedef google::protobuf::RepeatedPtrField<tx_result> transaction_result_list;
 
-typedef std::vector<bc::protocol::tx_hash_result> transaction_hash_result_list;
+// typedef std::vector<bc::protocol::tx_hash_result> transaction_hash_result_list;
+typedef google::protobuf::RepeatedPtrField<tx_hash_result> transaction_hash_result_list;
 
-typedef std::vector<bc::protocol::utxo_result> utxo_result_list;
+// typedef std::vector<bc::protocol::utxo_result> utxo_result_list;
+typedef google::protobuf::RepeatedPtrField<utxo_result> utxo_result_list;
 
 }
 }

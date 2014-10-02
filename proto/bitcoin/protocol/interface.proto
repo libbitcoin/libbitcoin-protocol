@@ -192,6 +192,8 @@ message request {
         tx validate_transaction = 5;
 
         block post_block = 6;
+
+        block validate_block = 7;
     }
     
     extensions 100 to 199;
@@ -230,6 +232,8 @@ message response {
         bool validate_transaction_succeeded = 6;
 
         bool post_block_succeeded = 7;
+
+        bool validate_block_succeeded = 8;
     }
 
     extensions 100 to 199;

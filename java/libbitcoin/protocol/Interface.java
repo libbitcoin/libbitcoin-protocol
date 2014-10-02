@@ -11968,6 +11968,19 @@ public final class Interface {
      * <code>optional .libbitcoin.protocol.block post_block = 6;</code>
      */
     libbitcoin.protocol.Interface.blockOrBuilder getPostBlockOrBuilder();
+
+    /**
+     * <code>optional .libbitcoin.protocol.block validate_block = 7;</code>
+     */
+    boolean hasValidateBlock();
+    /**
+     * <code>optional .libbitcoin.protocol.block validate_block = 7;</code>
+     */
+    libbitcoin.protocol.Interface.block getValidateBlock();
+    /**
+     * <code>optional .libbitcoin.protocol.block validate_block = 7;</code>
+     */
+    libbitcoin.protocol.Interface.blockOrBuilder getValidateBlockOrBuilder();
   }
   /**
    * Protobuf type {@code libbitcoin.protocol.request}
@@ -12092,6 +12105,19 @@ public final class Interface {
               requestTypeCase_ = 6;
               break;
             }
+            case 58: {
+              libbitcoin.protocol.Interface.block.Builder subBuilder = null;
+              if (requestTypeCase_ == 7) {
+                subBuilder = ((libbitcoin.protocol.Interface.block) requestType_).toBuilder();
+              }
+              requestType_ = input.readMessage(libbitcoin.protocol.Interface.block.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((libbitcoin.protocol.Interface.block) requestType_);
+                requestType_ = subBuilder.buildPartial();
+              }
+              requestTypeCase_ = 7;
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -12141,6 +12167,7 @@ public final class Interface {
       POST_TRANSACTION(4),
       VALIDATE_TRANSACTION(5),
       POST_BLOCK(6),
+      VALIDATE_BLOCK(7),
       REQUESTTYPE_NOT_SET(0);
       private int value = 0;
       private RequestTypeCase(int value) {
@@ -12153,6 +12180,7 @@ public final class Interface {
           case 4: return POST_TRANSACTION;
           case 5: return VALIDATE_TRANSACTION;
           case 6: return POST_BLOCK;
+          case 7: return VALIDATE_BLOCK;
           case 0: return REQUESTTYPE_NOT_SET;
           default: throw new java.lang.IllegalArgumentException(
             "Value is undefined for this oneof enum.");
@@ -12314,6 +12342,32 @@ public final class Interface {
       return libbitcoin.protocol.Interface.block.getDefaultInstance();
     }
 
+    public static final int VALIDATE_BLOCK_FIELD_NUMBER = 7;
+    /**
+     * <code>optional .libbitcoin.protocol.block validate_block = 7;</code>
+     */
+    public boolean hasValidateBlock() {
+      return requestTypeCase_ == 7;
+    }
+    /**
+     * <code>optional .libbitcoin.protocol.block validate_block = 7;</code>
+     */
+    public libbitcoin.protocol.Interface.block getValidateBlock() {
+      if (requestTypeCase_ == 7) {
+         return (libbitcoin.protocol.Interface.block) requestType_;
+      }
+      return libbitcoin.protocol.Interface.block.getDefaultInstance();
+    }
+    /**
+     * <code>optional .libbitcoin.protocol.block validate_block = 7;</code>
+     */
+    public libbitcoin.protocol.Interface.blockOrBuilder getValidateBlockOrBuilder() {
+      if (requestTypeCase_ == 7) {
+         return (libbitcoin.protocol.Interface.block) requestType_;
+      }
+      return libbitcoin.protocol.Interface.block.getDefaultInstance();
+    }
+
     private void initFields() {
       id_ = 0;
     }
@@ -12351,6 +12405,12 @@ public final class Interface {
           return false;
         }
       }
+      if (hasValidateBlock()) {
+        if (!getValidateBlock().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       if (!extensionsAreInitialized()) {
         memoizedIsInitialized = 0;
         return false;
@@ -12382,6 +12442,9 @@ public final class Interface {
       }
       if (requestTypeCase_ == 6) {
         output.writeMessage(6, (libbitcoin.protocol.Interface.block) requestType_);
+      }
+      if (requestTypeCase_ == 7) {
+        output.writeMessage(7, (libbitcoin.protocol.Interface.block) requestType_);
       }
       extensionWriter.writeUntil(200, output);
       getUnknownFields().writeTo(output);
@@ -12416,6 +12479,10 @@ public final class Interface {
       if (requestTypeCase_ == 6) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(6, (libbitcoin.protocol.Interface.block) requestType_);
+      }
+      if (requestTypeCase_ == 7) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, (libbitcoin.protocol.Interface.block) requestType_);
       }
       size += extensionsSerializedSize();
       size += getUnknownFields().getSerializedSize();
@@ -12607,6 +12674,13 @@ public final class Interface {
             result.requestType_ = postBlockBuilder_.build();
           }
         }
+        if (requestTypeCase_ == 7) {
+          if (validateBlockBuilder_ == null) {
+            result.requestType_ = requestType_;
+          } else {
+            result.requestType_ = validateBlockBuilder_.build();
+          }
+        }
         result.bitField0_ = to_bitField0_;
         result.requestTypeCase_ = requestTypeCase_;
         onBuilt();
@@ -12648,6 +12722,10 @@ public final class Interface {
             mergePostBlock(other.getPostBlock());
             break;
           }
+          case VALIDATE_BLOCK: {
+            mergeValidateBlock(other.getValidateBlock());
+            break;
+          }
           case REQUESTTYPE_NOT_SET: {
             break;
           }
@@ -12682,6 +12760,12 @@ public final class Interface {
         }
         if (hasPostBlock()) {
           if (!getPostBlock().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasValidateBlock()) {
+          if (!getValidateBlock().isInitialized()) {
             
             return false;
           }
@@ -13434,6 +13518,141 @@ public final class Interface {
         return postBlockBuilder_;
       }
 
+      private com.google.protobuf.SingleFieldBuilder<
+          libbitcoin.protocol.Interface.block, libbitcoin.protocol.Interface.block.Builder, libbitcoin.protocol.Interface.blockOrBuilder> validateBlockBuilder_;
+      /**
+       * <code>optional .libbitcoin.protocol.block validate_block = 7;</code>
+       */
+      public boolean hasValidateBlock() {
+        return requestTypeCase_ == 7;
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block validate_block = 7;</code>
+       */
+      public libbitcoin.protocol.Interface.block getValidateBlock() {
+        if (validateBlockBuilder_ == null) {
+          if (requestTypeCase_ == 7) {
+            return (libbitcoin.protocol.Interface.block) requestType_;
+          }
+          return libbitcoin.protocol.Interface.block.getDefaultInstance();
+        } else {
+          if (requestTypeCase_ == 7) {
+            return validateBlockBuilder_.getMessage();
+          }
+          return libbitcoin.protocol.Interface.block.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block validate_block = 7;</code>
+       */
+      public Builder setValidateBlock(libbitcoin.protocol.Interface.block value) {
+        if (validateBlockBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          requestType_ = value;
+          onChanged();
+        } else {
+          validateBlockBuilder_.setMessage(value);
+        }
+        requestTypeCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block validate_block = 7;</code>
+       */
+      public Builder setValidateBlock(
+          libbitcoin.protocol.Interface.block.Builder builderForValue) {
+        if (validateBlockBuilder_ == null) {
+          requestType_ = builderForValue.build();
+          onChanged();
+        } else {
+          validateBlockBuilder_.setMessage(builderForValue.build());
+        }
+        requestTypeCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block validate_block = 7;</code>
+       */
+      public Builder mergeValidateBlock(libbitcoin.protocol.Interface.block value) {
+        if (validateBlockBuilder_ == null) {
+          if (requestTypeCase_ == 7 &&
+              requestType_ != libbitcoin.protocol.Interface.block.getDefaultInstance()) {
+            requestType_ = libbitcoin.protocol.Interface.block.newBuilder((libbitcoin.protocol.Interface.block) requestType_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            requestType_ = value;
+          }
+          onChanged();
+        } else {
+          if (requestTypeCase_ == 7) {
+            validateBlockBuilder_.mergeFrom(value);
+          }
+          validateBlockBuilder_.setMessage(value);
+        }
+        requestTypeCase_ = 7;
+        return this;
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block validate_block = 7;</code>
+       */
+      public Builder clearValidateBlock() {
+        if (validateBlockBuilder_ == null) {
+          if (requestTypeCase_ == 7) {
+            requestTypeCase_ = 0;
+            requestType_ = null;
+            onChanged();
+          }
+        } else {
+          if (requestTypeCase_ == 7) {
+            requestTypeCase_ = 0;
+            requestType_ = null;
+          }
+          validateBlockBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block validate_block = 7;</code>
+       */
+      public libbitcoin.protocol.Interface.block.Builder getValidateBlockBuilder() {
+        return getValidateBlockFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block validate_block = 7;</code>
+       */
+      public libbitcoin.protocol.Interface.blockOrBuilder getValidateBlockOrBuilder() {
+        if ((requestTypeCase_ == 7) && (validateBlockBuilder_ != null)) {
+          return validateBlockBuilder_.getMessageOrBuilder();
+        } else {
+          if (requestTypeCase_ == 7) {
+            return (libbitcoin.protocol.Interface.block) requestType_;
+          }
+          return libbitcoin.protocol.Interface.block.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .libbitcoin.protocol.block validate_block = 7;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          libbitcoin.protocol.Interface.block, libbitcoin.protocol.Interface.block.Builder, libbitcoin.protocol.Interface.blockOrBuilder> 
+          getValidateBlockFieldBuilder() {
+        if (validateBlockBuilder_ == null) {
+          if (!(requestTypeCase_ == 7)) {
+            requestType_ = libbitcoin.protocol.Interface.block.getDefaultInstance();
+          }
+          validateBlockBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              libbitcoin.protocol.Interface.block, libbitcoin.protocol.Interface.block.Builder, libbitcoin.protocol.Interface.blockOrBuilder>(
+                  (libbitcoin.protocol.Interface.block) requestType_,
+                  getParentForChildren(),
+                  isClean());
+          requestType_ = null;
+        }
+        requestTypeCase_ = 7;
+        return validateBlockBuilder_;
+      }
+
       // @@protoc_insertion_point(builder_scope:libbitcoin.protocol.request)
     }
 
@@ -13528,6 +13747,15 @@ public final class Interface {
      * <code>optional bool post_block_succeeded = 7;</code>
      */
     boolean getPostBlockSucceeded();
+
+    /**
+     * <code>optional bool validate_block_succeeded = 8;</code>
+     */
+    boolean hasValidateBlockSucceeded();
+    /**
+     * <code>optional bool validate_block_succeeded = 8;</code>
+     */
+    boolean getValidateBlockSucceeded();
   }
   /**
    * Protobuf type {@code libbitcoin.protocol.response}
@@ -13636,6 +13864,11 @@ public final class Interface {
             }
             case 56: {
               responseTypeCase_ = 7;
+              responseType_ = input.readBool();
+              break;
+            }
+            case 64: {
+              responseTypeCase_ = 8;
               responseType_ = input.readBool();
               break;
             }
@@ -16570,6 +16803,7 @@ public final class Interface {
       POST_TRANSACTION_SUCCEEDED(5),
       VALIDATE_TRANSACTION_SUCCEEDED(6),
       POST_BLOCK_SUCCEEDED(7),
+      VALIDATE_BLOCK_SUCCEEDED(8),
       RESPONSETYPE_NOT_SET(0);
       private int value = 0;
       private ResponseTypeCase(int value) {
@@ -16582,6 +16816,7 @@ public final class Interface {
           case 5: return POST_TRANSACTION_SUCCEEDED;
           case 6: return VALIDATE_TRANSACTION_SUCCEEDED;
           case 7: return POST_BLOCK_SUCCEEDED;
+          case 8: return VALIDATE_BLOCK_SUCCEEDED;
           case 0: return RESPONSETYPE_NOT_SET;
           default: throw new java.lang.IllegalArgumentException(
             "Value is undefined for this oneof enum.");
@@ -16739,6 +16974,23 @@ public final class Interface {
       return false;
     }
 
+    public static final int VALIDATE_BLOCK_SUCCEEDED_FIELD_NUMBER = 8;
+    /**
+     * <code>optional bool validate_block_succeeded = 8;</code>
+     */
+    public boolean hasValidateBlockSucceeded() {
+      return responseTypeCase_ == 8;
+    }
+    /**
+     * <code>optional bool validate_block_succeeded = 8;</code>
+     */
+    public boolean getValidateBlockSucceeded() {
+      if (responseTypeCase_ == 8) {
+        return (java.lang.Boolean) responseType_;
+      }
+      return false;
+    }
+
     private void initFields() {
       id_ = 0;
       status_ = 0;
@@ -16803,6 +17055,10 @@ public final class Interface {
         output.writeBool(
             7, (boolean)((java.lang.Boolean) responseType_));
       }
+      if (responseTypeCase_ == 8) {
+        output.writeBool(
+            8, (boolean)((java.lang.Boolean) responseType_));
+      }
       extensionWriter.writeUntil(200, output);
       getUnknownFields().writeTo(output);
     }
@@ -16843,6 +17099,11 @@ public final class Interface {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(
               7, (boolean)((java.lang.Boolean) responseType_));
+      }
+      if (responseTypeCase_ == 8) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(
+              8, (boolean)((java.lang.Boolean) responseType_));
       }
       size += extensionsSerializedSize();
       size += getUnknownFields().getSerializedSize();
@@ -17034,6 +17295,9 @@ public final class Interface {
         if (responseTypeCase_ == 7) {
           result.responseType_ = responseType_;
         }
+        if (responseTypeCase_ == 8) {
+          result.responseType_ = responseType_;
+        }
         result.bitField0_ = to_bitField0_;
         result.responseTypeCase_ = responseTypeCase_;
         onBuilt();
@@ -17076,6 +17340,10 @@ public final class Interface {
           }
           case POST_BLOCK_SUCCEEDED: {
             setPostBlockSucceeded(other.getPostBlockSucceeded());
+            break;
+          }
+          case VALIDATE_BLOCK_SUCCEEDED: {
+            setValidateBlockSucceeded(other.getValidateBlockSucceeded());
             break;
           }
           case RESPONSETYPE_NOT_SET: {
@@ -17603,6 +17871,42 @@ public final class Interface {
         return this;
       }
 
+      /**
+       * <code>optional bool validate_block_succeeded = 8;</code>
+       */
+      public boolean hasValidateBlockSucceeded() {
+        return responseTypeCase_ == 8;
+      }
+      /**
+       * <code>optional bool validate_block_succeeded = 8;</code>
+       */
+      public boolean getValidateBlockSucceeded() {
+        if (responseTypeCase_ == 8) {
+          return (java.lang.Boolean) responseType_;
+        }
+        return false;
+      }
+      /**
+       * <code>optional bool validate_block_succeeded = 8;</code>
+       */
+      public Builder setValidateBlockSucceeded(boolean value) {
+        responseTypeCase_ = 8;
+        responseType_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool validate_block_succeeded = 8;</code>
+       */
+      public Builder clearValidateBlockSucceeded() {
+        if (responseTypeCase_ == 8) {
+          responseTypeCase_ = 0;
+          responseType_ = null;
+          onChanged();
+        }
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:libbitcoin.protocol.response)
     }
 
@@ -17758,7 +18062,7 @@ public final class Interface {
       "oin.protocol.filter\022F\n\013result_type\030\004 \001(\016" +
       "2(.libbitcoin.protocol.transaction_resul" +
       "ts:\007TX_HASH\022;\n\rlocation_type\030\005 \001(\0162\036.lib",
-      "bitcoin.protocol.locations:\004NONE\"\334\002\n\007req" +
+      "bitcoin.protocol.locations:\004NONE\"\222\003\n\007req" +
       "uest\022\n\n\002id\030\001 \002(\r\022G\n\021get_block_headers\030\002 " +
       "\001(\0132*.libbitcoin.protocol.block_headers_" +
       "requestH\000\022E\n\020get_transactions\030\003 \001(\0132).li" +
@@ -17767,30 +18071,33 @@ public final class Interface {
       "protocol.txH\000\0227\n\024validate_transaction\030\005 " +
       "\001(\0132\027.libbitcoin.protocol.txH\000\0220\n\npost_b" +
       "lock\030\006 \001(\0132\032.libbitcoin.protocol.blockH\000" +
-      "*\005\010d\020\310\001B\016\n\014request_type\"\367\005\n\010response\022\n\n\002",
-      "id\030\001 \002(\r\022\016\n\006status\030\002 \001(\021\022Q\n\032get_block_he" +
-      "aders_response\030\003 \001(\0132+.libbitcoin.protoc" +
-      "ol.response.block_headersH\000\022O\n\031get_trans" +
-      "actions_response\030\004 \001(\0132*.libbitcoin.prot" +
-      "ocol.response.transactionsH\000\022$\n\032post_tra" +
-      "nsaction_succeeded\030\005 \001(\010H\000\022(\n\036validate_t" +
-      "ransaction_succeeded\030\006 \001(\010H\000\022\036\n\024post_blo" +
-      "ck_succeeded\030\007 \001(\010H\000\032\234\001\n\rblock_headers\022+" +
-      "\n\004next\030\001 \001(\0132\035.libbitcoin.protocol.block" +
-      "_id\022*\n\003top\030\002 \001(\0132\035.libbitcoin.protocol.b",
-      "lock_id\0222\n\007headers\030\003 \003(\0132!.libbitcoin.pr" +
-      "otocol.block_header\032\203\002\n\014transactions\022+\n\004" +
-      "next\030\001 \001(\0132\035.libbitcoin.protocol.block_i" +
-      "d\022*\n\003top\030\002 \001(\0132\035.libbitcoin.protocol.blo" +
-      "ck_id\0223\n\006hashes\030\003 \003(\0132#.libbitcoin.proto" +
-      "col.tx_hash_result\0224\n\014transactions\030\004 \003(\013" +
-      "2\036.libbitcoin.protocol.tx_result\022/\n\005utxo" +
-      "s\030\005 \003(\0132 .libbitcoin.protocol.utxo_resul" +
-      "t*\005\010d\020\310\001B\017\n\rresponse_type*4\n\007filters\022\013\n\007" +
-      "ADDRESS\020\001\022\017\n\013TRANSACTION\020\002\022\013\n\007STEALTH\020\003*",
-      "B\n\023transaction_results\022\013\n\007TX_HASH\020\001\022\r\n\tT" +
-      "X_RESULT\020\002\022\017\n\013UTXO_RESULT\020\003*,\n\tlocations" +
-      "\022\010\n\004NONE\020\000\022\t\n\005BLOCK\020\001\022\n\n\006MERKLE\020\002"
+      "\0224\n\016validate_block\030\007 \001(\0132\032.libbitcoin.pr",
+      "otocol.blockH\000*\005\010d\020\310\001B\016\n\014request_type\"\233\006" +
+      "\n\010response\022\n\n\002id\030\001 \002(\r\022\016\n\006status\030\002 \001(\021\022Q" +
+      "\n\032get_block_headers_response\030\003 \001(\0132+.lib" +
+      "bitcoin.protocol.response.block_headersH" +
+      "\000\022O\n\031get_transactions_response\030\004 \001(\0132*.l" +
+      "ibbitcoin.protocol.response.transactions" +
+      "H\000\022$\n\032post_transaction_succeeded\030\005 \001(\010H\000" +
+      "\022(\n\036validate_transaction_succeeded\030\006 \001(\010" +
+      "H\000\022\036\n\024post_block_succeeded\030\007 \001(\010H\000\022\"\n\030va" +
+      "lidate_block_succeeded\030\010 \001(\010H\000\032\234\001\n\rblock",
+      "_headers\022+\n\004next\030\001 \001(\0132\035.libbitcoin.prot" +
+      "ocol.block_id\022*\n\003top\030\002 \001(\0132\035.libbitcoin." +
+      "protocol.block_id\0222\n\007headers\030\003 \003(\0132!.lib" +
+      "bitcoin.protocol.block_header\032\203\002\n\014transa" +
+      "ctions\022+\n\004next\030\001 \001(\0132\035.libbitcoin.protoc" +
+      "ol.block_id\022*\n\003top\030\002 \001(\0132\035.libbitcoin.pr" +
+      "otocol.block_id\0223\n\006hashes\030\003 \003(\0132#.libbit" +
+      "coin.protocol.tx_hash_result\0224\n\014transact" +
+      "ions\030\004 \003(\0132\036.libbitcoin.protocol.tx_resu" +
+      "lt\022/\n\005utxos\030\005 \003(\0132 .libbitcoin.protocol.",
+      "utxo_result*\005\010d\020\310\001B\017\n\rresponse_type*4\n\007f" +
+      "ilters\022\013\n\007ADDRESS\020\001\022\017\n\013TRANSACTION\020\002\022\013\n\007" +
+      "STEALTH\020\003*B\n\023transaction_results\022\013\n\007TX_H" +
+      "ASH\020\001\022\r\n\tTX_RESULT\020\002\022\017\n\013UTXO_RESULT\020\003*,\n" +
+      "\tlocations\022\010\n\004NONE\020\000\022\t\n\005BLOCK\020\001\022\n\n\006MERKL" +
+      "E\020\002"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -17899,13 +18206,13 @@ public final class Interface {
     internal_static_libbitcoin_protocol_request_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_libbitcoin_protocol_request_descriptor,
-        new java.lang.String[] { "Id", "GetBlockHeaders", "GetTransactions", "PostTransaction", "ValidateTransaction", "PostBlock", "RequestType", });
+        new java.lang.String[] { "Id", "GetBlockHeaders", "GetTransactions", "PostTransaction", "ValidateTransaction", "PostBlock", "ValidateBlock", "RequestType", });
     internal_static_libbitcoin_protocol_response_descriptor =
       getDescriptor().getMessageTypes().get(16);
     internal_static_libbitcoin_protocol_response_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_libbitcoin_protocol_response_descriptor,
-        new java.lang.String[] { "Id", "Status", "GetBlockHeadersResponse", "GetTransactionsResponse", "PostTransactionSucceeded", "ValidateTransactionSucceeded", "PostBlockSucceeded", "ResponseType", });
+        new java.lang.String[] { "Id", "Status", "GetBlockHeadersResponse", "GetTransactionsResponse", "PostTransactionSucceeded", "ValidateTransactionSucceeded", "PostBlockSucceeded", "ValidateBlockSucceeded", "ResponseType", });
     internal_static_libbitcoin_protocol_response_block_headers_descriptor =
       internal_static_libbitcoin_protocol_response_descriptor.getNestedTypes().get(0);
     internal_static_libbitcoin_protocol_response_block_headers_fieldAccessorTable = new

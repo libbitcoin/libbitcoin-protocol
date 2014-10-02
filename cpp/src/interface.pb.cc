@@ -75,6 +75,7 @@ struct requestOneofInstance {
   const ::libbitcoin::protocol::tx* post_transaction_;
   const ::libbitcoin::protocol::tx* validate_transaction_;
   const ::libbitcoin::protocol::block* post_block_;
+  const ::libbitcoin::protocol::block* validate_block_;
 }* request_default_oneof_instance_ = NULL;
 const ::google::protobuf::Descriptor* response_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
@@ -85,6 +86,7 @@ struct responseOneofInstance {
   bool post_transaction_succeeded_;
   bool validate_transaction_succeeded_;
   bool post_block_succeeded_;
+  bool validate_block_succeeded_;
 }* response_default_oneof_instance_ = NULL;
 const ::google::protobuf::Descriptor* response_block_headers_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
@@ -361,13 +363,14 @@ void protobuf_AssignDesc_bitcoin_2fprotocol_2finterface_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(transactions_request));
   request_descriptor_ = file->message_type(15);
-  static const int request_offsets_[7] = {
+  static const int request_offsets_[8] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(request, id_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(request_default_oneof_instance_, get_block_headers_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(request_default_oneof_instance_, get_transactions_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(request_default_oneof_instance_, post_transaction_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(request_default_oneof_instance_, validate_transaction_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(request_default_oneof_instance_, post_block_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(request_default_oneof_instance_, validate_block_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(request, request_type_),
   };
   request_reflection_ =
@@ -384,7 +387,7 @@ void protobuf_AssignDesc_bitcoin_2fprotocol_2finterface_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(request));
   response_descriptor_ = file->message_type(16);
-  static const int response_offsets_[8] = {
+  static const int response_offsets_[9] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(response, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(response, status_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(response_default_oneof_instance_, get_block_headers_response_),
@@ -392,6 +395,7 @@ void protobuf_AssignDesc_bitcoin_2fprotocol_2finterface_2eproto() {
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(response_default_oneof_instance_, post_transaction_succeeded_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(response_default_oneof_instance_, validate_transaction_succeeded_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(response_default_oneof_instance_, post_block_succeeded_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(response_default_oneof_instance_, validate_block_succeeded_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(response, response_type_),
   };
   response_reflection_ =
@@ -590,7 +594,7 @@ void protobuf_AddDesc_bitcoin_2fprotocol_2finterface_2eproto() {
     "otocol.filter\022F\n\013result_type\030\004 \001(\0162(.lib"
     "bitcoin.protocol.transaction_results:\007TX"
     "_HASH\022;\n\rlocation_type\030\005 \001(\0162\036.libbitcoi"
-    "n.protocol.locations:\004NONE\"\334\002\n\007request\022\n"
+    "n.protocol.locations:\004NONE\"\222\003\n\007request\022\n"
     "\n\002id\030\001 \002(\r\022G\n\021get_block_headers\030\002 \001(\0132*."
     "libbitcoin.protocol.block_headers_reques"
     "tH\000\022E\n\020get_transactions\030\003 \001(\0132).libbitco"
@@ -598,31 +602,33 @@ void protobuf_AddDesc_bitcoin_2fprotocol_2finterface_2eproto() {
     "st_transaction\030\004 \001(\0132\027.libbitcoin.protoc"
     "ol.txH\000\0227\n\024validate_transaction\030\005 \001(\0132\027."
     "libbitcoin.protocol.txH\000\0220\n\npost_block\030\006"
-    " \001(\0132\032.libbitcoin.protocol.blockH\000*\005\010d\020\310"
-    "\001B\016\n\014request_type\"\367\005\n\010response\022\n\n\002id\030\001 \002"
-    "(\r\022\016\n\006status\030\002 \001(\021\022Q\n\032get_block_headers_"
-    "response\030\003 \001(\0132+.libbitcoin.protocol.res"
-    "ponse.block_headersH\000\022O\n\031get_transaction"
-    "s_response\030\004 \001(\0132*.libbitcoin.protocol.r"
-    "esponse.transactionsH\000\022$\n\032post_transacti"
-    "on_succeeded\030\005 \001(\010H\000\022(\n\036validate_transac"
-    "tion_succeeded\030\006 \001(\010H\000\022\036\n\024post_block_suc"
-    "ceeded\030\007 \001(\010H\000\032\234\001\n\rblock_headers\022+\n\004next"
-    "\030\001 \001(\0132\035.libbitcoin.protocol.block_id\022*\n"
-    "\003top\030\002 \001(\0132\035.libbitcoin.protocol.block_i"
-    "d\0222\n\007headers\030\003 \003(\0132!.libbitcoin.protocol"
-    ".block_header\032\203\002\n\014transactions\022+\n\004next\030\001"
-    " \001(\0132\035.libbitcoin.protocol.block_id\022*\n\003t"
-    "op\030\002 \001(\0132\035.libbitcoin.protocol.block_id\022"
-    "3\n\006hashes\030\003 \003(\0132#.libbitcoin.protocol.tx"
-    "_hash_result\0224\n\014transactions\030\004 \003(\0132\036.lib"
-    "bitcoin.protocol.tx_result\022/\n\005utxos\030\005 \003("
-    "\0132 .libbitcoin.protocol.utxo_result*\005\010d\020"
-    "\310\001B\017\n\rresponse_type*4\n\007filters\022\013\n\007ADDRES"
-    "S\020\001\022\017\n\013TRANSACTION\020\002\022\013\n\007STEALTH\020\003*B\n\023tra"
-    "nsaction_results\022\013\n\007TX_HASH\020\001\022\r\n\tTX_RESU"
-    "LT\020\002\022\017\n\013UTXO_RESULT\020\003*,\n\tlocations\022\010\n\004NO"
-    "NE\020\000\022\t\n\005BLOCK\020\001\022\n\n\006MERKLE\020\002", 2907);
+    " \001(\0132\032.libbitcoin.protocol.blockH\000\0224\n\016va"
+    "lidate_block\030\007 \001(\0132\032.libbitcoin.protocol"
+    ".blockH\000*\005\010d\020\310\001B\016\n\014request_type\"\233\006\n\010resp"
+    "onse\022\n\n\002id\030\001 \002(\r\022\016\n\006status\030\002 \001(\021\022Q\n\032get_"
+    "block_headers_response\030\003 \001(\0132+.libbitcoi"
+    "n.protocol.response.block_headersH\000\022O\n\031g"
+    "et_transactions_response\030\004 \001(\0132*.libbitc"
+    "oin.protocol.response.transactionsH\000\022$\n\032"
+    "post_transaction_succeeded\030\005 \001(\010H\000\022(\n\036va"
+    "lidate_transaction_succeeded\030\006 \001(\010H\000\022\036\n\024"
+    "post_block_succeeded\030\007 \001(\010H\000\022\"\n\030validate"
+    "_block_succeeded\030\010 \001(\010H\000\032\234\001\n\rblock_heade"
+    "rs\022+\n\004next\030\001 \001(\0132\035.libbitcoin.protocol.b"
+    "lock_id\022*\n\003top\030\002 \001(\0132\035.libbitcoin.protoc"
+    "ol.block_id\0222\n\007headers\030\003 \003(\0132!.libbitcoi"
+    "n.protocol.block_header\032\203\002\n\014transactions"
+    "\022+\n\004next\030\001 \001(\0132\035.libbitcoin.protocol.blo"
+    "ck_id\022*\n\003top\030\002 \001(\0132\035.libbitcoin.protocol"
+    ".block_id\0223\n\006hashes\030\003 \003(\0132#.libbitcoin.p"
+    "rotocol.tx_hash_result\0224\n\014transactions\030\004"
+    " \003(\0132\036.libbitcoin.protocol.tx_result\022/\n\005"
+    "utxos\030\005 \003(\0132 .libbitcoin.protocol.utxo_r"
+    "esult*\005\010d\020\310\001B\017\n\rresponse_type*4\n\007filters"
+    "\022\013\n\007ADDRESS\020\001\022\017\n\013TRANSACTION\020\002\022\013\n\007STEALT"
+    "H\020\003*B\n\023transaction_results\022\013\n\007TX_HASH\020\001\022"
+    "\r\n\tTX_RESULT\020\002\022\017\n\013UTXO_RESULT\020\003*,\n\tlocat"
+    "ions\022\010\n\004NONE\020\000\022\t\n\005BLOCK\020\001\022\n\n\006MERKLE\020\002", 2997);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "bitcoin/protocol/interface.proto", &protobuf_RegisterTypes);
   block_header::default_instance_ = new block_header();
@@ -5452,6 +5458,7 @@ const int request::kGetTransactionsFieldNumber;
 const int request::kPostTransactionFieldNumber;
 const int request::kValidateTransactionFieldNumber;
 const int request::kPostBlockFieldNumber;
+const int request::kValidateBlockFieldNumber;
 #endif  // !_MSC_VER
 
 request::request()
@@ -5466,6 +5473,7 @@ void request::InitAsDefaultInstance() {
   request_default_oneof_instance_->post_transaction_ = const_cast< ::libbitcoin::protocol::tx*>(&::libbitcoin::protocol::tx::default_instance());
   request_default_oneof_instance_->validate_transaction_ = const_cast< ::libbitcoin::protocol::tx*>(&::libbitcoin::protocol::tx::default_instance());
   request_default_oneof_instance_->post_block_ = const_cast< ::libbitcoin::protocol::block*>(&::libbitcoin::protocol::block::default_instance());
+  request_default_oneof_instance_->validate_block_ = const_cast< ::libbitcoin::protocol::block*>(&::libbitcoin::protocol::block::default_instance());
 }
 
 request::request(const request& from)
@@ -5536,6 +5544,10 @@ void request::clear_request_type() {
     }
     case kPostBlock: {
       delete request_type_.post_block_;
+      break;
+    }
+    case kValidateBlock: {
+      delete request_type_.validate_block_;
       break;
     }
     case REQUEST_TYPE_NOT_SET: {
@@ -5639,6 +5651,19 @@ bool request::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(58)) goto parse_validate_block;
+        break;
+      }
+
+      // optional .libbitcoin.protocol.block validate_block = 7;
+      case 7: {
+        if (tag == 58) {
+         parse_validate_block:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_validate_block()));
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -5708,6 +5733,12 @@ void request::SerializeWithCachedSizes(
       6, this->post_block(), output);
   }
 
+  // optional .libbitcoin.protocol.block validate_block = 7;
+  if (has_validate_block()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      7, this->validate_block(), output);
+  }
+
   // Extension range [100, 200)
   _extensions_.SerializeWithCachedSizes(
       100, 200, output);
@@ -5760,6 +5791,13 @@ void request::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         6, this->post_block(), target);
+  }
+
+  // optional .libbitcoin.protocol.block validate_block = 7;
+  if (has_validate_block()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        7, this->validate_block(), target);
   }
 
   // Extension range [100, 200)
@@ -5822,6 +5860,13 @@ int request::ByteSize() const {
           this->post_block());
       break;
     }
+    // optional .libbitcoin.protocol.block validate_block = 7;
+    case kValidateBlock: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->validate_block());
+      break;
+    }
     case REQUEST_TYPE_NOT_SET: {
       break;
     }
@@ -5874,6 +5919,10 @@ void request::MergeFrom(const request& from) {
       mutable_post_block()->::libbitcoin::protocol::block::MergeFrom(from.post_block());
       break;
     }
+    case kValidateBlock: {
+      mutable_validate_block()->::libbitcoin::protocol::block::MergeFrom(from.validate_block());
+      break;
+    }
     case REQUEST_TYPE_NOT_SET: {
       break;
     }
@@ -5913,6 +5962,9 @@ bool request::IsInitialized() const {
   }
   if (has_post_block()) {
     if (!this->post_block().IsInitialized()) return false;
+  }
+  if (has_validate_block()) {
+    if (!this->validate_block().IsInitialized()) return false;
   }
 
   if (!_extensions_.IsInitialized()) return false;  return true;
@@ -6655,6 +6707,7 @@ const int response::kGetTransactionsResponseFieldNumber;
 const int response::kPostTransactionSucceededFieldNumber;
 const int response::kValidateTransactionSucceededFieldNumber;
 const int response::kPostBlockSucceededFieldNumber;
+const int response::kValidateBlockSucceededFieldNumber;
 #endif  // !_MSC_VER
 
 response::response()
@@ -6669,6 +6722,7 @@ void response::InitAsDefaultInstance() {
   response_default_oneof_instance_->post_transaction_succeeded_ = false;
   response_default_oneof_instance_->validate_transaction_succeeded_ = false;
   response_default_oneof_instance_->post_block_succeeded_ = false;
+  response_default_oneof_instance_->validate_block_succeeded_ = false;
 }
 
 response::response(const response& from)
@@ -6739,6 +6793,10 @@ void response::clear_response_type() {
       break;
     }
     case kPostBlockSucceeded: {
+      // No need to clear
+      break;
+    }
+    case kValidateBlockSucceeded: {
       // No need to clear
       break;
     }
@@ -6881,6 +6939,22 @@ bool response::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(64)) goto parse_validate_block_succeeded;
+        break;
+      }
+
+      // optional bool validate_block_succeeded = 8;
+      case 8: {
+        if (tag == 64) {
+         parse_validate_block_succeeded:
+          clear_response_type();
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &response_type_.validate_block_succeeded_)));
+          set_has_validate_block_succeeded();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -6952,6 +7026,11 @@ void response::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteBool(7, this->post_block_succeeded(), output);
   }
 
+  // optional bool validate_block_succeeded = 8;
+  if (has_validate_block_succeeded()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(8, this->validate_block_succeeded(), output);
+  }
+
   // Extension range [100, 200)
   _extensions_.SerializeWithCachedSizes(
       100, 200, output);
@@ -7003,6 +7082,11 @@ void response::SerializeWithCachedSizes(
   // optional bool post_block_succeeded = 7;
   if (has_post_block_succeeded()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(7, this->post_block_succeeded(), target);
+  }
+
+  // optional bool validate_block_succeeded = 8;
+  if (has_validate_block_succeeded()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(8, this->validate_block_succeeded(), target);
   }
 
   // Extension range [100, 200)
@@ -7066,6 +7150,11 @@ int response::ByteSize() const {
       total_size += 1 + 1;
       break;
     }
+    // optional bool validate_block_succeeded = 8;
+    case kValidateBlockSucceeded: {
+      total_size += 1 + 1;
+      break;
+    }
     case RESPONSE_TYPE_NOT_SET: {
       break;
     }
@@ -7116,6 +7205,10 @@ void response::MergeFrom(const response& from) {
     }
     case kPostBlockSucceeded: {
       set_post_block_succeeded(from.post_block_succeeded());
+      break;
+    }
+    case kValidateBlockSucceeded: {
+      set_validate_block_succeeded(from.validate_block_succeeded());
       break;
     }
     case RESPONSE_TYPE_NOT_SET: {

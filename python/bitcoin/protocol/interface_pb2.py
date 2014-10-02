@@ -19,7 +19,7 @@ _sym_db = _symbol_database.Default()
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='bitcoin/protocol/interface.proto',
   package='libbitcoin.protocol',
-  serialized_pb=_b('\n bitcoin/protocol/interface.proto\x12\x13libbitcoin.protocol\"\x93\x01\n\x0c\x62lock_header\x12\x0f\n\x07version\x18\x01 \x02(\r\x12\x1b\n\x13previous_block_hash\x18\x02 \x02(\x0c\x12\x13\n\x0bmerkle_root\x18\x03 \x02(\x0c\x12\x11\n\ttimestamp\x18\x04 \x02(\r\x12\x0c\n\x04\x62its\x18\x05 \x02(\r\x12\r\n\x05nonce\x18\x06 \x02(\r\x12\x10\n\x08tx_count\x18\x07 \x02(\x04\"$\n\x05point\x12\x0c\n\x04hash\x18\x01 \x02(\x0c\x12\r\n\x05index\x18\x02 \x02(\r\"a\n\x08tx_input\x12\x33\n\x0fprevious_output\x18\x01 \x02(\x0b\x32\x1a.libbitcoin.protocol.point\x12\x0e\n\x06script\x18\x02 \x02(\x0c\x12\x10\n\x08sequence\x18\x03 \x02(\r\"*\n\ttx_output\x12\r\n\x05value\x18\x01 \x02(\x04\x12\x0e\n\x06script\x18\x02 \x02(\x0c\"\x87\x01\n\x02tx\x12\x0f\n\x07version\x18\x01 \x02(\r\x12\x10\n\x08locktime\x18\x02 \x02(\r\x12-\n\x06inputs\x18\x03 \x03(\x0b\x32\x1d.libbitcoin.protocol.tx_input\x12/\n\x07outputs\x18\x04 \x03(\x0b\x32\x1e.libbitcoin.protocol.tx_output\"w\n\x05\x62lock\x12\x31\n\x06header\x18\x01 \x02(\x0b\x32!.libbitcoin.protocol.block_header\x12-\n\x0ctransactions\x18\x02 \x03(\x0b\x32\x17.libbitcoin.protocol.tx\x12\x0c\n\x04tree\x18\x03 \x03(\x0c\"Y\n\x06\x66ilter\x12\x31\n\x0b\x66ilter_type\x18\x01 \x02(\x0e\x32\x1c.libbitcoin.protocol.filters\x12\x0c\n\x04\x62its\x18\x02 \x01(\r\x12\x0e\n\x06prefix\x18\x03 \x02(\x0c\"(\n\x08\x62lock_id\x12\x0e\n\x06height\x18\x01 \x01(\r\x12\x0c\n\x04hash\x18\x02 \x01(\x0c\"Q\n\x0e\x62lock_location\x12/\n\x08identity\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x0e\n\x06\x62ranch\x18\x02 \x03(\x0c\"U\n\x0etx_hash_result\x12\x0c\n\x04hash\x18\x01 \x02(\x0c\x12\x35\n\x08location\x18\x02 \x02(\x0b\x32#.libbitcoin.protocol.block_location\"p\n\ttx_result\x12,\n\x0btransaction\x18\x01 \x02(\x0b\x32\x17.libbitcoin.protocol.tx\x12\x35\n\x08location\x18\x02 \x02(\x0b\x32#.libbitcoin.protocol.block_location\"9\n\x06output\x12\r\n\x05index\x18\x01 \x02(\r\x12\x10\n\x08satoshis\x18\x02 \x02(\x04\x12\x0e\n\x06script\x18\x03 \x02(\x0c\"\x83\x01\n\x0butxo_result\x12\x0f\n\x07tx_hash\x18\x01 \x02(\x0c\x12\x35\n\x08location\x18\x02 \x02(\x0b\x32#.libbitcoin.protocol.block_location\x12,\n\x07outputs\x18\x03 \x03(\x0b\x32\x1b.libbitcoin.protocol.output\"_\n\x15\x62lock_headers_request\x12,\n\x05start\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x18\n\x10results_per_page\x18\x02 \x01(\r\"\x8f\x02\n\x14transactions_request\x12,\n\x05start\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x18\n\x10results_per_page\x18\x02 \x01(\r\x12*\n\x05query\x18\x03 \x03(\x0b\x32\x1b.libbitcoin.protocol.filter\x12\x46\n\x0bresult_type\x18\x04 \x01(\x0e\x32(.libbitcoin.protocol.transaction_results:\x07TX_HASH\x12;\n\rlocation_type\x18\x05 \x01(\x0e\x32\x1e.libbitcoin.protocol.locations:\x04NONE\"\xdc\x02\n\x07request\x12\n\n\x02id\x18\x01 \x02(\r\x12G\n\x11get_block_headers\x18\x02 \x01(\x0b\x32*.libbitcoin.protocol.block_headers_requestH\x00\x12\x45\n\x10get_transactions\x18\x03 \x01(\x0b\x32).libbitcoin.protocol.transactions_requestH\x00\x12\x33\n\x10post_transaction\x18\x04 \x01(\x0b\x32\x17.libbitcoin.protocol.txH\x00\x12\x37\n\x14validate_transaction\x18\x05 \x01(\x0b\x32\x17.libbitcoin.protocol.txH\x00\x12\x30\n\npost_block\x18\x06 \x01(\x0b\x32\x1a.libbitcoin.protocol.blockH\x00*\x05\x08\x64\x10\xc8\x01\x42\x0e\n\x0crequest_type\"\xf7\x05\n\x08response\x12\n\n\x02id\x18\x01 \x02(\r\x12\x0e\n\x06status\x18\x02 \x01(\x11\x12Q\n\x1aget_block_headers_response\x18\x03 \x01(\x0b\x32+.libbitcoin.protocol.response.block_headersH\x00\x12O\n\x19get_transactions_response\x18\x04 \x01(\x0b\x32*.libbitcoin.protocol.response.transactionsH\x00\x12$\n\x1apost_transaction_succeeded\x18\x05 \x01(\x08H\x00\x12(\n\x1evalidate_transaction_succeeded\x18\x06 \x01(\x08H\x00\x12\x1e\n\x14post_block_succeeded\x18\x07 \x01(\x08H\x00\x1a\x9c\x01\n\rblock_headers\x12+\n\x04next\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12*\n\x03top\x18\x02 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x32\n\x07headers\x18\x03 \x03(\x0b\x32!.libbitcoin.protocol.block_header\x1a\x83\x02\n\x0ctransactions\x12+\n\x04next\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12*\n\x03top\x18\x02 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x33\n\x06hashes\x18\x03 \x03(\x0b\x32#.libbitcoin.protocol.tx_hash_result\x12\x34\n\x0ctransactions\x18\x04 \x03(\x0b\x32\x1e.libbitcoin.protocol.tx_result\x12/\n\x05utxos\x18\x05 \x03(\x0b\x32 .libbitcoin.protocol.utxo_result*\x05\x08\x64\x10\xc8\x01\x42\x0f\n\rresponse_type*4\n\x07\x66ilters\x12\x0b\n\x07\x41\x44\x44RESS\x10\x01\x12\x0f\n\x0bTRANSACTION\x10\x02\x12\x0b\n\x07STEALTH\x10\x03*B\n\x13transaction_results\x12\x0b\n\x07TX_HASH\x10\x01\x12\r\n\tTX_RESULT\x10\x02\x12\x0f\n\x0bUTXO_RESULT\x10\x03*,\n\tlocations\x12\x08\n\x04NONE\x10\x00\x12\t\n\x05\x42LOCK\x10\x01\x12\n\n\x06MERKLE\x10\x02')
+  serialized_pb=_b('\n bitcoin/protocol/interface.proto\x12\x13libbitcoin.protocol\"\x93\x01\n\x0c\x62lock_header\x12\x0f\n\x07version\x18\x01 \x02(\r\x12\x1b\n\x13previous_block_hash\x18\x02 \x02(\x0c\x12\x13\n\x0bmerkle_root\x18\x03 \x02(\x0c\x12\x11\n\ttimestamp\x18\x04 \x02(\r\x12\x0c\n\x04\x62its\x18\x05 \x02(\r\x12\r\n\x05nonce\x18\x06 \x02(\r\x12\x10\n\x08tx_count\x18\x07 \x02(\x04\"$\n\x05point\x12\x0c\n\x04hash\x18\x01 \x02(\x0c\x12\r\n\x05index\x18\x02 \x02(\r\"a\n\x08tx_input\x12\x33\n\x0fprevious_output\x18\x01 \x02(\x0b\x32\x1a.libbitcoin.protocol.point\x12\x0e\n\x06script\x18\x02 \x02(\x0c\x12\x10\n\x08sequence\x18\x03 \x02(\r\"*\n\ttx_output\x12\r\n\x05value\x18\x01 \x02(\x04\x12\x0e\n\x06script\x18\x02 \x02(\x0c\"\x87\x01\n\x02tx\x12\x0f\n\x07version\x18\x01 \x02(\r\x12\x10\n\x08locktime\x18\x02 \x02(\r\x12-\n\x06inputs\x18\x03 \x03(\x0b\x32\x1d.libbitcoin.protocol.tx_input\x12/\n\x07outputs\x18\x04 \x03(\x0b\x32\x1e.libbitcoin.protocol.tx_output\"w\n\x05\x62lock\x12\x31\n\x06header\x18\x01 \x02(\x0b\x32!.libbitcoin.protocol.block_header\x12-\n\x0ctransactions\x18\x02 \x03(\x0b\x32\x17.libbitcoin.protocol.tx\x12\x0c\n\x04tree\x18\x03 \x03(\x0c\"Y\n\x06\x66ilter\x12\x31\n\x0b\x66ilter_type\x18\x01 \x02(\x0e\x32\x1c.libbitcoin.protocol.filters\x12\x0c\n\x04\x62its\x18\x02 \x01(\r\x12\x0e\n\x06prefix\x18\x03 \x02(\x0c\"(\n\x08\x62lock_id\x12\x0e\n\x06height\x18\x01 \x01(\r\x12\x0c\n\x04hash\x18\x02 \x01(\x0c\"Q\n\x0e\x62lock_location\x12/\n\x08identity\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x0e\n\x06\x62ranch\x18\x02 \x03(\x0c\"U\n\x0etx_hash_result\x12\x0c\n\x04hash\x18\x01 \x02(\x0c\x12\x35\n\x08location\x18\x02 \x02(\x0b\x32#.libbitcoin.protocol.block_location\"p\n\ttx_result\x12,\n\x0btransaction\x18\x01 \x02(\x0b\x32\x17.libbitcoin.protocol.tx\x12\x35\n\x08location\x18\x02 \x02(\x0b\x32#.libbitcoin.protocol.block_location\"9\n\x06output\x12\r\n\x05index\x18\x01 \x02(\r\x12\x10\n\x08satoshis\x18\x02 \x02(\x04\x12\x0e\n\x06script\x18\x03 \x02(\x0c\"\x83\x01\n\x0butxo_result\x12\x0f\n\x07tx_hash\x18\x01 \x02(\x0c\x12\x35\n\x08location\x18\x02 \x02(\x0b\x32#.libbitcoin.protocol.block_location\x12,\n\x07outputs\x18\x03 \x03(\x0b\x32\x1b.libbitcoin.protocol.output\"_\n\x15\x62lock_headers_request\x12,\n\x05start\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x18\n\x10results_per_page\x18\x02 \x01(\r\"\x8f\x02\n\x14transactions_request\x12,\n\x05start\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x18\n\x10results_per_page\x18\x02 \x01(\r\x12*\n\x05query\x18\x03 \x03(\x0b\x32\x1b.libbitcoin.protocol.filter\x12\x46\n\x0bresult_type\x18\x04 \x01(\x0e\x32(.libbitcoin.protocol.transaction_results:\x07TX_HASH\x12;\n\rlocation_type\x18\x05 \x01(\x0e\x32\x1e.libbitcoin.protocol.locations:\x04NONE\"\x92\x03\n\x07request\x12\n\n\x02id\x18\x01 \x02(\r\x12G\n\x11get_block_headers\x18\x02 \x01(\x0b\x32*.libbitcoin.protocol.block_headers_requestH\x00\x12\x45\n\x10get_transactions\x18\x03 \x01(\x0b\x32).libbitcoin.protocol.transactions_requestH\x00\x12\x33\n\x10post_transaction\x18\x04 \x01(\x0b\x32\x17.libbitcoin.protocol.txH\x00\x12\x37\n\x14validate_transaction\x18\x05 \x01(\x0b\x32\x17.libbitcoin.protocol.txH\x00\x12\x30\n\npost_block\x18\x06 \x01(\x0b\x32\x1a.libbitcoin.protocol.blockH\x00\x12\x34\n\x0evalidate_block\x18\x07 \x01(\x0b\x32\x1a.libbitcoin.protocol.blockH\x00*\x05\x08\x64\x10\xc8\x01\x42\x0e\n\x0crequest_type\"\x9b\x06\n\x08response\x12\n\n\x02id\x18\x01 \x02(\r\x12\x0e\n\x06status\x18\x02 \x01(\x11\x12Q\n\x1aget_block_headers_response\x18\x03 \x01(\x0b\x32+.libbitcoin.protocol.response.block_headersH\x00\x12O\n\x19get_transactions_response\x18\x04 \x01(\x0b\x32*.libbitcoin.protocol.response.transactionsH\x00\x12$\n\x1apost_transaction_succeeded\x18\x05 \x01(\x08H\x00\x12(\n\x1evalidate_transaction_succeeded\x18\x06 \x01(\x08H\x00\x12\x1e\n\x14post_block_succeeded\x18\x07 \x01(\x08H\x00\x12\"\n\x18validate_block_succeeded\x18\x08 \x01(\x08H\x00\x1a\x9c\x01\n\rblock_headers\x12+\n\x04next\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12*\n\x03top\x18\x02 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x32\n\x07headers\x18\x03 \x03(\x0b\x32!.libbitcoin.protocol.block_header\x1a\x83\x02\n\x0ctransactions\x12+\n\x04next\x18\x01 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12*\n\x03top\x18\x02 \x01(\x0b\x32\x1d.libbitcoin.protocol.block_id\x12\x33\n\x06hashes\x18\x03 \x03(\x0b\x32#.libbitcoin.protocol.tx_hash_result\x12\x34\n\x0ctransactions\x18\x04 \x03(\x0b\x32\x1e.libbitcoin.protocol.tx_result\x12/\n\x05utxos\x18\x05 \x03(\x0b\x32 .libbitcoin.protocol.utxo_result*\x05\x08\x64\x10\xc8\x01\x42\x0f\n\rresponse_type*4\n\x07\x66ilters\x12\x0b\n\x07\x41\x44\x44RESS\x10\x01\x12\x0f\n\x0bTRANSACTION\x10\x02\x12\x0b\n\x07STEALTH\x10\x03*B\n\x13transaction_results\x12\x0b\n\x07TX_HASH\x10\x01\x12\r\n\tTX_RESULT\x10\x02\x12\x0f\n\x0bUTXO_RESULT\x10\x03*,\n\tlocations\x12\x08\n\x04NONE\x10\x00\x12\t\n\x05\x42LOCK\x10\x01\x12\n\n\x06MERKLE\x10\x02')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -44,8 +44,8 @@ _FILTERS = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2741,
-  serialized_end=2793,
+  serialized_start=2831,
+  serialized_end=2883,
 )
 _sym_db.RegisterEnumDescriptor(_FILTERS)
 
@@ -71,8 +71,8 @@ _TRANSACTION_RESULTS = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2795,
-  serialized_end=2861,
+  serialized_start=2885,
+  serialized_end=2951,
 )
 _sym_db.RegisterEnumDescriptor(_TRANSACTION_RESULTS)
 
@@ -98,8 +98,8 @@ _LOCATIONS = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=2863,
-  serialized_end=2907,
+  serialized_start=2953,
+  serialized_end=2997,
 )
 _sym_db.RegisterEnumDescriptor(_LOCATIONS)
 
@@ -825,6 +825,13 @@ _REQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='validate_block', full_name='libbitcoin.protocol.request.validate_block', index=6,
+      number=7, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -840,7 +847,7 @@ _REQUEST = _descriptor.Descriptor(
       index=0, containing_type=None, fields=[]),
   ],
   serialized_start=1629,
-  serialized_end=1977,
+  serialized_end=2031,
 )
 
 
@@ -883,8 +890,8 @@ _RESPONSE_BLOCK_HEADERS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2297,
-  serialized_end=2453,
+  serialized_start=2387,
+  serialized_end=2543,
 )
 
 _RESPONSE_TRANSACTIONS = _descriptor.Descriptor(
@@ -940,8 +947,8 @@ _RESPONSE_TRANSACTIONS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2456,
-  serialized_end=2715,
+  serialized_start=2546,
+  serialized_end=2805,
 )
 
 _RESPONSE = _descriptor.Descriptor(
@@ -1000,6 +1007,13 @@ _RESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='validate_block_succeeded', full_name='libbitcoin.protocol.response.validate_block_succeeded', index=7,
+      number=8, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -1014,8 +1028,8 @@ _RESPONSE = _descriptor.Descriptor(
       name='response_type', full_name='libbitcoin.protocol.response.response_type',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=1980,
-  serialized_end=2739,
+  serialized_start=2034,
+  serialized_end=2829,
 )
 
 _TX_INPUT.fields_by_name['previous_output'].message_type = _POINT
@@ -1040,6 +1054,7 @@ _REQUEST.fields_by_name['get_transactions'].message_type = _TRANSACTIONS_REQUEST
 _REQUEST.fields_by_name['post_transaction'].message_type = _TX
 _REQUEST.fields_by_name['validate_transaction'].message_type = _TX
 _REQUEST.fields_by_name['post_block'].message_type = _BLOCK
+_REQUEST.fields_by_name['validate_block'].message_type = _BLOCK
 _REQUEST.oneofs_by_name['request_type'].fields.append(
   _REQUEST.fields_by_name['get_block_headers'])
 _REQUEST.fields_by_name['get_block_headers'].containing_oneof = _REQUEST.oneofs_by_name['request_type']
@@ -1055,6 +1070,9 @@ _REQUEST.fields_by_name['validate_transaction'].containing_oneof = _REQUEST.oneo
 _REQUEST.oneofs_by_name['request_type'].fields.append(
   _REQUEST.fields_by_name['post_block'])
 _REQUEST.fields_by_name['post_block'].containing_oneof = _REQUEST.oneofs_by_name['request_type']
+_REQUEST.oneofs_by_name['request_type'].fields.append(
+  _REQUEST.fields_by_name['validate_block'])
+_REQUEST.fields_by_name['validate_block'].containing_oneof = _REQUEST.oneofs_by_name['request_type']
 _RESPONSE_BLOCK_HEADERS.fields_by_name['next'].message_type = _BLOCK_ID
 _RESPONSE_BLOCK_HEADERS.fields_by_name['top'].message_type = _BLOCK_ID
 _RESPONSE_BLOCK_HEADERS.fields_by_name['headers'].message_type = _BLOCK_HEADER
@@ -1082,6 +1100,9 @@ _RESPONSE.fields_by_name['validate_transaction_succeeded'].containing_oneof = _R
 _RESPONSE.oneofs_by_name['response_type'].fields.append(
   _RESPONSE.fields_by_name['post_block_succeeded'])
 _RESPONSE.fields_by_name['post_block_succeeded'].containing_oneof = _RESPONSE.oneofs_by_name['response_type']
+_RESPONSE.oneofs_by_name['response_type'].fields.append(
+  _RESPONSE.fields_by_name['validate_block_succeeded'])
+_RESPONSE.fields_by_name['validate_block_succeeded'].containing_oneof = _RESPONSE.oneofs_by_name['response_type']
 DESCRIPTOR.message_types_by_name['block_header'] = _BLOCK_HEADER
 DESCRIPTOR.message_types_by_name['point'] = _POINT
 DESCRIPTOR.message_types_by_name['tx_input'] = _TX_INPUT

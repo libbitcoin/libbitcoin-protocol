@@ -46,7 +46,11 @@ public:
 
     bool receive(czmqpp::socket& socket);
 
+    bool receive(const std::shared_ptr<czmqpp::socket>& socket);
+
     bool send(czmqpp::socket& socket);
+
+    bool send(const std::shared_ptr<czmqpp::socket>& socket);
 
 protected:
 
