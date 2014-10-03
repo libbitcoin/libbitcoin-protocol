@@ -15,7 +15,7 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 PKG_PROG_PKG_CONFIG
 
 PKG_CHECK_MODULES([libbitcoin], [libbitcoin >= 2.3.0])
-PKG_CHECK_MODULES([protobuf], [protobuf >= 2.4.0])
+PKG_CHECK_MODULES([protobuf], [protobuf >= 2.6.0])
 PKG_CHECK_MODULES([czmqpp], [libczmq++ >= 0.4.1])
 
 AC_ARG_WITH([pkgconfigdir], AS_HELP_STRING([--with-pkgconfigdir=PATH],

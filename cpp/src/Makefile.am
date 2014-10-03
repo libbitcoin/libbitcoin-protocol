@@ -6,7 +6,7 @@ AM_CPPFLAGS = \
     -I$(srcdir)/../include \
     $(libbitcoin_CFLAGS) \
     $(protobuf_CFLAGS) \
-    $(czmqpp_CFLAGS) \
+    $(czmqpp_CFLAGS) 
 
 libbitcoin_protocol_la_SOURCES = \
     interface.pb.cc \
