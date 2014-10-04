@@ -21,5 +21,5 @@ install:
   - ./install-boost.sh
 
 script:
-  # Download and build unpackaged dependencies and build root project.
+  # Download and build unpackaged dependencies and build libbitcoin_protocol.
   - ./install-libbitcoin_protocol.sh CFLAGS="-s"
