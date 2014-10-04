@@ -19,7 +19,7 @@
 BUILD_DIRECTORY="libbitcoin_protocol_build"
 
 # The source repository for the primary build (when not running in Travis).
-BUILD_ACCOUNT="pmienk"
+BUILD_ACCOUNT="libbitcoin"
 BUILD_REPO="libbitcoin_protocol"
 BUILD_BRANCH="master"
 

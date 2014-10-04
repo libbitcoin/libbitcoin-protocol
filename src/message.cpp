@@ -95,9 +95,7 @@ bool message::receive(const std::shared_ptr<czmqpp::socket>& socket)
     bool result = false;
 
     if (socket)
-    {
         result = receive(*(socket.get()));
-    }
 
     return result;
 }
@@ -109,9 +107,7 @@ bool message::send(czmqpp::socket& socket)
     czmqpp::message message;
 
     if (!destination_.empty())
-    {
         message.append(destination_);
-    }
 
     czmqpp::data_chunk empty;
     message.append(empty);
@@ -130,9 +126,7 @@ bool message::send(const std::shared_ptr<czmqpp::socket>& socket)
     bool result = false;
 
     if (socket)
-    {
         result = send(*(socket.get()));
-    }
 
     return result;
 }
