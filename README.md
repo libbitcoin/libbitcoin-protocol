@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/libbitcoin/libbitcoin_protocol.svg?branch=master)](https://travis-ci.org/libbitcoin/libbitcoin_protocol)
+
 # Bitcoin Server Protocol
 
 [swansontec](https://github.com/swansontec), [pmienk](https://github.com/pmienk), [evoskuil](https://github.com/evoskuil)
