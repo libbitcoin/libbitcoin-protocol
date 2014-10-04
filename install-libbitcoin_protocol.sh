@@ -76,10 +76,7 @@ build_from_github()
 build_tests()
 {
     # Build and run unit tests relative to the primary directory.
-    pushd test
-    make
-    ./libbitcoin_protocol_test $BOOST_UNIT_TEST_PARAMETERS
-    popd
+    TEST_FLAGS="$BOOST_UNIT_TEST_PARAMETERS" make check
 }
 
 build_primary()
