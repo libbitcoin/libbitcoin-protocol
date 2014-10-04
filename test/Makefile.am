@@ -1,8 +1,10 @@
 AUTOMAKE_OPTIONS = subdir-objects
 
-noinst_PROGRAMS = libbitcoin_protocol_test
+TESTS = libbitcoin_protocol_test
 
-AM_CPPFLAGS = \
+check_PROGRAMS = libbitcoin_protocol_test
+
+libbitcoin_protocol_test_CPPFLAGS = \
     -I$(srcdir)/../include \
     ${bitcoin_CFLAGS} \
     ${protobuf_CFLAGS} \
