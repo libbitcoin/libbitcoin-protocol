@@ -6,10 +6,9 @@ pushd proto
 
 # generate c++ source/header
 echo "generating c++ sources"
-protoc --cpp_out=dllexport_decl=BCP_API:../cpp/include bitcoin/protocol/interface.proto
+protoc --cpp_out=dllexport_decl=BCP_API:../include bitcoin/protocol/interface.proto
 
 popd
-pushd cpp
 
 # modify generated header to introduce define.hpp inclusion
 echo "modifying generated header"
@@ -18,8 +17,6 @@ sed -i '/protoc_insertion_point(includes)/ i\#include <bitcoin\/protocol\/define
 # relocate generated/modified files into c++ project
 echo "relocating files to 'cpp' directory"
 mv ./include/bitcoin/protocol/interface.pb.cc ./src/
-
-popd
 
 echo "update complete"
 
