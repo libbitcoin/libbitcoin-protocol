@@ -4,7 +4,7 @@ lib_LTLIBRARIES = libbitcoin_protocol.la
 
 AM_CPPFLAGS = \
     -I$(srcdir)/../include \
-    $(libbitcoin_CFLAGS) \
+    $(bitcoin_CFLAGS) \
     $(protobuf_CFLAGS) \
     $(czmqpp_CFLAGS) 
 
@@ -13,7 +13,7 @@ libbitcoin_protocol_la_SOURCES = \
     message.cpp
 
 libbitcoin_protocol_la_LIBADD = \
-    $(libbitcoin_LIBS) \
+    $(bitcoin_LIBS) \
     $(protobuf_LIBS) \
     $(czmqpp_LIBS)
 
