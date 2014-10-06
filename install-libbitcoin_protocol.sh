@@ -16,14 +16,15 @@
 
 # This script will build libbitcoin using this relative directory.
 # This is meant to be temporary, just to facilitate the install.
+
 if [ "$TRAVIS" = "true" ]; then
-    PARALLEL_MAKE="-j2"
+    PARALLEL="2"
 else
     NPROC=$(nproc)
-    PARALLEL_MAKE="-j$NPROC"
+    PARALLEL="$NPROC"
 fi
 
-SEQUENTIAL_MAKE="-j1"
+SEQUENTIAL="1"
 
 BUILD_DIRECTORY="libbitcoin_protocol_build"
 
@@ -52,12 +53,12 @@ display_message()
 
 automake_current_directory()
 {
-    MAKE_ARGS=$1
+    JOBS=$1
     shift 1
 
     ./autogen.sh
     ./configure "$@"
-    make "$MAKE_ARGS"
+    make "-j$JOBS"
     sudo make install
     sudo ldconfig
 }
@@ -67,14 +68,14 @@ build_from_github()
     ACCOUNT=$1
     REPO=$2
     BRANCH=$3
-    MAKE_ARGS=$4
+    JOBS=$4
 
     # Shift the first three parameters out of @.
     shift 4
 
     # Show the user what repo we are building.
     FORK="$ACCOUNT/$REPO"
-    display_message "Download $FORK/$BRANCH/$MAKE_ARGS"
+    display_message "Download $FORK/$BRANCH"
     
     # Clone the repo locally.
     rm -rf $REPO
@@ -82,34 +83,36 @@ build_from_github()
 
     # Build the local repo clone.
     pushd $REPO
-    automake_current_directory "$MAKE_ARGS" "$@"
+    automake_current_directory "$JOBS" "$@"
     popd
 }
 
 build_tests()
 {
+    JOBS=$1
+
     # Build and run unit tests relative to the primary directory.
-    TEST_FLAGS="$BOOST_UNIT_TEST_PARAMETERS" make check "$@"
+    TEST_FLAGS="$BOOST_UNIT_TEST_PARAMETERS" make check "-j$JOBS"
 }
 
 build_primary()
 {
-    MAKE_ARGS=$1
+    JOBS=$1
     shift 1
 
     if [ "$TRAVIS" = "true" ]; then
         # If the environment is Travis drop out of build directory.
         cd ..
         display_message "Local $TRAVIS_REPO_SLUG"
-	    automake_current_directory "$MAKE_ARGS" "$@"
+	    automake_current_directory "$JOBS" "$@"
         build_tests
     else
         # Otherwise we pull the primary repo down for the single file install.
-        build_from_github $BUILD_ACCOUNT $BUILD_REPO $BUILD_BRANCH $BUILD_SUBPATH "$MAKE_ARGS" "$@"
+        build_from_github $BUILD_ACCOUNT $BUILD_REPO $BUILD_BRANCH $BUILD_SUBPATH "$JOBS" "$@"
 
         # Build the tests and drop out of build directory.
         pushd $BUILD_REPO
-        build_tests "$MAKE_ARGS"
+        build_tests "$JOBS"
         popd
         cd ..
     fi
@@ -161,16 +164,16 @@ build_library()
     create_build_directory
 
     # Download, build and install all unpackaged dependencies.
-    build_from_github jedisct1 libsodium master "$SEQUENTIAL_MAKE" "$@"
-    build_from_github zeromq libzmq master "$SEQUENTIAL_MAKE" "$@"
-    build_from_github zeromq czmq master "$SEQUENTIAL_MAKE" "$@"
-    build_from_github evoskuil czmqpp master "$SEQUENTIAL_MAKE" "$@"
-    build_from_github bitcoin secp256k1 master "$SEQUENTIAL_MAKE" "$@" $SECP256K1_OPTIONS
-    build_from_github libbitcoin libbitcoin develop "$PARALLEL_MAKE" "$@"
-    build_from_github google protobuf master "$SEQUENTIAL_MAKE" "$@"
+    build_from_github jedisct1 libsodium master "$SEQUENTIAL" "$@"
+    build_from_github zeromq libzmq master "$SEQUENTIAL" "$@"
+    build_from_github zeromq czmq master "$SEQUENTIAL" "$@"
+    build_from_github evoskuil czmqpp master "$SEQUENTIAL" "$@"
+    build_from_github bitcoin secp256k1 master "$SEQUENTIAL" "$@" $SECP256K1_OPTIONS
+    build_from_github libbitcoin libbitcoin develop "$PARALLEL" "$@"
+    build_from_github google protobuf master "$SEQUENTIAL" "$@"
 
     # The primary build is not downloaded if we are running in Travis.
-    build_primary "$PARALLEL_MAKE" "$@"
+    build_primary "$PARALLEL" "$@"
     
     # If the build succeeded clean up the build directory.
     delete_build_directory
