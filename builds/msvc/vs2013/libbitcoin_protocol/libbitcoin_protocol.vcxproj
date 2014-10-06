@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="Globals">
     <PlatformToolset>CTP_Nov2013</PlatformToolset>
@@ -58,6 +58,7 @@
   <PropertyGroup Label="Configuration">
     <ConfigurationType Condition="$(Configuration.IndexOf('DLL')) == -1">StaticLibrary</ConfigurationType>
     <ConfigurationType Condition="$(Configuration.IndexOf('DLL')) != -1">DynamicLibrary</ConfigurationType>
+    <NuGetPackageImportStamp>ee71100e</NuGetPackageImportStamp>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -69,6 +70,17 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\interface.pb.cc" />
+    <ClCompile Include="..\..\..\..\src\message.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\define.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\interface.pb.h" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\message.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\primitives.hpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
   <ImportGroup Label="ExtensionSettings">
@@ -78,6 +90,8 @@
     <Import Project="..\..\..\..\..\..\nuget\czmq_vc120.2.2.0.8\build\native\czmq_vc120.targets" Condition="Exists('..\..\..\..\..\..\nuget\czmq_vc120.2.2.0.8\build\native\czmq_vc120.targets')" />
     <Import Project="..\..\..\..\..\..\nuget\libsodium_vc120.0.6.0.1\build\native\libsodium_vc120.targets" Condition="Exists('..\..\..\..\..\..\nuget\libsodium_vc120.0.6.0.1\build\native\libsodium_vc120.targets')" />
     <Import Project="..\..\..\..\..\..\nuget\secp256k1_gmp_vc120.0.1.0.2\build\native\secp256k1_gmp_vc120.targets" Condition="Exists('..\..\..\..\..\..\nuget\secp256k1_gmp_vc120.0.1.0.2\build\native\secp256k1_gmp_vc120.targets')" />
+    <Import Project="..\..\..\..\..\..\nuget\czmqpp_vc120.1.0.0.10\build\native\czmqpp_vc120.targets" Condition="Exists('..\..\..\..\..\..\nuget\czmqpp_vc120.1.0.0.10\build\native\czmqpp_vc120.targets')" />
+    <Import Project="..\..\..\..\..\..\nuget\protobuf_vc120.2.6.0.0\build\native\protobuf_vc120.targets" Condition="Exists('..\..\..\..\..\..\nuget\protobuf_vc120.2.6.0.0\build\native\protobuf_vc120.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -89,5 +103,7 @@
     <Error Condition="!Exists('..\..\..\..\..\..\nuget\czmq_vc120.2.2.0.8\build\native\czmq_vc120.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\..\..\nuget\czmq_vc120.2.2.0.8\build\native\czmq_vc120.targets'))" />
     <Error Condition="!Exists('..\..\..\..\..\..\nuget\libsodium_vc120.0.6.0.1\build\native\libsodium_vc120.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\..\..\nuget\libsodium_vc120.0.6.0.1\build\native\libsodium_vc120.targets'))" />
     <Error Condition="!Exists('..\..\..\..\..\..\nuget\secp256k1_gmp_vc120.0.1.0.2\build\native\secp256k1_gmp_vc120.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\..\..\nuget\secp256k1_gmp_vc120.0.1.0.2\build\native\secp256k1_gmp_vc120.targets'))" />
+    <Error Condition="!Exists('..\..\..\..\..\..\nuget\czmqpp_vc120.1.0.0.10\build\native\czmqpp_vc120.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\..\..\nuget\czmqpp_vc120.1.0.0.10\build\native\czmqpp_vc120.targets'))" />
+    <Error Condition="!Exists('..\..\..\..\..\..\nuget\protobuf_vc120.2.6.0.0\build\native\protobuf_vc120.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\..\..\nuget\protobuf_vc120.2.6.0.0\build\native\protobuf_vc120.targets'))" />
   </Target>
 </Project>

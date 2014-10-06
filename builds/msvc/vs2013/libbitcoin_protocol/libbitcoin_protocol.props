@@ -21,6 +21,8 @@
       <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <EnablePREfast>false</EnablePREfast>
       <PreprocessorDefinitions>_WIN32_WINNT=0x0600;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(ConfigurationType)' == 'DynamicLibrary'">BCP_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(ConfigurationType)' == 'StaticLibrary'">BCP_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(DebugOrRelease)' == 'Release'">BITCOIN_DISABLE_ASSERTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <!-- These go together in support of precompiled headers. -->
       <!--<PrecompiledHeader>Create</PrecompiledHeader>
@@ -36,6 +38,7 @@
   </ImportGroup>  
 
   <PropertyGroup Condition="'$(DefaultLinkage)' == 'dynamic'">
+    <Linkage-protobuf>dynamic</Linkage-protobuf>
     <Linkage-secp256k1>static</Linkage-secp256k1>
     <Linkage-mpir>static</Linkage-mpir>
     <Linkage-czmq>dynamic</Linkage-czmq>
@@ -44,6 +47,7 @@
     <Linkage-libbitcoin>dynamic</Linkage-libbitcoin>
   </PropertyGroup>
   <PropertyGroup Condition="'$(DefaultLinkage)' == 'ltcg'">
+    <Linkage-protobuf>ltcg</Linkage-protobuf>
     <Linkage-secp256k1>static</Linkage-secp256k1>
     <Linkage-mpir>static</Linkage-mpir>
     <Linkage-czmqpp>ltcg</Linkage-czmqpp>
@@ -53,6 +57,7 @@
     <Linkage-libbitcoin>ltcg</Linkage-libbitcoin>
   </PropertyGroup>
   <PropertyGroup Condition="'$(DefaultLinkage)' == 'static'">
+    <Linkage-protobuf>static</Linkage-protobuf>
     <Linkage-secp256k1>static</Linkage-secp256k1>
     <Linkage-mpir>static</Linkage-mpir>
     <Linkage-czmq>static</Linkage-czmq>

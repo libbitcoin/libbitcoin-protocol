@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{ebc99a88-4c3d-44db-aabe-824f64490e84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{d0e2a66a-ed2a-4bbd-93df-0564f7e97295}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\bitcoin">
+      <UniqueIdentifier>{f12c7057-c4cf-406e-aaca-67fc543a3163}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\bitcoin\protocol">
+      <UniqueIdentifier>{c51da6c8-7df7-48b3-a9c0-730e4eb199c3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\message.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\interface.pb.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol.hpp">
+      <Filter>include\bitcoin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\interface.pb.h">
+      <Filter>include\bitcoin\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\message.hpp">
+      <Filter>include\bitcoin\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\primitives.hpp">
+      <Filter>include\bitcoin\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\define.hpp">
+      <Filter>include\bitcoin\protocol</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
