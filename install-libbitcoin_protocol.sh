@@ -170,7 +170,7 @@ build_library()
     build_from_github evoskuil czmqpp master "$SEQUENTIAL" "$@"
     build_from_github bitcoin secp256k1 master "$SEQUENTIAL" "$@" $SECP256K1_OPTIONS
     build_from_github libbitcoin libbitcoin develop "$PARALLEL" "$@"
-    build_from_github google protobuf master "$SEQUENTIAL" "$@"
+    build_from_github libbitcoin protobuf 2.6.0 "$SEQUENTIAL" "$@"
 
     # The primary build is not downloaded if we are running in Travis.
     build_primary "$PARALLEL" "$@"
