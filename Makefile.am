@@ -3,6 +3,7 @@
 #
 pkgconfig_DATA = libbitcoin_protocol.pc
 
+# ?
 ACLOCAL_AMFLAGS = -I m4
 
 #
@@ -58,7 +59,7 @@ libbitcoin_protocol_test_SOURCES = \
     test/protocol.cpp
 
 libbitcoin_protocol_test_LDADD = \
-    -lbitcoin_protocol \
+    libbitcoin_protocol.la \
     ${bitcoin_LIBS} \
     ${protobuf_LIBS} \
     ${czmqpp_LIBS}
