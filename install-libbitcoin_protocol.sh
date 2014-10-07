@@ -17,19 +17,6 @@
 # This script will build libbitcoin using this relative directory.
 # This is meant to be temporary, just to facilitate the install.
 
-SEQUENTIAL="1"
-
-if [ "$TRAVIS" = "true" ]; then
-    PARALLEL="$SEQUENTIAL"
-
-    echo "Detected travis install, setting to non-parallel: $PARALLEL"
-else
-    NPROC=$(nproc)
-    PARALLEL="$NPROC"
-
-    echo "Detected cores for parallel make: $PARALLEL"
-fi
-
 BUILD_DIRECTORY="libbitcoin_protocol_build"
 
 # The source repository for the primary build (when not running in Travis).
@@ -46,6 +33,19 @@ BOOST_UNIT_TEST_PARAMETERS=\
 "--detect_memory_leak=0 "\
 "--report_level=no "\
 "--build_info=yes"
+
+SEQUENTIAL="1"
+
+if [ "$TRAVIS" = "true" ]; then
+    PARALLEL="$SEQUENTIAL"
+
+    echo "Detected travis install, setting to non-parallel: $PARALLEL"
+else
+    NPROC=$(nproc)
+    PARALLEL="$NPROC"
+
+    echo "Detected cores for parallel make: $PARALLEL"
+fi
 
 display_message()
 {
@@ -132,28 +132,6 @@ build_primary()
     fi
 }
 
-clean_usr_local()
-{
-    # Remove previous usr/local libbitcoin installs (not all dependencies).
-    # Only installations conforming to the directory structure are cleaned.
-
-    # Includes
-    sudo rm --force /usr/local/include/bitcoin/bitcoin.hpp
-    sudo rm --force --recursive /usr/local/include/bitcoin/bitcoin
-    sudo rm --force /usr/local/include/bitcoin/protocol.hpp
-    sudo rm --force --recursive /usr/local/include/bitcoin/protocol
-
-    # Archives
-    sudo rm --force /usr/local/lib/libbitcoin.a
-    sudo rm --force /usr/local/lib/libbitcoin.la
-    sudo rm --force /usr/local/lib/libbitcoin.so
-    sudo rm --force /usr/local/lib/libbitcoin.so.*
-    sudo rm --force /usr/local/lib/libbitcoin_protocol.a
-    sudo rm --force /usr/local/lib/libbitcoin_protocol.la
-    sudo rm --force /usr/local/lib/libbitcoin_protocol.so
-    sudo rm --force /usr/local/lib/libbitcoin_protocol.so.*
-}
-
 create_build_directory()
 {
     # Notify that this script will do something destructive.
@@ -171,9 +149,6 @@ create_build_directory()
 
 build_library()
 {
-    # Purge previous installations.
-    clean_usr_local
-
     # Create and move to a temporary build directory.
     create_build_directory
 
