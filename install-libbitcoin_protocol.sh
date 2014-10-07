@@ -17,14 +17,18 @@
 # This script will build libbitcoin using this relative directory.
 # This is meant to be temporary, just to facilitate the install.
 
+SEQUENTIAL="1"
+
 if [ "$TRAVIS" = "true" ]; then
-    PARALLEL="1"
+    PARALLEL="$SEQUENTIAL"
+
+    echo "Detected travis install, setting to non-parallel: $PARALLEL"
 else
     NPROC=$(nproc)
     PARALLEL="$NPROC"
-fi
 
-SEQUENTIAL="1"
+    echo "Detected cores for parallel make: $PARALLEL"
+fi
 
 BUILD_DIRECTORY="libbitcoin_protocol_build"
 
@@ -58,7 +62,13 @@ automake_current_directory()
 
     ./autogen.sh
     ./configure "$@"
-    make "-j$JOBS"
+
+    if [ "$JOBS" -gt "$SEQUENTIAL" ]; then
+        make "-j$JOBS"
+    else
+        make
+    fi
+
     sudo make install
     sudo ldconfig
 }
@@ -92,7 +102,11 @@ build_tests()
     JOBS=$1
 
     # Build and run unit tests relative to the primary directory.
-    TEST_FLAGS="$BOOST_UNIT_TEST_PARAMETERS" make check "-j$JOBS"
+    if [ "$JOBS" -gt "$SEQUENTIAL" ]; then
+        TEST_FLAGS="$BOOST_UNIT_TEST_PARAMETERS" make check "-j$JOBS"
+    else
+        TEST_FLAGS="$BOOST_UNIT_TEST_PARAMETERS" make check
+    fi
 }
 
 build_primary()
