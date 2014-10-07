@@ -20,6 +20,7 @@
 #ifndef LIBBITCOIN_PROTOCOL_PROTOCOL_HPP
 #define LIBBITCOIN_PROTOCOL_PROTOCOL_HPP
 
+#include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/interface.pb.h>
 #include <bitcoin/protocol/message.hpp>
