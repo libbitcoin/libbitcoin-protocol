@@ -1,4 +1,4 @@
-AC_INIT([libbitcoin_protocol], [0.0.1], [mienkphi@gmail.com])
+AC_INIT([libbitcoin-protocol], [0.0.1], [mienkphi@gmail.com])
 AC_USE_SYSTEM_EXTENSIONS
 AC_LANG(C++)
 AC_CONFIG_AUX_DIR([build-aux])
@@ -34,6 +34,6 @@ AC_ARG_WITH([pkgconfigdir], AS_HELP_STRING([--with-pkgconfigdir=PATH],
     [pkgconfigdir="$withval"], [pkgconfigdir='${libdir}/pkgconfig'])
 AC_SUBST([pkgconfigdir])
 
-AC_CONFIG_FILES([Makefile libbitcoin_protocol.pc])
+AC_CONFIG_FILES([Makefile libbitcoin-protocol.pc])
 AC_OUTPUT
 

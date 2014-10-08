@@ -1,7 +1,7 @@
 #
 # pkg-config
 #
-pkgconfig_DATA = libbitcoin_protocol.pc
+pkgconfig_DATA = libbitcoin-protocol.pc
 
 # ?
 ACLOCAL_AMFLAGS = -I m4
@@ -23,19 +23,19 @@ bitcoin_protocol_include_HEADERS = \
 #
 # binaries
 #
-lib_LTLIBRARIES = libbitcoin_protocol.la
+lib_LTLIBRARIES = libbitcoin-protocol.la
 
-libbitcoin_protocol_la_CPPFLAGS = \
+libbitcoin-protocol_la_CPPFLAGS = \
     -I$(srcdir)/include \
     $(bitcoin_CFLAGS) \
     $(protobuf_CFLAGS) \
     $(czmqpp_CFLAGS) 
 
-libbitcoin_protocol_la_SOURCES = \
+libbitcoin-protocol_la_SOURCES = \
     src/interface.pb.cc \
     src/message.cpp
 
-libbitcoin_protocol_la_LIBADD = \
+libbitcoin-protocol_la_LIBADD = \
     $(bitcoin_LIBS) \
     $(protobuf_LIBS) \
     $(czmqpp_LIBS)
@@ -43,23 +43,23 @@ libbitcoin_protocol_la_LIBADD = \
 #
 # tests
 #
-TESTS = libbitcoin_protocol_test
+TESTS = libbitcoin-protocol-test
 
-check_PROGRAMS = libbitcoin_protocol_test
+check_PROGRAMS = libbitcoin-protocol-test
 
-libbitcoin_protocol_test_CPPFLAGS = \
+libbitcoin-protocol-test_CPPFLAGS = \
     -I$(srcdir)/include \
     ${bitcoin_CFLAGS} \
     ${protobuf_CFLAGS} \
     $(czmqpp_CFLAGS) \
     -DBOOST_TEST_DYN_LINK
 
-libbitcoin_protocol_test_SOURCES = \
+libbitcoin-protocol-test_SOURCES = \
     test/main.cpp \
     test/protocol.cpp
 
-libbitcoin_protocol_test_LDADD = \
-    libbitcoin_protocol.la \
+libbitcoin-protocol-test_LDADD = \
+    libbitcoin-protocol.la \
     ${bitcoin_LIBS} \
     ${protobuf_LIBS} \
     ${czmqpp_LIBS}
