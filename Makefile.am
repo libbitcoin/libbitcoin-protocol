@@ -13,8 +13,8 @@ bitcoin_includedir = $(includedir)/bitcoin
 bitcoin_include_HEADERS = \
     include/bitcoin/protocol.hpp
 
-bitcoin_protocol_includedir = $(includedir)/bitcoin/protocol
-bitcoin_protocol_include_HEADERS = \
+bitcoin-protocol_includedir = $(includedir)/bitcoin/protocol
+bitcoin-protocol_include_HEADERS = \
     include/bitcoin/protocol/define.hpp \
     include/bitcoin/protocol/interface.pb.h \
     include/bitcoin/protocol/message.hpp \

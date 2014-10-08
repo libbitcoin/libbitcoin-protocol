@@ -12,4 +12,4 @@ Requires: libbitcoin >= 2.3.0 protobuf >= 2.6.0 libczmq++ >= 0.4.1
 
 Cflags: -I${includedir} -std=c++11
 
-Libs: -L${libdir} -lbitcoin_protocol
+Libs: -L${libdir} -lbitcoin-protocol
