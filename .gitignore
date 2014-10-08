@@ -5,8 +5,8 @@
 *.o
 Makefile
 Makefile.in
-libbitcoin_protocol.pc
-libbitcoin_protocol_test
+libbitcoin-protocol.pc
+libbitcoin-protocol-test
 
 bin
 obj

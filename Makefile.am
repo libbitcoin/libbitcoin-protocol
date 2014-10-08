@@ -1,7 +1,7 @@
 #
 # pkg-config
 #
-pkgconfig_DATA = libbitcoin_protocol.pc
+pkgconfig_DATA = libbitcoin-protocol.pc
 
 # ?
 ACLOCAL_AMFLAGS = -I m4
@@ -23,7 +23,7 @@ bitcoin_protocol_include_HEADERS = \
 #
 # binaries
 #
-lib_LTLIBRARIES = libbitcoin_protocol.la
+lib_LTLIBRARIES = libbitcoin-protocol.la
 
 libbitcoin_protocol_la_CPPFLAGS = \
     -I$(srcdir)/include \
@@ -43,9 +43,9 @@ libbitcoin_protocol_la_LIBADD = \
 #
 # tests
 #
-TESTS = libbitcoin_protocol_test
+TESTS = libbitcoin-protocol-test
 
-check_PROGRAMS = libbitcoin_protocol_test
+check_PROGRAMS = libbitcoin-protocol-test
 
 libbitcoin_protocol_test_CPPFLAGS = \
     -I$(srcdir)/include \
@@ -59,7 +59,7 @@ libbitcoin_protocol_test_SOURCES = \
     test/protocol.cpp
 
 libbitcoin_protocol_test_LDADD = \
-    libbitcoin_protocol.la \
+    libbitcoin-protocol.la \
     ${bitcoin_LIBS} \
     ${protobuf_LIBS} \
     ${czmqpp_LIBS}
