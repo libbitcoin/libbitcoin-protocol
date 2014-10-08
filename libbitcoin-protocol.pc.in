@@ -8,7 +8,7 @@ Description: Privacy Protocol for Blockchain Queries.
 URL: https://github.com/libbitcoin/libbitcoin-protocol
 Version: @PACKAGE_VERSION@
 
-Requires: libbitcoin >= 2.3.0 protobuf >= 2.6.0 libczmq++ >= 0.4.1
+Requires: libbitcoin >= 2.4.0 protobuf >= 2.6.0 libczmq++ >= 0.4.1
 
 Cflags: -I${includedir} -std=c++11
 

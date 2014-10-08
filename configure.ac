@@ -1,13 +1,8 @@
-AC_INIT([libbitcoin-protocol], [0.0.1], [mienkphi@gmail.com])
+AC_INIT([libbitcoin-protocol], [0.1.0], [mienkphi@gmail.com])
 AC_USE_SYSTEM_EXTENSIONS
 AC_LANG(C++)
 AC_CONFIG_AUX_DIR([build-aux])
-
-# The BOOST_ROOT environment variable is *not* prioritize by the m4 tests.
-# As a result there may be dependency conflicts between installed versions
-# and a version specified in BOOST_ROOT.
 AC_CONFIG_MACRO_DIR([m4])
-
 AM_INIT_AUTOMAKE([subdir-objects -Wall -Werror])
 AM_PROG_AR
 LT_INIT
@@ -25,9 +20,18 @@ AX_BOOST_UNIT_TEST_FRAMEWORK
 
 PKG_PROG_PKG_CONFIG
 
-PKG_CHECK_MODULES([bitcoin], [libbitcoin >= 2.3.0])
+PKG_CHECK_MODULES([bitcoin], [libbitcoin >= 2.4.0])
 PKG_CHECK_MODULES([protobuf], [protobuf >= 2.6.0])
 PKG_CHECK_MODULES([czmqpp], [libczmq++ >= 0.4.1])
+
+# Do not add contextual build parameters in configuration.
+# http://stackoverflow.com/a/4680578
+OPTIMIZATIONS="-fvisibility=internal"
+WARNINGS="-Wall -Wextra -Wpedantic -Wno-missing-braces"
+SAFEGUARDS="-fvisibility-inlines-hidden -fstack-protector-all"
+EXCEPTIONS="-Wno-unused-function -Wno-unused-parameter"
+AM_CXXFLAGS=$WARNINGS" "$SAFEGUARDS" "$OPTIMIZATIONS" "$EXCEPTIONS
+AC_SUBST([AM_CXXFLAGS])
 
 AC_ARG_WITH([pkgconfigdir], AS_HELP_STRING([--with-pkgconfigdir=PATH],
     [Path to the pkgconfig directory [[LIBDIR/pkgconfig]]]),
