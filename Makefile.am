@@ -3,7 +3,7 @@
 #
 pkgconfig_DATA = libbitcoin-protocol.pc
 
-# ?
+# look for macros in the m4 subdirectory
 ACLOCAL_AMFLAGS = -I m4
 
 #
@@ -21,7 +21,7 @@ bitcoin_protocol_include_HEADERS = \
     include/bitcoin/protocol/primitives.hpp
 
 #
-# binaries
+# libraries
 #
 lib_LTLIBRARIES = libbitcoin-protocol.la
 
@@ -43,9 +43,9 @@ libbitcoin_protocol_la_LIBADD = \
 #
 # tests
 #
-TESTS = libbitcoin-protocol-test
+TESTS = libbitcoin_protocol_test
 
-check_PROGRAMS = libbitcoin-protocol-test
+check_PROGRAMS = libbitcoin_protocol_test
 
 libbitcoin_protocol_test_CPPFLAGS = \
     -I$(srcdir)/include \
