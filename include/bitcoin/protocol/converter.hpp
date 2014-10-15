@@ -66,6 +66,30 @@ public:
     bool from_protocol(const std::shared_ptr<block> block,
         bc::block_type& result);
 
+    bool to_protocol(const bc::output_point& point,
+        bc::protocol::point& result);
+
+    bc::protocol::point* to_protocol(const bc::output_point& point);
+
+    bool to_protocol(const bc::transaction_input_type& input, tx_input& result);
+
+    tx_input* to_protocol(const bc::transaction_input_type& input);
+
+    bool to_protocol(const bc::transaction_output_type& output, tx_output& result);
+
+    tx_output* to_protocol(const bc::transaction_output_type& output);
+
+    bool to_protocol(const bc::transaction_type& transaction, tx& result);
+
+    tx* to_protocol(const bc::transaction_type& transaction);
+
+    bool to_protocol(const bc::block_header_type& header, block_header& result);
+
+    block_header* to_protocol(const bc::block_header_type& header);
+
+    bool to_protocol(const bc::block_type& block, bc::protocol::block& result);
+
+    block* to_protocol(const bc::block_type& block);
 };
 
 }

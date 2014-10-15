@@ -123,30 +123,36 @@ bool converter::from_protocol(const tx* transaction,
         result.version = transaction->version();
         result.locktime = transaction->locktime();
 
-        for (auto input : transaction->inputs())
+        if (success)
         {
-            bc::transaction_input_type bitcoin_input;
-
-            if (!success || !from_protocol(&input, bitcoin_input))
+            for (auto input : transaction->inputs())
             {
-                success = false;
-                break;
-            }
+                bc::transaction_input_type bitcoin_input;
 
-            result.inputs.push_back(bitcoin_input);
+                if (!from_protocol(&input, bitcoin_input))
+                {
+                    success = false;
+                    break;
+                }
+
+                result.inputs.push_back(bitcoin_input);
+            }
         }
 
-        for (auto output : transaction->outputs())
+        if (success)
         {
-            bc::transaction_output_type bitcoin_output;
-
-            if (!success || !from_protocol(&output, bitcoin_output))
+            for (auto output : transaction->outputs())
             {
-                success = false;
-                break;
-            }
+                bc::transaction_output_type bitcoin_output;
 
-            result.outputs.push_back(bitcoin_output);
+                if (!from_protocol(&output, bitcoin_output))
+                {
+                    success = false;
+                    break;
+                }
+
+                result.outputs.push_back(bitcoin_output);
+            }
         }
 
         if (!success)
@@ -235,6 +241,213 @@ bool converter::from_protocol(const std::shared_ptr<block> block,
     block_type& result)
 {
     return from_protocol(block.get(), result);
+}
+
+bool converter::to_protocol(const bc::output_point& point,
+    bc::protocol::point& result)
+{
+    bool success = true;
+
+    result.set_hash(encode_hex(point.hash));
+    result.set_index(point.index);
+
+    return success;
+}
+
+point* converter::to_protocol(const bc::output_point& point)
+{
+    std::unique_ptr<bc::protocol::point> result(new bc::protocol::point());
+
+    if (!to_protocol(point, *(result.get())))
+    {
+        result.reset();
+    }
+
+    return result.release();
+}
+
+bool converter::to_protocol(const bc::transaction_input_type& input,
+    tx_input& result)
+{
+    bool success = true;
+
+    result.set_allocated_previous_output(to_protocol(input.previous_output));
+
+    bc::data_chunk script_data = save_script(input.script);
+    result.set_script(std::string(script_data.begin(), script_data.end()));
+
+    return success;
+}
+
+tx_input* converter::to_protocol(const bc::transaction_input_type& input)
+{
+    std::unique_ptr<tx_input> result(new tx_input());
+
+    if (!to_protocol(input, *(result.get())))
+    {
+        result.reset();
+    }
+
+    return result.release();
+}
+
+bool converter::to_protocol(const bc::transaction_output_type& output,
+    tx_output& result)
+{
+    bool success = true;
+
+    result.set_value(output.value);
+
+    bc::data_chunk script_data = save_script(output.script);
+    result.set_script(std::string(script_data.begin(), script_data.end()));
+
+    return success;
+}
+
+tx_output* converter::to_protocol(const bc::transaction_output_type& output)
+{
+    std::unique_ptr<tx_output> result(new tx_output());
+
+    if (!to_protocol(output, *(result.get())))
+    {
+        result.reset();
+    }
+
+    return result.release();
+}
+
+bool converter::to_protocol(const bc::transaction_type& transaction, tx& result)
+{
+    bool success = true;
+
+    result.set_version(transaction.version);
+    result.set_locktime(transaction.locktime);
+
+    google::protobuf::RepeatedPtrField<tx_input>* repeated_inputs
+        = result.mutable_inputs();
+
+    if (success)
+    {
+        for (auto input : transaction.inputs)
+        {
+            if (!to_protocol(input, *(repeated_inputs->Add())))
+            {
+                success = false;
+                break;
+            }
+        }
+    }
+
+    google::protobuf::RepeatedPtrField<tx_output>* repeated_outputs
+        = result.mutable_outputs();
+
+    if (success)
+    {
+        for (auto output : transaction.outputs)
+        {
+            if (!to_protocol(output, *(repeated_outputs->Add())))
+            {
+                success = false;
+                break;
+            }
+        }
+    }
+
+    if (!success)
+    {
+        result.clear_version();
+        result.clear_locktime();
+        result.clear_inputs();
+        result.clear_outputs();
+    }
+
+    return success;
+}
+
+tx* converter::to_protocol(const bc::transaction_type& transaction)
+{
+    std::unique_ptr<tx> result(new tx());
+
+    if (!to_protocol(transaction, *(result.get())))
+    {
+        result.reset();
+    }
+
+    return result.release();
+}
+
+bool converter::to_protocol(const bc::block_header_type& header,
+    block_header& result)
+{
+    bool success = true;
+
+    result.set_version(header.version);
+    result.set_timestamp(header.timestamp);
+    result.set_bits(header.bits);
+    result.set_nonce(header.nonce);
+
+    result.set_merkle_root(encode_hex(header.merkle));
+
+    result.set_previous_block_hash(encode_hex(header.previous_block_hash));
+
+    return success;
+}
+
+block_header* converter::to_protocol(const bc::block_header_type& header)
+{
+    std::unique_ptr<block_header> result(new block_header());
+
+    if (!to_protocol(header, *(result.get())))
+    {
+        result.reset();
+    }
+
+    return result.release();
+}
+
+bool converter::to_protocol(const bc::block_type& block,
+    bc::protocol::block& result)
+{
+    bool success = true;
+
+    result.set_allocated_header(to_protocol(block.header));
+
+    success = result.has_header();
+
+    google::protobuf::RepeatedPtrField<tx>* repeated_transactions
+        = result.mutable_transactions();
+
+    if (success)
+    {
+        for (auto transaction : block.transactions)
+        {
+            if (!to_protocol(transaction, *(repeated_transactions->Add())))
+            {
+                success = false;
+                break;
+            }
+        }
+    }
+
+    if (!success)
+    {
+        result.clear_header();
+        result.clear_transactions();
+    }
+
+    return success;
+}
+
+bc::protocol::block* converter::to_protocol(const bc::block_type& block)
+{
+    std::unique_ptr<bc::protocol::block> result(new bc::protocol::block());
+
+    if (!to_protocol(block, *(result.get())))
+    {
+        result.reset();
+    }
+
+    return result.release();
 }
 
 }
