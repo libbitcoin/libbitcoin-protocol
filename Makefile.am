@@ -15,6 +15,7 @@ bitcoin_include_HEADERS = \
 
 bitcoin_protocol_includedir = $(includedir)/bitcoin/protocol
 bitcoin_protocol_include_HEADERS = \
+	include/bitcoin/protocol/converter.hpp \
     include/bitcoin/protocol/define.hpp \
     include/bitcoin/protocol/interface.pb.h \
     include/bitcoin/protocol/message.hpp \
@@ -32,6 +33,7 @@ libbitcoin_protocol_la_CPPFLAGS = \
     $(czmqpp_CFLAGS) 
 
 libbitcoin_protocol_la_SOURCES = \
+	src/converter.cpp \
     src/interface.pb.cc \
     src/message.cpp
 
