@@ -25,6 +25,7 @@
 #include <bitcoin/protocol/interface.pb.h>
 #include <bitcoin/protocol/message.hpp>
 #include <bitcoin/protocol/primitives.hpp>
+#include <bitcoin/protocol/converter.hpp>
 
 #endif
 
