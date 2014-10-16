@@ -71,11 +71,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\converter.cpp" />
     <ClCompile Include="..\..\..\..\src\interface.pb.cc" />
     <ClCompile Include="..\..\..\..\src\message.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\converter.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\define.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\interface.pb.h" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\message.hpp" />
