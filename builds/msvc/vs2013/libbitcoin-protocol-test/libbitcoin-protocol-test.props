@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <_PropertySheetDisplayName>Libbitcoin Protocol Test Common Settings</_PropertySheetDisplayName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+
+  <!-- Configuration -->
+
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <EnablePREfast>false</EnablePREfast>
+      <PreprocessorDefinitions>_WIN32_WINNT=0x0600;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(DebugOrRelease)' == 'Release'">BITCOIN_DISABLE_ASSERTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/OPT:NOLBR /IGNORE:4099 %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PostBuildEvent>
+      <Command>"$(TargetPath)" --run_test=* --random=1 --show_progress=yes --result_code=no --detect_memory_leak=0 --report_level=no --build_info=yes</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+
+  <!-- Extensions -->
+  
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)libbitcoin.import.props" />
+    <Import Project="$(SolutionDir)libbitcoin-protocol.import.props" />
+  </ImportGroup>
+
+  <PropertyGroup Condition="'$(DefaultLinkage)' == 'dynamic'">
+    <Linkage-secp256k1>static</Linkage-secp256k1>
+    <Linkage-mpir>static</Linkage-mpir>
+    <Linkage-czmqpp>dynamic</Linkage-czmqpp>
+    <Linkage-czmq>dynamic</Linkage-czmq>
+    <Linkage-libzmq>dynamic</Linkage-libzmq>
+    <Linkage-libsodium>dynamic</Linkage-libsodium>
+    <Linkage-protobuf>dynamic</Linkage-protobuf>
+    <Linkage-libbitcoin>dynamic</Linkage-libbitcoin>
+    <Linkage-libbitcoin-protocol>dynamic</Linkage-libbitcoin-protocol>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(DefaultLinkage)' == 'ltcg'">
+    <Linkage-secp256k1>static</Linkage-secp256k1>
+    <Linkage-mpir>static</Linkage-mpir>
+    <Linkage-czmqpp>ltcg</Linkage-czmqpp>
+    <Linkage-czmq>ltcg</Linkage-czmq>
+    <Linkage-libzmq>ltcg</Linkage-libzmq>
+    <Linkage-libsodium>ltcg</Linkage-libsodium>
+    <Linkage-protobuf>ltcg</Linkage-protobuf>
+    <Linkage-libbitcoin>ltcg</Linkage-libbitcoin>
+    <Linkage-libbitcoin-protocol>ltcg</Linkage-libbitcoin-protocol>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(DefaultLinkage)' == 'static'">
+    <Linkage-secp256k1>static</Linkage-secp256k1>
+    <Linkage-mpir>static</Linkage-mpir>
+    <Linkage-czmqpp>static</Linkage-czmqpp>
+    <Linkage-czmq>static</Linkage-czmq>
+    <Linkage-libzmq>static</Linkage-libzmq>
+    <Linkage-libsodium>static</Linkage-libsodium>
+    <Linkage-protobuf>static</Linkage-protobuf>
+    <Linkage-libbitcoin>static</Linkage-libbitcoin>
+    <Linkage-libbitcoin-protocol>static</Linkage-libbitcoin-protocol>
+  </PropertyGroup>
+
+  <!-- Messages -->
+  
+  <Target Name="LinkageInfo" BeforeTargets="PrepareForBuild">
+    <Message Text="Linkage-secp256k1 : $(Linkage-secp256k1)" Importance="high"/>
+    <Message Text="Linkage-mpir      : $(Linkage-mpir)" Importance="high"/>
+    <Message Text="Linkage-czmqpp    : $(Linkage-czmqpp)" Importance="high"/>
+    <Message Text="Linkage-czmq      : $(Linkage-czmq)" Importance="high"/>
+    <Message Text="Linkage-libzmq    : $(Linkage-libzmq)" Importance="high"/>
+    <Message Text="Linkage-libsodium : $(Linkage-libsodium)" Importance="high"/>
+    <Message Text="Linkage-libbitcoin: $(Linkage-libbitcoin)" Importance="high"/>
+    <Message Text="Linkage-protobuf  : $(Linkage-protobuf)" Importance="high"/>
+    <Message Text="Linkage-_protocol : $(Linkage-libbitcoin-protocol)" Importance="high"/>
+  </Target>
+
+</Project>
+
+
+

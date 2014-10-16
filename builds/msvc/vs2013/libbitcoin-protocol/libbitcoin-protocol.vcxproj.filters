@@ -24,6 +24,9 @@
     <ClCompile Include="..\..\..\..\src\interface.pb.cc">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\converter.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol.hpp">
@@ -39,6 +42,9 @@
       <Filter>include\bitcoin\protocol</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\define.hpp">
+      <Filter>include\bitcoin\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\converter.hpp">
       <Filter>include\bitcoin\protocol</Filter>
     </ClInclude>
   </ItemGroup>
