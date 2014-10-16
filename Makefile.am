@@ -57,6 +57,7 @@ libbitcoin_protocol_test_CPPFLAGS = \
     -DBOOST_TEST_DYN_LINK
 
 libbitcoin_protocol_test_SOURCES = \
+    test/converter.cpp \
     test/main.cpp \
     test/protocol.cpp
 

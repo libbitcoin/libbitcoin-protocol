@@ -69,7 +69,7 @@ bool converter::from_protocol(const tx_input* input,
         if (success)
         {
             std::string script_text = input->script();
-            result.script = bc::parse_script(
+            result.script = bc::raw_data_script(
                 bc::data_chunk(script_text.begin(), script_text.end()));
 
             result.previous_output = previous;
@@ -96,7 +96,7 @@ bool converter::from_protocol(const tx_output* output,
         success = true;
 
         std::string script_text = output->script();
-        result.script = bc::parse_script(
+        result.script = bc::raw_data_script(
             bc::data_chunk(script_text.begin(), script_text.end()));
 
         result.value = output->value();
@@ -273,8 +273,10 @@ bool converter::to_protocol(const bc::transaction_input_type& input,
 
     result.set_allocated_previous_output(to_protocol(input.previous_output));
 
-    bc::data_chunk script_data = save_script(input.script);
+    bc::data_chunk script_data = bc::save_script(input.script);
     result.set_script(std::string(script_data.begin(), script_data.end()));
+
+    result.set_sequence(input.sequence);
 
     return success;
 }
@@ -298,7 +300,7 @@ bool converter::to_protocol(const bc::transaction_output_type& output,
 
     result.set_value(output.value);
 
-    bc::data_chunk script_data = save_script(output.script);
+    bc::data_chunk script_data = bc::save_script(output.script);
     result.set_script(std::string(script_data.begin(), script_data.end()));
 
     return success;
