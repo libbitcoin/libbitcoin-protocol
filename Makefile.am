@@ -24,20 +24,20 @@ bitcoin_protocol_include_HEADERS = \
 #
 # libraries
 #
-lib_LTLIBRARIES = libbitcoin-protocol.la
+lib_LTLIBRARIES = src/libbitcoin-protocol.la
 
-libbitcoin_protocol_la_CPPFLAGS = \
+src_libbitcoin_protocol_la_CPPFLAGS = \
     -I$(srcdir)/include \
     $(bitcoin_CFLAGS) \
     $(protobuf_CFLAGS) \
     $(czmqpp_CFLAGS) 
 
-libbitcoin_protocol_la_SOURCES = \
+src_libbitcoin_protocol_la_SOURCES = \
     src/converter.cpp \
     src/interface.pb.cc \
     src/message.cpp
 
-libbitcoin_protocol_la_LIBADD = \
+src_libbitcoin_protocol_la_LIBADD = \
     $(bitcoin_LIBS) \
     $(protobuf_LIBS) \
     $(czmqpp_LIBS)
@@ -45,24 +45,24 @@ libbitcoin_protocol_la_LIBADD = \
 #
 # tests
 #
-TESTS = libbitcoin_protocol_test
+TESTS = test/libbitcoin_protocol_test
 
-check_PROGRAMS = libbitcoin_protocol_test
+check_PROGRAMS = test/libbitcoin_protocol_test
 
-libbitcoin_protocol_test_CPPFLAGS = \
+test_libbitcoin_protocol_test_CPPFLAGS = \
     -I$(srcdir)/include \
     ${bitcoin_CFLAGS} \
     ${protobuf_CFLAGS} \
     $(czmqpp_CFLAGS) \
     -DBOOST_TEST_DYN_LINK
 
-libbitcoin_protocol_test_SOURCES = \
+test_libbitcoin_protocol_test_SOURCES = \
     test/converter.cpp \
     test/main.cpp \
     test/protocol.cpp
 
-libbitcoin_protocol_test_LDADD = \
-    libbitcoin-protocol.la \
+test_libbitcoin_protocol_test_LDADD = \
+    src/libbitcoin-protocol.la \
     ${bitcoin_LIBS} \
     ${protobuf_LIBS} \
     ${czmqpp_LIBS}
