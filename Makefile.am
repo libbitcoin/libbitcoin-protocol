@@ -45,6 +45,7 @@ src_libbitcoin_protocol_la_LIBADD = \
 #
 # tests
 #
+if ENABLE_TESTS
 TESTS = test/libbitcoin_protocol_test
 
 check_PROGRAMS = test/libbitcoin_protocol_test
@@ -66,3 +67,4 @@ test_libbitcoin_protocol_test_LDADD = \
     ${bitcoin_LIBS} \
     ${protobuf_LIBS} \
     ${czmqpp_LIBS}
+endif

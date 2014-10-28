@@ -16,13 +16,25 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 # The current versions produce incorrect error message text.
 AX_BOOST_BASE([1.50],,
     [AC_MSG_ERROR([Boost 1.50 or later is required but was not found.])])
-AX_BOOST_UNIT_TEST_FRAMEWORK
 
 PKG_PROG_PKG_CONFIG
 
 PKG_CHECK_MODULES([bitcoin], [libbitcoin >= 2.4.0])
 PKG_CHECK_MODULES([protobuf], [protobuf >= 2.6.0])
 PKG_CHECK_MODULES([czmqpp], [libczmq++ >= 0.4.1])
+
+# build tests
+AC_ARG_WITH([tests], [AS_HELP_STRING([--with-tests],
+    [require build with tests. Requires pkg-config [default=no]])],
+    [enable_tests_ext=$withval],
+    [enable_tests_ext=no])
+
+# conditionally require test dependencies
+if test "x$enable_tests_ext" != "xno"; then
+    AX_BOOST_UNIT_TEST_FRAMEWORK
+fi
+
+AM_CONDITIONAL(ENABLE_TESTS, test "x$enable_tests_ext" != "xno")
 
 # Do not add contextual build parameters in configuration.
 # http://stackoverflow.com/a/4680578
