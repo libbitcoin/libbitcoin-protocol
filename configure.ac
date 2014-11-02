@@ -40,6 +40,9 @@ AC_CANONICAL_HOST
 # Check for baseline language coverage in the compiler for the C++11 standard.
 AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
 
+# Enable silent rules option.
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+
 # Declare environment variables that affect the build.
 #------------------------------------------------------------------------------
 AC_ARG_VAR([CC], "C compiler to use, such as gcc or clang")
@@ -102,6 +105,7 @@ AS_IF([test x$with_tests != xno],
         PKG_CHECK_MODULES([crypto], [libcrypto >= 1.0.1])
     ])
 AM_CONDITIONAL([WITH_TESTS], [test x$with_tests != xno])
+AM_COND_IF([WITH_TESTS], [AC_MSG_NOTICE([WITH_TESTS defined])])
 
 # Set warning levels.
 #------------------------------------------------------------------------------
