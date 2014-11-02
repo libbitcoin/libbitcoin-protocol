@@ -9,11 +9,11 @@ ACLOCAL_AMFLAGS = -I m4
 #
 # headers
 #
-bitcoin_includedir = $(includedir)/bitcoin
+bitcoin_includedir = ${includedir}/bitcoin
 bitcoin_include_HEADERS = \
     include/bitcoin/protocol.hpp
 
-bitcoin_protocol_includedir = $(includedir)/bitcoin/protocol
+bitcoin_protocol_includedir = ${includedir}/bitcoin/protocol
 bitcoin_protocol_include_HEADERS = \
     include/bitcoin/protocol/converter.hpp \
     include/bitcoin/protocol/define.hpp \
@@ -27,10 +27,10 @@ bitcoin_protocol_include_HEADERS = \
 lib_LTLIBRARIES = src/libbitcoin-protocol.la
 
 src_libbitcoin_protocol_la_CPPFLAGS = \
-    -I$(srcdir)/include \
-    $(bitcoin_CFLAGS) \
-    $(protobuf_CFLAGS) \
-    $(czmqpp_CFLAGS) 
+    -I${srcdir}/include \
+    ${bitcoin_CFLAGS} \
+    ${protobuf_CFLAGS} \
+    ${czmqpp_CFLAGS} 
 
 src_libbitcoin_protocol_la_SOURCES = \
     src/converter.cpp \
@@ -38,23 +38,24 @@ src_libbitcoin_protocol_la_SOURCES = \
     src/message.cpp
 
 src_libbitcoin_protocol_la_LIBADD = \
-    $(bitcoin_LIBS) \
-    $(protobuf_LIBS) \
-    $(czmqpp_LIBS)
+    ${bitcoin_LIBS} \
+    ${protobuf_LIBS} \
+    ${czmqpp_LIBS}
 
 #
 # tests
 #
-if ENABLE_TESTS
+if WITH_TESTS
+
 TESTS = test/libbitcoin_protocol_test
 
 check_PROGRAMS = test/libbitcoin_protocol_test
 
 test_libbitcoin_protocol_test_CPPFLAGS = \
-    -I$(srcdir)/include \
+    -I${srcdir}/include \
     ${bitcoin_CFLAGS} \
     ${protobuf_CFLAGS} \
-    $(czmqpp_CFLAGS) \
+    ${czmqpp_CFLAGS} \
     -DBOOST_TEST_DYN_LINK
 
 test_libbitcoin_protocol_test_SOURCES = \
@@ -67,4 +68,5 @@ test_libbitcoin_protocol_test_LDADD = \
     ${bitcoin_LIBS} \
     ${protobuf_LIBS} \
     ${czmqpp_LIBS}
+    
 endif
