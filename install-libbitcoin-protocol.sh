@@ -10,7 +10,7 @@ BUILD_BRANCH="master"
 
 # This script will build using this relative directory.
 # This is meant to be temporary, just to facilitate the install.
-BUILD_DIRECTORY="bx-build"
+BUILD_DIRECTORY="libbitcoin-protocol-build"
 
 HOMEBREW_BOOST_ROOT_PATH=\
 "/usr/local/opt/boost"
