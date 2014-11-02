@@ -183,13 +183,13 @@ build_library()
     create_build_directory
 
     # Download, build and install all unpackaged dependencies.
-    build_from_github jedisct1 libsodium master "$SEQUENTIAL" "$@"
-    build_from_github zeromq libzmq master "$SEQUENTIAL" "$@" $ZMQ_OPTIONS
-    build_from_github zeromq czmq master "$SEQUENTIAL" "$@"
-    build_from_github zeromq czmqpp master "$SEQUENTIAL" "$@"
-    build_from_github evoskuil secp256k1 osx-patch "$SEQUENTIAL" "$@" $SECP256K1_OPTIONS
-    build_from_github libbitcoin libbitcoin develop "$PARALLEL" "$@"
-    build_from_github libbitcoin protobuf 2.6.0 "$SEQUENTIAL" "$@"
+    build_from_github jedisct1 libsodium master $SEQUENTIAL "$@"
+    build_from_github zeromq libzmq master $SEQUENTIAL "$@" $ZMQ_OPTIONS
+    build_from_github zeromq czmq master $SEQUENTIAL "$@"
+    build_from_github zeromq czmqpp master $SEQUENTIAL "$@"
+    build_from_github evoskuil secp256k1 osx-patch $SEQUENTIAL "$@" $SECP256K1_OPTIONS
+    build_from_github libbitcoin libbitcoin develop $PARALLEL "$@"
+    build_from_github libbitcoin protobuf 2.6.0 $SEQUENTIAL "$@"
 
     # The primary build is not downloaded if we are running in Travis.
     build_primary "$PARALLEL" "$@" $TEST_OPTIONS
