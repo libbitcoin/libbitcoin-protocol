@@ -65,6 +65,7 @@ test_libbitcoin_protocol_test_SOURCES = \
 
 test_libbitcoin_protocol_test_LDADD = \
     src/libbitcoin-protocol.la \
+    -lboost_unit_test_framework \
     ${bitcoin_LIBS} \
     ${protobuf_LIBS} \
     ${czmqpp_LIBS}
