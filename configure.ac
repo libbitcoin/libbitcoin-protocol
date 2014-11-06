@@ -2,7 +2,7 @@
 AC_PREREQ([2.65])
 
 # Process command-line arguments and perform initialization and verification.
-AC_INIT([libbitcoin-protocol], [0.1.0], [mienkphi@gmail.com])
+AC_INIT([libbitcoin-protocol], [2.0.0], [mienkphi@gmail.com])
 
 # Do compilation tests.
 AC_LANG(C++)
@@ -93,7 +93,7 @@ AX_BOOST_BASE([1.49],,
 
 # Require bitcoin, protobuf and czmqpp package min versions.
 #------------------------------------------------------------------------------
-PKG_CHECK_MODULES([bitcoin], [libbitcoin >= 2.4.0])
+PKG_CHECK_MODULES([bitcoin], [libbitcoin >= 2.7.0])
 PKG_CHECK_MODULES([protobuf], [protobuf >= 2.6.0])
 PKG_CHECK_MODULES([czmqpp], [libczmq++ >= 0.4.1])
 
