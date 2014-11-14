@@ -55,8 +55,12 @@ test_libbitcoin_protocol_test_CPPFLAGS = \
     -I${srcdir}/include \
     ${bitcoin_CFLAGS} \
     ${protobuf_CFLAGS} \
-    ${czmqpp_CFLAGS} \
+    ${czmqpp_CFLAGS}
+    
+if SET_BOOST_TEST_DYN_LINK
+test_libbitcoin_protocol_test_CPPFLAGS += \
     -DBOOST_TEST_DYN_LINK
+endif
 
 test_libbitcoin_protocol_test_SOURCES = \
     test/converter.cpp \
