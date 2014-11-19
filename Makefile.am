@@ -30,7 +30,7 @@ src_libbitcoin_protocol_la_CPPFLAGS = \
     -I${srcdir}/include \
     ${bitcoin_CFLAGS} \
     ${protobuf_CFLAGS} \
-    ${czmqpp_CFLAGS} 
+    ${czmq___CFLAGS} 
 
 src_libbitcoin_protocol_la_SOURCES = \
     src/converter.cpp \
@@ -40,7 +40,7 @@ src_libbitcoin_protocol_la_SOURCES = \
 src_libbitcoin_protocol_la_LIBADD = \
     ${bitcoin_LIBS} \
     ${protobuf_LIBS} \
-    ${czmqpp_LIBS}
+    ${czmq___LIBS}
 
 #
 # tests
@@ -55,9 +55,9 @@ test_libbitcoin_protocol_test_CPPFLAGS = \
     -I${srcdir}/include \
     ${bitcoin_CFLAGS} \
     ${protobuf_CFLAGS} \
-    ${czmqpp_CFLAGS}
+    ${czmq___CFLAGS}
     
-if SET_BOOST_TEST_DYN_LINK
+if ENABLE_SHARED 
 test_libbitcoin_protocol_test_CPPFLAGS += \
     -DBOOST_TEST_DYN_LINK
 endif
@@ -72,6 +72,6 @@ test_libbitcoin_protocol_test_LDADD = \
     -lboost_unit_test_framework \
     ${bitcoin_LIBS} \
     ${protobuf_LIBS} \
-    ${czmqpp_LIBS}
+    ${czmq___LIBS}
     
 endif
