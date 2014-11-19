@@ -117,7 +117,7 @@ CZMQ_OPTIONS=\
 
 # Define bitcoin-protocol options.
 #------------------------------------------------------------------------------
-BITCOIN-PROTOCOL_OPTIONS=\
+BITCOIN_PROTOCOL_OPTIONS=\
 "--enable-silent-rules "
 
 
@@ -459,7 +459,13 @@ build_all()
     build_from_tarball_gmp $GMP_URL $GMP_ARCHIVE gmp $PARALLEL "$@" $GMP_OPTIONS
     build_from_tarball_boost $BOOST_URL $BOOST_ARCHIVE boost $PARALLEL $BOOST_OPTIONS
     build_from_github bitcoin secp256k1 master $PARALLEL "$@" $SECP256K1_OPTIONS
-    build_from_travis libbitcoin libbitcoin version2 $PARALLEL "$@" $BITCOIN_OPTIONS
+    build_from_github libbitcoin libbitcoin version2 $PARALLEL "$@" $BITCOIN_OPTIONS
+    build_from_github jedisct1 libsodium master $PARALLEL "$@"
+    build_from_github zeromq libzmq master $PARALLEL "$@" $ZMQ_OPTIONS
+    build_from_github zeromq czmq master $PARALLEL "$@" $CZMQ_OPTIONS
+    build_from_github zeromq czmqpp master $PARALLEL "$@"
+    build_from_github libbitcoin protobuf 2.6.0 $SEQUENTIAL "$@" $PROTOBUF_OPTIONS
+    build_from_travis libbitcoin libbitcoin-protocol version2 $PARALLEL "$@" $BITCOIN_PROTOCOL_OPTIONS
 }
 
 
