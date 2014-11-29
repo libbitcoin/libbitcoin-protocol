@@ -94,17 +94,6 @@ SECP256K1_OPTIONS=\
 "--enable-tests=no "\
 "--enable-endomorphism=no "
 
-# Define bitcoin options.
-#------------------------------------------------------------------------------
-BITCOIN_OPTIONS=\
-"--enable-silent-rules "\
-"--without-tests "
-
-# Define protobuf options.
-#------------------------------------------------------------------------------
-PROTOBUF_OPTIONS=\
-"--enable-silent-rules "
-
 # Define zmq options.
 #------------------------------------------------------------------------------
 ZMQ_OPTIONS=\
@@ -114,6 +103,17 @@ ZMQ_OPTIONS=\
 #------------------------------------------------------------------------------
 CZMQ_OPTIONS=\
 "--without-makecert "
+
+# Define protobuf options.
+#------------------------------------------------------------------------------
+PROTOBUF_OPTIONS=\
+"--enable-silent-rules "
+
+# Define bitcoin options.
+#------------------------------------------------------------------------------
+BITCOIN_OPTIONS=\
+"--enable-silent-rules "\
+"--without-tests "
 
 # Define bitcoin-protocol options.
 #------------------------------------------------------------------------------
@@ -298,12 +298,12 @@ make_silent()
 {
     JOBS=$1
     TARGET=$2
-    
+
     # Avoid setting -j1 (causes problems on Travis).
     if [[ $JOBS -gt $SEQUENTIAL ]]; then
         make --silent -j$JOBS $TARGET
     else
-        make --silent
+        make --silent $TARGET
     fi
 }
 
@@ -441,7 +441,7 @@ build_from_travis()
     if [[ $TRAVIS == "true" ]]; then
         cd ..
         build_from_local "Local $TRAVIS_REPO_SLUG" $JOBS "$@"
-        make_tests
+        make_tests $JOBS
         cd "$BUILD_DIR"
     else
         build_from_github $ACCOUNT $REPO $BRANCH $JOBS "$@"
@@ -456,15 +456,15 @@ build_from_travis()
 #==============================================================================
 build_all()
 {
-    build_from_tarball_gmp $GMP_URL $GMP_ARCHIVE gmp $PARALLEL "$@" $GMP_OPTIONS
     build_from_tarball_boost $BOOST_URL $BOOST_ARCHIVE boost $PARALLEL $BOOST_OPTIONS
+    build_from_tarball_gmp $GMP_URL $GMP_ARCHIVE gmp $PARALLEL "$@" $GMP_OPTIONS
     build_from_github bitcoin secp256k1 master $PARALLEL "$@" $SECP256K1_OPTIONS
-    build_from_github libbitcoin libbitcoin version2 $PARALLEL "$@" $BITCOIN_OPTIONS
-    build_from_github jedisct1 libsodium master $PARALLEL "$@"
+    build_from_github jedisct1 libsodium master $PARALLEL "$@" $SODIUM_OPTIONS
     build_from_github zeromq libzmq master $PARALLEL "$@" $ZMQ_OPTIONS
     build_from_github zeromq czmq master $PARALLEL "$@" $CZMQ_OPTIONS
-    build_from_github zeromq czmqpp master $PARALLEL "$@"
+    build_from_github zeromq czmqpp master $PARALLEL "$@" $CZMQPP_OPTIONS
     build_from_github libbitcoin protobuf 2.6.0 $SEQUENTIAL "$@" $PROTOBUF_OPTIONS
+    build_from_github libbitcoin libbitcoin version2 $PARALLEL "$@" $BITCOIN_OPTIONS
     build_from_travis libbitcoin libbitcoin-protocol version2 $PARALLEL "$@" $BITCOIN_PROTOCOL_OPTIONS
 }
 
