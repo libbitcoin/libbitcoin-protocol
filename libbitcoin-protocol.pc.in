@@ -22,4 +22,4 @@ Requires: libbitcoin >= 2.7.0 protobuf >= 2.6.0 libczmq++ >= 0.4.1
 Cflags: -I${includedir} -std=c++11
 
 # Our own lib and any we require that do not publish package configuration.
-Libs: -L${libdir} -lbitcoin-protocol @boost_LIBS@ 
+Libs: -L${libdir} -lbitcoin-protocol  
