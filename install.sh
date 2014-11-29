@@ -94,6 +94,11 @@ SECP256K1_OPTIONS=\
 "--enable-tests=no "\
 "--enable-endomorphism=no "
 
+# Define protobuf options.
+#------------------------------------------------------------------------------
+PROTOBUF_OPTIONS=\
+"--enable-silent-rules "
+
 # Define zmq options.
 #------------------------------------------------------------------------------
 ZMQ_OPTIONS=\
@@ -103,11 +108,6 @@ ZMQ_OPTIONS=\
 #------------------------------------------------------------------------------
 CZMQ_OPTIONS=\
 "--without-makecert "
-
-# Define protobuf options.
-#------------------------------------------------------------------------------
-PROTOBUF_OPTIONS=\
-"--enable-silent-rules "
 
 # Define bitcoin options.
 #------------------------------------------------------------------------------
@@ -459,11 +459,11 @@ build_all()
     build_from_tarball_boost $BOOST_URL $BOOST_ARCHIVE boost $PARALLEL $BOOST_OPTIONS
     build_from_tarball_gmp $GMP_URL $GMP_ARCHIVE gmp $PARALLEL "$@" $GMP_OPTIONS
     build_from_github bitcoin secp256k1 master $PARALLEL "$@" $SECP256K1_OPTIONS
+    build_from_github libbitcoin protobuf 2.6.0 $SEQUENTIAL "$@" $PROTOBUF_OPTIONS
     build_from_github jedisct1 libsodium master $PARALLEL "$@" $SODIUM_OPTIONS
     build_from_github zeromq libzmq master $PARALLEL "$@" $ZMQ_OPTIONS
     build_from_github zeromq czmq master $PARALLEL "$@" $CZMQ_OPTIONS
     build_from_github zeromq czmqpp master $PARALLEL "$@" $CZMQPP_OPTIONS
-    build_from_github libbitcoin protobuf 2.6.0 $SEQUENTIAL "$@" $PROTOBUF_OPTIONS
     build_from_github libbitcoin libbitcoin version2 $PARALLEL "$@" $BITCOIN_OPTIONS
     build_from_travis libbitcoin libbitcoin-protocol version2 $PARALLEL "$@" $BITCOIN_PROTOCOL_OPTIONS
 }
