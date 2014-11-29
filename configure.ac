@@ -129,10 +129,6 @@ AS_CASE([${host_os}], [*darwin*],
 
 AS_IF([test x$with_tests != xno], [AX_BOOST_UNIT_TEST_FRAMEWORK])
 
-# Require bitcoin of at least version 2.7.0 and output ${bitcoin}.
-#------------------------------------------------------------------------------
-PKG_CHECK_MODULES([bitcoin], [libbitcoin >= 2.7.0])
-
 # Require protobuf of at least version 2.6.0 and output ${protobuf}.
 #------------------------------------------------------------------------------
 PKG_CHECK_MODULES([protobuf], [protobuf >= 2.6.0])
@@ -140,6 +136,10 @@ PKG_CHECK_MODULES([protobuf], [protobuf >= 2.6.0])
 # Require czmq++ of at least version 0.4.1 and output ${czmq++}.
 #------------------------------------------------------------------------------
 PKG_CHECK_MODULES([czmq__], [libczmq++ >= 0.4.1])
+
+# Require bitcoin of at least version 2.7.0 and output ${bitcoin}.
+#------------------------------------------------------------------------------
+PKG_CHECK_MODULES([bitcoin], [libbitcoin >= 2.7.0])
 
 
 # Set flags.
