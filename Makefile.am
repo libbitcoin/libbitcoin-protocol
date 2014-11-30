@@ -65,11 +65,6 @@ test_libbitcoin_protocol_test_CPPFLAGS = \
     ${sodium_CFLAGS} \
     ${czmq___CFLAGS}
     
-if ENABLE_SHARED 
-test_libbitcoin_protocol_test_CPPFLAGS += \
-    -DBOOST_TEST_DYN_LINK
-endif
-
 test_libbitcoin_protocol_test_SOURCES = \
     test/converter.cpp \
     test/main.cpp \
