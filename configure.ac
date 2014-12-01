@@ -131,20 +131,20 @@ AS_CASE([${host_os}], [*darwin*],
 
 AS_IF([test x$with_tests = xyes], [AX_BOOST_UNIT_TEST_FRAMEWORK])
 
-# Require protobuf of at least version 2.6.0 and output ${protobuf}.
+# Require protobuf of at least version 2.6.0 and output ${protobuf_CFLAGS} and ${protobuf_LIBS}.
 #------------------------------------------------------------------------------
 PKG_CHECK_MODULES([protobuf], [protobuf >= 2.6.0])
 
-# Require sodium of at least version 1.0.0 and output ${sodium}.
+# Require sodium of at least version 1.0.0 and output ${sodium_CFLAGS} and ${sodium_LIBS}.
 #------------------------------------------------------------------------------
 # The chained zmq dependency doesn't set a minimum version for sodium.
 PKG_CHECK_MODULES([sodium], [libsodium >= 1.0.0])
 
-# Require czmq++ of at least version 0.4.1 and output ${czmq++}.
+# Require czmq++ of at least version 0.4.1 and output ${czmq___CFLAGS} and ${czmq___LIBS}.
 #------------------------------------------------------------------------------
 PKG_CHECK_MODULES([czmq__], [libczmq++ >= 0.4.1])
 
-# Require bitcoin of at least version 2.7.0 and output ${bitcoin}.
+# Require bitcoin of at least version 2.7.0 and output ${bitcoin_CFLAGS} and ${bitcoin_LIBS}.
 #------------------------------------------------------------------------------
 PKG_CHECK_MODULES([bitcoin], [libbitcoin >= 2.7.0])
 
