@@ -21,6 +21,13 @@
 #include <boost/test/unit_test_suite.hpp>
 #include <bitcoin/protocol.hpp>
 
+static bc::hash_digest hash_literal(const std::string& in)
+{
+    bc::hash_digest out;
+    BITCOIN_ASSERT(bc::decode_hash(out, in));
+    return out;
+}
+
 #define BCP_GENESIS_BLOCK_HASH \
 "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f"
 
@@ -93,7 +100,7 @@ BOOST_AUTO_TEST_SUITE(converter_tests)
 
 BOOST_AUTO_TEST_CASE(roundtrip_point_valid)
 {
-    bc::output_point initial = { bc::decode_hash(BCP_GENESIS_BLOCK_HASH), 154 };
+    bc::output_point initial = { hash_literal(BCP_GENESIS_BLOCK_HASH), 154 };
 
     bc::protocol::converter converter;
 
@@ -113,7 +120,7 @@ BOOST_AUTO_TEST_CASE(roundtrip_point_valid)
 BOOST_AUTO_TEST_CASE(roundtrip_transaction_input_valid)
 {
     bc::transaction_input_type initial = {
-        { bc::decode_hash(BCP_GENESIS_BLOCK_HASH), 154 },
+        { hash_literal(BCP_GENESIS_BLOCK_HASH), 154 },
         bc::raw_data_script(
             bc::data_chunk(encoded_script.begin(), encoded_script.end())),
         64724
@@ -164,7 +171,7 @@ BOOST_AUTO_TEST_CASE(roundtrip_transaction_valid)
         235123,
         {
             {
-                { bc::decode_hash(BCP_GENESIS_BLOCK_HASH), 154 },
+                { hash_literal(BCP_GENESIS_BLOCK_HASH), 154 },
                 bc::raw_data_script(
                     bc::data_chunk(
                         encoded_script.begin(), encoded_script.end())),
@@ -200,8 +207,8 @@ BOOST_AUTO_TEST_CASE(roundtrip_block_header_valid)
 {
     bc::block_header_type initial = {
         6535,
-        bc::decode_hash(BCP_GENESIS_BLOCK_HASH),
-        bc::decode_hash(BCP_SATOSHIS_WORDS_TX_HASH),
+        hash_literal(BCP_GENESIS_BLOCK_HASH),
+        hash_literal(BCP_SATOSHIS_WORDS_TX_HASH),
         856345324,
         21324121,
         576859232
@@ -227,8 +234,8 @@ BOOST_AUTO_TEST_CASE(roundtrip_block_valid)
     bc::block_type initial = {
         {
             6535,
-            bc::decode_hash(BCP_GENESIS_BLOCK_HASH),
-            bc::decode_hash(BCP_SATOSHIS_WORDS_TX_HASH),
+            hash_literal(BCP_GENESIS_BLOCK_HASH),
+            hash_literal(BCP_SATOSHIS_WORDS_TX_HASH),
             856345324,
             21324121,
             576859232
@@ -239,7 +246,7 @@ BOOST_AUTO_TEST_CASE(roundtrip_block_valid)
                 235123,
                 {
                     {
-                        { bc::decode_hash(BCP_GENESIS_BLOCK_HASH), 154 },
+                        { hash_literal(BCP_GENESIS_BLOCK_HASH), 154 },
                         bc::raw_data_script(
                             bc::data_chunk(
                                 encoded_script.begin(), encoded_script.end())),
