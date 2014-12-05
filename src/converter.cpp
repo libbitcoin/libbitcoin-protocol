@@ -23,6 +23,23 @@
 namespace libbitcoin {
 namespace protocol {
 
+/**
+ * Copy `binary` data from protobuf's storage format (std::string)
+ * to libbitcoin's storage format (hash_digest).
+ */
+static bool unpack_hash(hash_digest& out, const std::string& in)
+{
+    if (in.size() != hash_size)
+        return false;
+    std::copy(in.begin(), in.end(), out.begin());
+    return true;
+}
+
+static std::string pack_hash(hash_digest in)
+{
+    return std::string(in.begin(), in.end());
+}
+
 bool converter::from_protocol(const point* point, bc::output_point& result)
 {
     bool success = false;
@@ -30,8 +47,7 @@ bool converter::from_protocol(const point* point, bc::output_point& result)
     if (point)
     {
         result.index = point->index();
-        result.hash = bc::decode_hash(point->hash());
-        success = (result.hash != null_hash);
+        success = unpack_hash(result.hash, point->hash());
     }
 
     return success;
@@ -185,13 +201,9 @@ bool converter::from_protocol(const block_header* header,
         result.bits = header->bits();
         result.nonce = header->nonce();
 
-        result.merkle = bc::decode_hash(header->merkle_root());
-
-        result.previous_block_hash = bc::decode_hash(
+        success = unpack_hash(result.merkle, header->merkle_root());
+        success &= unpack_hash(result.previous_block_hash,
             header->previous_block_hash());
-
-        success = (result.merkle != null_hash)
-            && (result.previous_block_hash != null_hash);
     }
 
     return success;
@@ -248,7 +260,7 @@ bool converter::to_protocol(const bc::output_point& point,
 {
     bool success = true;
 
-    result.set_hash(encode_hex(point.hash));
+    result.set_hash(pack_hash(point.hash));
     result.set_index(point.index);
 
     return success;
@@ -388,9 +400,9 @@ bool converter::to_protocol(const bc::block_header_type& header,
     result.set_bits(header.bits);
     result.set_nonce(header.nonce);
 
-    result.set_merkle_root(encode_hex(header.merkle));
+    result.set_merkle_root(pack_hash(header.merkle));
 
-    result.set_previous_block_hash(encode_hex(header.previous_block_hash));
+    result.set_previous_block_hash(pack_hash(header.previous_block_hash));
 
     return success;
 }
