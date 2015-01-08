@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/libbitcoin/libbitcoin-protocol.svg?branch=version2)](https://travis-ci.org/libbitcoin/libbitcoin-protocol)
+[![Build Status](https://travis-ci.org/libbitcoin/libbitcoin-protocol.svg?branch=master)](https://travis-ci.org/libbitcoin/libbitcoin-protocol)
 
 # Bitcoin Server Protocol
 
