@@ -11,7 +11,7 @@
 AC_PREREQ([2.65])
 
 # Process command-line arguments and perform initialization and verification.
-AC_INIT([libbitcoin-protocol], [2.0.0], [mienkphi@gmail.com])
+AC_INIT([libbitcoin-protocol], [0.1.0], [mienkphi@gmail.com])
 
 # Do compilation tests.
 AC_LANG(C++)
@@ -141,9 +141,9 @@ PKG_CHECK_MODULES([sodium], [libsodium >= 1.0.0])
 #------------------------------------------------------------------------------
 PKG_CHECK_MODULES([czmq__], [libczmq++ >= 0.4.1])
 
-# Require bitcoin of at least version 2.7.0 and output ${bitcoin_CFLAGS} and ${bitcoin_LIBS}.
+# Require bitcoin of at least version 2.8.0 and output ${bitcoin_CFLAGS} and ${bitcoin_LIBS}.
 #------------------------------------------------------------------------------
-PKG_CHECK_MODULES([bitcoin], [libbitcoin >= 2.7.0])
+PKG_CHECK_MODULES([bitcoin], [libbitcoin >= 2.8.0])
 
 
 # Set flags.
