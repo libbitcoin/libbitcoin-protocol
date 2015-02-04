@@ -6,6 +6,10 @@
 
 8/22/2014
 
+## Experimental
+
+This library is experimental and is no libbitcoin library currently depends on it.
+
 ## Concepts
 
 A client's two major areas of interest are transaction discovery and transaction maintenance. Transaction discovery involves searching the blockchain for transactions that are of interest to the wallet. Once the client identifies the transactions it cares about, it needs to track their state as they become broadcast, confirmed, and so forth. Doing this generally involves tracking the state of the blockchain itself.
