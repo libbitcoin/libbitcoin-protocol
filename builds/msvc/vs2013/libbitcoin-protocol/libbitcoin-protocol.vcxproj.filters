@@ -47,5 +47,8 @@
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\converter.hpp">
       <Filter>include\bitcoin\protocol</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\version.hpp">
+      <Filter>include\bitcoin\protocol</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

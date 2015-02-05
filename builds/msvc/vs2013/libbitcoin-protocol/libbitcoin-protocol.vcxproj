@@ -82,6 +82,7 @@
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\interface.pb.h" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\message.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\primitives.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\version.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

@@ -21,11 +21,12 @@
 #define LIBBITCOIN_PROTOCOL_PROTOCOL_HPP
 
 #include <bitcoin/bitcoin.hpp>
+#include <bitcoin/protocol/converter.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/interface.pb.h>
 #include <bitcoin/protocol/message.hpp>
 #include <bitcoin/protocol/primitives.hpp>
-#include <bitcoin/protocol/converter.hpp>
+#include <bitcoin/protocol/version.hpp>
 
 #endif
 

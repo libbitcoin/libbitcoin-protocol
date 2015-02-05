@@ -24,7 +24,8 @@ bitcoin_protocol_include_HEADERS = \
     include/bitcoin/protocol/define.hpp \
     include/bitcoin/protocol/interface.pb.h \
     include/bitcoin/protocol/message.hpp \
-    include/bitcoin/protocol/primitives.hpp
+    include/bitcoin/protocol/primitives.hpp \
+    include/bitcoin/protocol/version.hpp
 
 #
 # libraries
