@@ -35,7 +35,8 @@
 
   <PropertyGroup Condition="'$(DefaultLinkage)' == 'dynamic'">
     <Linkage-protobuf>dynamic</Linkage-protobuf>
-    <Linkage-secp256k1>static</Linkage-secp256k1>
+    <Linkage-secp256k1>dynamic</Linkage-secp256k1>
+    <Linkage-czmqpp>dynamic</Linkage-czmqpp>
     <Linkage-czmq>dynamic</Linkage-czmq>
     <Linkage-libzmq>dynamic</Linkage-libzmq>
     <Linkage-libsodium>dynamic</Linkage-libsodium>
@@ -44,7 +45,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(DefaultLinkage)' == 'ltcg'">
     <Linkage-protobuf>ltcg</Linkage-protobuf>
-    <Linkage-secp256k1>static</Linkage-secp256k1>
+    <Linkage-secp256k1>ltcg</Linkage-secp256k1>
+    <Linkage-czmqpp>ltcg</Linkage-czmqpp>
     <Linkage-czmqpp>ltcg</Linkage-czmqpp>
     <Linkage-czmq>ltcg</Linkage-czmq>
     <Linkage-libzmq>ltcg</Linkage-libzmq>
@@ -55,6 +57,7 @@
   <PropertyGroup Condition="'$(DefaultLinkage)' == 'static'">
     <Linkage-protobuf>static</Linkage-protobuf>
     <Linkage-secp256k1>static</Linkage-secp256k1>
+    <Linkage-czmqpp>static</Linkage-czmqpp>
     <Linkage-czmq>static</Linkage-czmq>
     <Linkage-libzmq>static</Linkage-libzmq>
     <Linkage-libsodium>static</Linkage-libsodium>
@@ -66,6 +69,7 @@
   
   <Target Name="LinkageInfo" BeforeTargets="PrepareForBuild">
     <Message Text="Linkage-secp256k1 : $(Linkage-secp256k1)" Importance="high"/>
+    <Message Text="Linkage-czmqpp    : $(Linkage-czmqpp)" Importance="high"/>
     <Message Text="Linkage-czmq      : $(Linkage-czmq)" Importance="high"/>
     <Message Text="Linkage-libzmq    : $(Linkage-libzmq)" Importance="high"/>
     <Message Text="Linkage-libsodium : $(Linkage-libsodium)" Importance="high"/>
