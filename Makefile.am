@@ -12,8 +12,24 @@ pkgconfig_DATA = libbitcoin-protocol.pc
 ACLOCAL_AMFLAGS = -I m4
 
 #
-# headers
+# libraries
 #
+lib_LTLIBRARIES = \
+    src/libbitcoin-protocol.la
+
+src_libbitcoin_protocol_la_CPPFLAGS = \
+    -I${srcdir}/include \
+    ${bitcoin_CFLAGS} \
+    ${protobuf_CFLAGS} \
+    ${sodium_CFLAGS} \
+    ${czmq___CFLAGS}
+
+src_libbitcoin_protocol_la_LIBADD = \
+    ${bitcoin_LIBS} \
+    ${protobuf_LIBS} \
+    ${sodium_LIBS} \
+    ${czmq___LIBS}
+
 bitcoin_includedir = ${includedir}/bitcoin
 bitcoin_include_HEADERS = \
     include/bitcoin/protocol.hpp
@@ -27,37 +43,21 @@ bitcoin_protocol_include_HEADERS = \
     include/bitcoin/protocol/primitives.hpp \
     include/bitcoin/protocol/version.hpp
 
-#
-# libraries
-#
-lib_LTLIBRARIES = src/libbitcoin-protocol.la
-
-src_libbitcoin_protocol_la_CPPFLAGS = \
-    -I${srcdir}/include \
-    ${bitcoin_CFLAGS} \
-    ${protobuf_CFLAGS} \
-    ${sodium_CFLAGS} \
-    ${czmq___CFLAGS} 
-
 src_libbitcoin_protocol_la_SOURCES = \
     src/converter.cpp \
     src/interface.pb.cc \
     src/message.cpp
-
-src_libbitcoin_protocol_la_LIBADD = \
-    ${bitcoin_LIBS} \
-    ${protobuf_LIBS} \
-    ${sodium_LIBS} \
-    ${czmq___LIBS}
 
 #
 # tests
 #
 if WITH_TESTS
 
-TESTS = test/libbitcoin_protocol_test
+TESTS = \
+    test/libbitcoin_protocol_test
 
-check_PROGRAMS = test/libbitcoin_protocol_test
+check_PROGRAMS = \
+    test/libbitcoin_protocol_test
 
 test_libbitcoin_protocol_test_CPPFLAGS = \
     -I${srcdir}/include \
