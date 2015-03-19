@@ -16,10 +16,10 @@ URL: https://github.com/libbitcoin/libbitcoin-protocol
 Version: @PACKAGE_VERSION@
 
 # Our dependencies that publish package configuration.
-Requires: protobuf >= 2.6.0 libsodium >= 1.0.0 libczmq++ >= 1.1.0 libbitcoin >= 2.8.0
+Requires: @protobuf_PKG@ @sodium_PKG@ @czmq___PKG@ @bitcoin_PKG@
 
 # Our own include directory and any other compiler flags we require.
-Cflags: -I${includedir} -std=c++11
+Cflags: -I${includedir} 
 
-# Our own lib and any we require that do not publish package configuration.
-Libs: -L${libdir} -lbitcoin-protocol  
+# Our own lib directory, lib and any that do not publish package configuration.
+Libs: -L${libdir} -lbitcoin-protocol 
