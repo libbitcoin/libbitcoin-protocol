@@ -33,69 +33,71 @@ class BCP_API converter
 {
 public:
 
-    virtual bool from_protocol(const point* point, bc::output_point& result);
+    virtual bool from_protocol(const point* point,
+        bc::chain::output_point& result);
 
     virtual bool from_protocol(const std::shared_ptr<point> point,
-        bc::output_point& result);
+        bc::chain::output_point& result);
 
     virtual bool from_protocol(const tx_input* input,
-        bc::transaction_input_type& result);
+        bc::chain::transaction_input& result);
 
     virtual bool from_protocol(const std::shared_ptr<tx_input> input,
-        bc::transaction_input_type& result);
+        bc::chain::transaction_input& result);
 
     virtual bool from_protocol(const tx_output* output,
-        bc::transaction_output_type& result);
+        bc::chain::transaction_output& result);
 
     virtual bool from_protocol(const std::shared_ptr<tx_output> output,
-        bc::transaction_output_type& result);
+        bc::chain::transaction_output& result);
 
     virtual bool from_protocol(const tx* transaction,
-        bc::transaction_type& result);
+        bc::chain::transaction& result);
 
     virtual bool from_protocol(const std::shared_ptr<tx> transaction,
-        bc::transaction_type& result);
+        bc::chain::transaction& result);
 
     virtual bool from_protocol(const block_header* header,
-        bc::block_header_type& result);
+        bc::chain::block_header& result);
 
     virtual bool from_protocol(const std::shared_ptr<block_header> header,
-        bc::block_header_type& result);
+        bc::chain::block_header& result);
 
-    virtual bool from_protocol(const block* block, bc::block_type& result);
+    virtual bool from_protocol(const block* block, bc::chain::block& result);
 
     virtual bool from_protocol(const std::shared_ptr<block> block,
-        bc::block_type& result);
+        bc::chain::block& result);
 
-    virtual bool to_protocol(const bc::output_point& point,
+    virtual bool to_protocol(const bc::chain::output_point& point,
         bc::protocol::point& result);
 
-    virtual bc::protocol::point* to_protocol(const bc::output_point& point);
+    virtual bc::protocol::point* to_protocol(
+        const bc::chain::output_point& point);
 
-    virtual bool to_protocol(const bc::transaction_input_type& input,
+    virtual bool to_protocol(const bc::chain::transaction_input& input,
         tx_input& result);
 
-    virtual tx_input* to_protocol(const bc::transaction_input_type& input);
+    virtual tx_input* to_protocol(const bc::chain::transaction_input& input);
 
-    virtual bool to_protocol(const bc::transaction_output_type& output,
+    virtual bool to_protocol(const bc::chain::transaction_output& output,
         tx_output& result);
 
-    virtual tx_output* to_protocol(const bc::transaction_output_type& output);
+    virtual tx_output* to_protocol(const bc::chain::transaction_output& output);
 
-    virtual bool to_protocol(const bc::transaction_type& transaction,
+    virtual bool to_protocol(const bc::chain::transaction& transaction,
         tx& result);
 
-    virtual tx* to_protocol(const bc::transaction_type& transaction);
+    virtual tx* to_protocol(const bc::chain::transaction& transaction);
 
-    virtual bool to_protocol(const bc::block_header_type& header,
+    virtual bool to_protocol(const bc::chain::block_header& header,
         block_header& result);
 
-    virtual block_header* to_protocol(const bc::block_header_type& header);
+    virtual block_header* to_protocol(const bc::chain::block_header& header);
 
-    virtual bool to_protocol(const bc::block_type& block,
+    virtual bool to_protocol(const bc::chain::block& block,
         bc::protocol::block& result);
 
-    virtual block* to_protocol(const bc::block_type& block);
+    virtual block* to_protocol(const bc::chain::block& block);
 };
 
 }
