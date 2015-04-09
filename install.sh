@@ -577,8 +577,8 @@ build_all()
     build_from_github zeromq czmq master $PARALLEL "$@" $CZMQ_OPTIONS
     build_from_github zeromq czmqpp master $PARALLEL "$@" $CZMQPP_OPTIONS
     build_from_github libbitcoin secp256k1 version3 $PARALLEL "$@" $SECP256K1_OPTIONS
-    build_from_github libbitcoin libbitcoin master $PARALLEL "$@" $BITCOIN_OPTIONS
-    build_from_travis libbitcoin libbitcoin-protocol master $PARALLEL "$@" $BITCOIN_PROTOCOL_OPTIONS
+    build_from_github pmienk libbitcoin refactor_types $PARALLEL "$@" $BITCOIN_OPTIONS
+    build_from_travis pmienk libbitcoin-protocol refactor_types $PARALLEL "$@" $BITCOIN_PROTOCOL_OPTIONS
 }
 
 
