@@ -220,11 +220,6 @@ BOOST_AUTO_TEST_CASE(roundtrip_block_header_valid)
     BOOST_REQUIRE_EQUAL(true, converter.from_protocol(intermediate, result));
 
     // verify roundtrip
-    std::cout << "merkle: " << bc::encode_hash(initial.merkle()) << std::endl;
-    std::cout << "merkle: " << bc::encode_hash(result.merkle()) << std::endl;
-    std::cout << "previous_block_hash: " << bc::encode_hash(initial.previous_block_hash()) << std::endl;
-    std::cout << "previous_block_hash: " << bc::encode_hash(result.previous_block_hash()) << std::endl;
-
     BOOST_REQUIRE(initial == result);
 }
 
@@ -244,15 +239,15 @@ BOOST_AUTO_TEST_CASE(roundtrip_block_valid)
         bc::chain::transaction(481547, 235123, tx_inputs, tx_outputs)
     };
 
-    bc::chain::block initial(
-        bc::chain::block_header(
-            6535,
-            bc::hash_literal(BCP_GENESIS_BLOCK_HASH),
-            bc::hash_literal(BCP_SATOSHIS_WORDS_TX_HASH),
-            856345324,
-            21324121,
-            576859232),
-        transactions);
+    bc::chain::block_header header(
+        6535,
+        bc::hash_literal(BCP_GENESIS_BLOCK_HASH),
+        bc::hash_literal(BCP_SATOSHIS_WORDS_TX_HASH),
+        856345324,
+        21324121,
+        576859232);
+
+    bc::chain::block initial(header, transactions);
 
     bc::protocol::converter converter;
 

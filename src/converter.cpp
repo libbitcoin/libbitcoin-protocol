@@ -243,7 +243,8 @@ bool converter::from_protocol(const block* block,
 
     if (block)
     {
-        auto header = result.header();
+        bc::chain::block_header& header = result.header();
+
         success = from_protocol(&(block->header()), header);
 
         if (success)
