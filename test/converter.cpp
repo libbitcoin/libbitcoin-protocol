@@ -46,35 +46,41 @@ bool operator==(
     const bc::chain::transaction_input& a,
     const bc::chain::transaction_input& b)
 {
-    return (a.previous_output == b.previous_output) && (a.script == b.script)
-        && (a.sequence == b.sequence);
+    return (a.previous_output() == b.previous_output())
+        && (a.script() == b.script())
+        && (a.sequence() == b.sequence());
 }
 
 bool operator==(
     const bc::chain::transaction_output& a,
     const bc::chain::transaction_output& b)
 {
-    return (a.value == b.value) && (a.script == b.script);
+    return (a.value() == b.value()) && (a.script() == b.script());
 }
 
 bool operator==(
     const bc::chain::transaction& a, const bc::chain::transaction& b)
 {
-    bool equal = (a.version == b.version) && (a.locktime == b.locktime);
+    bool equal = (a.version() == b.version())
+        && (a.locktime() == b.locktime());
 
-    if (equal && (a.inputs.size() == b.inputs.size()))
+    if (equal && (a.inputs().size() == b.inputs().size()))
     {
-        for (bc::data_chunk::size_type i = 0; equal && (i < a.inputs.size()); i++)
+        for (bc::data_chunk::size_type i = 0;
+            equal && (i < a.inputs().size());
+            i++)
         {
-            equal = (a.inputs[i] == b.inputs[i]);
+            equal = (a.inputs()[i] == b.inputs()[i]);
         }
     }
 
-    if (equal && (a.outputs.size() == b.outputs.size()))
+    if (equal && (a.outputs().size() == b.outputs().size()))
     {
-        for (bc::data_chunk::size_type i = 0; equal && (i < a.outputs.size()); i++)
+        for (bc::data_chunk::size_type i = 0;
+            equal && (i < a.outputs().size());
+            i++)
         {
-            equal = (a.outputs[i] == b.outputs[i]);
+            equal = (a.outputs()[i] == b.outputs()[i]);
         }
     }
 
@@ -84,13 +90,15 @@ bool operator==(
 bool operator==(
     const bc::chain::block& a, const bc::chain::block& b)
 {
-    bool equal = (a.header == b.header);
+    bool equal = (a.header() == b.header());
 
-    if (equal && (a.transactions.size() == b.transactions.size()))
+    if (equal && (a.transactions().size() == b.transactions().size()))
     {
-        for (bc::data_chunk::size_type i = 0; equal && (i < a.transactions.size()); i++)
+        for (bc::data_chunk::size_type i = 0;
+            equal && (i < a.transactions().size());
+            i++)
         {
-            equal = (a.transactions[i] == b.transactions[i]);
+            equal = (a.transactions()[i] == b.transactions()[i]);
         }
     }
 
@@ -123,10 +131,9 @@ BOOST_AUTO_TEST_CASE(roundtrip_point_valid)
 
 BOOST_AUTO_TEST_CASE(roundtrip_transaction_input_valid)
 {
-    bc::chain::transaction_input initial;
-    initial.previous_output =  { bc::hash_literal(BCP_GENESIS_BLOCK_HASH), 154 };
-    initial.script = script_instance;
-    initial.sequence = 64724;
+    bc::chain::transaction_input initial(
+        bc::chain::output_point(bc::hash_literal(BCP_GENESIS_BLOCK_HASH), 154),
+        script_instance, 64724);
 
     bc::protocol::converter converter;
 
@@ -145,9 +152,7 @@ BOOST_AUTO_TEST_CASE(roundtrip_transaction_input_valid)
 
 BOOST_AUTO_TEST_CASE(roundtrip_transaction_output_valid)
 {
-    bc::chain::transaction_output initial;
-    initial.script = script_instance;
-    initial.value = 6548621547;
+    bc::chain::transaction_output initial(6548621547, script_instance);
 
     bc::protocol::converter converter;
 
@@ -166,20 +171,17 @@ BOOST_AUTO_TEST_CASE(roundtrip_transaction_output_valid)
 
 BOOST_AUTO_TEST_CASE(roundtrip_transaction_valid)
 {
-    bc::chain::transaction_input tx_input;
-    tx_input.previous_output = { bc::hash_literal(BCP_GENESIS_BLOCK_HASH), 154 };
-    tx_input.script = script_instance;
-    tx_input.sequence = 64724;
+    bc::chain::transaction_input_list tx_inputs = {
+        bc::chain::transaction_input(
+            bc::chain::output_point(bc::hash_literal(BCP_GENESIS_BLOCK_HASH), 154),
+            script_instance, 64724)
+    };
 
-    bc::chain::transaction_output tx_output;
-    tx_output.script = script_instance;
-    tx_output.value = 6548621547;
+    bc::chain::transaction_output_list tx_outputs = {
+        bc::chain::transaction_output(6548621547, script_instance)
+    };
 
-    bc::chain::transaction initial;
-    initial.version = 481547;
-    initial.locktime = 235123;
-    initial.inputs.push_back(tx_input);
-    initial.outputs.push_back(tx_output);
+    bc::chain::transaction initial(481547, 235123, tx_inputs, tx_outputs);
 
     bc::protocol::converter converter;
 
@@ -198,13 +200,13 @@ BOOST_AUTO_TEST_CASE(roundtrip_transaction_valid)
 
 BOOST_AUTO_TEST_CASE(roundtrip_block_header_valid)
 {
-    bc::chain::block_header initial;
-    initial.version = 6535;
-    initial.previous_block_hash = bc::hash_literal(BCP_GENESIS_BLOCK_HASH);
-    initial.merkle = bc::hash_literal(BCP_SATOSHIS_WORDS_TX_HASH);
-    initial.timestamp = 856345324;
-    initial.bits = 21324121;
-    initial.nonce = 576859232;
+    bc::chain::block_header initial(
+        6535,
+        bc::hash_literal(BCP_GENESIS_BLOCK_HASH),
+        bc::hash_literal(BCP_SATOSHIS_WORDS_TX_HASH),
+        856345324,
+        21324121,
+        576859232);
 
     bc::protocol::converter converter;
 
@@ -218,35 +220,39 @@ BOOST_AUTO_TEST_CASE(roundtrip_block_header_valid)
     BOOST_REQUIRE_EQUAL(true, converter.from_protocol(intermediate, result));
 
     // verify roundtrip
+    std::cout << "merkle: " << bc::encode_hash(initial.merkle()) << std::endl;
+    std::cout << "merkle: " << bc::encode_hash(result.merkle()) << std::endl;
+    std::cout << "previous_block_hash: " << bc::encode_hash(initial.previous_block_hash()) << std::endl;
+    std::cout << "previous_block_hash: " << bc::encode_hash(result.previous_block_hash()) << std::endl;
+
     BOOST_REQUIRE(initial == result);
 }
 
 BOOST_AUTO_TEST_CASE(roundtrip_block_valid)
 {
-    bc::chain::transaction_input tx_input;
-    tx_input.previous_output = { bc::hash_literal(BCP_GENESIS_BLOCK_HASH), 154 };
-    tx_input.script = script_instance;
-    tx_input.sequence = 64724;
+    bc::chain::transaction_input_list tx_inputs = {
+        bc::chain::transaction_input(
+            bc::chain::output_point(bc::hash_literal(BCP_GENESIS_BLOCK_HASH), 154),
+            script_instance, 64724)
+    };
 
-    bc::chain::transaction_output tx_output;
-    tx_output.script = script_instance;
-    tx_output.value = 6548621547;
+    bc::chain::transaction_output_list tx_outputs = {
+        bc::chain::transaction_output(6548621547, script_instance)
+    };
 
-    bc::chain::transaction tx;
-    tx.version = 481547;
-    tx.locktime = 235123;
-    tx.inputs.push_back(tx_input);
-    tx.outputs.push_back(tx_output);
+    bc::chain::transaction_list transactions = {
+        bc::chain::transaction(481547, 235123, tx_inputs, tx_outputs)
+    };
 
-    bc::chain::block initial;
-    initial.header.version = 6535;
-    initial.header.previous_block_hash = bc::hash_literal(BCP_GENESIS_BLOCK_HASH);
-    initial.header.merkle = bc::hash_literal(BCP_SATOSHIS_WORDS_TX_HASH);
-    initial.header.timestamp = 856345324;
-    initial.header.bits = 21324121;
-    initial.header.nonce = 576859232;
-
-    initial.transactions.push_back(tx);
+    bc::chain::block initial(
+        bc::chain::block_header(
+            6535,
+            bc::hash_literal(BCP_GENESIS_BLOCK_HASH),
+            bc::hash_literal(BCP_SATOSHIS_WORDS_TX_HASH),
+            856345324,
+            21324121,
+            576859232),
+        transactions);
 
     bc::protocol::converter converter;
 
