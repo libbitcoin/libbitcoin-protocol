@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/libbitcoin/libbitcoin-protocol.svg?branch=master)](https://travis-ci.org/libbitcoin/libbitcoin-protocol)
 
+[![Coverage Status](https://coveralls.io/repos/libbitcoin/libbitcoin-protocol/badge.svg)](https://coveralls.io/r/libbitcoin/libbitcoin-protocol)
+
 # Bitcoin Server Protocol
 
 [swansontec](https://github.com/swansontec), [pmienk](https://github.com/pmienk), [evoskuil](https://github.com/evoskuil)
