@@ -129,8 +129,10 @@ BOOST_AUTO_TEST_CASE(roundtrip_point_valid)
 BOOST_AUTO_TEST_CASE(roundtrip_transaction_input_valid)
 {
     bc::chain::script script_instance;
-    BOOST_REQUIRE(script_instance.from_data(bc::data_chunk(
-        encoded_script.begin(), encoded_script.end()), false, true));
+    BOOST_REQUIRE(script_instance.from_data(
+        bc::data_chunk(encoded_script.begin(), encoded_script.end()),
+        false,
+        bc::chain::script::parse_mode::raw_data_fallback));
 
     bc::chain::transaction_input initial{
         bc::chain::output_point{
@@ -157,8 +159,10 @@ BOOST_AUTO_TEST_CASE(roundtrip_transaction_input_valid)
 BOOST_AUTO_TEST_CASE(roundtrip_transaction_output_valid)
 {
     bc::chain::script script_instance;
-    BOOST_REQUIRE(script_instance.from_data(bc::data_chunk(
-        encoded_script.begin(), encoded_script.end()), false, true));
+    BOOST_REQUIRE(script_instance.from_data(
+        bc::data_chunk(encoded_script.begin(), encoded_script.end()),
+        false,
+        bc::chain::script::parse_mode::raw_data_fallback));
 
     bc::chain::transaction_output initial{ 6548621547, script_instance };
 
@@ -180,8 +184,10 @@ BOOST_AUTO_TEST_CASE(roundtrip_transaction_output_valid)
 BOOST_AUTO_TEST_CASE(roundtrip_transaction_valid)
 {
     bc::chain::script script_instance;
-    BOOST_REQUIRE(script_instance.from_data(bc::data_chunk(
-        encoded_script.begin(), encoded_script.end()), false, true));
+    BOOST_REQUIRE(script_instance.from_data(
+        bc::data_chunk(encoded_script.begin(), encoded_script.end()),
+        false,
+        bc::chain::script::parse_mode::raw_data_fallback));
 
     bc::chain::transaction_input_list tx_inputs = {
         bc::chain::transaction_input {
@@ -243,8 +249,10 @@ BOOST_AUTO_TEST_CASE(roundtrip_block_header_valid)
 BOOST_AUTO_TEST_CASE(roundtrip_block_valid)
 {
     bc::chain::script script_instance;
-    BOOST_REQUIRE(script_instance.from_data(bc::data_chunk(
-        encoded_script.begin(), encoded_script.end()), false, true));
+    BOOST_REQUIRE(script_instance.from_data(
+        bc::data_chunk(encoded_script.begin(), encoded_script.end()),
+        false,
+        bc::chain::script::parse_mode::raw_data_fallback));
 
     bc::chain::transaction_input_list tx_inputs = {
         bc::chain::transaction_input{

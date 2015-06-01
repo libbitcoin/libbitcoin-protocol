@@ -87,8 +87,10 @@ bool converter::from_protocol(const tx_input* input,
             std::string script_text = input->script();
 
             // protocol question - is the data encoding of the script to be prefixed with operation count?
-            success = result.script.from_data(bc::data_chunk(
-                script_text.begin(), script_text.end()), false, true);
+            success = result.script.from_data(
+                bc::data_chunk(script_text.begin(), script_text.end()),
+                false,
+                chain::script::parse_mode::raw_data_fallback);
         }
     }
 
@@ -115,8 +117,10 @@ bool converter::from_protocol(const tx_output* output,
         std::string script_text = output->script();
 
         // protocol question - is the data encoding of the script to be prefixed with operation count?
-        success = result.script.from_data(bc::data_chunk(
-            script_text.begin(), script_text.end()), false, true);
+        success = result.script.from_data(
+            bc::data_chunk(script_text.begin(), script_text.end()),
+            false,
+            chain::script::parse_mode::raw_data_fallback);
     }
 
     return success;
