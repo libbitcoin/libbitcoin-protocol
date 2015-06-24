@@ -189,7 +189,7 @@ BOOST_AUTO_TEST_CASE(roundtrip_transaction_valid)
         false,
         bc::chain::script::parse_mode::raw_data_fallback));
 
-    bc::chain::transaction_input_list tx_inputs = {
+    bc::chain::transaction_input::list tx_inputs = {
         bc::chain::transaction_input {
             bc::chain::output_point {
                 bc::hash_literal(BCP_GENESIS_BLOCK_HASH), 154
@@ -199,7 +199,7 @@ BOOST_AUTO_TEST_CASE(roundtrip_transaction_valid)
         }
     };
 
-    bc::chain::transaction_output_list tx_outputs = {
+    bc::chain::transaction_output::list tx_outputs = {
         bc::chain::transaction_output{ 6548621547, script_instance }
     };
 
@@ -254,7 +254,7 @@ BOOST_AUTO_TEST_CASE(roundtrip_block_valid)
         false,
         bc::chain::script::parse_mode::raw_data_fallback));
 
-    bc::chain::transaction_input_list tx_inputs = {
+    bc::chain::transaction_input::list tx_inputs = {
         bc::chain::transaction_input{
             bc::chain::output_point{
                 bc::hash_literal(BCP_GENESIS_BLOCK_HASH), 154
@@ -264,11 +264,11 @@ BOOST_AUTO_TEST_CASE(roundtrip_block_valid)
         }
     };
 
-    bc::chain::transaction_output_list tx_outputs = {
+    bc::chain::transaction_output::list tx_outputs = {
         bc::chain::transaction_output{ 6548621547, script_instance }
     };
 
-    bc::chain::transaction_list transactions = {
+    bc::chain::transaction::list transactions = {
         bc::chain::transaction{ 481547, 235123, tx_inputs, tx_outputs }
     };
 
