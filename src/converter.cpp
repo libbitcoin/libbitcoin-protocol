@@ -205,6 +205,7 @@ bool converter::from_protocol(const block_header* header,
         result.timestamp = header->timestamp();
         result.bits = header->bits();
         result.nonce = header->nonce();
+        result.transaction_count = header->tx_count();
 
         success = unpack_hash(result.merkle, header->merkle_root());
 
@@ -400,6 +401,7 @@ bool converter::to_protocol(const bc::chain::block_header& header,
     result.set_nonce(header.nonce);
     result.set_merkle_root(pack_hash(header.merkle));
     result.set_previous_block_hash(pack_hash(header.previous_block_hash));
+    result.set_tx_count(header.transaction_count);
 
     return success;
 }
