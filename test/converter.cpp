@@ -228,7 +228,8 @@ BOOST_AUTO_TEST_CASE(roundtrip_block_header_valid)
         bc::hash_literal(BCP_SATOSHIS_WORDS_TX_HASH),
         856345324,
         21324121,
-        576859232
+        576859232,
+        16
     };
 
     bc::protocol::converter converter;
@@ -278,7 +279,8 @@ BOOST_AUTO_TEST_CASE(roundtrip_block_valid)
         bc::hash_literal(BCP_SATOSHIS_WORDS_TX_HASH),
         856345324,
         21324121,
-        576859232
+        576859232,
+        1
     };
 
     bc::chain::block initial{ header, transactions };
