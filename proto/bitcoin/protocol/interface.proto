@@ -107,8 +107,9 @@ message block_id {
 // A block identity, merkle branch tuple.
 //
 message block_location {
-    optional block_id identity = 1;z
-    repeated bytes branch = 2;
+    optional block_id identity = 1;
+    optional uint64 index = 2;
+    repeated bytes branch = 3;
 }
 
 //
