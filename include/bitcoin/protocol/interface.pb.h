@@ -1047,10 +1047,17 @@ class BCP_API block_location : public ::google::protobuf::Message {
   inline ::libbitcoin::protocol::block_id* release_identity();
   inline void set_allocated_identity(::libbitcoin::protocol::block_id* identity);
 
-  // repeated bytes branch = 2;
+  // optional uint64 index = 2;
+  inline bool has_index() const;
+  inline void clear_index();
+  static const int kIndexFieldNumber = 2;
+  inline ::google::protobuf::uint64 index() const;
+  inline void set_index(::google::protobuf::uint64 value);
+
+  // repeated bytes branch = 3;
   inline int branch_size() const;
   inline void clear_branch();
-  static const int kBranchFieldNumber = 2;
+  static const int kBranchFieldNumber = 3;
   inline const ::std::string& branch(int index) const;
   inline ::std::string* mutable_branch(int index);
   inline void set_branch(int index, const ::std::string& value);
@@ -1067,12 +1074,15 @@ class BCP_API block_location : public ::google::protobuf::Message {
  private:
   inline void set_has_identity();
   inline void clear_has_identity();
+  inline void set_has_index();
+  inline void clear_has_index();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::libbitcoin::protocol::block_id* identity_;
+  ::google::protobuf::uint64 index_;
   ::google::protobuf::RepeatedPtrField< ::std::string> branch_;
   friend void BCP_API protobuf_AddDesc_bitcoin_2fprotocol_2finterface_2eproto();
   friend void protobuf_AssignDesc_bitcoin_2fprotocol_2finterface_2eproto();
@@ -3426,7 +3436,31 @@ inline void block_location::set_allocated_identity(::libbitcoin::protocol::block
   // @@protoc_insertion_point(field_set_allocated:libbitcoin.protocol.block_location.identity)
 }
 
-// repeated bytes branch = 2;
+// optional uint64 index = 2;
+inline bool block_location::has_index() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void block_location::set_has_index() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void block_location::clear_has_index() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void block_location::clear_index() {
+  index_ = GOOGLE_ULONGLONG(0);
+  clear_has_index();
+}
+inline ::google::protobuf::uint64 block_location::index() const {
+  // @@protoc_insertion_point(field_get:libbitcoin.protocol.block_location.index)
+  return index_;
+}
+inline void block_location::set_index(::google::protobuf::uint64 value) {
+  set_has_index();
+  index_ = value;
+  // @@protoc_insertion_point(field_set:libbitcoin.protocol.block_location.index)
+}
+
+// repeated bytes branch = 3;
 inline int block_location::branch_size() const {
   return branch_.size();
 }
