@@ -157,10 +157,10 @@ AC_SUBST([czmq___CPPFLAGS], [${czmq___CFLAGS}])
 AC_MSG_NOTICE([czmq___CPPFLAGS : ${czmq___CPPFLAGS}])
 AC_MSG_NOTICE([czmq___LIBS : ${czmq___LIBS}])
 
-# Require bitcoin of at least version 2.8.0 and output ${bitcoin_CPPFLAGS/LIBS/PKG}.
+# Require bitcoin of at least version 3.0.0 and output ${bitcoin_CPPFLAGS/LIBS/PKG}.
 #------------------------------------------------------------------------------
-PKG_CHECK_MODULES([bitcoin], [libbitcoin >= 2.8.0])
-AC_SUBST([bitcoin_PKG], ['libbitcoin >= 2.8.0'])
+PKG_CHECK_MODULES([bitcoin], [libbitcoin >= 3.0.0])
+AC_SUBST([bitcoin_PKG], ['libbitcoin >= 3.0.0'])
 AC_SUBST([bitcoin_CPPFLAGS], [${bitcoin_CFLAGS}])
 AC_MSG_NOTICE([bitcoin_CPPFLAGS : ${bitcoin_CPPFLAGS}])
 AC_MSG_NOTICE([bitcoin_LIBS : ${bitcoin_LIBS}])
