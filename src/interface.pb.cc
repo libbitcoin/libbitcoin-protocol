@@ -246,8 +246,9 @@ void protobuf_AssignDesc_bitcoin_2fprotocol_2finterface_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(block_id));
   block_location_descriptor_ = file->message_type(8);
-  static const int block_location_offsets_[2] = {
+  static const int block_location_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(block_location, identity_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(block_location, index_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(block_location, branch_),
   };
   block_location_reflection_ =
@@ -573,62 +574,63 @@ void protobuf_AddDesc_bitcoin_2fprotocol_2finterface_2eproto() {
     "\003 \003(\014\"Y\n\006filter\0221\n\013filter_type\030\001 \002(\0162\034.l"
     "ibbitcoin.protocol.filters\022\014\n\004bits\030\002 \001(\r"
     "\022\016\n\006prefix\030\003 \002(\014\"(\n\010block_id\022\016\n\006height\030\001"
-    " \001(\r\022\014\n\004hash\030\002 \001(\014\"Q\n\016block_location\022/\n\010"
+    " \001(\r\022\014\n\004hash\030\002 \001(\014\"`\n\016block_location\022/\n\010"
     "identity\030\001 \001(\0132\035.libbitcoin.protocol.blo"
-    "ck_id\022\016\n\006branch\030\002 \003(\014\"U\n\016tx_hash_result\022"
-    "\014\n\004hash\030\001 \002(\014\0225\n\010location\030\002 \002(\0132#.libbit"
-    "coin.protocol.block_location\"p\n\ttx_resul"
-    "t\022,\n\013transaction\030\001 \002(\0132\027.libbitcoin.prot"
-    "ocol.tx\0225\n\010location\030\002 \002(\0132#.libbitcoin.p"
-    "rotocol.block_location\"9\n\006output\022\r\n\005inde"
-    "x\030\001 \002(\r\022\020\n\010satoshis\030\002 \002(\004\022\016\n\006script\030\003 \002("
-    "\014\"\203\001\n\013utxo_result\022\017\n\007tx_hash\030\001 \002(\014\0225\n\010lo"
-    "cation\030\002 \002(\0132#.libbitcoin.protocol.block"
-    "_location\022,\n\007outputs\030\003 \003(\0132\033.libbitcoin."
-    "protocol.output\"_\n\025block_headers_request"
-    "\022,\n\005start\030\001 \001(\0132\035.libbitcoin.protocol.bl"
-    "ock_id\022\030\n\020results_per_page\030\002 \001(\r\"\217\002\n\024tra"
-    "nsactions_request\022,\n\005start\030\001 \001(\0132\035.libbi"
-    "tcoin.protocol.block_id\022\030\n\020results_per_p"
-    "age\030\002 \001(\r\022*\n\005query\030\003 \003(\0132\033.libbitcoin.pr"
-    "otocol.filter\022F\n\013result_type\030\004 \001(\0162(.lib"
-    "bitcoin.protocol.transaction_results:\007TX"
-    "_HASH\022;\n\rlocation_type\030\005 \001(\0162\036.libbitcoi"
-    "n.protocol.locations:\004NONE\"\222\003\n\007request\022\n"
-    "\n\002id\030\001 \002(\r\022G\n\021get_block_headers\030\002 \001(\0132*."
-    "libbitcoin.protocol.block_headers_reques"
-    "tH\000\022E\n\020get_transactions\030\003 \001(\0132).libbitco"
-    "in.protocol.transactions_requestH\000\0223\n\020po"
-    "st_transaction\030\004 \001(\0132\027.libbitcoin.protoc"
-    "ol.txH\000\0227\n\024validate_transaction\030\005 \001(\0132\027."
-    "libbitcoin.protocol.txH\000\0220\n\npost_block\030\006"
-    " \001(\0132\032.libbitcoin.protocol.blockH\000\0224\n\016va"
-    "lidate_block\030\007 \001(\0132\032.libbitcoin.protocol"
-    ".blockH\000*\005\010d\020\310\001B\016\n\014request_type\"\233\006\n\010resp"
-    "onse\022\n\n\002id\030\001 \002(\r\022\016\n\006status\030\002 \001(\021\022Q\n\032get_"
-    "block_headers_response\030\003 \001(\0132+.libbitcoi"
-    "n.protocol.response.block_headersH\000\022O\n\031g"
-    "et_transactions_response\030\004 \001(\0132*.libbitc"
-    "oin.protocol.response.transactionsH\000\022$\n\032"
-    "post_transaction_succeeded\030\005 \001(\010H\000\022(\n\036va"
-    "lidate_transaction_succeeded\030\006 \001(\010H\000\022\036\n\024"
-    "post_block_succeeded\030\007 \001(\010H\000\022\"\n\030validate"
-    "_block_succeeded\030\010 \001(\010H\000\032\234\001\n\rblock_heade"
-    "rs\022+\n\004next\030\001 \001(\0132\035.libbitcoin.protocol.b"
-    "lock_id\022*\n\003top\030\002 \001(\0132\035.libbitcoin.protoc"
-    "ol.block_id\0222\n\007headers\030\003 \003(\0132!.libbitcoi"
-    "n.protocol.block_header\032\203\002\n\014transactions"
-    "\022+\n\004next\030\001 \001(\0132\035.libbitcoin.protocol.blo"
-    "ck_id\022*\n\003top\030\002 \001(\0132\035.libbitcoin.protocol"
-    ".block_id\0223\n\006hashes\030\003 \003(\0132#.libbitcoin.p"
-    "rotocol.tx_hash_result\0224\n\014transactions\030\004"
-    " \003(\0132\036.libbitcoin.protocol.tx_result\022/\n\005"
-    "utxos\030\005 \003(\0132 .libbitcoin.protocol.utxo_r"
-    "esult*\005\010d\020\310\001B\017\n\rresponse_type*4\n\007filters"
-    "\022\013\n\007ADDRESS\020\001\022\017\n\013TRANSACTION\020\002\022\013\n\007STEALT"
-    "H\020\003*B\n\023transaction_results\022\013\n\007TX_HASH\020\001\022"
-    "\r\n\tTX_RESULT\020\002\022\017\n\013UTXO_RESULT\020\003*,\n\tlocat"
-    "ions\022\010\n\004NONE\020\000\022\t\n\005BLOCK\020\001\022\n\n\006MERKLE\020\002", 2997);
+    "ck_id\022\r\n\005index\030\002 \001(\004\022\016\n\006branch\030\003 \003(\014\"U\n\016"
+    "tx_hash_result\022\014\n\004hash\030\001 \002(\014\0225\n\010location"
+    "\030\002 \002(\0132#.libbitcoin.protocol.block_locat"
+    "ion\"p\n\ttx_result\022,\n\013transaction\030\001 \002(\0132\027."
+    "libbitcoin.protocol.tx\0225\n\010location\030\002 \002(\013"
+    "2#.libbitcoin.protocol.block_location\"9\n"
+    "\006output\022\r\n\005index\030\001 \002(\r\022\020\n\010satoshis\030\002 \002(\004"
+    "\022\016\n\006script\030\003 \002(\014\"\203\001\n\013utxo_result\022\017\n\007tx_h"
+    "ash\030\001 \002(\014\0225\n\010location\030\002 \002(\0132#.libbitcoin"
+    ".protocol.block_location\022,\n\007outputs\030\003 \003("
+    "\0132\033.libbitcoin.protocol.output\"_\n\025block_"
+    "headers_request\022,\n\005start\030\001 \001(\0132\035.libbitc"
+    "oin.protocol.block_id\022\030\n\020results_per_pag"
+    "e\030\002 \001(\r\"\217\002\n\024transactions_request\022,\n\005star"
+    "t\030\001 \001(\0132\035.libbitcoin.protocol.block_id\022\030"
+    "\n\020results_per_page\030\002 \001(\r\022*\n\005query\030\003 \003(\0132"
+    "\033.libbitcoin.protocol.filter\022F\n\013result_t"
+    "ype\030\004 \001(\0162(.libbitcoin.protocol.transact"
+    "ion_results:\007TX_HASH\022;\n\rlocation_type\030\005 "
+    "\001(\0162\036.libbitcoin.protocol.locations:\004NON"
+    "E\"\222\003\n\007request\022\n\n\002id\030\001 \002(\r\022G\n\021get_block_h"
+    "eaders\030\002 \001(\0132*.libbitcoin.protocol.block"
+    "_headers_requestH\000\022E\n\020get_transactions\030\003"
+    " \001(\0132).libbitcoin.protocol.transactions_"
+    "requestH\000\0223\n\020post_transaction\030\004 \001(\0132\027.li"
+    "bbitcoin.protocol.txH\000\0227\n\024validate_trans"
+    "action\030\005 \001(\0132\027.libbitcoin.protocol.txH\000\022"
+    "0\n\npost_block\030\006 \001(\0132\032.libbitcoin.protoco"
+    "l.blockH\000\0224\n\016validate_block\030\007 \001(\0132\032.libb"
+    "itcoin.protocol.blockH\000*\005\010d\020\310\001B\016\n\014reques"
+    "t_type\"\233\006\n\010response\022\n\n\002id\030\001 \002(\r\022\016\n\006statu"
+    "s\030\002 \001(\021\022Q\n\032get_block_headers_response\030\003 "
+    "\001(\0132+.libbitcoin.protocol.response.block"
+    "_headersH\000\022O\n\031get_transactions_response\030"
+    "\004 \001(\0132*.libbitcoin.protocol.response.tra"
+    "nsactionsH\000\022$\n\032post_transaction_succeede"
+    "d\030\005 \001(\010H\000\022(\n\036validate_transaction_succee"
+    "ded\030\006 \001(\010H\000\022\036\n\024post_block_succeeded\030\007 \001("
+    "\010H\000\022\"\n\030validate_block_succeeded\030\010 \001(\010H\000\032"
+    "\234\001\n\rblock_headers\022+\n\004next\030\001 \001(\0132\035.libbit"
+    "coin.protocol.block_id\022*\n\003top\030\002 \001(\0132\035.li"
+    "bbitcoin.protocol.block_id\0222\n\007headers\030\003 "
+    "\003(\0132!.libbitcoin.protocol.block_header\032\203"
+    "\002\n\014transactions\022+\n\004next\030\001 \001(\0132\035.libbitco"
+    "in.protocol.block_id\022*\n\003top\030\002 \001(\0132\035.libb"
+    "itcoin.protocol.block_id\0223\n\006hashes\030\003 \003(\013"
+    "2#.libbitcoin.protocol.tx_hash_result\0224\n"
+    "\014transactions\030\004 \003(\0132\036.libbitcoin.protoco"
+    "l.tx_result\022/\n\005utxos\030\005 \003(\0132 .libbitcoin."
+    "protocol.utxo_result*\005\010d\020\310\001B\017\n\rresponse_"
+    "type*4\n\007filters\022\013\n\007ADDRESS\020\001\022\017\n\013TRANSACT"
+    "ION\020\002\022\013\n\007STEALTH\020\003*B\n\023transaction_result"
+    "s\022\013\n\007TX_HASH\020\001\022\r\n\tTX_RESULT\020\002\022\017\n\013UTXO_RE"
+    "SULT\020\003*,\n\tlocations\022\010\n\004NONE\020\000\022\t\n\005BLOCK\020\001"
+    "\022\n\n\006MERKLE\020\002", 3012);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "bitcoin/protocol/interface.proto", &protobuf_RegisterTypes);
   block_header::default_instance_ = new block_header();
@@ -3337,6 +3339,7 @@ void block_id::Swap(block_id* other) {
 
 #ifndef _MSC_VER
 const int block_location::kIdentityFieldNumber;
+const int block_location::kIndexFieldNumber;
 const int block_location::kBranchFieldNumber;
 #endif  // !_MSC_VER
 
@@ -3361,6 +3364,7 @@ void block_location::SharedCtor() {
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
   identity_ = NULL;
+  index_ = GOOGLE_ULONGLONG(0);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -3397,8 +3401,11 @@ block_location* block_location::New() const {
 }
 
 void block_location::Clear() {
-  if (has_identity()) {
-    if (identity_ != NULL) identity_->::libbitcoin::protocol::block_id::Clear();
+  if (_has_bits_[0 / 32] & 3) {
+    if (has_identity()) {
+      if (identity_ != NULL) identity_->::libbitcoin::protocol::block_id::Clear();
+    }
+    index_ = GOOGLE_ULONGLONG(0);
   }
   branch_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -3423,20 +3430,35 @@ bool block_location::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_branch;
+        if (input->ExpectTag(16)) goto parse_index;
         break;
       }
 
-      // repeated bytes branch = 2;
+      // optional uint64 index = 2;
       case 2: {
-        if (tag == 18) {
+        if (tag == 16) {
+         parse_index:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                 input, &index_)));
+          set_has_index();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(26)) goto parse_branch;
+        break;
+      }
+
+      // repeated bytes branch = 3;
+      case 3: {
+        if (tag == 26) {
          parse_branch:
           DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
                 input, this->add_branch()));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_branch;
+        if (input->ExpectTag(26)) goto parse_branch;
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -3472,10 +3494,15 @@ void block_location::SerializeWithCachedSizes(
       1, this->identity(), output);
   }
 
-  // repeated bytes branch = 2;
+  // optional uint64 index = 2;
+  if (has_index()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(2, this->index(), output);
+  }
+
+  // repeated bytes branch = 3;
   for (int i = 0; i < this->branch_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteBytes(
-      2, this->branch(i), output);
+      3, this->branch(i), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -3495,10 +3522,15 @@ void block_location::SerializeWithCachedSizes(
         1, this->identity(), target);
   }
 
-  // repeated bytes branch = 2;
+  // optional uint64 index = 2;
+  if (has_index()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(2, this->index(), target);
+  }
+
+  // repeated bytes branch = 3;
   for (int i = 0; i < this->branch_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteBytesToArray(2, this->branch(i), target);
+      WriteBytesToArray(3, this->branch(i), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -3520,8 +3552,15 @@ int block_location::ByteSize() const {
           this->identity());
     }
 
+    // optional uint64 index = 2;
+    if (has_index()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt64Size(
+          this->index());
+    }
+
   }
-  // repeated bytes branch = 2;
+  // repeated bytes branch = 3;
   total_size += 1 * this->branch_size();
   for (int i = 0; i < this->branch_size(); i++) {
     total_size += ::google::protobuf::internal::WireFormatLite::BytesSize(
@@ -3558,6 +3597,9 @@ void block_location::MergeFrom(const block_location& from) {
     if (from.has_identity()) {
       mutable_identity()->::libbitcoin::protocol::block_id::MergeFrom(from.identity());
     }
+    if (from.has_index()) {
+      set_index(from.index());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -3582,6 +3624,7 @@ bool block_location::IsInitialized() const {
 void block_location::Swap(block_location* other) {
   if (other != this) {
     std::swap(identity_, other->identity_);
+    std::swap(index_, other->index_);
     branch_.Swap(&other->branch_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);

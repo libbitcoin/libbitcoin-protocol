@@ -6579,15 +6579,24 @@ public final class Interface {
     libbitcoin.protocol.Interface.block_idOrBuilder getIdentityOrBuilder();
 
     /**
-     * <code>repeated bytes branch = 2;</code>
+     * <code>optional uint64 index = 2;</code>
+     */
+    boolean hasIndex();
+    /**
+     * <code>optional uint64 index = 2;</code>
+     */
+    long getIndex();
+
+    /**
+     * <code>repeated bytes branch = 3;</code>
      */
     java.util.List<com.google.protobuf.ByteString> getBranchList();
     /**
-     * <code>repeated bytes branch = 2;</code>
+     * <code>repeated bytes branch = 3;</code>
      */
     int getBranchCount();
     /**
-     * <code>repeated bytes branch = 2;</code>
+     * <code>repeated bytes branch = 3;</code>
      */
     com.google.protobuf.ByteString getBranch(int index);
   }
@@ -6662,10 +6671,15 @@ public final class Interface {
               bitField0_ |= 0x00000001;
               break;
             }
-            case 18: {
-              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+            case 16: {
+              bitField0_ |= 0x00000002;
+              index_ = input.readUInt64();
+              break;
+            }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
                 branch_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
-                mutable_bitField0_ |= 0x00000002;
+                mutable_bitField0_ |= 0x00000004;
               }
               branch_.add(input.readBytes());
               break;
@@ -6678,7 +6692,7 @@ public final class Interface {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
           branch_ = java.util.Collections.unmodifiableList(branch_);
         }
         this.unknownFields = unknownFields.build();
@@ -6734,23 +6748,38 @@ public final class Interface {
       return identity_;
     }
 
-    public static final int BRANCH_FIELD_NUMBER = 2;
+    public static final int INDEX_FIELD_NUMBER = 2;
+    private long index_;
+    /**
+     * <code>optional uint64 index = 2;</code>
+     */
+    public boolean hasIndex() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional uint64 index = 2;</code>
+     */
+    public long getIndex() {
+      return index_;
+    }
+
+    public static final int BRANCH_FIELD_NUMBER = 3;
     private java.util.List<com.google.protobuf.ByteString> branch_;
     /**
-     * <code>repeated bytes branch = 2;</code>
+     * <code>repeated bytes branch = 3;</code>
      */
     public java.util.List<com.google.protobuf.ByteString>
         getBranchList() {
       return branch_;
     }
     /**
-     * <code>repeated bytes branch = 2;</code>
+     * <code>repeated bytes branch = 3;</code>
      */
     public int getBranchCount() {
       return branch_.size();
     }
     /**
-     * <code>repeated bytes branch = 2;</code>
+     * <code>repeated bytes branch = 3;</code>
      */
     public com.google.protobuf.ByteString getBranch(int index) {
       return branch_.get(index);
@@ -6758,6 +6787,7 @@ public final class Interface {
 
     private void initFields() {
       identity_ = libbitcoin.protocol.Interface.block_id.getDefaultInstance();
+      index_ = 0L;
       branch_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
@@ -6776,8 +6806,11 @@ public final class Interface {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeMessage(1, identity_);
       }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeUInt64(2, index_);
+      }
       for (int i = 0; i < branch_.size(); i++) {
-        output.writeBytes(2, branch_.get(i));
+        output.writeBytes(3, branch_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -6791,6 +6824,10 @@ public final class Interface {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, identity_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(2, index_);
       }
       {
         int dataSize = 0;
@@ -6931,8 +6968,10 @@ public final class Interface {
           identityBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
-        branch_ = java.util.Collections.emptyList();
+        index_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
+        branch_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -6969,9 +7008,13 @@ public final class Interface {
         } else {
           result.identity_ = identityBuilder_.build();
         }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.index_ = index_;
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
           branch_ = java.util.Collections.unmodifiableList(branch_);
-          bitField0_ = (bitField0_ & ~0x00000002);
+          bitField0_ = (bitField0_ & ~0x00000004);
         }
         result.branch_ = branch_;
         result.bitField0_ = to_bitField0_;
@@ -6993,10 +7036,13 @@ public final class Interface {
         if (other.hasIdentity()) {
           mergeIdentity(other.getIdentity());
         }
+        if (other.hasIndex()) {
+          setIndex(other.getIndex());
+        }
         if (!other.branch_.isEmpty()) {
           if (branch_.isEmpty()) {
             branch_ = other.branch_;
-            bitField0_ = (bitField0_ & ~0x00000002);
+            bitField0_ = (bitField0_ & ~0x00000004);
           } else {
             ensureBranchIsMutable();
             branch_.addAll(other.branch_);
@@ -7146,34 +7192,66 @@ public final class Interface {
         return identityBuilder_;
       }
 
+      private long index_ ;
+      /**
+       * <code>optional uint64 index = 2;</code>
+       */
+      public boolean hasIndex() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional uint64 index = 2;</code>
+       */
+      public long getIndex() {
+        return index_;
+      }
+      /**
+       * <code>optional uint64 index = 2;</code>
+       */
+      public Builder setIndex(long value) {
+        bitField0_ |= 0x00000002;
+        index_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint64 index = 2;</code>
+       */
+      public Builder clearIndex() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        index_ = 0L;
+        onChanged();
+        return this;
+      }
+
       private java.util.List<com.google.protobuf.ByteString> branch_ = java.util.Collections.emptyList();
       private void ensureBranchIsMutable() {
-        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
           branch_ = new java.util.ArrayList<com.google.protobuf.ByteString>(branch_);
-          bitField0_ |= 0x00000002;
+          bitField0_ |= 0x00000004;
          }
       }
       /**
-       * <code>repeated bytes branch = 2;</code>
+       * <code>repeated bytes branch = 3;</code>
        */
       public java.util.List<com.google.protobuf.ByteString>
           getBranchList() {
         return java.util.Collections.unmodifiableList(branch_);
       }
       /**
-       * <code>repeated bytes branch = 2;</code>
+       * <code>repeated bytes branch = 3;</code>
        */
       public int getBranchCount() {
         return branch_.size();
       }
       /**
-       * <code>repeated bytes branch = 2;</code>
+       * <code>repeated bytes branch = 3;</code>
        */
       public com.google.protobuf.ByteString getBranch(int index) {
         return branch_.get(index);
       }
       /**
-       * <code>repeated bytes branch = 2;</code>
+       * <code>repeated bytes branch = 3;</code>
        */
       public Builder setBranch(
           int index, com.google.protobuf.ByteString value) {
@@ -7186,7 +7264,7 @@ public final class Interface {
         return this;
       }
       /**
-       * <code>repeated bytes branch = 2;</code>
+       * <code>repeated bytes branch = 3;</code>
        */
       public Builder addBranch(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -7198,7 +7276,7 @@ public final class Interface {
         return this;
       }
       /**
-       * <code>repeated bytes branch = 2;</code>
+       * <code>repeated bytes branch = 3;</code>
        */
       public Builder addAllBranch(
           java.lang.Iterable<? extends com.google.protobuf.ByteString> values) {
@@ -7209,11 +7287,11 @@ public final class Interface {
         return this;
       }
       /**
-       * <code>repeated bytes branch = 2;</code>
+       * <code>repeated bytes branch = 3;</code>
        */
       public Builder clearBranch() {
         branch_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000004);
         onChanged();
         return this;
       }
@@ -18041,63 +18119,63 @@ public final class Interface {
       "\004tree\030\003 \003(\014\"Y\n\006filter\0221\n\013filter_type\030\001 \002" +
       "(\0162\034.libbitcoin.protocol.filters\022\014\n\004bits" +
       "\030\002 \001(\r\022\016\n\006prefix\030\003 \002(\014\"(\n\010block_id\022\016\n\006he" +
-      "ight\030\001 \001(\r\022\014\n\004hash\030\002 \001(\014\"Q\n\016block_locati",
+      "ight\030\001 \001(\r\022\014\n\004hash\030\002 \001(\014\"`\n\016block_locati",
       "on\022/\n\010identity\030\001 \001(\0132\035.libbitcoin.protoc" +
-      "ol.block_id\022\016\n\006branch\030\002 \003(\014\"U\n\016tx_hash_r" +
-      "esult\022\014\n\004hash\030\001 \002(\014\0225\n\010location\030\002 \002(\0132#." +
-      "libbitcoin.protocol.block_location\"p\n\ttx" +
-      "_result\022,\n\013transaction\030\001 \002(\0132\027.libbitcoi" +
-      "n.protocol.tx\0225\n\010location\030\002 \002(\0132#.libbit" +
-      "coin.protocol.block_location\"9\n\006output\022\r" +
-      "\n\005index\030\001 \002(\r\022\020\n\010satoshis\030\002 \002(\004\022\016\n\006scrip" +
-      "t\030\003 \002(\014\"\203\001\n\013utxo_result\022\017\n\007tx_hash\030\001 \002(\014" +
-      "\0225\n\010location\030\002 \002(\0132#.libbitcoin.protocol",
-      ".block_location\022,\n\007outputs\030\003 \003(\0132\033.libbi" +
-      "tcoin.protocol.output\"_\n\025block_headers_r" +
-      "equest\022,\n\005start\030\001 \001(\0132\035.libbitcoin.proto" +
-      "col.block_id\022\030\n\020results_per_page\030\002 \001(\r\"\217" +
-      "\002\n\024transactions_request\022,\n\005start\030\001 \001(\0132\035" +
-      ".libbitcoin.protocol.block_id\022\030\n\020results" +
-      "_per_page\030\002 \001(\r\022*\n\005query\030\003 \003(\0132\033.libbitc" +
-      "oin.protocol.filter\022F\n\013result_type\030\004 \001(\016" +
-      "2(.libbitcoin.protocol.transaction_resul" +
-      "ts:\007TX_HASH\022;\n\rlocation_type\030\005 \001(\0162\036.lib",
-      "bitcoin.protocol.locations:\004NONE\"\222\003\n\007req" +
-      "uest\022\n\n\002id\030\001 \002(\r\022G\n\021get_block_headers\030\002 " +
-      "\001(\0132*.libbitcoin.protocol.block_headers_" +
-      "requestH\000\022E\n\020get_transactions\030\003 \001(\0132).li" +
-      "bbitcoin.protocol.transactions_requestH\000" +
-      "\0223\n\020post_transaction\030\004 \001(\0132\027.libbitcoin." +
-      "protocol.txH\000\0227\n\024validate_transaction\030\005 " +
-      "\001(\0132\027.libbitcoin.protocol.txH\000\0220\n\npost_b" +
-      "lock\030\006 \001(\0132\032.libbitcoin.protocol.blockH\000" +
-      "\0224\n\016validate_block\030\007 \001(\0132\032.libbitcoin.pr",
-      "otocol.blockH\000*\005\010d\020\310\001B\016\n\014request_type\"\233\006" +
-      "\n\010response\022\n\n\002id\030\001 \002(\r\022\016\n\006status\030\002 \001(\021\022Q" +
-      "\n\032get_block_headers_response\030\003 \001(\0132+.lib" +
-      "bitcoin.protocol.response.block_headersH" +
-      "\000\022O\n\031get_transactions_response\030\004 \001(\0132*.l" +
-      "ibbitcoin.protocol.response.transactions" +
-      "H\000\022$\n\032post_transaction_succeeded\030\005 \001(\010H\000" +
-      "\022(\n\036validate_transaction_succeeded\030\006 \001(\010" +
-      "H\000\022\036\n\024post_block_succeeded\030\007 \001(\010H\000\022\"\n\030va" +
-      "lidate_block_succeeded\030\010 \001(\010H\000\032\234\001\n\rblock",
-      "_headers\022+\n\004next\030\001 \001(\0132\035.libbitcoin.prot" +
-      "ocol.block_id\022*\n\003top\030\002 \001(\0132\035.libbitcoin." +
-      "protocol.block_id\0222\n\007headers\030\003 \003(\0132!.lib" +
-      "bitcoin.protocol.block_header\032\203\002\n\014transa" +
-      "ctions\022+\n\004next\030\001 \001(\0132\035.libbitcoin.protoc" +
-      "ol.block_id\022*\n\003top\030\002 \001(\0132\035.libbitcoin.pr" +
-      "otocol.block_id\0223\n\006hashes\030\003 \003(\0132#.libbit" +
-      "coin.protocol.tx_hash_result\0224\n\014transact" +
-      "ions\030\004 \003(\0132\036.libbitcoin.protocol.tx_resu" +
-      "lt\022/\n\005utxos\030\005 \003(\0132 .libbitcoin.protocol.",
-      "utxo_result*\005\010d\020\310\001B\017\n\rresponse_type*4\n\007f" +
-      "ilters\022\013\n\007ADDRESS\020\001\022\017\n\013TRANSACTION\020\002\022\013\n\007" +
-      "STEALTH\020\003*B\n\023transaction_results\022\013\n\007TX_H" +
-      "ASH\020\001\022\r\n\tTX_RESULT\020\002\022\017\n\013UTXO_RESULT\020\003*,\n" +
-      "\tlocations\022\010\n\004NONE\020\000\022\t\n\005BLOCK\020\001\022\n\n\006MERKL" +
-      "E\020\002"
+      "ol.block_id\022\r\n\005index\030\002 \001(\004\022\016\n\006branch\030\003 \003" +
+      "(\014\"U\n\016tx_hash_result\022\014\n\004hash\030\001 \002(\014\0225\n\010lo" +
+      "cation\030\002 \002(\0132#.libbitcoin.protocol.block" +
+      "_location\"p\n\ttx_result\022,\n\013transaction\030\001 " +
+      "\002(\0132\027.libbitcoin.protocol.tx\0225\n\010location" +
+      "\030\002 \002(\0132#.libbitcoin.protocol.block_locat" +
+      "ion\"9\n\006output\022\r\n\005index\030\001 \002(\r\022\020\n\010satoshis" +
+      "\030\002 \002(\004\022\016\n\006script\030\003 \002(\014\"\203\001\n\013utxo_result\022\017" +
+      "\n\007tx_hash\030\001 \002(\014\0225\n\010location\030\002 \002(\0132#.libb",
+      "itcoin.protocol.block_location\022,\n\007output" +
+      "s\030\003 \003(\0132\033.libbitcoin.protocol.output\"_\n\025" +
+      "block_headers_request\022,\n\005start\030\001 \001(\0132\035.l" +
+      "ibbitcoin.protocol.block_id\022\030\n\020results_p" +
+      "er_page\030\002 \001(\r\"\217\002\n\024transactions_request\022," +
+      "\n\005start\030\001 \001(\0132\035.libbitcoin.protocol.bloc" +
+      "k_id\022\030\n\020results_per_page\030\002 \001(\r\022*\n\005query\030" +
+      "\003 \003(\0132\033.libbitcoin.protocol.filter\022F\n\013re" +
+      "sult_type\030\004 \001(\0162(.libbitcoin.protocol.tr" +
+      "ansaction_results:\007TX_HASH\022;\n\rlocation_t",
+      "ype\030\005 \001(\0162\036.libbitcoin.protocol.location" +
+      "s:\004NONE\"\222\003\n\007request\022\n\n\002id\030\001 \002(\r\022G\n\021get_b" +
+      "lock_headers\030\002 \001(\0132*.libbitcoin.protocol" +
+      ".block_headers_requestH\000\022E\n\020get_transact" +
+      "ions\030\003 \001(\0132).libbitcoin.protocol.transac" +
+      "tions_requestH\000\0223\n\020post_transaction\030\004 \001(" +
+      "\0132\027.libbitcoin.protocol.txH\000\0227\n\024validate" +
+      "_transaction\030\005 \001(\0132\027.libbitcoin.protocol" +
+      ".txH\000\0220\n\npost_block\030\006 \001(\0132\032.libbitcoin.p" +
+      "rotocol.blockH\000\0224\n\016validate_block\030\007 \001(\0132",
+      "\032.libbitcoin.protocol.blockH\000*\005\010d\020\310\001B\016\n\014" +
+      "request_type\"\233\006\n\010response\022\n\n\002id\030\001 \002(\r\022\016\n" +
+      "\006status\030\002 \001(\021\022Q\n\032get_block_headers_respo" +
+      "nse\030\003 \001(\0132+.libbitcoin.protocol.response" +
+      ".block_headersH\000\022O\n\031get_transactions_res" +
+      "ponse\030\004 \001(\0132*.libbitcoin.protocol.respon" +
+      "se.transactionsH\000\022$\n\032post_transaction_su" +
+      "cceeded\030\005 \001(\010H\000\022(\n\036validate_transaction_" +
+      "succeeded\030\006 \001(\010H\000\022\036\n\024post_block_succeede" +
+      "d\030\007 \001(\010H\000\022\"\n\030validate_block_succeeded\030\010 ",
+      "\001(\010H\000\032\234\001\n\rblock_headers\022+\n\004next\030\001 \001(\0132\035." +
+      "libbitcoin.protocol.block_id\022*\n\003top\030\002 \001(" +
+      "\0132\035.libbitcoin.protocol.block_id\0222\n\007head" +
+      "ers\030\003 \003(\0132!.libbitcoin.protocol.block_he" +
+      "ader\032\203\002\n\014transactions\022+\n\004next\030\001 \001(\0132\035.li" +
+      "bbitcoin.protocol.block_id\022*\n\003top\030\002 \001(\0132" +
+      "\035.libbitcoin.protocol.block_id\0223\n\006hashes" +
+      "\030\003 \003(\0132#.libbitcoin.protocol.tx_hash_res" +
+      "ult\0224\n\014transactions\030\004 \003(\0132\036.libbitcoin.p" +
+      "rotocol.tx_result\022/\n\005utxos\030\005 \003(\0132 .libbi",
+      "tcoin.protocol.utxo_result*\005\010d\020\310\001B\017\n\rres" +
+      "ponse_type*4\n\007filters\022\013\n\007ADDRESS\020\001\022\017\n\013TR" +
+      "ANSACTION\020\002\022\013\n\007STEALTH\020\003*B\n\023transaction_" +
+      "results\022\013\n\007TX_HASH\020\001\022\r\n\tTX_RESULT\020\002\022\017\n\013U" +
+      "TXO_RESULT\020\003*,\n\tlocations\022\010\n\004NONE\020\000\022\t\n\005B" +
+      "LOCK\020\001\022\n\n\006MERKLE\020\002"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -18164,7 +18242,7 @@ public final class Interface {
     internal_static_libbitcoin_protocol_block_location_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_libbitcoin_protocol_block_location_descriptor,
-        new java.lang.String[] { "Identity", "Branch", });
+        new java.lang.String[] { "Identity", "Index", "Branch", });
     internal_static_libbitcoin_protocol_tx_hash_result_descriptor =
       getDescriptor().getMessageTypes().get(9);
     internal_static_libbitcoin_protocol_tx_hash_result_fieldAccessorTable = new
