@@ -60,8 +60,7 @@ bool converter::from_protocol(const std::shared_ptr<point> point,
     return from_protocol(point.get(), result);
 }
 
-bool converter::from_protocol(const tx_input* input,
-    bc::chain::transaction_input& result)
+bool converter::from_protocol(const tx_input* input, bc::chain::input& result)
 {
     bool success = false;
 
@@ -98,13 +97,13 @@ bool converter::from_protocol(const tx_input* input,
 }
 
 bool converter::from_protocol(const std::shared_ptr<tx_input> input,
-    bc::chain::transaction_input& result)
+    bc::chain::input& result)
 {
     return from_protocol(input.get(), result);
 }
 
 bool converter::from_protocol(const tx_output* output,
-    bc::chain::transaction_output& result)
+    bc::chain::output& result)
 {
     bool success = false;
 
@@ -127,7 +126,7 @@ bool converter::from_protocol(const tx_output* output,
 }
 
 bool converter::from_protocol(const std::shared_ptr<tx_output> output,
-    bc::chain::transaction_output& result)
+    bc::chain::output& result)
 {
     return from_protocol(output.get(), result);
 }
@@ -148,7 +147,7 @@ bool converter::from_protocol(const tx* transaction,
         {
             for (auto input : transaction->inputs())
             {
-                bc::chain::transaction_input bitcoin_input;
+                bc::chain::input bitcoin_input;
 
                 if (!from_protocol(&input, bitcoin_input))
                 {
@@ -164,7 +163,7 @@ bool converter::from_protocol(const tx* transaction,
         {
             for (auto output : transaction->outputs())
             {
-                bc::chain::transaction_output bitcoin_output;
+                bc::chain::output bitcoin_output;
 
                 if (!from_protocol(&output, bitcoin_output))
                 {
@@ -195,7 +194,7 @@ bool converter::from_protocol(const std::shared_ptr<tx> transaction,
 }
 
 bool converter::from_protocol(const block_header* header,
-    bc::chain::block_header& result)
+    bc::chain::header& result)
 {
     bool success = false;
 
@@ -217,7 +216,7 @@ bool converter::from_protocol(const block_header* header,
 }
 
 bool converter::from_protocol(const std::shared_ptr<block_header> header,
-    bc::chain::block_header& result)
+    bc::chain::header& result)
 {
     return from_protocol(header.get(), result);
 }
@@ -281,7 +280,7 @@ point* converter::to_protocol(const bc::chain::output_point& point)
     return result.release();
 }
 
-bool converter::to_protocol(const bc::chain::transaction_input& input,
+bool converter::to_protocol(const bc::chain::input& input,
     tx_input& result)
 {
     bool success = true;
@@ -298,7 +297,7 @@ bool converter::to_protocol(const bc::chain::transaction_input& input,
     return success;
 }
 
-tx_input* converter::to_protocol(const bc::chain::transaction_input& input)
+tx_input* converter::to_protocol(const bc::chain::input& input)
 {
     std::unique_ptr<tx_input> result(new tx_input());
 
@@ -308,7 +307,7 @@ tx_input* converter::to_protocol(const bc::chain::transaction_input& input)
     return result.release();
 }
 
-bool converter::to_protocol(const bc::chain::transaction_output& output,
+bool converter::to_protocol(const bc::chain::output& output,
     tx_output& result)
 {
     bool success = true;
@@ -322,7 +321,7 @@ bool converter::to_protocol(const bc::chain::transaction_output& output,
     return success;
 }
 
-tx_output* converter::to_protocol(const bc::chain::transaction_output& output)
+tx_output* converter::to_protocol(const bc::chain::output& output)
 {
     std::unique_ptr<tx_output> result(new tx_output());
 
@@ -390,7 +389,7 @@ tx* converter::to_protocol(const bc::chain::transaction& transaction)
     return result.release();
 }
 
-bool converter::to_protocol(const bc::chain::block_header& header,
+bool converter::to_protocol(const bc::chain::header& header,
     block_header& result)
 {
     bool success = true;
@@ -406,7 +405,7 @@ bool converter::to_protocol(const bc::chain::block_header& header,
     return success;
 }
 
-block_header* converter::to_protocol(const bc::chain::block_header& header)
+block_header* converter::to_protocol(const bc::chain::header& header)
 {
     std::unique_ptr<block_header> result(new block_header());
 

@@ -40,8 +40,8 @@ bool operator==(
 }
 
 bool operator==(
-    const bc::chain::transaction_input& a,
-    const bc::chain::transaction_input& b)
+    const bc::chain::input& a,
+    const bc::chain::input& b)
 {
     return (a.previous_output == b.previous_output)
         && (a.script == b.script)
@@ -49,8 +49,8 @@ bool operator==(
 }
 
 bool operator==(
-    const bc::chain::transaction_output& a,
-    const bc::chain::transaction_output& b)
+    const bc::chain::output& a,
+    const bc::chain::output& b)
 {
     return (a.value == b.value) && (a.script == b.script);
 }
@@ -134,7 +134,7 @@ BOOST_AUTO_TEST_CASE(roundtrip_transaction_input_valid)
         false,
         bc::chain::script::parse_mode::raw_data_fallback));
 
-    bc::chain::transaction_input initial{
+    bc::chain::input initial{
         bc::chain::output_point{
             bc::hash_literal(BCP_GENESIS_BLOCK_HASH), 154
         },
@@ -148,7 +148,7 @@ BOOST_AUTO_TEST_CASE(roundtrip_transaction_input_valid)
 
     BOOST_REQUIRE(intermediate.get() != nullptr);
 
-    bc::chain::transaction_input result;
+    bc::chain::input result;
 
     BOOST_REQUIRE_EQUAL(true, converter.from_protocol(intermediate, result));
 
@@ -164,7 +164,7 @@ BOOST_AUTO_TEST_CASE(roundtrip_transaction_output_valid)
         false,
         bc::chain::script::parse_mode::raw_data_fallback));
 
-    bc::chain::transaction_output initial{ 6548621547, script_instance };
+    bc::chain::output initial{ 6548621547, script_instance };
 
     bc::protocol::converter converter;
 
@@ -173,7 +173,7 @@ BOOST_AUTO_TEST_CASE(roundtrip_transaction_output_valid)
 
     BOOST_REQUIRE(intermediate.get() != nullptr);
 
-    bc::chain::transaction_output result;
+    bc::chain::output result;
 
     BOOST_REQUIRE_EQUAL(true, converter.from_protocol(intermediate, result));
 
@@ -189,8 +189,8 @@ BOOST_AUTO_TEST_CASE(roundtrip_transaction_valid)
         false,
         bc::chain::script::parse_mode::raw_data_fallback));
 
-    bc::chain::transaction_input::list tx_inputs = {
-        bc::chain::transaction_input {
+    bc::chain::input::list tx_inputs = {
+        bc::chain::input {
             bc::chain::output_point {
                 bc::hash_literal(BCP_GENESIS_BLOCK_HASH), 154
             },
@@ -199,8 +199,8 @@ BOOST_AUTO_TEST_CASE(roundtrip_transaction_valid)
         }
     };
 
-    bc::chain::transaction_output::list tx_outputs = {
-        bc::chain::transaction_output{ 6548621547, script_instance }
+    bc::chain::output::list tx_outputs = {
+        bc::chain::output{ 6548621547, script_instance }
     };
 
     bc::chain::transaction initial{ 481547, 235123, tx_inputs, tx_outputs };
@@ -222,7 +222,7 @@ BOOST_AUTO_TEST_CASE(roundtrip_transaction_valid)
 
 BOOST_AUTO_TEST_CASE(roundtrip_block_header_valid)
 {
-    bc::chain::block_header initial{
+    bc::chain::header initial{
         6535,
         bc::hash_literal(BCP_GENESIS_BLOCK_HASH),
         bc::hash_literal(BCP_SATOSHIS_WORDS_TX_HASH),
@@ -239,7 +239,7 @@ BOOST_AUTO_TEST_CASE(roundtrip_block_header_valid)
 
     BOOST_REQUIRE(intermediate.get() != nullptr);
 
-    bc::chain::block_header result;
+    bc::chain::header result;
 
     BOOST_REQUIRE_EQUAL(true, converter.from_protocol(intermediate, result));
 
@@ -255,8 +255,8 @@ BOOST_AUTO_TEST_CASE(roundtrip_block_valid)
         false,
         bc::chain::script::parse_mode::raw_data_fallback));
 
-    bc::chain::transaction_input::list tx_inputs = {
-        bc::chain::transaction_input{
+    bc::chain::input::list tx_inputs = {
+        bc::chain::input{
             bc::chain::output_point{
                 bc::hash_literal(BCP_GENESIS_BLOCK_HASH), 154
             },
@@ -265,15 +265,15 @@ BOOST_AUTO_TEST_CASE(roundtrip_block_valid)
         }
     };
 
-    bc::chain::transaction_output::list tx_outputs = {
-        bc::chain::transaction_output{ 6548621547, script_instance }
+    bc::chain::output::list tx_outputs = {
+        bc::chain::output{ 6548621547, script_instance }
     };
 
     bc::chain::transaction::list transactions = {
         bc::chain::transaction{ 481547, 235123, tx_inputs, tx_outputs }
     };
 
-    bc::chain::block_header header{
+    bc::chain::header header{
         6535,
         bc::hash_literal(BCP_GENESIS_BLOCK_HASH),
         bc::hash_literal(BCP_SATOSHIS_WORDS_TX_HASH),
