@@ -236,7 +236,7 @@ ZMQ_OPTIONS=\
 #------------------------------------------------------------------------------
 CZMQ_OPTIONS=\
 "--without-zmakecert "\
-"--without-test_zgossip "\
+"--without-czmq_selftest "\
 "${with_pkgconfigdir} "
 
 # Define czmqpp options.
@@ -247,8 +247,7 @@ CZMQPP_OPTIONS=\
 # Define secp256k1 options.
 #------------------------------------------------------------------------------
 SECP256K1_OPTIONS=\
-"--disable-tests "\
-"--enable-module-recovery "
+"--disable-tests "
 
 # Define bitcoin options.
 #------------------------------------------------------------------------------
