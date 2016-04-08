@@ -689,7 +689,7 @@ build_from_travis()
 #==============================================================================
 build_all()
 {
-    build_from_tarball_boost $BOOST_URL    $BOOST_ARCHIVE    bzip2 .      $PARALLEL  "$BUILD_BOOST"    "${BOOST_OPTIONS[@]}"
+    build_from_tarball_boost $BOOST_URL $BOOST_ARCHIVE bzip2 . $PARALLEL "$BUILD_BOOST" "${BOOST_OPTIONS[@]}"
     build_from_github libbitcoin protobuf 2.6.0 $SEQUENTIAL ${PROTOBUF_OPTIONS[@]} "$@"
     build_from_github jedisct1 libsodium master $PARALLEL ${SODIUM_OPTIONS[@]} "$@"
     build_from_github zeromq libzmq master $PARALLEL ${ZMQ_OPTIONS[@]} "$@"
