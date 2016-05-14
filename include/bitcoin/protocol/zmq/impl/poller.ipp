@@ -27,9 +27,9 @@ namespace zmq {
 template <typename... SocketArgs>
 poller::poller(SocketArgs&&... sockets)
 {
-    auto unmask = [](socket& s)
+    auto unmask = [](socket& sock)
     {
-        return s.self();
+        return sock.self();
     };
 
     self_ = zpoller_new(unmask(sockets)..., NULL);
