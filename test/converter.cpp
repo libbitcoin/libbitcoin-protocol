@@ -35,6 +35,7 @@ using namespace bc::protocol;
 
 std::string encoded_script = "76a91418c0bd8d1818f1bf99cb1df2269c645318ef7b7388ac\n";
 
+// TODO: move these comparison operators to the bc::chain classes.
 bool operator==(const chain::script& a, const chain::script& b)
 {
     const auto encoded_a = a.to_data(false);
