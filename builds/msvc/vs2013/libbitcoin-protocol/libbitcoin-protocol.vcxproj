@@ -83,7 +83,6 @@
     <ClCompile Include="..\..\..\..\src\zmq\message.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\poller.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\socket.cpp" />
-    <ClCompile Include="..\..\..\..\src\zmq\thread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol.hpp" />
@@ -101,7 +100,6 @@
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\message.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\poller.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\socket.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\thread.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

@@ -29,6 +29,5 @@
 #include <bitcoin/protocol/zmq/message.hpp>
 #include <bitcoin/protocol/zmq/poller.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
-#include <bitcoin/protocol/zmq/thread.hpp>
 
 #endif
