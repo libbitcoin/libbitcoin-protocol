@@ -27,9 +27,6 @@
     <ClCompile Include="..\..\..\..\test\zmq\poller_test.cpp">
       <Filter>src\zmq</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\test\zmq\thread_test.cpp">
-      <Filter>src\zmq</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\test\zmq\ironhouse2.cpp">
       <Filter>src\zmq</Filter>
     </ClCompile>
