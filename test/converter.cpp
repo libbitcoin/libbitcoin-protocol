@@ -17,9 +17,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+#include <memory>
+#include <string>
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
 #include <bitcoin/protocol.hpp>
+
+using namespace bc;
+using namespace bc::chain;
+using namespace bc::protocol;
 
 #define BCP_GENESIS_BLOCK_HASH \
 "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f"
@@ -27,276 +33,193 @@
 #define BCP_SATOSHIS_WORDS_TX_HASH \
 "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"
 
-std::string encoded_script
-    = "76a91418c0bd8d1818f1bf99cb1df2269c645318ef7b7388ac\n";
+std::string encoded_script = "76a91418c0bd8d1818f1bf99cb1df2269c645318ef7b7388ac\n";
 
-bool operator==(
-    const bc::chain::script& a, const bc::chain::script& b)
+// TODO: move these comparison operators to the bc::chain classes.
+bool operator==(const chain::script& a, const chain::script& b)
 {
-    bc::data_chunk encoded_a = a.to_data(false);
-    bc::data_chunk encoded_b = b.to_data(false);
-
-    return (encoded_a == encoded_b);
+    const auto encoded_a = a.to_data(false);
+    const auto encoded_b = b.to_data(false);
+    return encoded_a == encoded_b;
 }
 
-bool operator==(
-    const bc::chain::input& a,
-    const bc::chain::input& b)
+bool operator==(const chain::input& a, const chain::input& b)
 {
     return (a.previous_output == b.previous_output)
-        && (a.script == b.script)
-        && (a.sequence == b.sequence);
+        && (a.script == b.script) && (a.sequence == b.sequence);
 }
 
-bool operator==(
-    const bc::chain::output& a,
-    const bc::chain::output& b)
+bool operator==(const chain::output& a, const chain::output& b)
 {
     return (a.value == b.value) && (a.script == b.script);
 }
 
-bool operator==(
-    const bc::chain::transaction& a, const bc::chain::transaction& b)
+bool operator==(const chain::transaction& a, const chain::transaction& b)
 {
-    bool equal = (a.version == b.version)
-        && (a.locktime == b.locktime);
+    auto equal = (a.version == b.version) && (a.locktime == b.locktime);
 
     if (equal && (a.inputs.size() == b.inputs.size()))
-    {
-        for (bc::data_chunk::size_type i = 0;
-            equal && (i < a.inputs.size());
-            i++)
-        {
-            equal = (a.inputs[i] == b.inputs[i]);
-        }
-    }
+        for (data_chunk::size_type i = 0; equal && i < a.inputs.size(); i++)
+            equal = a.inputs[i] == b.inputs[i];
 
     if (equal && (a.outputs.size() == b.outputs.size()))
-    {
-        for (bc::data_chunk::size_type i = 0;
-            equal && (i < a.outputs.size());
-            i++)
-        {
-            equal = (a.outputs[i] == b.outputs[i]);
-        }
-    }
+        for (data_chunk::size_type i = 0; equal && (i < a.outputs.size()); i++)
+            equal = a.outputs[i] == b.outputs[i];
 
     return equal;
 }
 
-bool operator==(
-    const bc::chain::block& a, const bc::chain::block& b)
+bool operator==(const chain::block& a, const chain::block& b)
 {
-    bool equal = (a.header == b.header);
+    if (a.header != b.header || a.transactions.size() != b.transactions.size())
+        return false;
 
-    if (equal && (a.transactions.size() == b.transactions.size()))
-    {
-        for (bc::data_chunk::size_type i = 0;
-            equal && (i < a.transactions.size());
-            i++)
-        {
-            equal = (a.transactions[i] == b.transactions[i]);
-        }
-    }
+    for (data_chunk::size_type i = 0; i < a.transactions.size(); i++)
+        if (!(a.transactions[i] == b.transactions[i]))
+            return false;
 
-    return equal;
+    return true;
 }
 
 BOOST_AUTO_TEST_SUITE(converter_tests)
 
 BOOST_AUTO_TEST_CASE(roundtrip_point_valid)
 {
-    bc::chain::output_point initial = {
-        bc::hash_literal(BCP_GENESIS_BLOCK_HASH),
+    const output_point initial
+    {
+        hash_literal(BCP_GENESIS_BLOCK_HASH),
         154
     };
 
-    bc::protocol::converter converter;
-
-    std::shared_ptr<bc::protocol::point> intermediate(
-        converter.to_protocol(initial));
-
+    converter converter;
+    std::shared_ptr<protocol::point> intermediate(converter.to_protocol(initial));
     BOOST_REQUIRE(intermediate.get() != nullptr);
 
-    bc::chain::output_point result;
-
-    BOOST_REQUIRE_EQUAL(true, converter.from_protocol(intermediate, result));
-
-    // verify roundtrip
+    output_point result;
+    BOOST_REQUIRE(converter.from_protocol(intermediate, result));
     BOOST_REQUIRE(initial == result);
 }
 
 BOOST_AUTO_TEST_CASE(roundtrip_transaction_input_valid)
 {
-    bc::chain::script script_instance;
-    BOOST_REQUIRE(script_instance.from_data(
-        bc::data_chunk(encoded_script.begin(), encoded_script.end()),
-        false,
-        bc::chain::script::parse_mode::raw_data_fallback));
+    chain::script script_instance;
+    const data_chunk data(encoded_script.begin(), encoded_script.end());
+    BOOST_REQUIRE(script_instance.from_data(data, false, chain::script::parse_mode::raw_data_fallback));
 
-    bc::chain::input initial{
-        bc::chain::output_point{
-            bc::hash_literal(BCP_GENESIS_BLOCK_HASH), 154
-        },
+    const chain::input initial
+    {
+        { hash_literal(BCP_GENESIS_BLOCK_HASH), 154 },
         script_instance, 64724
     };
 
-    bc::protocol::converter converter;
-
-    std::shared_ptr<bc::protocol::tx_input> intermediate(
-        converter.to_protocol(initial));
-
+    converter converter;
+    std::shared_ptr<protocol::tx_input> intermediate(converter.to_protocol(initial));
     BOOST_REQUIRE(intermediate.get() != nullptr);
 
-    bc::chain::input result;
-
+    input result;
     BOOST_REQUIRE_EQUAL(true, converter.from_protocol(intermediate, result));
-
-    // verify roundtrip
     BOOST_REQUIRE(initial == result);
 }
 
 BOOST_AUTO_TEST_CASE(roundtrip_transaction_output_valid)
 {
-    bc::chain::script script_instance;
-    BOOST_REQUIRE(script_instance.from_data(
-        bc::data_chunk(encoded_script.begin(), encoded_script.end()),
-        false,
-        bc::chain::script::parse_mode::raw_data_fallback));
+    chain::script script_instance;
+    const data_chunk data(encoded_script.begin(), encoded_script.end());
+    BOOST_REQUIRE(script_instance.from_data(data, false, chain::script::parse_mode::raw_data_fallback));
 
-    bc::chain::output initial{ 6548621547, script_instance };
-
-    bc::protocol::converter converter;
-
-    std::shared_ptr<bc::protocol::tx_output> intermediate(
-        converter.to_protocol(initial));
+    converter converter;
+    chain::output initial{ 6548621547, script_instance };
+    std::shared_ptr<protocol::tx_output> intermediate(converter.to_protocol(initial));
 
     BOOST_REQUIRE(intermediate.get() != nullptr);
 
-    bc::chain::output result;
-
+    chain::output result;
     BOOST_REQUIRE_EQUAL(true, converter.from_protocol(intermediate, result));
-
-    // verify roundtrip
     BOOST_REQUIRE(initial == result);
 }
 
 BOOST_AUTO_TEST_CASE(roundtrip_transaction_valid)
 {
-    bc::chain::script script_instance;
-    BOOST_REQUIRE(script_instance.from_data(
-        bc::data_chunk(encoded_script.begin(), encoded_script.end()),
-        false,
-        bc::chain::script::parse_mode::raw_data_fallback));
+    chain::script script_instance;
+    const data_chunk data(encoded_script.begin(), encoded_script.end());
+    BOOST_REQUIRE(script_instance.from_data(data, false, chain::script::parse_mode::raw_data_fallback));
 
-    bc::chain::input::list tx_inputs = {
-        bc::chain::input {
-            bc::chain::output_point {
-                bc::hash_literal(BCP_GENESIS_BLOCK_HASH), 154
-            },
+    const chain::input::list tx_inputs
+    {
+        {
+            { hash_literal(BCP_GENESIS_BLOCK_HASH), 154 },
             script_instance,
             64724
         }
     };
+    const chain::output::list tx_outputs { { 6548621547, script_instance } };
+    const chain::transaction initial{ 481547, 235123, tx_inputs, tx_outputs };
 
-    bc::chain::output::list tx_outputs = {
-        bc::chain::output{ 6548621547, script_instance }
-    };
+    converter converter;
+    std::shared_ptr<protocol::tx> intermediate(converter.to_protocol(initial));
+    BOOST_REQUIRE(intermediate);
 
-    bc::chain::transaction initial{ 481547, 235123, tx_inputs, tx_outputs };
-
-    bc::protocol::converter converter;
-
-    std::shared_ptr<bc::protocol::tx> intermediate(
-        converter.to_protocol(initial));
-
-    BOOST_REQUIRE(intermediate.get() != nullptr);
-
-    bc::chain::transaction result;
-
+    chain::transaction result;
     BOOST_REQUIRE_EQUAL(true, converter.from_protocol(intermediate, result));
-
-    // verify roundtrip
     BOOST_REQUIRE(initial == result);
 }
 
 BOOST_AUTO_TEST_CASE(roundtrip_block_header_valid)
 {
-    bc::chain::header initial{
+    const chain::header initial
+    {
         6535,
-        bc::hash_literal(BCP_GENESIS_BLOCK_HASH),
-        bc::hash_literal(BCP_SATOSHIS_WORDS_TX_HASH),
+        hash_literal(BCP_GENESIS_BLOCK_HASH),
+        hash_literal(BCP_SATOSHIS_WORDS_TX_HASH),
         856345324,
         21324121,
         576859232,
         16
     };
 
-    bc::protocol::converter converter;
+    converter converter;
+    std::shared_ptr<protocol::block_header> intermediate(converter.to_protocol(initial));
+    BOOST_REQUIRE(intermediate);
 
-    std::shared_ptr<bc::protocol::block_header> intermediate(
-        converter.to_protocol(initial));
-
-    BOOST_REQUIRE(intermediate.get() != nullptr);
-
-    bc::chain::header result;
-
+    chain::header result;
     BOOST_REQUIRE_EQUAL(true, converter.from_protocol(intermediate, result));
-
-    // verify roundtrip
     BOOST_REQUIRE(initial == result);
 }
 
 BOOST_AUTO_TEST_CASE(roundtrip_block_valid)
 {
-    bc::chain::script script_instance;
-    BOOST_REQUIRE(script_instance.from_data(
-        bc::data_chunk(encoded_script.begin(), encoded_script.end()),
-        false,
-        bc::chain::script::parse_mode::raw_data_fallback));
+    chain::script script_instance;
+    const data_chunk data(encoded_script.begin(), encoded_script.end());
+    BOOST_REQUIRE(script_instance.from_data(data, false, chain::script::parse_mode::raw_data_fallback));
 
-    bc::chain::input::list tx_inputs = {
-        bc::chain::input{
-            bc::chain::output_point{
-                bc::hash_literal(BCP_GENESIS_BLOCK_HASH), 154
-            },
+    const chain::input::list tx_inputs
+    {
+        {
+            { hash_literal(BCP_GENESIS_BLOCK_HASH), 154 },
             script_instance,
             64724
         }
     };
-
-    bc::chain::output::list tx_outputs = {
-        bc::chain::output{ 6548621547, script_instance }
-    };
-
-    bc::chain::transaction::list transactions = {
-        bc::chain::transaction{ 481547, 235123, tx_inputs, tx_outputs }
-    };
-
-    bc::chain::header header{
+    const chain::output::list tx_outputs{ chain::output{ 6548621547, script_instance } };
+    const chain::transaction::list transactions{ { 481547, 235123, tx_inputs, tx_outputs } };
+    const chain::header header
+    {
         6535,
-        bc::hash_literal(BCP_GENESIS_BLOCK_HASH),
-        bc::hash_literal(BCP_SATOSHIS_WORDS_TX_HASH),
+        hash_literal(BCP_GENESIS_BLOCK_HASH),
+        hash_literal(BCP_SATOSHIS_WORDS_TX_HASH),
         856345324,
         21324121,
         576859232,
         1
     };
+    const chain::block initial{ header, transactions };
 
-    bc::chain::block initial{ header, transactions };
+    converter converter;
+    std::shared_ptr<protocol::block> intermediate(converter.to_protocol(initial));
+    BOOST_REQUIRE(intermediate);
 
-    bc::protocol::converter converter;
-
-    std::shared_ptr<bc::protocol::block> intermediate(
-        converter.to_protocol(initial));
-
-    BOOST_REQUIRE(intermediate.get() != nullptr);
-
-    bc::chain::block result;
-
+    chain::block result;
     BOOST_REQUIRE_EQUAL(true, converter.from_protocol(intermediate, result));
-
-    // verify roundtrip
     BOOST_REQUIRE(initial == result);
 }
 

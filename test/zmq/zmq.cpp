@@ -17,26 +17,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef LIBBITCOIN_PROTOCOL_DEFINE_HPP
-#define LIBBITCOIN_PROTOCOL_DEFINE_HPP
+#include <boost/test/test_tools.hpp>
+#include <boost/test/unit_test_suite.hpp>
+#include <bitcoin/protocol.hpp>
 
-#include <bitcoin/bitcoin.hpp>
+BOOST_AUTO_TEST_SUITE(zmq_tests)
 
-// We use the generic helper definitions in libbitcoin to define BCP_API 
-// and BCP_INTERNAL. BCP_API is used for the public API symbols. It either DLL
-// imports or DLL exports (or does nothing for static build) BCP_INTERNAL is 
-// used for non-api symbols.
+BOOST_AUTO_TEST_CASE(zmq_test)
+{
+}
 
-#if defined BCP_STATIC
-    #define BCP_API
-    #define BCP_INTERNAL
-#elif defined BCP_DLL
-    #define BCP_API      BC_HELPER_DLL_EXPORT
-    #define BCP_INTERNAL BC_HELPER_DLL_LOCAL
-#else
-    #define BCP_API      BC_HELPER_DLL_IMPORT
-    #define BCP_INTERNAL BC_HELPER_DLL_LOCAL
-#endif
-
-#endif
-
+BOOST_AUTO_TEST_SUITE_END()

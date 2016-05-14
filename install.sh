@@ -195,11 +195,6 @@ BOOST_OPTIONS=(
 "--with-thread" \
 "--with-test")
 
-# Define protobuf options.
-#------------------------------------------------------------------------------
-PROTOBUF_OPTIONS=(
-"--enable-silent-rules")
-
 # Define czmq options.
 #------------------------------------------------------------------------------
 CZMQ_OPTIONS=(
@@ -207,10 +202,10 @@ CZMQ_OPTIONS=(
 "--disable-czmq_selftest" \
 "${with_pkgconfigdir}")
 
-# Define czmqpp options.
+# Define protobuf options.
 #------------------------------------------------------------------------------
-CZMQPP_OPTIONS=(
-"${with_pkgconfigdir}")
+PROTOBUF_OPTIONS=(
+"--enable-silent-rules")
 
 # Define secp256k1 options.
 #------------------------------------------------------------------------------
@@ -679,10 +674,9 @@ build_from_travis()
 build_all()
 {
     build_from_tarball_boost $BOOST_URL $BOOST_ARCHIVE bzip2 . $PARALLEL "$BUILD_BOOST" "${BOOST_OPTIONS[@]}"
-    build_from_github libbitcoin protobuf 2.6.0 $SEQUENTIAL ${PROTOBUF_OPTIONS[@]} "$@"
     build_from_github zeromq libzmq master $PARALLEL ${ZMQ_OPTIONS[@]} "$@"
     build_from_github zeromq czmq master $PARALLEL ${CZMQ_OPTIONS[@]} "$@"
-    build_from_github zeromq czmqpp master $PARALLEL ${CZMQPP_OPTIONS[@]} "$@"
+    build_from_github libbitcoin protobuf 2.6.0 $SEQUENTIAL ${PROTOBUF_OPTIONS[@]} "$@"
     build_from_github libbitcoin secp256k1 version4 $PARALLEL ${SECP256K1_OPTIONS[@]} "$@"
     build_from_github libbitcoin libbitcoin master $PARALLEL ${BITCOIN_OPTIONS[@]} "$@"
     build_from_travis libbitcoin libbitcoin-protocol master $PARALLEL ${BITCOIN_PROTOCOL_OPTIONS[@]} "$@"

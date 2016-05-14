@@ -68,30 +68,45 @@
     <Import Project="$(ProjectDir)$(ProjectName).props" />
   </ImportGroup>
   <ItemGroup>
+    <None Include="..\..\..\..\include\bitcoin\protocol\zmq\impl\poller.ipp" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\converter.cpp" />
     <ClCompile Include="..\..\..\..\src\interface.pb.cc" />
-    <ClCompile Include="..\..\..\..\src\message.cpp" />
+    <ClCompile Include="..\..\..\..\src\response_packet.cpp" />
+    <ClCompile Include="..\..\..\..\src\request_packet.cpp" />
+    <ClCompile Include="..\..\..\..\src\packet.cpp" />
+    <ClCompile Include="..\..\..\..\src\zmq\authenticator.cpp" />
+    <ClCompile Include="..\..\..\..\src\zmq\certificate.cpp" />
+    <ClCompile Include="..\..\..\..\src\zmq\context.cpp" />
+    <ClCompile Include="..\..\..\..\src\zmq\message.cpp" />
+    <ClCompile Include="..\..\..\..\src\zmq\poller.cpp" />
+    <ClCompile Include="..\..\..\..\src\zmq\socket.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\converter.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\define.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\interface.pb.h" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\message.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\response_packet.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\request_packet.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\packet.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\primitives.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\version.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\authenticator.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\certificate.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\context.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\message.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\poller.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\socket.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
   <ImportGroup Label="ExtensionSettings">
     <Import Project="..\..\..\..\..\..\nuget\boost.1.56.0.0\build\native\boost.targets" Condition="Exists('..\..\..\..\..\..\nuget\boost.1.56.0.0\build\native\boost.targets')" />
-    <Import Project="..\..\..\..\..\..\nuget\libzmq_vc120.4.3.0.0\build\native\libzmq_vc120.targets" Condition="Exists('..\..\..\..\..\..\nuget\libzmq_vc120.4.3.0.0\build\native\libzmq_vc120.targets')" />
     <Import Project="..\..\..\..\..\..\nuget\czmq_vc120.3.0.2.0\build\native\czmq_vc120.targets" Condition="Exists('..\..\..\..\..\..\nuget\czmq_vc120.3.0.2.0\build\native\czmq_vc120.targets')" />
-    <Import Project="..\..\..\..\..\..\nuget\libsodium_vc120.1.0.0.0\build\native\libsodium_vc120.targets" Condition="Exists('..\..\..\..\..\..\nuget\libsodium_vc120.1.0.0.0\build\native\libsodium_vc120.targets')" />
-    <Import Project="..\..\..\..\..\..\nuget\czmqpp_vc120.1.2.0.0\build\native\czmqpp_vc120.targets" Condition="Exists('..\..\..\..\..\..\nuget\czmqpp_vc120.1.2.0.0\build\native\czmqpp_vc120.targets')" />
+    <Import Project="..\..\..\..\..\..\nuget\libzmq_vc120.4.2.2.0\build\native\libzmq_vc120.targets" Condition="Exists('..\..\..\..\..\..\nuget\libzmq_vc120.4.2.2.0\build\native\libzmq_vc120.targets')" />
     <Import Project="..\..\..\..\..\..\nuget\protobuf_vc120.2.6.0.1\build\native\protobuf_vc120.targets" Condition="Exists('..\..\..\..\..\..\nuget\protobuf_vc120.2.6.0.1\build\native\protobuf_vc120.targets')" />
     <Import Project="..\..\..\..\..\..\nuget\secp256k1_vc120.0.1.0.13\build\native\secp256k1_vc120.targets" Condition="Exists('..\..\..\..\..\..\nuget\secp256k1_vc120.0.1.0.13\build\native\secp256k1_vc120.targets')" />
   </ImportGroup>
@@ -100,10 +115,8 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\..\..\..\..\..\nuget\boost.1.56.0.0\build\native\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\..\..\nuget\boost.1.56.0.0\build\native\boost.targets'))" />
-    <Error Condition="!Exists('..\..\..\..\..\..\nuget\libzmq_vc120.4.3.0.0\build\native\libzmq_vc120.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\..\..\nuget\libzmq_vc120.4.3.0.0\build\native\libzmq_vc120.targets'))" />
     <Error Condition="!Exists('..\..\..\..\..\..\nuget\czmq_vc120.3.0.2.0\build\native\czmq_vc120.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\..\..\nuget\czmq_vc120.3.0.2.0\build\native\czmq_vc120.targets'))" />
-    <Error Condition="!Exists('..\..\..\..\..\..\nuget\libsodium_vc120.1.0.0.0\build\native\libsodium_vc120.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\..\..\nuget\libsodium_vc120.1.0.0.0\build\native\libsodium_vc120.targets'))" />
-    <Error Condition="!Exists('..\..\..\..\..\..\nuget\czmqpp_vc120.1.2.0.0\build\native\czmqpp_vc120.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\..\..\nuget\czmqpp_vc120.1.2.0.0\build\native\czmqpp_vc120.targets'))" />
+    <Error Condition="!Exists('..\..\..\..\..\..\nuget\libzmq_vc120.4.2.2.0\build\native\libzmq_vc120.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\..\..\nuget\libzmq_vc120.4.2.2.0\build\native\libzmq_vc120.targets'))" />
     <Error Condition="!Exists('..\..\..\..\..\..\nuget\protobuf_vc120.2.6.0.1\build\native\protobuf_vc120.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\..\..\nuget\protobuf_vc120.2.6.0.1\build\native\protobuf_vc120.targets'))" />
     <Error Condition="!Exists('..\..\..\..\..\..\nuget\secp256k1_vc120.0.1.0.13\build\native\secp256k1_vc120.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\..\..\nuget\secp256k1_vc120.0.1.0.13\build\native\secp256k1_vc120.targets'))" />
   </Target>

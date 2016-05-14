@@ -7,6 +7,9 @@
     <Filter Include="src">
       <UniqueIdentifier>{4d8600cf-1586-49be-abdc-525c227b3a02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\zmq">
+      <UniqueIdentifier>{be07d12d-9dae-4731-8b0d-acdec8ab7968}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\test\main.cpp">
@@ -17,6 +20,15 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\test\converter.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\test\zmq\zmq.cpp">
+      <Filter>src\zmq</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\test\zmq\ironhouse2.cpp">
+      <Filter>src\zmq</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\test\zmq\poller.cpp">
+      <Filter>src\zmq</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

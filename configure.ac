@@ -13,7 +13,7 @@
 AC_PREREQ([2.65])
 
 # Process command-line arguments and perform initialization and verification.
-AC_INIT([libbitcoin-protocol], [0.1.0], [mienkphi@gmail.com])
+AC_INIT([libbitcoin-protocol], [3.0.0], [mienkphi@gmail.com])
 
 # Do compilation tests.
 AC_LANG(C++)
@@ -122,6 +122,22 @@ AS_CASE([${with_tests}], [yes],
      AC_MSG_NOTICE([boost_unit_test_framework_LIBS : ${boost_unit_test_framework_LIBS}])],
     [AC_SUBST([boost_unit_test_framework_LIBS], [])])
 
+# Require zmq of at least version 4.2.0 and output ${zmq_CPPFLAGS/LIBS/PKG}.
+#------------------------------------------------------------------------------
+PKG_CHECK_MODULES([zmq], [libzmq >= 4.2.0])
+AC_SUBST([zmq_PKG], ['libzmq >= 4.2.0'])
+AC_SUBST([zmq_CPPFLAGS], [${zmq_CFLAGS}])
+AC_MSG_NOTICE([zmq_CPPFLAGS : ${zmq_CPPFLAGS}])
+AC_MSG_NOTICE([zmq_LIBS : ${zmq_LIBS}])
+
+# Require czmq of at least version 3.0.0 and output ${czmq_CPPFLAGS/LIBS/PKG}.
+#------------------------------------------------------------------------------
+PKG_CHECK_MODULES([czmq], [libczmq >= 3.0.0])
+AC_SUBST([czmq_PKG], ['libczmq >= 3.0.0'])
+AC_SUBST([czmq_CPPFLAGS], [${czmq_CFLAGS}])
+AC_MSG_NOTICE([czmq_CPPFLAGS : ${czmq_CPPFLAGS}])
+AC_MSG_NOTICE([czmq_LIBS : ${czmq_LIBS}])
+
 # Require protobuf of at least version 2.6.0 and output ${protobuf_CPPFLAGS/LIBS/PKG}.
 #------------------------------------------------------------------------------
 PKG_CHECK_MODULES([protobuf], [protobuf >= 2.6.0])
@@ -129,14 +145,6 @@ AC_SUBST([protobuf_PKG], ['protobuf >= 2.6.0'])
 AC_SUBST([protobuf_CPPFLAGS], [${protobuf_CFLAGS}])
 AC_MSG_NOTICE([protobuf_CPPFLAGS : ${protobuf_CPPFLAGS}])
 AC_MSG_NOTICE([protobuf_LIBS : ${protobuf_LIBS}])
-
-# Require czmq++ of at least version 1.2.0 and output ${czmq___CPPFLAGS/LIBS/PKG}.
-#------------------------------------------------------------------------------
-PKG_CHECK_MODULES([czmq__], [libczmq++ >= 1.2.0])
-AC_SUBST([czmq___PKG], ['libczmq++ >= 1.2.0'])
-AC_SUBST([czmq___CPPFLAGS], [${czmq___CFLAGS}])
-AC_MSG_NOTICE([czmq___CPPFLAGS : ${czmq___CPPFLAGS}])
-AC_MSG_NOTICE([czmq___LIBS : ${czmq___LIBS}])
 
 # Require bitcoin of at least version 3.0.0 and output ${bitcoin_CPPFLAGS/LIBS/PKG}.
 #------------------------------------------------------------------------------
@@ -192,6 +200,12 @@ AS_CASE([${CC}], [*clang*],
 AS_CASE([${CC}], [*gcc*],
     [AX_CHECK_COMPILE_FLAG([-Wno-deprecated-declarations],
         [CXXFLAGS="$CXXFLAGS -Wno-deprecated-declarations"])])
+
+# Clean up czmq non-literal string format warnings.
+#------------------------------------------------------------------------------
+AS_CASE([${CC}], [*],
+    [AX_CHECK_COMPILE_FLAG([-Wformat-security],
+        [CXXFLAGS="$CXXFLAGS -Wformat-security"])])
 
 # Clean up protobuf headers.
 #------------------------------------------------------------------------------

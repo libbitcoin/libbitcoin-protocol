@@ -2,6 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="..\..\..\..\include\bitcoin\protocol\zmq\impl\poller.ipp">
+      <Filter>include\bitcoin\protocol\zmq\impl</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -16,15 +19,48 @@
     <Filter Include="include\bitcoin\protocol">
       <UniqueIdentifier>{c51da6c8-7df7-48b3-a9c0-730e4eb199c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\bitcoin\protocol\zmq">
+      <UniqueIdentifier>{63f9c630-60a8-49b2-a9f7-4def71562ab3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\zmq">
+      <UniqueIdentifier>{40d69ec6-5ffd-4db6-871f-a62f29929a8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\bitcoin\protocol\zmq\impl">
+      <UniqueIdentifier>{e80fad4e-5768-4993-a464-b648693045eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\message.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\interface.pb.cc">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\converter.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\zmq\message.cpp">
+      <Filter>src\zmq</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\zmq\poller.cpp">
+      <Filter>src\zmq</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\zmq\socket.cpp">
+      <Filter>src\zmq</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\zmq\authenticator.cpp">
+      <Filter>src\zmq</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\zmq\certificate.cpp">
+      <Filter>src\zmq</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\zmq\context.cpp">
+      <Filter>src\zmq</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\packet.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\request_packet.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\response_packet.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -33,9 +69,6 @@
       <Filter>include\bitcoin</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\interface.pb.h">
-      <Filter>include\bitcoin\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\message.hpp">
       <Filter>include\bitcoin\protocol</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\primitives.hpp">
@@ -48,6 +81,33 @@
       <Filter>include\bitcoin\protocol</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\version.hpp">
+      <Filter>include\bitcoin\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\poller.hpp">
+      <Filter>include\bitcoin\protocol\zmq</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\socket.hpp">
+      <Filter>include\bitcoin\protocol\zmq</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\authenticator.hpp">
+      <Filter>include\bitcoin\protocol\zmq</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\certificate.hpp">
+      <Filter>include\bitcoin\protocol\zmq</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\context.hpp">
+      <Filter>include\bitcoin\protocol\zmq</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\message.hpp">
+      <Filter>include\bitcoin\protocol\zmq</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\packet.hpp">
+      <Filter>include\bitcoin\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\response_packet.hpp">
+      <Filter>include\bitcoin\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\request_packet.hpp">
       <Filter>include\bitcoin\protocol</Filter>
     </ClInclude>
   </ItemGroup>
