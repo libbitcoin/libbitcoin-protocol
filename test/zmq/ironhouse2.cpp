@@ -1,41 +1,41 @@
-/////**
-//// * Copyright (c) 2011-2015 libbitcoin developers (see AUTHORS)
-//// *
-//// * This file is part of libbitcoin-protocol.
-//// *
-//// * libbitcoin-protocol is free software: you can redistribute it and/or
-//// * modify it under the terms of the GNU Affero General Public License with
-//// * additional permissions to the one published by the Free Software
-//// * Foundation, either version 3 of the License, or (at your option)
-//// * any later version. For more information see LICENSE.
-//// *
-//// * This program is distributed in the hope that it will be useful,
-//// * but WITHOUT ANY WARRANTY; without even the implied warranty of
-//// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-//// * GNU Affero General Public License for more details.
-//// *
-//// * You should have received a copy of the GNU Affero General Public License
-//// * along with this program. If not, see <http://www.gnu.org/licenses/>.
-//// */
-////#include <string>
-////#include <thread>
-////#include <czmq.h>
-////#include <bitcoin/protocol.hpp>
-////
-////using namespace bc;
-////using namespace bc::protocol;
-////
+/**
+ * Copyright (c) 2011-2015 libbitcoin developers (see AUTHORS)
+ *
+ * This file is part of libbitcoin-protocol.
+ *
+ * libbitcoin-protocol is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License with
+ * additional permissions to the one published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option)
+ * any later version. For more information see LICENSE.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#include <string>
+#include <thread>
+#include <czmq.h>
+#include <bitcoin/protocol.hpp>
+
+using namespace bc;
+using namespace bc::protocol;
+
 ////void client_task(const std::string& server_public_text)
 ////{
 ////    // Load our persistent certificate from disk
 ////    zmq::certificate client_cert("client_cert.txt");
-////    assert(client_cert.self());
+////    assert(client_cert);
 ////
 ////    // Create a pull socket.
 ////    zmq::context context;
-////    assert(context.self());
+////    assert(context);
 ////    zmq::socket client(context, ZMQ_PULL);
-////    assert(client.self());
+////    assert(client);
 ////
 ////    // Configure the client to provide a certificate and use the server key.
 ////    client_cert.apply(client);
@@ -57,7 +57,7 @@
 ////void server_task(zmq::certificate& server_cert)
 ////{
 ////    zmq::context context;
-////    assert(context.self());
+////    assert(context);
 ////
 ////    // Start the authenticator on the context and tell it authenticate clients
 ////    // via the certificates stored in the .curve directory.
@@ -68,7 +68,7 @@
 ////
 ////    // Bind a push socket to the authenticated context.
 ////    zmq::socket server(context, ZMQ_PUSH);
-////    assert(server.self());
+////    assert(server);
 ////    server_cert.apply(server);
 ////    server.set_curve_server();
 ////    int rc = server.bind("tcp://*:9000");
@@ -105,7 +105,7 @@
 ////    // Start the two detached threads, each with own ZeroMQ context.
 ////    std::thread server_thread(server_task, std::ref(server_cert));
 ////    std::thread client_thread(client_task, server_cert.public_text());
-////    
+////
 ////    client_thread.join();
 ////    server_thread.join();
 ////    return 0;
