@@ -37,6 +37,11 @@ context::~context()
     zctx_destroy(&self_);
 }
 
+context::operator const bool() const
+{
+    return self_ != nullptr;
+}
+
 zctx_t* context::self()
 {
     return self_;
@@ -45,5 +50,3 @@ zctx_t* context::self()
 } // namespace zmq
 } // namespace protocol
 } // namespace libbitcoin
-
-

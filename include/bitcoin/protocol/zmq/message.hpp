@@ -33,14 +33,16 @@ namespace zmq {
 class BCP_API message
 {
 public:
-    void append(const bc::data_chunk& part);
-    void append(bc::data_chunk&& part);
-    const bc::data_stack& parts() const;
+    void append(const data_chunk& part);
+    void append(data_chunk&& part);
+
+    const data_stack& parts() const;
+
     bool send(socket& sock);
     bool receive(socket& sock);
 
 private:
-    bc::data_stack parts_;
+    data_stack parts_;
 };
 
 } // namespace zmq

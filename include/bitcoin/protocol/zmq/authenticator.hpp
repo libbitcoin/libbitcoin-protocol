@@ -36,6 +36,8 @@ public:
     authenticator(const authenticator&) = delete;
     ~authenticator();
 
+    operator const bool() const;
+
     zauth_t* self();
 
     void allow(const std::string& address);

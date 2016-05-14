@@ -36,6 +36,8 @@ public:
     poller(const poller&) = delete;
     ~poller();
 
+    operator const bool() const;
+
     zpoller_t* self();
 
     void add(socket& sock);

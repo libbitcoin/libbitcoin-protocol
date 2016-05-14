@@ -37,6 +37,10 @@ public:
     socket(const socket&) = delete;
     socket(context& ctx, int type);
 
+    operator const bool() const;
+    bool operator==(const socket& other) const;
+    bool operator!=(const socket& other) const;
+
     void* self();
     void* self() const;
 
@@ -50,8 +54,6 @@ public:
 private:
     void* self_;
 };
-
-BCP_API bool operator==(const socket& sock_a, const socket& sock_b);
 
 } // namespace zmq
 } // namespace protocol

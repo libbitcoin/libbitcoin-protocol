@@ -56,9 +56,14 @@ certificate::~certificate()
     reset(nullptr);
 }
 
+certificate::operator const bool() const
+{
+    return self_ != nullptr;
+}
+
 void certificate::reset(zcert_t* self)
 {
-    if (valid())
+    if (self_ != nullptr)
         zcert_destroy(&self_);
 
     // May be invalid.
@@ -67,7 +72,7 @@ void certificate::reset(zcert_t* self)
 
 void certificate::reset(const std::string& filename)
 {
-    if (valid())
+    if (self_ != nullptr)
         zcert_destroy(&self_);
 
     // May be invalid.
@@ -77,11 +82,6 @@ void certificate::reset(const std::string& filename)
 zcert_t* certificate::self()
 {
     return self_;
-}
-
-bool certificate::valid() const
-{
-    return self_ != nullptr;
 }
 
 void certificate::set_meta(const std::string& name, const std::string& value)

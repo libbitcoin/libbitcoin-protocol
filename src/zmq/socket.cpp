@@ -48,6 +48,21 @@ socket::socket(context& ctx, int type)
     self_ = zsocket_new(ctx.self(), type);
 }
 
+socket::operator const bool() const
+{
+    return self_ != nullptr;
+}
+
+bool socket::operator==(const socket& other) const
+{
+    return self_ == other.self_;
+}
+
+bool socket::operator!=(const socket& other) const
+{
+    return !(*this == other);
+}
+
 void* socket::self()
 {
     return self_;
@@ -86,12 +101,6 @@ void socket::set_curve_serverkey(const std::string& key)
     zsocket_set_curve_serverkey(self_, key.c_str());
 }
 
-bool operator==(const socket& sock_a, const socket& sock_b)
-{
-    return sock_a.self() == sock_b.self();
-}
-
 } // namespace zmq
 } // namespace protocol
 } // namespace libbitcoin
-

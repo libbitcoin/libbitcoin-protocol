@@ -34,6 +34,8 @@ public:
     context(const context&) = delete;
     ~context();
 
+    operator const bool() const;
+
     zctx_t* self();
 
 private:

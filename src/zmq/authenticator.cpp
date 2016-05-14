@@ -36,6 +36,11 @@ authenticator::~authenticator()
     zauth_destroy(&self_);
 }
 
+authenticator::operator const bool() const
+{
+    return self_ != nullptr;
+}
+
 zauth_t* authenticator::self()
 {
     return self_;

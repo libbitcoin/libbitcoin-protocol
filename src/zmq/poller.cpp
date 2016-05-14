@@ -33,6 +33,11 @@ poller::~poller()
     zpoller_destroy(&self_);
 }
 
+poller::operator const bool() const
+{
+    return self_ != nullptr;
+}
+
 zpoller_t* poller::self()
 {
     return self_;
@@ -62,4 +67,3 @@ bool poller::terminated()
 } // namespace zmq
 } // namespace protocol
 } // namespace libbitcoin
-

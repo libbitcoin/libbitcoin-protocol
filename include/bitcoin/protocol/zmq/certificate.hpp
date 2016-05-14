@@ -39,9 +39,10 @@ public:
     certificate(const certificate&) = delete;
     ~certificate();
 
+    operator const bool() const;
+
     zcert_t* self();
 
-    bool valid() const;
     void reset(zcert_t* self);
     void reset(const std::string& filename);
     void set_meta(const std::string& name, const std::string& value);

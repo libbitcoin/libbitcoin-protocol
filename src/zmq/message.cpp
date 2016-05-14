@@ -46,13 +46,14 @@ const data_stack& message::parts() const
 bool message::send(socket& sock)
 {
     int flags = ZFRAME_MORE;
+    const auto last = parts_.end();
 
-    for (auto it = parts_.begin(); it != parts_.end(); ++it)
+    for (auto part = parts_.begin(); part != last; ++part)
     {
-        if (it == parts_.end() - 1)
+        if (part == last - 1)
             flags = 0;
 
-        auto frame = zframe_new(it->data(), it->size());
+        auto frame = zframe_new(part->data(), part->size());
 
         if (zframe_send(&frame, sock.self(), flags) == -1)
             return false;
@@ -88,4 +89,3 @@ bool message::receive(socket& sock)
 } // namespace zmq
 } // namespace protocol
 } // namespace libbitcoin
-
