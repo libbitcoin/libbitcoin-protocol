@@ -17,31 +17,53 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+#include <bitcoin/protocol/packet.hpp>
 
-#ifndef LIBBITCOIN_PROTOCOL_PRIMITIVES_HPP
-#define LIBBITCOIN_PROTOCOL_PRIMITIVES_HPP
-
+#include <memory>
+#include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/interface.pb.h>
+#include <bitcoin/protocol/request_packet.hpp>
+#include <bitcoin/protocol/zmq/message.hpp>
+#include <bitcoin/protocol/zmq/socket.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 
-// typedef std::vector<bc::protocol::filter> filter_list;
-typedef google::protobuf::RepeatedPtrField<filter> filter_list;
+request_packet::request_packet()
+  : request_(nullptr)
+{
+}
 
-// typedef std::vector<bc::protocol::block_header> block_header_list;
-typedef google::protobuf::RepeatedPtrField<block_header> block_header_list;
+std::shared_ptr<request> request_packet::get_request() const
+{
+    return request_;
+}
 
-// typedef std::vector<bc::protocol::tx_result> transaction_result_list;
-typedef google::protobuf::RepeatedPtrField<tx_result> transaction_result_list;
+void request_packet::set_request(std::shared_ptr<request> payload)
+{
+    request_ = payload;
+}
 
-// typedef std::vector<bc::protocol::tx_hash_result> transaction_hash_result_list;
-typedef google::protobuf::RepeatedPtrField<tx_hash_result> transaction_hash_result_list;
+bool request_packet::encode_payload(zmq::message& message) const
+{
+    if (!request_)
+        return false;
 
-// typedef std::vector<bc::protocol::utxo_result> utxo_result_list;
-typedef google::protobuf::RepeatedPtrField<utxo_result> utxo_result_list;
+    const auto data = request_->SerializeAsString();
+    message.append({ data.begin(), data.end() });
+    return true;
+}
+
+bool request_packet::decode_payload(const data_chunk& payload)
+{
+    const auto data = std::make_shared<request>();
+
+    if (!data->ParseFromString({ payload.begin(), payload.end() }))
+        return false;
+
+    request_ = data;
+    return true;
+}
 
 }
 }
-
-#endif

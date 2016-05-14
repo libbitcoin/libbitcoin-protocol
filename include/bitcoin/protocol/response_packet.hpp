@@ -18,28 +18,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LIBBITCOIN_PROTOCOL_PRIMITIVES_HPP
-#define LIBBITCOIN_PROTOCOL_PRIMITIVES_HPP
+#ifndef LIBBITCOIN_PROTOCOL_RESPONSE_PACKET
+#define LIBBITCOIN_PROTOCOL_RESPONSE_PACKET
 
+#include <memory>
+#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/interface.pb.h>
+#include <bitcoin/protocol/packet.hpp>
+#include <bitcoin/protocol/zmq/message.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 
-// typedef std::vector<bc::protocol::filter> filter_list;
-typedef google::protobuf::RepeatedPtrField<filter> filter_list;
+class BCP_API response_packet
+  : public packet
+{
+public:
+    response_packet();
 
-// typedef std::vector<bc::protocol::block_header> block_header_list;
-typedef google::protobuf::RepeatedPtrField<block_header> block_header_list;
+    std::shared_ptr<response> get_response() const;
+    void set_response(std::shared_ptr<response> response);
 
-// typedef std::vector<bc::protocol::tx_result> transaction_result_list;
-typedef google::protobuf::RepeatedPtrField<tx_result> transaction_result_list;
+protected:
+    virtual bool encode_payload(zmq::message& message) const;
+    virtual bool decode_payload(const data_chunk& payload);
 
-// typedef std::vector<bc::protocol::tx_hash_result> transaction_hash_result_list;
-typedef google::protobuf::RepeatedPtrField<tx_hash_result> transaction_hash_result_list;
-
-// typedef std::vector<bc::protocol::utxo_result> utxo_result_list;
-typedef google::protobuf::RepeatedPtrField<utxo_result> utxo_result_list;
+private:
+    std::shared_ptr<response> response_;
+};
 
 }
 }
