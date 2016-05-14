@@ -35,7 +35,7 @@ public:
     socket(void* self);
     socket(socket&& other);
     socket(const socket&) = delete;
-    socket(context& ctx, int type);
+    socket(context& context, int type);
 
     operator const bool() const;
     bool operator==(const socket& other) const;
@@ -44,7 +44,7 @@ public:
     void* self();
     void* self() const;
 
-    void destroy(context& ctx);
+    void destroy(context& context);
     int bind(const std::string& address);
     int connect(const std::string& address);
 

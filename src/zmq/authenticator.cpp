@@ -25,8 +25,8 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-authenticator::authenticator(context& ctx)
-  : self_(zauth_new(ctx.self()))
+authenticator::authenticator(context& context)
+  : self_(zauth_new(context.self()))
 {
 }
 

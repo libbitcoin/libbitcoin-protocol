@@ -32,7 +32,7 @@ namespace zmq {
 class BCP_API authenticator
 {
 public:
-    authenticator(context& ctx);
+    authenticator(context& context);
     authenticator(const authenticator&) = delete;
     ~authenticator();
 

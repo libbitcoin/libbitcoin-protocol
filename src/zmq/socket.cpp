@@ -43,9 +43,9 @@ socket::socket(socket&& other)
     other.self_ = nullptr;
 }
 
-socket::socket(context& ctx, int type)
+socket::socket(context& context, int type)
 {
-    self_ = zsocket_new(ctx.self(), type);
+    self_ = zsocket_new(context.self(), type);
 }
 
 socket::operator const bool() const
@@ -73,10 +73,10 @@ void* socket::self() const
     return self_;
 }
 
-void socket::destroy(context& ctx)
+void socket::destroy(context& context)
 {
     BITCOIN_ASSERT(self_);
-    zsocket_destroy(ctx.self(), self_);
+    zsocket_destroy(context.self(), self_);
 }
 
 // format-security: format not a string literal and no format arguments.
