@@ -61,8 +61,7 @@ test_libbitcoin_protocol_test_SOURCES = \
     test/main.cpp \
     test/protocol.cpp \
     test/zmq/ironhouse2.cpp \
-    test/zmq/poller_test.cpp \
-    test/zmq/thread_test.cpp \
+    test/zmq/poller.cpp \
     test/zmq/zmq.cpp
 
 endif WITH_TESTS

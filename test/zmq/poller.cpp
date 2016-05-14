@@ -25,7 +25,7 @@
 using namespace bc;
 using namespace bc::protocol;
 
-int main()
+int main_disabled()
 {
     zmq::context context;
     assert(context);

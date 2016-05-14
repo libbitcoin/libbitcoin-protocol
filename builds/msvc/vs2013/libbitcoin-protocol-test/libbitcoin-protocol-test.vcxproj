@@ -69,7 +69,7 @@
     <ClCompile Include="..\..\..\..\test\main.cpp" />
     <ClCompile Include="..\..\..\..\test\protocol.cpp" />
     <ClCompile Include="..\..\..\..\test\zmq\ironhouse2.cpp" />
-    <ClCompile Include="..\..\..\..\test\zmq\poller_test.cpp" />
+    <ClCompile Include="..\..\..\..\test\zmq\poller.cpp" />
     <ClCompile Include="..\..\..\..\test\zmq\zmq.cpp" />
   </ItemGroup>
   <ItemGroup>
