@@ -42,7 +42,7 @@
     <Linkage-czmq>dynamic</Linkage-czmq>
     <Linkage-libzmq>dynamic</Linkage-libzmq>
     <Linkage-libsodium>dynamic</Linkage-libsodium>
-    <Linkage-protobuf>dynamic</Linkage-protobuf>
+    <!--<Linkage-protobuf>dynamic</Linkage-protobuf>-->
     <Linkage-libbitcoin>dynamic</Linkage-libbitcoin>
   </PropertyGroup>
   <PropertyGroup Condition="'$(DefaultLinkage)' == 'ltcg'">
@@ -53,7 +53,7 @@
     <Linkage-czmq>ltcg</Linkage-czmq>
     <Linkage-libzmq>ltcg</Linkage-libzmq>
     <Linkage-libsodium>ltcg</Linkage-libsodium>
-    <Linkage-protobuf>ltcg</Linkage-protobuf>
+    <!--<Linkage-protobuf>ltcg</Linkage-protobuf>-->
     <Linkage-libbitcoin>ltcg</Linkage-libbitcoin>
   </PropertyGroup>
   <PropertyGroup Condition="'$(DefaultLinkage)' == 'static'">
@@ -63,7 +63,7 @@
     <Linkage-czmq>static</Linkage-czmq>
     <Linkage-libzmq>static</Linkage-libzmq>
     <Linkage-libsodium>static</Linkage-libsodium>
-    <Linkage-protobuf>static</Linkage-protobuf>
+    <!--<Linkage-protobuf>static</Linkage-protobuf>-->
     <Linkage-libbitcoin>static</Linkage-libbitcoin>
   </PropertyGroup>
 
@@ -75,7 +75,7 @@
     <Message Text="Linkage-czmq      : $(Linkage-czmq)" Importance="high"/>
     <Message Text="Linkage-libzmq    : $(Linkage-libzmq)" Importance="high"/>
     <Message Text="Linkage-libsodium : $(Linkage-libsodium)" Importance="high"/>
-    <Message Text="Linkage-protobuf  : $(Linkage-protobuf)" Importance="high"/>
+    <!--<Message Text="Linkage-protobuf  : $(Linkage-protobuf)" Importance="high"/>-->
     <Message Text="Linkage-libbitcoin: $(Linkage-libbitcoin)" Importance="high"/>
   </Target>
 
