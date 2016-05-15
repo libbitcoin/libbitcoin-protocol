@@ -104,6 +104,11 @@ void socket::set_curve_serverkey(const std::string& key)
     zsocket_set_curve_serverkey(self_, key.c_str());
 }
 
+void socket::set_zap_domain(const std::string& domain)
+{
+    zsocket_set_zap_domain(self_, domain.c_str());
+}
+
 } // namespace zmq
 } // namespace protocol
 } // namespace libbitcoin

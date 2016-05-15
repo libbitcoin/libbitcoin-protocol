@@ -29,6 +29,9 @@ namespace zmq {
 context::context()
   : self_(zctx_new())
 {
+    // Disable czmq signal handling.
+    zsys_handler_set(NULL);
+
 #ifdef _MSC_VER
     // Hack to prevent czmq from writing to stdout/stderr on Windows.
     // This will prevent authentication feedback, but also prevent crashes.
