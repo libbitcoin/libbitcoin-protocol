@@ -50,6 +50,7 @@ public:
 
     void set_curve_server();
     void set_curve_serverkey(const std::string& key);
+    void set_zap_domain(const std::string& domain);
 
 private:
     void* self_;
