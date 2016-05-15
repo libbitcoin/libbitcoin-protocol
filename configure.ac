@@ -138,14 +138,6 @@ AC_SUBST([czmq_CPPFLAGS], [${czmq_CFLAGS}])
 AC_MSG_NOTICE([czmq_CPPFLAGS : ${czmq_CPPFLAGS}])
 AC_MSG_NOTICE([czmq_LIBS : ${czmq_LIBS}])
 
-# Require protobuf of at least version 2.6.0 and output ${protobuf_CPPFLAGS/LIBS/PKG}.
-#------------------------------------------------------------------------------
-PKG_CHECK_MODULES([protobuf], [protobuf >= 2.6.0])
-AC_SUBST([protobuf_PKG], ['protobuf >= 2.6.0'])
-AC_SUBST([protobuf_CPPFLAGS], [${protobuf_CFLAGS}])
-AC_MSG_NOTICE([protobuf_CPPFLAGS : ${protobuf_CPPFLAGS}])
-AC_MSG_NOTICE([protobuf_LIBS : ${protobuf_LIBS}])
-
 # Require bitcoin of at least version 3.0.0 and output ${bitcoin_CPPFLAGS/LIBS/PKG}.
 #------------------------------------------------------------------------------
 PKG_CHECK_MODULES([bitcoin], [libbitcoin >= 3.0.0])
@@ -206,24 +198,6 @@ AS_CASE([${CC}], [*gcc*],
 AS_CASE([${CC}], [*],
     [AX_CHECK_COMPILE_FLAG([-Wformat-security],
         [CXXFLAGS="$CXXFLAGS -Wformat-security"])])
-
-# Clean up protobuf headers.
-#------------------------------------------------------------------------------
-AS_CASE([${CC}], [*],
-    [AX_CHECK_PREPROC_FLAG([-Wno-unused-parameter],
-        [CPPFLAGS="$CPPFLAGS -Wno-unused-parameter"])])
-
-# Clean up protobuf headers, static. Enabled in clang only.
-#------------------------------------------------------------------------------
-AS_CASE([${CC}], [*clang*],
-    [AX_CHECK_COMPILE_FLAG([-Wno-sign-compare],
-        [CXXFLAGS="$CXXFLAGS -Wno-sign-compare"])])
-
-# Clean up protobuf headers, static. Enabled in clang only.
-#------------------------------------------------------------------------------
-AS_CASE([${CC}], [*clang*],
-    [AX_CHECK_COMPILE_FLAG([-Wno-nested-anon-types],
-        [CXXFLAGS="$CXXFLAGS -Wno-nested-anon-types"])])
 
 # Protect stack.
 #------------------------------------------------------------------------------

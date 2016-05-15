@@ -25,7 +25,7 @@ Version: @PACKAGE_VERSION@
 #==============================================================================
 # Dependencies that publish package configuration.
 #------------------------------------------------------------------------------
-Requires: libzmq >= 4.2.0 libczmq >= 3.0.0 protobuf >= 2.6.0 libbitcoin >= 3.0.0
+Requires: libzmq >= 4.2.0 libczmq >= 3.0.0 libbitcoin >= 3.0.0
 
 # Include directory and any other required compiler flags.
 #------------------------------------------------------------------------------
