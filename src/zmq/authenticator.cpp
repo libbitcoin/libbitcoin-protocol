@@ -28,6 +28,13 @@ namespace zmq {
 authenticator::authenticator(context& context)
   : self_(zauth_new(context.self()))
 {
+#ifndef _MSC_VER
+    // Hack to prevent czmq from writing to stdout/stderr on Windows.
+    // This will prevent authentication feedback, but also prevent crashes.
+    // It is necessary to prevent stdio when using our utf8-everywhere pattern.
+    // TODO: drop czmq and use latest zmq to avoid hadcoded stdio logging.
+    set_verbose(true);
+#endif
 }
 
 authenticator::~authenticator()

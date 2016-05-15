@@ -88,6 +88,9 @@ int socket::bind(const std::string& address)
 // format-security: format not a string literal and no format arguments.
 int socket::connect(const std::string& address)
 {
+    static constexpr int zmq_no_linger = 0;
+
+    zsocket_set_linger(self_, zmq_no_linger);
     return zsocket_connect(self_, address.c_str());
 }
 

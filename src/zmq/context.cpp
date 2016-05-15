@@ -29,6 +29,13 @@ namespace zmq {
 context::context()
   : self_(zctx_new())
 {
+#ifdef _MSC_VER
+    // Hack to prevent czmq from writing to stdout/stderr on Windows.
+    // This will prevent authentication feedback, but also prevent crashes.
+    // It is necessary to prevent stdio when using our utf8-everywhere pattern.
+    // TODO: provide a FILE* here that we can direct to our own log/console.
+    zsys_set_logstream(NULL);
+#endif
 }
 
 context::~context()
