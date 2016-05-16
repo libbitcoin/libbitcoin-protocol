@@ -31,8 +31,11 @@ class BCP_API context
 {
 public:
     context();
-    context(const context&) = delete;
     ~context();
+
+    /// This class is not copyable.
+    context(const context&) = delete;
+    void operator=(const context&) = delete;
 
     operator const bool() const;
 

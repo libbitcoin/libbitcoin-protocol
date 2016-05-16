@@ -34,8 +34,12 @@ public:
     socket();
     socket(void* self);
     socket(socket&& other);
-    socket(const socket&) = delete;
     socket(context& context, int type);
+
+    /// This class is not copyable.
+    socket(const socket&) = delete;
+    void operator=(const socket&) = delete;
+
     ~socket();
 
     void* self();

@@ -21,6 +21,7 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_POLLER_HPP
 
 #include <czmq.h>
+#include <vector>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
@@ -31,29 +32,37 @@ namespace zmq {
 class BCP_API poller
 {
 public:
-    template <typename... SocketArgs>
-    poller(SocketArgs&&... sockets);
+    poller();
+
+    /// This class is not copyable.
     poller(const poller&) = delete;
+    void operator=(const poller&) = delete;
+
+    /// Free poller resources.
     ~poller();
 
-    operator const bool() const;
+    /// True if the timeout occurred.
+    bool expired() const;
 
-    zpoller_t* self();
+    /// True if the connection is closed.
+    bool terminated() const;
 
+    /// Add a socket to be polled (not thread safe).
     void add(socket& sock);
+
+    /// Wait specified MICROSECONDS for any socket to receive.
     socket wait(int timeout);
-    bool expired();
-    bool terminated();
 
 private:
-    zpoller_t* self_;
+    typedef std::vector<zmq_pollitem_t> pollers;
+
+    bool expired_;
+    bool terminated_;
+    pollers pollers_;
 };
 
 } // namespace zmq
 } // namespace protocol
 } // namespace libbitcoin
 
-#include <bitcoin/protocol/zmq/impl/poller.ipp>
-
 #endif
-

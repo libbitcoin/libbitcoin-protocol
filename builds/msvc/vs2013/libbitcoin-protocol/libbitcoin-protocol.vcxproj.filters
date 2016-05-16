@@ -2,9 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="..\..\..\..\include\bitcoin\protocol\zmq\impl\poller.ipp">
-      <Filter>include\bitcoin\protocol\zmq\impl</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -24,9 +21,6 @@
     </Filter>
     <Filter Include="src\zmq">
       <UniqueIdentifier>{40d69ec6-5ffd-4db6-871f-a62f29929a8d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="include\bitcoin\protocol\zmq\impl">
-      <UniqueIdentifier>{e80fad4e-5768-4993-a464-b648693045eb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

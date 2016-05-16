@@ -36,8 +36,11 @@ public:
     certificate(zcert_t* self);
     certificate(certificate&& other);
     certificate(const std::string& filename);
-    certificate(const certificate&) = delete;
     ~certificate();
+
+    /// This class is not copyable.
+    certificate(const certificate&) = delete;
+    void operator=(const certificate&) = delete;
 
     operator const bool() const;
 

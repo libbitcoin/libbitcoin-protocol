@@ -32,20 +32,39 @@ namespace zmq {
 class BCP_API frame
 {
 public:
+
+    /// Construct a frame with no payload (for receiving).
     frame();
+
+    /// Construct a frame with the specified payload (for sending).
     frame(const data_chunk& data);
+
+    /// Free the frame's allocated memory.
     ~frame();
 
+    /// This class is not copyable.
+    frame(const frame&) = delete;
+    void operator=(const frame&) = delete;
+
+    /// True if the construction was successful.
+    operator const bool() const;
+
+    /// True if there is more data to receive.
     bool more() const;
+
+    /// The initialized or received payload of the frame.
     data_chunk payload();
 
+    /// Receive a frame on the socket.
     bool receive(socket& socket);
+
+    /// Send a frame on the socket.
     bool send(socket& socket, bool more);
-    bool destroy();
 
 private:
     static bool initialize(zmq_msg_t& message, const data_chunk& data);
     bool set_more(socket& socket);
+    bool destroy();
 
     bool more_;
     const bool valid_;

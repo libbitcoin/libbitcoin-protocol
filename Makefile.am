@@ -94,7 +94,3 @@ include_bitcoin_protocol_zmq_HEADERS = \
     include/bitcoin/protocol/zmq/poller.hpp \
     include/bitcoin/protocol/zmq/socket.hpp
 
-include_bitcoin_protocol_zmq_impldir = ${includedir}/bitcoin/protocol/zmq/impl
-include_bitcoin_protocol_zmq_impl_HEADERS = \
-    include/bitcoin/protocol/zmq/impl/poller.ipp
-

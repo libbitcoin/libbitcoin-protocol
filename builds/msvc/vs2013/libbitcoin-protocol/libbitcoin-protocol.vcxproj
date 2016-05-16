@@ -68,7 +68,6 @@
     <Import Project="$(ProjectDir)$(ProjectName).props" />
   </ImportGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\include\bitcoin\protocol\zmq\impl\poller.ipp" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

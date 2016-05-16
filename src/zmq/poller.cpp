@@ -19,6 +19,7 @@
  */
 #include <bitcoin/protocol/zmq/poller.hpp>
 
+#include <cstdint>
 #include <czmq.h>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
@@ -27,41 +28,70 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+poller::poller()
+  : expired_(false),
+    terminated_(false)
+{
+}
+
 poller::~poller()
 {
-    BITCOIN_ASSERT(self_);
-    zpoller_destroy(&self_);
 }
 
-poller::operator const bool() const
+void poller::add(socket& socket)
 {
-    return self_ != nullptr;
-}
+    zmq_pollitem_t item;
 
-zpoller_t* poller::self()
-{
-    return self_;
-}
+    // zmq socket.
+    item.socket = socket.self();
 
-void poller::add(socket& sock)
-{
-    zpoller_add(self_, sock.self());
+    // non-zmq socket (unused when socket is set).
+    item.fd = 0;
+
+    // flags.
+    item.events = ZMQ_POLLIN;
+
+    // return events.
+    item.revents = 0;
+
+    pollers_.push_back(item);
 }
 
 socket poller::wait(int timeout)
 {
-    auto sock_ptr = zpoller_wait(self_, timeout);
-    return socket(sock_ptr);
+    const auto size = pollers_.size();
+    BITCOIN_ASSERT(size <= max_int32);
+
+    const auto size32 = static_cast<int32_t>(size);
+    auto signaled = zmq_poll(pollers_.data(), size32, timeout);
+
+    if (signaled < 0)
+    {
+        terminated_ = true;
+        return nullptr;
+    }
+
+    if (signaled == 0)
+    {
+        expired_ = true;
+        return nullptr;
+    }
+
+    for (const auto& poller: pollers_)
+        if ((poller.revents & ZMQ_POLLIN) != 0)
+            return poller.socket;
+
+    return nullptr;
 }
 
-bool poller::expired()
+bool poller::expired() const
 {
-    return zpoller_expired(self_);
+    return expired_;
 }
 
-bool poller::terminated()
+bool poller::terminated() const
 {
-    return zpoller_terminated(self_);
+    return terminated_;
 }
 
 } // namespace zmq

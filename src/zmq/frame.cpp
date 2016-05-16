@@ -34,7 +34,7 @@ static constexpr auto zmq_fail = -1;
 
 // Use for receiving.
 frame::frame()
-  : frame({})
+  : more_(false), valid_(initialize(message_, {}))
 {
 }
 
@@ -61,6 +61,11 @@ bool frame::initialize(zmq_msg_t& message, const data_chunk& data)
 
     std::memcpy(zmq_msg_data(&message), data.data(), data.size());
     return true;
+}
+
+frame::operator const bool() const
+{
+    return valid_;
 }
 
 bool frame::more() const

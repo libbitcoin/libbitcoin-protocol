@@ -33,8 +33,11 @@ class BCP_API authenticator
 {
 public:
     authenticator(context& context);
-    authenticator(const authenticator&) = delete;
     ~authenticator();
+
+    /// This class is not copyable.
+    authenticator(const authenticator&) = delete;
+    void operator=(const authenticator&) = delete;
 
     operator const bool() const;
 
