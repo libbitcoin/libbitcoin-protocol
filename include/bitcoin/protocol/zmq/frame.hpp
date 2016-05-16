@@ -17,31 +17,39 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef LIBBITCOIN_PROTOCOL_ZMQ_MESSAGE_HPP
-#define LIBBITCOIN_PROTOCOL_ZMQ_MESSAGE_HPP
+#ifndef LIBBITCOIN_PROTOCOL_ZMQ_FRAME_HPP
+#define LIBBITCOIN_PROTOCOL_ZMQ_FRAME_HPP
 
-#include <cstdint>
-#include <vector>
+#include <zmq.h>
 #include <bitcoin/bitcoin.hpp>
+#include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-class BCP_API message
+class BCP_API frame
 {
 public:
-    void append(const data_chunk& part);
-    void append(data_chunk&& part);
+    frame();
+    frame(const data_chunk& data);
+    ~frame();
 
-    const data_stack& parts() const;
+    bool more() const;
+    data_chunk payload();
 
-    bool send(socket& sock);
-    bool receive(socket& sock);
+    bool receive(socket& socket);
+    bool send(socket& socket, bool more);
+    bool destroy();
 
 private:
-    data_stack parts_;
+    static bool initialize(zmq_msg_t& message, const data_chunk& data);
+    bool set_more(socket& socket);
+
+    bool more_;
+    const bool valid_;
+    zmq_msg_t message_;
 };
 
 } // namespace zmq

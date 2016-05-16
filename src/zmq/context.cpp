@@ -26,24 +26,23 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+// TODO: the member self_ will be a void*.
+// TODO: Each socket should maintain a smart pointer reference to the context.
+// TODO: When all sockets are closed the context is free to be destroyed.
 context::context()
-  : self_(zctx_new())
+  : self_(zctx_new() /* zmq_init(self->iothreads) */)
 {
-    // Disable czmq signal handling.
-    zsys_handler_set(NULL);
-
-#ifdef _MSC_VER
-    // Hack to prevent czmq from writing to stdout/stderr on Windows.
-    // This will prevent authentication feedback, but also prevent crashes.
-    // It is necessary to prevent stdio when using our utf8-everywhere pattern.
-    // TODO: provide a FILE* here that we can direct to our own log/console.
-    zsys_set_logstream(NULL);
-#endif
+    // TODO: configure iothreads, default 1 in zmq/zctx_new.
+    ////self_ = zmq_init(self->iothreads);
 }
 
 context::~context()
 {
     BITCOIN_ASSERT(self_);
+
+    //// This will cause all related sockets to terminate.
+    ////zmq_term(self_);
+
     zctx_destroy(&self_);
 }
 

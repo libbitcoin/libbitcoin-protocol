@@ -19,10 +19,8 @@
  */
 #include <bitcoin/protocol/zmq/message.hpp>
 
-#include <czmq.h>
 #include <bitcoin/bitcoin.hpp>
-
-static_assert (sizeof(byte) == sizeof(uint8_t), "Incorrect byte size");
+#include <bitcoin/protocol/zmq/frame.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -45,17 +43,13 @@ const data_stack& message::parts() const
 
 bool message::send(socket& sock)
 {
-    int flags = ZFRAME_MORE;
-    const auto last = parts_.end();
+    auto count = parts_.size();
 
-    for (auto part = parts_.begin(); part != last; ++part)
+    for (const auto& part: parts_)
     {
-        if (part == last - 1)
-            flags = 0;
+        frame frame(part);
 
-        auto frame = zframe_new(part->data(), part->size());
-
-        if (zframe_send(&frame, sock.self(), flags) == -1)
+        if (!frame.send(sock, --count == 0))
             return false;
     }
 
@@ -68,19 +62,13 @@ bool message::receive(socket& sock)
 
     while (!done)
     {
-        auto frame = zframe_recv(sock.self());
+        frame frame;
 
-        if (frame == nullptr)
-        {
-            zframe_destroy(&frame);
+        if (!frame.receive(sock))
             return false;
-        }
 
-        done = zframe_more(frame) == 0;
-        auto first = zframe_data(frame);
-        auto last = first + zframe_size(frame);
-        parts_.push_back({ first, last });
-        zframe_destroy(&frame);
+        parts_.emplace_back(frame.payload());
+        done = !frame.more();
     }
 
     return true;

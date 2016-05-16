@@ -36,15 +36,15 @@ public:
     socket(socket&& other);
     socket(const socket&) = delete;
     socket(context& context, int type);
+    ~socket();
+
+    void* self();
+    void* self() const;
 
     operator const bool() const;
     bool operator==(const socket& other) const;
     bool operator!=(const socket& other) const;
 
-    void* self();
-    void* self() const;
-
-    void destroy(context& context);
     int bind(const std::string& address);
     int connect(const std::string& address);
 

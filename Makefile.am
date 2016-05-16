@@ -43,6 +43,7 @@ src_libbitcoin_protocol_la_SOURCES = \
     src/zmq/authenticator.cpp \
     src/zmq/certificate.cpp \
     src/zmq/context.cpp \
+    src/zmq/frame.cpp \
     src/zmq/message.cpp \
     src/zmq/poller.cpp \
     src/zmq/socket.cpp
@@ -88,6 +89,7 @@ include_bitcoin_protocol_zmq_HEADERS = \
     include/bitcoin/protocol/zmq/authenticator.hpp \
     include/bitcoin/protocol/zmq/certificate.hpp \
     include/bitcoin/protocol/zmq/context.hpp \
+    include/bitcoin/protocol/zmq/frame.hpp \
     include/bitcoin/protocol/zmq/message.hpp \
     include/bitcoin/protocol/zmq/poller.hpp \
     include/bitcoin/protocol/zmq/socket.hpp
