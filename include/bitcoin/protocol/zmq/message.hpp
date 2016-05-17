@@ -20,8 +20,7 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_MESSAGE_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_MESSAGE_HPP
 
-#include <cstdint>
-#include <vector>
+#include <string>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
@@ -32,12 +31,22 @@ namespace zmq {
 class BCP_API message
 {
 public:
-    void append(const data_chunk& part);
-    void append(data_chunk&& part);
 
+    /// Add a message part to the outgoing message.
+    void append(data_chunk&& part);
+    void append(const data_chunk& part);
+    void append(const std::string& part);
+
+    // Obtain the parts of the created or read message.
     const data_stack& parts() const;
 
+    /// Clear the stack of message parts.
+    void clear();
+
+    /// Send the message in parts. If a send fails the unsent parts remain.
     bool send(socket& sock);
+
+    /// Receve a message (clears the stack first).
     bool receive(socket& sock);
 
 private:

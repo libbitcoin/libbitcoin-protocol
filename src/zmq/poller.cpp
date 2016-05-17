@@ -20,7 +20,7 @@
 #include <bitcoin/protocol/zmq/poller.hpp>
 
 #include <cstdint>
-#include <czmq.h>
+#include <zmq.h>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
@@ -57,7 +57,10 @@ void poller::add(socket& socket)
     pollers_.push_back(item);
 }
 
-socket::identifier poller::wait(int timeout_microsoconds)
+// The timeout is typed as 'long' by zermq. This is 32 bit on windows and
+// typically 64 bit on other platforms. So for consistency of config we
+// limit the domain to 32 bit using int32_t. -1 signals infinite wait.
+socket::identifier poller::wait(int32_t timeout_microsoconds)
 {
     const auto size = pollers_.size();
     BITCOIN_ASSERT(size <= max_int32);

@@ -19,31 +19,40 @@
  */
 #include <bitcoin/protocol/zmq/context.hpp>
 
-#include <czmq.h>
+#include <cstdint>
+#include <zmq.h>
 #include <bitcoin/bitcoin.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-// TODO: the member self_ will be a void*.
+static constexpr int32_t zmq_fail = -1;
+static constexpr int32_t zmq_io_threads = 1;
+
 // TODO: Each socket should maintain a smart pointer reference to the context.
 // TODO: When all sockets are closed the context is free to be destroyed.
+// TODO: Add call to zmq_term on the context that causes all sockets to close.
 context::context()
-  : self_(zctx_new() /* zmq_init(self->iothreads) */)
+  : threads_(zmq_io_threads),
+    self_(zmq_init(threads_))
 {
-    // TODO: configure iothreads, default 1 in zmq/zctx_new.
-    ////self_ = zmq_init(self->iothreads);
 }
 
 context::~context()
 {
-    BITCOIN_ASSERT(self_);
+    DEBUG_ONLY(const auto result =) destroy();
+    BITCOIN_ASSERT(result);
+}
 
-    //// This will cause all related sockets to terminate.
-    ////zmq_term(self_);
+bool context::destroy()
+{
+    if (self_ == nullptr)
+        return true;
 
-    zctx_destroy(&self_);
+    // This will cause all related sockets to close and will block until
+    // all sockets open within context have been closed with zmq_close().
+    return zmq_term(self_) != zmq_fail;
 }
 
 context::operator const bool() const
@@ -51,7 +60,7 @@ context::operator const bool() const
     return self_ != nullptr;
 }
 
-zctx_t* context::self()
+void* context::self()
 {
     return self_;
 }

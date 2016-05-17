@@ -20,7 +20,7 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_CONTEXT_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_CONTEXT_HPP
 
-#include <czmq.h>
+#include <cstdint>
 #include <bitcoin/protocol/define.hpp>
 
 namespace libbitcoin {
@@ -30,19 +30,28 @@ namespace zmq {
 class BCP_API context
 {
 public:
+
+    /// Construct a context.
     context();
+
+    /// Cause all sockets of this context to close.
     ~context();
 
     /// This class is not copyable.
     context(const context&) = delete;
     void operator=(const context&) = delete;
 
+    /// True if the context construction was successful.
     operator const bool() const;
 
-    zctx_t* self();
+    /// The underlying zeromq context.
+    void* self();
 
 private:
-    zctx_t* self_;
+    bool destroy();
+
+    void* self_;
+    int32_t threads_;
 };
 
 } // namespace zmq

@@ -186,16 +186,6 @@ socket::operator const bool() const
     return socket_ != nullptr;
 }
 
-bool socket::operator==(const socket& other) const
-{
-    return socket_ == other.socket_;
-}
-
-bool socket::operator!=(const socket& other) const
-{
-    return !(*this == other);
-}
-
 } // namespace zmq
 } // namespace protocol
 } // namespace libbitcoin

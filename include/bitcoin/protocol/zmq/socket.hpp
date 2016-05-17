@@ -68,12 +68,6 @@ public:
     /// True if there is an encapsultaed zeromq socket.
     operator const bool() const;
 
-    /// True if the encapsultaed zeromq sockets are the same.
-    bool operator==(const socket& other) const;
-
-    /// True if the encapsultaed zeromq sockets are not the same.
-    bool operator!=(const socket& other) const;
-
     /// The underlying zeromq socket.
     void* self();
     void* self() const;

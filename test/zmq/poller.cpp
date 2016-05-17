@@ -18,8 +18,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 #include <string>
-#include <thread>
-#include <czmq.h>
 #include <bitcoin/protocol.hpp>
 
 using namespace bc;
@@ -32,12 +30,12 @@ int main_disabled()
 
     // Create a few sockets
     zmq::socket vent(context, zmq::socket::role::pusher);
-    int result = vent.bind("tcp://*:9000");
-    assert(result != -1);
+    auto result = vent.bind("tcp://*:9000");
+    assert(result);
 
     zmq::socket sink(context, zmq::socket::role::puller);
     result = sink.connect("tcp://localhost:9000");
-    assert(result != -1);
+    assert(result);
 
     zmq::socket bowl(context, zmq::socket::role::puller);
     zmq::socket dish(context, zmq::socket::role::puller);
@@ -48,8 +46,13 @@ int main_disabled()
     poller.add(sink);
     poller.add(dish);
 
-    result = zstr_send(vent.self(), "Hello, World");
-    assert(result != -1);
+    const std::string hello = "Hello, World";
+
+    // Build and send the message.
+    zmq::message message;
+    message.append(hello);
+    result = message.send(vent);
+    assert(result);
 
     // We expect a message only on the sink.
     const auto id = poller.wait(-1);
@@ -57,9 +60,16 @@ int main_disabled()
     assert(!poller.expired());
     assert(!poller.terminated());
 
-    auto message = zstr_recv(sink.self());
-    assert(streq(message, "Hello, World"));
+    // Receive the message.
+    result = message.receive(sink);
+    assert(result);
 
-    free(message);
+    // Check the size.
+    const auto& parts = message.parts();
+    assert(parts.size() == 1);
+
+    // Check the value.
+    const auto& part = parts[0];
+    assert(std::equal(part.begin(), part.end(), hello.begin()));
     return 0;
 }

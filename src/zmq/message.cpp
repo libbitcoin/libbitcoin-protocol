@@ -19,6 +19,7 @@
  */
 #include <bitcoin/protocol/zmq/message.hpp>
 
+#include <string>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/frame.hpp>
 
@@ -26,14 +27,19 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-void message::append(const data_chunk& part)
-{
-    parts_.push_back(part);
-}
-
 void message::append(data_chunk&& part)
 {
     parts_.emplace_back(std::move(part));
+}
+
+void message::append(const std::string& part)
+{
+    append(data_chunk{ part.begin(), part.end() });
+}
+
+void message::append(const data_chunk& part)
+{
+    parts_.push_back(part);
 }
 
 const data_stack& message::parts() const
@@ -41,24 +47,31 @@ const data_stack& message::parts() const
     return parts_;
 }
 
+void message::clear()
+{
+    parts_.clear();
+}
+
 bool message::send(socket& sock)
 {
     auto count = parts_.size();
 
-    for (const auto& part: parts_)
+    for (auto it = parts_.begin(); it != parts_.end(); it = parts_.erase(it))
     {
-        frame frame(part);
+        frame frame(*it);
 
         if (!frame.send(sock, --count == 0))
             return false;
     }
 
+    BITCOIN_ASSERT(parts_.empty());
     return true;
 }
 
 bool message::receive(socket& sock)
 {
     auto done = false;
+    clear();
 
     while (!done)
     {

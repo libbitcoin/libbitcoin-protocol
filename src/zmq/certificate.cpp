@@ -30,26 +30,21 @@ namespace zmq {
 certificate::certificate()
   : self_(zcert_new())
 {
-    // May be invalid (unlikely).
 }
 certificate::certificate(zcert_t* self)
   : self_(self)
 {
-    // May be invalid.
 }
 
 certificate::certificate(certificate&& other)
   : self_(other.self_)
 {
-    // May be invalid.
-    // Transfer of pointer ownership.
     other.self_ = nullptr;
 }
 
 certificate::certificate(const std::string& filename)
   : self_(zcert_load(filename.c_str()))
 {
-    // May be invalid.
 }
 certificate::~certificate()
 {
@@ -66,7 +61,6 @@ void certificate::reset(zcert_t* self)
     if (self_ != nullptr)
         zcert_destroy(&self_);
 
-    // May be invalid.
     self_ = self;
 }
 
@@ -75,7 +69,6 @@ void certificate::reset(const std::string& filename)
     if (self_ != nullptr)
         zcert_destroy(&self_);
 
-    // May be invalid.
     self_ = zcert_load(filename.c_str());
 }
 

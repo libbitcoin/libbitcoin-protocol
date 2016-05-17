@@ -20,8 +20,9 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_POLLER_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_POLLER_HPP
 
-#include <czmq.h>
+#include <cstdint>
 #include <vector>
+#include <zmq.h>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
@@ -51,8 +52,8 @@ public:
     /// Add a socket to be polled (not thread safe).
     void add(socket& sock);
 
-    /// Wait specified microsoconds for any socket to receive.
-    socket::identifier wait(int timeout_microsoconds);
+    /// Wait specified microsoconds for any socket to receive, -1 is forever.
+    socket::identifier wait(int32_t timeout_microsoconds);
 
 private:
     typedef std::vector<zmq_pollitem_t> pollers;

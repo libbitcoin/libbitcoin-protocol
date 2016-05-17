@@ -26,7 +26,7 @@ namespace protocol {
 namespace zmq {
 
 authenticator::authenticator(context& context)
-  : self_(zauth_new(context.self()))
+  : self_(nullptr /*zauth_new(context.self())*/)
 {
 }
 
