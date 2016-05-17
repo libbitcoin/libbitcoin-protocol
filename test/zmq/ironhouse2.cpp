@@ -32,9 +32,11 @@ void client_task(const std::string& server_public_text)
     zmq::certificate client_cert("client_cert.txt");
     assert(client_cert);
 
-    // Create a pull socket.
+    // Create a context.
     zmq::context context;
     assert(context);
+
+    // Create a pull socket.
     zmq::socket client(context, zmq::socket::role::puller);
     assert(client);
 
@@ -47,10 +49,10 @@ void client_task(const std::string& server_public_text)
     assert(result);
 
     // Wait for our message, which signals the test was successful.
-    zmq::message msg;
-    msg.receive(client);
-    assert(msg.parts().size() == 1);
-    assert((msg.parts()[0] == data_chunk{ { 0xde, 0xad, 0xbe, 0xef } }));
+    zmq::message message;
+    message.receive(client);
+    assert(message.parts().size() == 1);
+    assert((message.parts()[0] == data_chunk{ { 0xde, 0xad, 0xbe, 0xef } }));
 
     puts("Ironhouse test OK");
 }
@@ -76,29 +78,29 @@ void server_task(zmq::certificate& server_cert)
     assert(result);
 
     //  Send our test message, just once
-    zmq::message msg;
-    msg.append({ { 0xde, 0xad, 0xbe, 0xef } });
-    msg.send(server);
+    zmq::message message;
+    message.append({ { 0xde, 0xad, 0xbe, 0xef } });
+    message.send(server);
 
-    zclock_sleep(200);
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
 }
 
 int main()
 {
     // Create the certificate store directory.
     auto result = boost::filesystem::create_directory(".curve");
-    assert(result == 0);
+    assert(result);
 
     // Create the client certificate.
     zmq::certificate client_cert;
 
     // Save the client certificate.
-    auto rc = client_cert.save("client_cert.txt");
-    assert(rc == 0);
+    result = client_cert.save("client_cert.txt");
+    assert(result);
 
     // Save the client public certificate.
-    rc = client_cert.save_public(".curve/test_cert.pub");
-    assert(rc == 0);
+    result = client_cert.save_public(".curve/test_cert.pub");
+    assert(result);
 
     // Create the server certificate.
     zmq::certificate server_cert;

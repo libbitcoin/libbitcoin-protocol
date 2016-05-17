@@ -21,7 +21,7 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_CERTIFICATE_HPP
 
 #include <string>
-#include <czmq.h>
+#include <zmq.h>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
@@ -33,7 +33,6 @@ class BCP_API certificate
 {
 public:
     certificate();
-    certificate(zcert_t* self);
     certificate(certificate&& other);
     certificate(const std::string& filename);
     ~certificate();
@@ -44,19 +43,18 @@ public:
 
     operator const bool() const;
 
-    zcert_t* self();
+    void* self();
 
-    void reset(zcert_t* self);
     void reset(const std::string& filename);
     void set_meta(const std::string& name, const std::string& value);
-    int save(const std::string& filename);
-    int save_public(const std::string& filename);
-    int save_secret(const std::string& filename);
+    bool save(const std::string& filename);
+    bool save_public(const std::string& filename);
+    bool save_secret(const std::string& filename);
     std::string public_text() const;
     void apply(socket& sock);
 
 private:
-    zcert_t* self_;
+    void* self_;
 };
 
 } // namespace zmq

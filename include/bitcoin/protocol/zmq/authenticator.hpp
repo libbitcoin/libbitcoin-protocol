@@ -21,7 +21,7 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_AUTHENTICATOR_HPP
 
 #include <string>
-#include <czmq.h>
+#include <zmq.h>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
 
@@ -41,18 +41,16 @@ public:
 
     operator const bool() const;
 
-    zauth_t* self();
+    void* self();
 
     void allow(const std::string& address);
     void deny(const std::string& address);
-    void configure_plain(const std::string& domain,
-        const std::string& filename);
-    void configure_curve(const std::string& domain,
-        const std::string& location);
+    void configure_plain(const std::string& domain, const std::string& filename);
+    void configure_curve(const std::string& domain, const std::string& location);
     void set_verbose(bool verbose);
 
 private:
-    zauth_t* self_;
+    void* self_;
 };
 
 } // namespace zmq

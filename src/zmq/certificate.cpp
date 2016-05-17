@@ -20,7 +20,7 @@
 #include <bitcoin/protocol/zmq/certificate.hpp>
 
 #include <string>
-#include <czmq.h>
+#include <zmq.h>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
 namespace libbitcoin {
@@ -28,12 +28,9 @@ namespace protocol {
 namespace zmq {
 
 certificate::certificate()
-  : self_(zcert_new())
+  : self_(nullptr)
 {
-}
-certificate::certificate(zcert_t* self)
-  : self_(self)
-{
+    ////self_ = zcert_new();
 }
 
 certificate::certificate(certificate&& other)
@@ -43,9 +40,11 @@ certificate::certificate(certificate&& other)
 }
 
 certificate::certificate(const std::string& filename)
-  : self_(zcert_load(filename.c_str()))
+  : self_(nullptr)
 {
+    ////self_ = zcert_load(filename.c_str());
 }
+
 certificate::~certificate()
 {
     reset(nullptr);
@@ -56,55 +55,47 @@ certificate::operator const bool() const
     return self_ != nullptr;
 }
 
-void certificate::reset(zcert_t* self)
-{
-    if (self_ != nullptr)
-        zcert_destroy(&self_);
-
-    self_ = self;
-}
-
 void certificate::reset(const std::string& filename)
 {
-    if (self_ != nullptr)
-        zcert_destroy(&self_);
+    ////if (self_ != nullptr)
+    ////    zcert_destroy(&self_);
 
-    self_ = zcert_load(filename.c_str());
+    ////self_ = zcert_load(filename.c_str());
 }
 
-zcert_t* certificate::self()
+void* certificate::self()
 {
     return self_;
 }
 
 void certificate::set_meta(const std::string& name, const std::string& value)
 {
-    zcert_set_meta(self_, name.c_str(), value.c_str());
+    ////zcert_set_meta(self_, name.c_str(), value.c_str());
 }
 
-int certificate::save(const std::string& filename)
+bool certificate::save(const std::string& filename)
 {
-    return zcert_save(self_, filename.c_str());
+    return false;////zcert_save(self_, filename.c_str());
 }
 
-int certificate::save_public(const std::string& filename)
+bool certificate::save_public(const std::string& filename)
 {
-    return zcert_save_public(self_, filename.c_str());
+    return false;//// zcert_save_public(self_, filename.c_str());
 }
 
-int certificate::save_secret(const std::string& filename)
+bool certificate::save_secret(const std::string& filename)
 {
-    return zcert_save_secret(self_, filename.c_str());
+    return false;//// zcert_save_secret(self_, filename.c_str());
 }
 
 std::string certificate::public_text() const
 {
-    return std::string(zcert_public_txt(self_));
+    return "";////std::string(zcert_public_txt(self_));
 }
 
 void certificate::apply(socket& sock)
 {
-    zcert_apply(self_, sock.self());
+    ////zcert_apply(self_, sock.self());
 }
 
 } // namespace zmq

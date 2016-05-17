@@ -36,33 +36,20 @@
   </ImportGroup>  
 
   <PropertyGroup Condition="'$(DefaultLinkage)' == 'dynamic'">
-    <Linkage-protobuf>dynamic</Linkage-protobuf>
     <Linkage-secp256k1>dynamic</Linkage-secp256k1>
-    <Linkage-czmqpp>dynamic</Linkage-czmqpp>
-    <Linkage-czmq>dynamic</Linkage-czmq>
     <Linkage-libzmq>dynamic</Linkage-libzmq>
-    <Linkage-libsodium>dynamic</Linkage-libsodium>
     <!--<Linkage-protobuf>dynamic</Linkage-protobuf>-->
     <Linkage-libbitcoin>dynamic</Linkage-libbitcoin>
   </PropertyGroup>
   <PropertyGroup Condition="'$(DefaultLinkage)' == 'ltcg'">
-    <Linkage-protobuf>ltcg</Linkage-protobuf>
     <Linkage-secp256k1>ltcg</Linkage-secp256k1>
-    <Linkage-czmqpp>ltcg</Linkage-czmqpp>
-    <Linkage-czmqpp>ltcg</Linkage-czmqpp>
-    <Linkage-czmq>ltcg</Linkage-czmq>
     <Linkage-libzmq>ltcg</Linkage-libzmq>
-    <Linkage-libsodium>ltcg</Linkage-libsodium>
     <!--<Linkage-protobuf>ltcg</Linkage-protobuf>-->
     <Linkage-libbitcoin>ltcg</Linkage-libbitcoin>
   </PropertyGroup>
   <PropertyGroup Condition="'$(DefaultLinkage)' == 'static'">
-    <Linkage-protobuf>static</Linkage-protobuf>
     <Linkage-secp256k1>static</Linkage-secp256k1>
-    <Linkage-czmqpp>static</Linkage-czmqpp>
-    <Linkage-czmq>static</Linkage-czmq>
     <Linkage-libzmq>static</Linkage-libzmq>
-    <Linkage-libsodium>static</Linkage-libsodium>
     <!--<Linkage-protobuf>static</Linkage-protobuf>-->
     <Linkage-libbitcoin>static</Linkage-libbitcoin>
   </PropertyGroup>
@@ -71,10 +58,7 @@
   
   <Target Name="LinkageInfo" BeforeTargets="PrepareForBuild">
     <Message Text="Linkage-secp256k1 : $(Linkage-secp256k1)" Importance="high"/>
-    <Message Text="Linkage-czmqpp    : $(Linkage-czmqpp)" Importance="high"/>
-    <Message Text="Linkage-czmq      : $(Linkage-czmq)" Importance="high"/>
     <Message Text="Linkage-libzmq    : $(Linkage-libzmq)" Importance="high"/>
-    <Message Text="Linkage-libsodium : $(Linkage-libsodium)" Importance="high"/>
     <!--<Message Text="Linkage-protobuf  : $(Linkage-protobuf)" Importance="high"/>-->
     <Message Text="Linkage-libbitcoin: $(Linkage-libbitcoin)" Importance="high"/>
   </Target>

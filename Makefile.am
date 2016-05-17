@@ -32,8 +32,8 @@ doc_DATA = \
 # src/libbitcoin-protocol.la => ${libdir}
 #------------------------------------------------------------------------------
 lib_LTLIBRARIES = src/libbitcoin-protocol.la
-src_libbitcoin_protocol_la_CPPFLAGS = -I${srcdir}/include ${zmq_CPPFLAGS} ${czmq_CPPFLAGS} ${bitcoin_CPPFLAGS}
-src_libbitcoin_protocol_la_LIBADD = ${zmq_LIBS} ${czmq_LIBS} ${bitcoin_LIBS}
+src_libbitcoin_protocol_la_CPPFLAGS = -I${srcdir}/include ${zmq_CPPFLAGS} ${bitcoin_CPPFLAGS}
+src_libbitcoin_protocol_la_LIBADD = ${zmq_LIBS} ${bitcoin_LIBS}
 src_libbitcoin_protocol_la_SOURCES = \
     src/converter.cpp \
     src/interface.pb.cc \
@@ -55,8 +55,8 @@ if WITH_TESTS
 TESTS = libbitcoin_protocol_test_runner.sh
 
 check_PROGRAMS = test/libbitcoin_protocol_test
-test_libbitcoin_protocol_test_CPPFLAGS = -I${srcdir}/include ${zmq_CPPFLAGS} ${czmq_CPPFLAGS} ${bitcoin_CPPFLAGS}
-test_libbitcoin_protocol_test_LDADD = src/libbitcoin-protocol.la ${boost_unit_test_framework_LIBS} ${zmq_LIBS} ${czmq_LIBS} ${bitcoin_LIBS}
+test_libbitcoin_protocol_test_CPPFLAGS = -I${srcdir}/include ${zmq_CPPFLAGS} ${bitcoin_CPPFLAGS}
+test_libbitcoin_protocol_test_LDADD = src/libbitcoin-protocol.la ${boost_unit_test_framework_LIBS} ${zmq_LIBS} ${bitcoin_LIBS}
 test_libbitcoin_protocol_test_SOURCES = \
     test/converter.cpp \
     test/main.cpp \

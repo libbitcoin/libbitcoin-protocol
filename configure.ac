@@ -130,14 +130,6 @@ AC_SUBST([zmq_CPPFLAGS], [${zmq_CFLAGS}])
 AC_MSG_NOTICE([zmq_CPPFLAGS : ${zmq_CPPFLAGS}])
 AC_MSG_NOTICE([zmq_LIBS : ${zmq_LIBS}])
 
-# Require czmq of at least version 3.0.0 and output ${czmq_CPPFLAGS/LIBS/PKG}.
-#------------------------------------------------------------------------------
-PKG_CHECK_MODULES([czmq], [libczmq >= 3.0.0])
-AC_SUBST([czmq_PKG], ['libczmq >= 3.0.0'])
-AC_SUBST([czmq_CPPFLAGS], [${czmq_CFLAGS}])
-AC_MSG_NOTICE([czmq_CPPFLAGS : ${czmq_CPPFLAGS}])
-AC_MSG_NOTICE([czmq_LIBS : ${czmq_LIBS}])
-
 # Require bitcoin of at least version 3.0.0 and output ${bitcoin_CPPFLAGS/LIBS/PKG}.
 #------------------------------------------------------------------------------
 PKG_CHECK_MODULES([bitcoin], [libbitcoin >= 3.0.0])
@@ -192,12 +184,6 @@ AS_CASE([${CC}], [*clang*],
 AS_CASE([${CC}], [*gcc*],
     [AX_CHECK_COMPILE_FLAG([-Wno-deprecated-declarations],
         [CXXFLAGS="$CXXFLAGS -Wno-deprecated-declarations"])])
-
-# Clean up czmq non-literal string format warnings.
-#------------------------------------------------------------------------------
-AS_CASE([${CC}], [*],
-    [AX_CHECK_COMPILE_FLAG([-Wformat-security],
-        [CXXFLAGS="$CXXFLAGS -Wformat-security"])])
 
 # Protect stack.
 #------------------------------------------------------------------------------
