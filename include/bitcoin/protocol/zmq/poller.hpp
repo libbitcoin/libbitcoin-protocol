@@ -32,6 +32,7 @@ namespace zmq {
 class BCP_API poller
 {
 public:
+    /// Construct an empty poller (sockets must be added).
     poller();
 
     /// This class is not copyable.
@@ -50,8 +51,8 @@ public:
     /// Add a socket to be polled (not thread safe).
     void add(socket& sock);
 
-    /// Wait specified MICROSECONDS for any socket to receive.
-    socket wait(int timeout);
+    /// Wait specified microsoconds for any socket to receive.
+    socket::identifier wait(int timeout_microsoconds);
 
 private:
     typedef std::vector<zmq_pollitem_t> pollers;

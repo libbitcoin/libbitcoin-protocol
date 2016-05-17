@@ -19,115 +19,176 @@
  */
 #include <bitcoin/protocol/zmq/socket.hpp>
 
-#include <czmq.h>
+#include <cstdint>
+#include <string>
+#include <zmq.h>
 #include <bitcoin/bitcoin.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+static constexpr uint16_t no_port = 0;
+static constexpr int32_t zmq_true = 1;
+static constexpr int32_t zmq_fail = -1;
+static constexpr int32_t zmq_forever = -1;
+static constexpr int32_t zmq_send_buffer = 1000;
+static constexpr int32_t zmq_receive_buffer = 1000;
+
 socket::socket()
-  : self_(nullptr)
+  : socket(nullptr)
 {
 }
 
-socket::socket(void* self)
-  : self_(self)
+socket::socket(void* zmq_socket)
+  : socket_(zmq_socket),
+    port_(no_port),
+    send_buffer_(zmq_send_buffer),
+    receive_buffer_(zmq_receive_buffer),
+    linger_milliseconds_(zmq_forever)
 {
 }
 
-socket::socket(socket&& other)
+socket::socket(context& context, role socket_role)
+  : socket()
 {
-    BITCOIN_ASSERT(self_ == nullptr);
-
-    self_ = other.self_;
-    other.self_ = nullptr;
+    initialize(context, socket_role);
 }
 
 socket::~socket()
 {
-    if (!self_)
+    DEBUG_ONLY(const auto result =) destroy();
+    BITCOIN_ASSERT(result);
+}
+
+int32_t socket::to_socket_type(role socket_role)
+{
+    switch (socket_role)
+    {
+        case role::pair: return ZMQ_PAIR;
+        case role::publisher: return ZMQ_PUB;
+        case role::subscriber: return ZMQ_SUB;
+        case role::requester: return ZMQ_REQ;
+        case role::replier: return ZMQ_REP;
+        case role::dealer: return ZMQ_DEALER;
+        case role::router: return ZMQ_ROUTER;
+        case role::puller: return ZMQ_PULL;
+        case role::pusher: return ZMQ_PUSH;
+        case role::extended_publisher: return ZMQ_XPUB;
+        case role::extended_subscriber: return ZMQ_XSUB;
+        case role::streamer: return ZMQ_STREAM;
+        default: return -1;
+    }
+}
+
+bool socket::set(int32_t option, int value)
+{
+    return zmq_setsockopt(socket_, option, &value, sizeof(value)) != zmq_fail;
+}
+
+bool socket::set(int32_t option, const std::string& value)
+{
+    const auto buffer = value.c_str();
+    return zmq_setsockopt(socket_, option, buffer, value.size()) != zmq_fail;
+}
+
+void socket::initialize(context& context, role socket_role)
+{
+    socket_ = zmq_socket(context.self(), to_socket_type(socket_role));
+
+    if (socket_ == nullptr)
         return;
 
-    // TODO: configure linger milliseconds, default -1 (infinite).
-
-    ////auto rc = zmq_setsockopt(zocket, ZMQ_LINGER, &linger, sizeof(int));
-    ////assert(rc == 0 || zmq_errno() == ETERM);
-    zsocket_set_linger(self_, 0);
-
-    ////zmq_close (zocket);
-    ////zsocket_destroy(context.self(), self_);
+    if (!set(ZMQ_SNDHWM, send_buffer_) || !set(ZMQ_RCVHWM, receive_buffer_))
+        destroy();
 }
 
-// TODO: map zmq types to integer class enum.
-socket::socket(context& context, int type)
+bool socket::destroy()
 {
-    // TODO: configure these int settings as uint16_t.
-    // TODO: configure sndhwm, default 0, 1000 in zctx_new.
-    // TODO: configure rcvhwm, default 0, 1000 in zctx_new.
+    if (socket_ == nullptr)
+        return false;
 
-    ////self_ = zmq_socket(context.self(), type);
-    ////auto rc = zmq_setsockopt(self_, ZMQ_SNDHWM, &sndhwm, sizeof(int));
-    ////assert(rc == 0 || zmq_errno() == ETERM);
-    ////auto rc = zmq_setsockopt(self_, ZMQ_RCVHWM, &rcvhwm, sizeof(int));
-    ////assert(rc == 0 || zmq_errno() == ETERM);
-    self_ = zsocket_new(context.self(), type);
+    const auto linger = set(ZMQ_LINGER, linger_milliseconds_);
+    const auto closed = zmq_close(socket_) != zmq_fail;
+
+    // Always clear state even if the socket is leaked.
+    port_ = no_port;
+    socket_ = nullptr;
+
+    return linger && closed;
 }
 
-// TODO: convert to bool.
-int socket::bind(const std::string& address)
+void socket::assign(socket&& other)
 {
-    ////int port = zmq_bind (self, endpoint);
-    return zsocket_bind(self_, address.c_str());
+    // Free any existing socket resources.
+    destroy();
+
+    // Assume ownership of the other socket's state.
+    port_ = other.port_;
+    socket_ = other.socket_;
+
+    // Don't destroy other socket's resource as it would destroy ours.
+    other.port_ = no_port;
+    other.socket_ = nullptr;
 }
 
-// TODO: convert to bool.
-int socket::connect(const std::string& address)
+bool socket::bind(const std::string& address)
 {
-    ////Returns 0 if the endpoint is valid, -1 if the connect failed.
-    ////zmq_connect (self, endpoint);
-    return zsocket_connect(self_, address.c_str());
+    // Returns zero if the bind fails, otherwise the port (ports are 16 bit).
+    const auto port = zmq_bind(socket_, address.c_str());
+    port_ = static_cast<uint16_t>(port);
+    return port_ != no_port;
 }
 
-void socket::set_curve_server()
+bool socket::connect(const std::string& address)
 {
-    ////int rc = zmq_setsockopt(zocket, ZMQ_CURVE_SERVER, &curve_server, sizeof(int));
-    ////assert(rc == 0 || zmq_errno() == ETERM);
-    zsocket_set_curve_server(self_, 1);
+    // String safety issue, API requires null termination.
+    return zmq_connect(socket_, address.c_str()) != zmq_fail;
 }
 
-void socket::set_curve_serverkey(const std::string& key)
+bool socket::set_curve_server()
 {
-    ////int rc = zmq_setsockopt(zocket, ZMQ_CURVE_SERVERKEY, curve_serverkey, strlen(curve_serverkey));
-    ////assert(rc == 0 || zmq_errno() == ETERM);
-    zsocket_set_curve_serverkey(self_, key.c_str());
+    return set(ZMQ_CURVE_SERVER, zmq_true);
 }
 
-void socket::set_zap_domain(const std::string& domain)
+bool socket::set_curve_serverkey(const std::string& key)
 {
-    ////int rc = zmq_setsockopt(zocket, ZMQ_ZAP_DOMAIN, zap_domain, strlen(zap_domain));
-    ////assert(rc == 0 || zmq_errno() == ETERM);
-    zsocket_set_zap_domain(self_, domain.c_str());
+    return set(ZMQ_CURVE_SERVERKEY, key);
+}
+
+bool socket::set_zap_domain(const std::string& domain)
+{
+    return set(ZMQ_ZAP_DOMAIN, domain);
 }
 
 void* socket::self()
 {
-    return self_;
+    return socket_;
 }
 
 void* socket::self() const
 {
-    return self_;
+    return socket_;
+}
+
+uint16_t socket::port() const
+{
+    return port_;
+}
+
+socket::identifier socket::id() const
+{
+    return reinterpret_cast<socket::identifier>(socket_);
 }
 
 socket::operator const bool() const
 {
-    return self_ != nullptr;
+    return socket_ != nullptr;
 }
 
 bool socket::operator==(const socket& other) const
 {
-    return self_ == other.self_;
+    return socket_ == other.socket_;
 }
 
 bool socket::operator!=(const socket& other) const

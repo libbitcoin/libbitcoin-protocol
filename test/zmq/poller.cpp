@@ -31,16 +31,16 @@ int main_disabled()
     assert(context);
 
     // Create a few sockets
-    zmq::socket vent(context, ZMQ_PUSH);
+    zmq::socket vent(context, zmq::socket::role::pusher);
     int result = vent.bind("tcp://*:9000");
     assert(result != -1);
 
-    zmq::socket sink(context, ZMQ_PULL);
+    zmq::socket sink(context, zmq::socket::role::puller);
     result = sink.connect("tcp://localhost:9000");
     assert(result != -1);
 
-    zmq::socket bowl(context, ZMQ_PULL);
-    zmq::socket dish(context, ZMQ_PULL);
+    zmq::socket bowl(context, zmq::socket::role::puller);
+    zmq::socket dish(context, zmq::socket::role::puller);
 
     // Set-up poller.
     zmq::poller poller;
@@ -52,12 +52,12 @@ int main_disabled()
     assert(result != -1);
 
     // We expect a message only on the sink.
-    auto which = poller.wait(-1);
-    assert(which == sink);
+    const auto id = poller.wait(-1);
+    assert(id == sink.id());
     assert(!poller.expired());
     assert(!poller.terminated());
 
-    auto message = zstr_recv(which.self());
+    auto message = zstr_recv(sink.self());
     assert(streq(message, "Hello, World"));
 
     free(message);

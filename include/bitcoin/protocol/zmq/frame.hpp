@@ -68,6 +68,8 @@ private:
 
     bool more_;
     const bool valid_;
+
+    // TODO: define this locally to avoid zmq.h in our includes.
     zmq_msg_t message_;
 };
 

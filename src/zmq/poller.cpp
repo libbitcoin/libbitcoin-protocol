@@ -57,31 +57,31 @@ void poller::add(socket& socket)
     pollers_.push_back(item);
 }
 
-socket poller::wait(int timeout)
+socket::identifier poller::wait(int timeout_microsoconds)
 {
     const auto size = pollers_.size();
     BITCOIN_ASSERT(size <= max_int32);
 
     const auto size32 = static_cast<int32_t>(size);
-    auto signaled = zmq_poll(pollers_.data(), size32, timeout);
+    auto signaled = zmq_poll(pollers_.data(), size32, timeout_microsoconds);
 
     if (signaled < 0)
     {
         terminated_ = true;
-        return nullptr;
+        return 0;
     }
 
     if (signaled == 0)
     {
         expired_ = true;
-        return nullptr;
+        return 0;
     }
 
     for (const auto& poller: pollers_)
         if ((poller.revents & ZMQ_POLLIN) != 0)
-            return poller.socket;
+            return reinterpret_cast<socket::identifier>(poller.socket);
 
-    return nullptr;
+    return 0;
 }
 
 bool poller::expired() const
