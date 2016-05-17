@@ -30,7 +30,6 @@ namespace zmq {
 class BCP_API context
 {
 public:
-
     /// Construct a context.
     context();
 

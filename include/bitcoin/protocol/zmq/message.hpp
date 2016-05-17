@@ -31,7 +31,6 @@ namespace zmq {
 class BCP_API message
 {
 public:
-
     /// Add a message part to the outgoing message.
     void append(data_chunk&& part);
     void append(const data_chunk& part);

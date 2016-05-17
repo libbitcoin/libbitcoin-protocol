@@ -33,7 +33,6 @@ namespace zmq {
 class BCP_API socket
 {
 public:
-
     /// The full set of socket roles defined by zeromq.
     enum class role
     {
@@ -87,8 +86,13 @@ public:
     /// Connect the socket to the specified remote address.
     bool connect(const std::string& address);
 
+    /// Configure the socket as a curve server.
     bool set_curve_server();
+
+    /// Configure the socket as client to a curve server.
     bool set_curve_serverkey(const std::string& key);
+
+    /// Sets the domain for ZAP (ZMQ RFC 27) authentication.
     bool set_zap_domain(const std::string& domain);
 
 private:

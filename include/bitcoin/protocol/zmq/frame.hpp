@@ -32,7 +32,6 @@ namespace zmq {
 class BCP_API frame
 {
 public:
-
     /// Construct a frame with no payload (for receiving).
     frame();
 
