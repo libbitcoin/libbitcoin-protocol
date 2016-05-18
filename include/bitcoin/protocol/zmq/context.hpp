@@ -49,8 +49,8 @@ public:
 private:
     bool destroy();
 
-    void* self_;
     int32_t threads_;
+    void* self_;
 };
 
 } // namespace zmq
