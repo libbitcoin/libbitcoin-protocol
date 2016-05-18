@@ -21,7 +21,8 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_AUTHENTICATOR_HPP
 
 #include <string>
-#include <zmq.h>
+#include <boost/filesystem.hpp>
+#include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
 
@@ -32,25 +33,31 @@ namespace zmq {
 class BCP_API authenticator
 {
 public:
+    /// Construct an instance.
     authenticator(context& context);
+
+    /// Free authenticator resources.
     ~authenticator();
 
     /// This class is not copyable.
     authenticator(const authenticator&) = delete;
     void operator=(const authenticator&) = delete;
 
+    /// True if the construction succeeded.
     operator const bool() const;
 
-    void* self();
+    /// Allow clients with the following ip addresses (white list).
+    void allow(const config::authority& address);
 
-    void allow(const std::string& address);
-    void deny(const std::string& address);
-    void configure_plain(const std::string& domain, const std::string& filename);
-    void configure_curve(const std::string& domain, const std::string& location);
-    void set_verbose(bool verbose);
+    /// Allow clients with the following ip addresses (black list).
+    void deny(const config::authority& address);
+
+    /// Allow clients with certificates in the following path (white list).
+    /// An empty path will disable (or not enable) client cert requirement.
+    bool certificates(const boost::filesystem::path& path);
 
 private:
-    void* self_;
+    void* authenticator_;
 };
 
 } // namespace zmq

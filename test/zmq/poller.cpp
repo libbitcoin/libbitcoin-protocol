@@ -23,7 +23,7 @@
 using namespace bc;
 using namespace bc::protocol;
 
-int main_disabled()
+int poller_example()
 {
     zmq::context context;
     assert(context);

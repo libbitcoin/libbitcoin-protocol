@@ -20,7 +20,6 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_FRAME_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_FRAME_HPP
 
-#include <zmq.h>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
@@ -61,15 +60,17 @@ public:
     bool send(socket& socket, bool more);
 
 private:
-    static bool initialize(zmq_msg_t& message, const data_chunk& data);
+    // zmq_msg_t alias, keeps zmq.h out of our headers.
+    typedef union zmq_msg{ unsigned char alignment[64]; void* pointer; };
+
+    static bool initialize(zmq_msg& message, const data_chunk& data);
+
     bool set_more(socket& socket);
     bool destroy();
 
     bool more_;
     const bool valid_;
-
-    // TODO: define this locally to avoid zmq.h in our includes.
-    zmq_msg_t message_;
+    zmq_msg message_;
 };
 
 } // namespace zmq

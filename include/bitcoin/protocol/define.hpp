@@ -38,5 +38,12 @@
     #define BCP_INTERNAL BC_HELPER_DLL_LOCAL
 #endif
 
+#if defined _WIN32
+    #include <winsock.h>
+    typedef SOCKET file_descriptor;
+#else
+    typedef int file_descriptor;
+#endif
+
 #endif
 

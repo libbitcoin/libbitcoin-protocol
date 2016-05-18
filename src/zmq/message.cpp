@@ -47,6 +47,15 @@ const data_stack& message::parts() const
     return parts_;
 }
 
+std::string message::text() const
+{
+    if (parts_.empty())
+        return{};
+
+    const auto& first = parts_.front();
+    return std::string(first.begin(), first.end());
+}
+
 void message::clear()
 {
     parts_.clear();

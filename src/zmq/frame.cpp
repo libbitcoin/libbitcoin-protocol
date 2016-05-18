@@ -51,15 +51,17 @@ frame::~frame()
 }
 
 // static
-bool frame::initialize(zmq_msg_t& message, const data_chunk& data)
+bool frame::initialize(zmq_msg& message, const data_chunk& data)
 {
-    if (data.empty())
-        return (zmq_msg_init(&message) != zmq_fail);
+    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message);
 
-    if (zmq_msg_init_size(&message, data.size()) == zmq_fail)
+    if (data.empty())
+        return (zmq_msg_init(buffer) != zmq_fail);
+
+    if (zmq_msg_init_size(buffer, data.size()) == zmq_fail)
         return false;
 
-    std::memcpy(zmq_msg_data(&message), data.data(), data.size());
+    std::memcpy(zmq_msg_data(buffer), data.data(), data.size());
     return true;
 }
 
@@ -88,8 +90,9 @@ bool frame::set_more(socket& socket)
 
 data_chunk frame::payload()
 {
-    const auto size = zmq_msg_size(&message_);
-    const auto data = zmq_msg_data(&message_);
+    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
+    const auto size = zmq_msg_size(buffer);
+    const auto data = zmq_msg_data(buffer);
     const auto begin = static_cast<uint8_t*>(data);
     return{ begin, begin + size };
 }
@@ -99,7 +102,8 @@ bool frame::receive(socket& socket)
     if (!valid_)
         return false;
 
-    return zmq_recvmsg(socket.self(), &message_, 0) != zmq_fail &&
+    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
+    return zmq_recvmsg(socket.self(), buffer, 0) != zmq_fail &&
         set_more(socket);
 }
 
@@ -109,13 +113,15 @@ bool frame::send(socket& socket, bool last)
         return false;
 
     const int flags = last ? 0 : ZMQ_SNDMORE;
-    return zmq_sendmsg(socket.self(), &message_, flags) != zmq_fail;
+    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
+    return zmq_sendmsg(socket.self(), buffer, flags) != zmq_fail;
 }
 
 // private
 bool frame::destroy()
 {
-    return valid_ && (zmq_msg_close(&message_) != zmq_fail);
+    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
+    return valid_ && (zmq_msg_close(buffer) != zmq_fail);
 }
 
 } // namespace zmq

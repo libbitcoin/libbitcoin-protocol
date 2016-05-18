@@ -23,6 +23,7 @@
 #include <string>
 #include <zmq.h>
 #include <bitcoin/bitcoin.hpp>
+#include <bitcoin/protocol/zmq/certificate.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -50,9 +51,13 @@ socket::socket(void* zmq_socket)
 }
 
 socket::socket(context& context, role socket_role)
-  : socket()
+  : socket(zmq_socket(context.self(), to_socket_type(socket_role)))
 {
-    initialize(context, socket_role);
+    if (socket_ == nullptr)
+        return;
+
+    if (!set(ZMQ_SNDHWM, send_buffer_) || !set(ZMQ_RCVHWM, receive_buffer_))
+        destroy();
 }
 
 socket::~socket()
@@ -79,28 +84,6 @@ int32_t socket::to_socket_type(role socket_role)
         case role::streamer: return ZMQ_STREAM;
         default: return -1;
     }
-}
-
-bool socket::set(int32_t option, int value)
-{
-    return zmq_setsockopt(socket_, option, &value, sizeof(value)) != zmq_fail;
-}
-
-bool socket::set(int32_t option, const std::string& value)
-{
-    const auto buffer = value.c_str();
-    return zmq_setsockopt(socket_, option, buffer, value.size()) != zmq_fail;
-}
-
-void socket::initialize(context& context, role socket_role)
-{
-    socket_ = zmq_socket(context.self(), to_socket_type(socket_role));
-
-    if (socket_ == nullptr)
-        return;
-
-    if (!set(ZMQ_SNDHWM, send_buffer_) || !set(ZMQ_RCVHWM, receive_buffer_))
-        destroy();
 }
 
 bool socket::destroy()
@@ -142,8 +125,26 @@ bool socket::bind(const std::string& address)
 
 bool socket::connect(const std::string& address)
 {
-    // String safety issue, API requires null termination.
     return zmq_connect(socket_, address.c_str()) != zmq_fail;
+}
+
+bool socket::set(int32_t option, int32_t value)
+{
+    return zmq_setsockopt(socket_, option, &value, sizeof(value)) != zmq_fail;
+}
+
+bool socket::set(int32_t option, const std::string& value)
+{
+    if (value.empty())
+        return true;
+
+    const auto buffer = value.c_str();
+    return zmq_setsockopt(socket_, option, buffer, value.size()) != zmq_fail;
+}
+
+bool socket::set_authentication_domain(const std::string& domain)
+{
+    return set(ZMQ_ZAP_DOMAIN, domain);
 }
 
 bool socket::set_curve_server()
@@ -151,14 +152,25 @@ bool socket::set_curve_server()
     return set(ZMQ_CURVE_SERVER, zmq_true);
 }
 
-bool socket::set_curve_serverkey(const std::string& key)
+bool socket::set_curve_client(const std::string& server_public_key)
 {
-    return set(ZMQ_CURVE_SERVERKEY, key);
+    return set(ZMQ_CURVE_SERVERKEY, server_public_key);
 }
 
-bool socket::set_zap_domain(const std::string& domain)
+bool socket::set_public_key(const std::string& key)
 {
-    return set(ZMQ_ZAP_DOMAIN, domain);
+    return set(ZMQ_CURVE_PUBLICKEY, key);
+}
+
+bool socket::set_secret_key(const std::string& key)
+{
+    return set(ZMQ_CURVE_SECRETKEY, key);
+}
+
+bool socket::set_certificate(const certificate& certificate)
+{
+    return set_public_key(certificate.public_key()) &&
+        set_secret_key(certificate.secret_key());
 }
 
 void* socket::self()

@@ -22,7 +22,6 @@
 
 #include <cstdint>
 #include <vector>
-#include <zmq.h>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
@@ -52,11 +51,20 @@ public:
     /// Add a socket to be polled (not thread safe).
     void add(socket& sock);
 
-    /// Wait specified microsoconds for any socket to receive, -1 is forever.
-    socket::identifier wait(int32_t timeout_microsoconds);
+    /// Wait specified microseconds for any socket to receive, -1 is forever.
+    socket::identifier wait(int32_t timeout_microseconds);
 
 private:
-    typedef std::vector<zmq_pollitem_t> pollers;
+    // zmq_pollitem_t alias, keeps zmq.h out of our headers.
+    typedef struct zmq_pollitem
+    {
+        void* socket;
+        file_descriptor fd;
+        short events;
+        short revents;
+    };
+
+    typedef std::vector<zmq_pollitem> pollers;
 
     bool expired_;
     bool terminated_;

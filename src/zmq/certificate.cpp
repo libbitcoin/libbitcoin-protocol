@@ -20,82 +20,77 @@
 #include <bitcoin/protocol/zmq/certificate.hpp>
 
 #include <string>
-#include <zmq.h>
+#include <boost/filesystem.hpp>
+////#include <zmq.h>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+using path = boost::filesystem::path;
+
+// Always generates both keys.
+// Loop until neither key's base85 encoding includes the # character.
 certificate::certificate()
-  : self_(nullptr)
 {
-    ////self_ = zcert_new();
+    ////certificate_ = zcert_new();
 }
 
-certificate::certificate(certificate&& other)
-  : self_(other.self_)
+// If the certificate is secret, generates the public key.
+// If the certificate is public, does not set a secret key.
+// If the file fails to parse then neither key is set (invalid).
+certificate::certificate(const path& path)
 {
-    other.self_ = nullptr;
-}
-
-certificate::certificate(const std::string& filename)
-  : self_(nullptr)
-{
-    ////self_ = zcert_load(filename.c_str());
-}
-
-certificate::~certificate()
-{
-    reset(nullptr);
+    /* bool */ load(path);
 }
 
 certificate::operator const bool() const
 {
-    return self_ != nullptr;
+    return !public_.empty();
 }
 
-void certificate::reset(const std::string& filename)
+const std::string& certificate::public_key() const
 {
-    ////if (self_ != nullptr)
-    ////    zcert_destroy(&self_);
-
-    ////self_ = zcert_load(filename.c_str());
+    return public_;
 }
 
-void* certificate::self()
+const std::string& certificate::secret_key() const
 {
-    return self_;
+    return secret_;
 }
 
-void certificate::set_meta(const std::string& name, const std::string& value)
+void certificate::add_metadata(const metadata& metadata)
 {
-    ////zcert_set_meta(self_, name.c_str(), value.c_str());
+    metadata_.emplace(metadata);
+    ////zcert_set_meta(certificate_, name.c_str(), value.c_str());
 }
 
-bool certificate::save(const std::string& filename)
+void certificate::add_metadata(const std::string& name,
+    const std::string& value)
 {
-    return false;////zcert_save(self_, filename.c_str());
+    add_metadata({ name, value });
+    ////zcert_set_meta(certificate_, name.c_str(), value.c_str());
 }
 
-bool certificate::save_public(const std::string& filename)
+// The public certificate always excludes an existing secret key.
+bool certificate::export_public(const path& path)
 {
-    return false;//// zcert_save_public(self_, filename.c_str());
+    return false;
+    //// zcert_save_public(certificate_, filename.c_str());
 }
 
-bool certificate::save_secret(const std::string& filename)
+// The secret certificate always contains a public key as well.
+bool certificate::export_secret(const path& path)
 {
-    return false;//// zcert_save_secret(self_, filename.c_str());
+    return false;
+    //// zcert_save_secret(certificate_, filename.c_str());
 }
 
-std::string certificate::public_text() const
+bool certificate::load(const path& path)
 {
-    return "";////std::string(zcert_public_txt(self_));
-}
-
-void certificate::apply(socket& sock)
-{
-    ////zcert_apply(self_, sock.self());
+    return false;
+    ////certificate_ = zcert_load(filename.c_str());
 }
 
 } // namespace zmq

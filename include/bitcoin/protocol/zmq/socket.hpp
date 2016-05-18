@@ -21,9 +21,9 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_SOCKET_HPP
 
 #include <cstdint>
-#include <memory>
 #include <string>
 #include <bitcoin/protocol/define.hpp>
+#include <bitcoin/protocol/zmq/certificate.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
 
 namespace libbitcoin {
@@ -86,24 +86,30 @@ public:
     /// Connect the socket to the specified remote address.
     bool connect(const std::string& address);
 
-    /// Configure the socket as a curve server.
+    /// Sets the domain for ZAP (ZMQ RFC 27) authentication.
+    bool set_authentication_domain(const std::string& domain);
+
+    /// Configure the socket as a curve server (also set the secrety key).
     bool set_curve_server();
 
-    /// Configure the socket as client to a curve server.
-    bool set_curve_serverkey(const std::string& key);
+    /// Configure the socket as client to the curve server.
+    bool set_curve_client(const std::string& server_public_key);
 
-    /// Sets the domain for ZAP (ZMQ RFC 27) authentication.
-    bool set_zap_domain(const std::string& domain);
+    /// Apply the specified public key to the socket.
+    bool set_public_key(const std::string& key);
+
+    /// Apply the specified secret key to the socket.
+    bool set_secret_key(const std::string& key);
+
+    /// Apply the keys of the specified certificate to the socket.
+    bool set_certificate(const certificate& certificate);
 
 private:
     static int to_socket_type(role socket_role);
-
     bool set(int32_t option, int32_t value);
     bool set(int32_t option, const std::string& value);
-    void initialize(context& context, role socket_role);
     bool destroy();
 
-    // The encapsulated zeromq socket.
     void* socket_;
     uint16_t port_;
     const int32_t send_buffer_;

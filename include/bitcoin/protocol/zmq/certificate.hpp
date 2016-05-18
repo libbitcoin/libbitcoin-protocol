@@ -20,10 +20,11 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_CERTIFICATE_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_CERTIFICATE_HPP
 
+#include <map>
 #include <string>
-#include <zmq.h>
+#include <utility>
+#include <boost/filesystem.hpp>
 #include <bitcoin/protocol/define.hpp>
-#include <bitcoin/protocol/zmq/socket.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -32,29 +33,44 @@ namespace zmq {
 class BCP_API certificate
 {
 public:
+    typedef std::pair<std::string, std::string> metadata;
+
+    /// Contruct a new certificate (can we inject randomness).
     certificate();
-    certificate(certificate&& other);
-    certificate(const std::string& filename);
-    ~certificate();
 
-    /// This class is not copyable.
-    certificate(const certificate&) = delete;
-    void operator=(const certificate&) = delete;
+    /// Contruct a certificate from the specified path.
+    certificate(const boost::filesystem::path& path);
 
+    /// True if the certificate is valid.
     operator const bool() const;
 
-    void* self();
+    /// The public key base85 text.
+    const std::string& public_key() const;
 
-    void reset(const std::string& filename);
-    void set_meta(const std::string& name, const std::string& value);
-    bool save(const std::string& filename);
-    bool save_public(const std::string& filename);
-    bool save_secret(const std::string& filename);
-    std::string public_text() const;
-    void apply(socket& sock);
+    /// The secret key base85 text.
+    const std::string& secret_key() const;
+
+    /// Add medata to the certificate.
+    void add_metadata(const metadata& metadata);
+
+    /// Add medata to the certificate.
+    void add_metadata(const std::string& name, const std::string& value);
+
+    /// Export the public key to a certificate file.
+    bool export_public(const boost::filesystem::path& path);
+
+    /// Export the secret key to a certificate file.
+    bool export_secret(const boost::filesystem::path& path);
+
+    /// Load a certificate from the specified path (always replaces existing).
+    bool load(const boost::filesystem::path& path);
 
 private:
-    void* self_;
+    typedef std::map<std::string, std::string> metadata_map;
+
+    std::string public_;
+    std::string secret_;
+    metadata_map metadata_;
 };
 
 } // namespace zmq

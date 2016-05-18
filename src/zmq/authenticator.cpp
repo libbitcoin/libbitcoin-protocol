@@ -19,65 +19,49 @@
  */
 #include <bitcoin/protocol/zmq/authenticator.hpp>
 
-#include <zmq.h>
+#include <boost/filesystem.hpp>
+////#include <zmq.h>
+#include <bitcoin/bitcoin.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+using path = boost::filesystem::path;
+
 authenticator::authenticator(context& context)
-  : self_(nullptr)
+  : authenticator_(nullptr)
 {
-    ////self_ = zauth_new(context.self());
+    ////authenticator_ = zauth_new(context.self());
 }
 
 authenticator::~authenticator()
 {
-    BITCOIN_ASSERT(self_);
-    ////zauth_destroy(&self_);
+    ////zauth_destroy(&authenticator_);
 }
 
 authenticator::operator const bool() const
 {
-    return self_ != nullptr;
+    return authenticator_ != nullptr;
 }
 
-void* authenticator::self()
+void authenticator::allow(const config::authority& address)
 {
-    return self_;
+    ////zauth_allow(authenticator_, address.c_str());
 }
 
-void authenticator::allow(const std::string& address)
+void authenticator::deny(const config::authority& address)
 {
-    ////zauth_allow(self_, address.c_str());
+    ////zauth_deny(authenticator_, address.c_str());
 }
 
-void authenticator::deny(const std::string& address)
+bool authenticator::certificates(const path& path)
 {
-    ////zauth_deny(self_, address.c_str());
-}
-
-void authenticator::configure_plain(const std::string& domain,
-    const std::string& filename)
-{
-    ////zauth_configure_plain(self_, domain.c_str(), filename.c_str());
-}
-
-void authenticator::configure_curve(const std::string& domain,
-    const std::string& location)
-{
-    ////zauth_configure_curve(self_, domain.c_str(), location.c_str());
-}
-
-void authenticator::set_verbose(bool verbose)
-{
-#ifndef _MSC_VER
-    // Hack to prevent czmq from writing to stdout/stderr on Windows.
-    // This will prevent authentication feedback, but also prevent crashes.
-    // It is necessary to prevent stdio when using our utf8-everywhere pattern.
-    // TODO: drop czmq and use latest zmq to avoid hadcoded stdio logging.
-    ////zauth_set_verbose(self_, verbose);
-#endif
+    return false;
+    // Clear requriement if empty.
+    // Return false if the path cannot be created.
+    // Declares that a client cert must be matched (unless empty).
+    ////zauth_configure_curve(authenticator_, "*", path.c_str());
 }
 
 } // namespace zmq

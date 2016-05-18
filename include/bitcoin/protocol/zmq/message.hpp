@@ -39,6 +39,9 @@ public:
     // Obtain the parts of the created or read message.
     const data_stack& parts() const;
 
+    // Obtain the first part as a text string, or empty if no parts.
+    std::string text() const;
+
     /// Clear the stack of message parts.
     void clear();
 
