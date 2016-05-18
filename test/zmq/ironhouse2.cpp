@@ -19,94 +19,97 @@
  */
 #include <string>
 #include <thread>
-#include <boost/filesystem.hpp>
 #include <bitcoin/protocol.hpp>
 
 using namespace bc;
 using namespace bc::protocol;
 
-void client_task(const std::string& server_public_key)
+void server_task(const std::string& server_private_key,
+    const std::string& client_public_key,
+    const config::authority& client_address)
 {
-    // Create a context.
+    // Create a context for the server.
     zmq::context context;
     assert(context);
 
-    // Create a pull socket.
+    // Establish the context's authentication whitelist.
+    zmq::authenticator authenticator(context);
+    authenticator.allow(client_address);
+    authenticator.allow(client_public_key);
+
+    // Create a push socket using the server's authenticated context.
+    zmq::socket server(context, zmq::socket::role::pusher);
+    assert(server);
+
+    // Configure the server to provide identity and require client identity.
+    auto result = server.set_private_key(server_private_key);
+    assert(result);
+    result = server.set_curve_server();
+    assert(result);
+
+    // Bind the server to a tcp port on all local addresses.
+    result = server.bind("tcp://*:9000");
+    assert(result);
+
+    //  Send the test message.
+    zmq::message message;
+    message.append("helllo world!");
+    result = message.send(server);
+    assert(result);
+
+    // Give client time to complete (hack).
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+}
+
+void client_task(const std::string& client_private_key,
+    const std::string& server_public_key)
+{
+    // Create a context for the client.
+    zmq::context context;
+    assert(context);
+
+    // Bind a pull socket to the client context.
     zmq::socket client(context, zmq::socket::role::puller);
     assert(client);
 
-    // Load our persistent certificate from disk
-    zmq::certificate client_cert("client.sec");
-    assert(client_cert);
-
-    // Configure the client to provide a certificate and use the server key.
-    client.set_certificate(client_cert);
-    client.set_curve_client(server_public_key);
-
-    // Connect to the server.
-    const auto result = client.connect("tcp://127.0.0.1:9000");
+    // Configure the client to provide identity and require server identity.
+    auto result = client.set_private_key(client_private_key);
+    assert(result);
+    result = client.set_curve_client(server_public_key);
     assert(result);
 
-    // Wait for our message, which signals the test was successful.
+    // Connect to the server's tcp port on the local host.
+    result = client.connect("tcp://127.0.0.1:9000");
+    assert(result);
+
+    // Wait for the message, which signals the test was successful.
     zmq::message message;
-    message.receive(client);
-    assert(message.parts().size() == 1);
-    assert((message.parts()[0] == data_chunk{ { 0xde, 0xad, 0xbe, 0xef } }));
+    result = message.receive(client);
+    assert(result);
+    assert(message.text() == "helllo world!");
 
     puts("Ironhouse test OK");
 }
 
-void server_task(zmq::certificate& server_cert)
-{
-    zmq::context context;
-    assert(context);
-
-    // Start the authenticator on the context and tell it authenticate clients
-    // via the certificates stored in the .curve directory.
-    zmq::authenticator authenticator(context);
-    authenticator.allow({ "127.0.0.1" });
-    authenticator.certificates("certificates");
-
-    // Bind a push socket to the authenticated context.
-    zmq::socket server(context, zmq::socket::role::pusher);
-    assert(server);
-    server.set_certificate(server_cert);
-    server.set_curve_server();
-    const auto result = server.bind("tcp://*:9000");
-    assert(result);
-
-    //  Send our test message, just once
-    zmq::message message;
-    message.append({ { 0xde, 0xad, 0xbe, 0xef } });
-    message.send(server);
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
-}
-
 int ironhouse2_example()
 {
-    // Create the certificate store directory.
-    auto result = boost::filesystem::create_directory("certificates");
-    assert(result);
+    static const auto localhost = config::authority("127.0.0.1");
 
-    // Create the client certificate.
+    // Create client and server certificates (generated secrets).
     zmq::certificate client_cert;
-
-    // Save the client certificate.
-    result = client_cert.export_secret("client.sec");
-    assert(result);
-
-    // Save the client public certificate, for use by the server.
-    result = client_cert.export_public("certificates/client.pub");
-    assert(result);
-
-    // Create the server certificate (generated values, in memory only).
+    assert(client_cert);
     zmq::certificate server_cert;
+    assert(server_cert);
 
-    // Start the two detached threads, each with own ZeroMQ context.
-    std::thread server_thread(server_task, std::ref(server_cert));
-    std::thread client_thread(client_task, server_cert.public_key());
+    // Start a server, require the client cert and localhost address.
+    std::thread server_thread(server_task, server_cert.private_key(),
+        client_cert.public_key(), localhost);
 
+    // Start a client, allos connections only to server with cert.
+    std::thread client_thread(client_task, client_cert.private_key(),
+        server_cert.public_key());
+
+    // Wait for thread completions.
     client_thread.join();
     server_thread.join();
     return 0;
