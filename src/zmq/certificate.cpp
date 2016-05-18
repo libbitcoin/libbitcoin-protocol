@@ -20,29 +20,23 @@
 #include <bitcoin/protocol/zmq/certificate.hpp>
 
 #include <string>
-#include <boost/filesystem.hpp>
-////#include <zmq.h>
-#include <bitcoin/protocol/zmq/socket.hpp>
+#include <zmq.h>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-using path = boost::filesystem::path;
-
-// Always generates both keys.
+// TODO:
 // Loop until neither key's base85 encoding includes the # character.
 certificate::certificate()
 {
-    ////certificate_ = zcert_new();
 }
 
-// If the certificate is secret, generates the public key.
-// If the certificate is public, does not set a secret key.
-// If the file fails to parse then neither key is set (invalid).
-certificate::certificate(const path& path)
+// TODO:
+// Validate the private key and create the public key from the private.
+certificate::certificate(const std::string& private_key)
 {
-    /* bool */ load(path);
+    private_ = private_key;
 }
 
 certificate::operator const bool() const
@@ -55,42 +49,9 @@ const std::string& certificate::public_key() const
     return public_;
 }
 
-const std::string& certificate::secret_key() const
+const std::string& certificate::private_key() const
 {
-    return secret_;
-}
-
-void certificate::add_metadata(const metadata& metadata)
-{
-    metadata_.emplace(metadata);
-    ////zcert_set_meta(certificate_, name.c_str(), value.c_str());
-}
-
-void certificate::add_metadata(const std::string& name,
-    const std::string& value)
-{
-    add_metadata({ name, value });
-    ////zcert_set_meta(certificate_, name.c_str(), value.c_str());
-}
-
-// The public certificate always excludes an existing secret key.
-bool certificate::export_public(const path& path)
-{
-    return false;
-    //// zcert_save_public(certificate_, filename.c_str());
-}
-
-// The secret certificate always contains a public key as well.
-bool certificate::export_secret(const path& path)
-{
-    return false;
-    //// zcert_save_secret(certificate_, filename.c_str());
-}
-
-bool certificate::load(const path& path)
-{
-    return false;
-    ////certificate_ = zcert_load(filename.c_str());
+    return private_;
 }
 
 } // namespace zmq

@@ -20,26 +20,23 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_CERTIFICATE_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_CERTIFICATE_HPP
 
-#include <map>
 #include <string>
-#include <utility>
-#include <boost/filesystem.hpp>
 #include <bitcoin/protocol/define.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+/// A simplified "certificate" class to manage a curve key pair.
+/// If valid the class always retains a consistent key pair.
 class BCP_API certificate
 {
 public:
-    typedef std::pair<std::string, std::string> metadata;
-
     /// Contruct a new certificate (can we inject randomness).
     certificate();
 
-    /// Contruct a certificate from the specified path.
-    certificate(const boost::filesystem::path& path);
+    /// Contruct a certificate from a private key (generates public key).
+    certificate(const std::string& private_key);
 
     /// True if the certificate is valid.
     operator const bool() const;
@@ -48,29 +45,11 @@ public:
     const std::string& public_key() const;
 
     /// The secret key base85 text.
-    const std::string& secret_key() const;
-
-    /// Add medata to the certificate.
-    void add_metadata(const metadata& metadata);
-
-    /// Add medata to the certificate.
-    void add_metadata(const std::string& name, const std::string& value);
-
-    /// Export the public key to a certificate file.
-    bool export_public(const boost::filesystem::path& path);
-
-    /// Export the secret key to a certificate file.
-    bool export_secret(const boost::filesystem::path& path);
-
-    /// Load a certificate from the specified path (always replaces existing).
-    bool load(const boost::filesystem::path& path);
+    const std::string& private_key() const;
 
 private:
-    typedef std::map<std::string, std::string> metadata_map;
-
     std::string public_;
-    std::string secret_;
-    metadata_map metadata_;
+    std::string private_;
 };
 
 } // namespace zmq

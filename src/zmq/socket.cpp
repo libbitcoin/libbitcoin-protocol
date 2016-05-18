@@ -152,15 +152,15 @@ bool socket::set_public_key(const std::string& key)
     return set(ZMQ_CURVE_PUBLICKEY, key);
 }
 
-bool socket::set_secret_key(const std::string& key)
+bool socket::set_private_key(const std::string& key)
 {
     return set(ZMQ_CURVE_SECRETKEY, key);
 }
 
 bool socket::set_certificate(const certificate& certificate)
 {
-    return set_public_key(certificate.public_key()) &&
-        set_secret_key(certificate.secret_key());
+    return certificate && set_public_key(certificate.public_key()) &&
+        set_private_key(certificate.private_key());
 }
 
 void* socket::self()

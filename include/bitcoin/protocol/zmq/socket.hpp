@@ -95,8 +95,8 @@ public:
     /// Apply the specified public key to the socket.
     bool set_public_key(const std::string& key);
 
-    /// Apply the specified secret key to the socket.
-    bool set_secret_key(const std::string& key);
+    /// Apply the specified private key to the socket.
+    bool set_private_key(const std::string& key);
 
     /// Apply the keys of the specified certificate to the socket.
     bool set_certificate(const certificate& certificate);

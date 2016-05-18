@@ -21,7 +21,6 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_AUTHENTICATOR_HPP
 
 #include <string>
-#include <boost/filesystem.hpp>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
@@ -46,15 +45,14 @@ public:
     /// True if the construction succeeded.
     operator const bool() const;
 
+    /// Allow clients with the following public keys (white list).
+    void allow(const std::string& public_key);
+
     /// Allow clients with the following ip addresses (white list).
     void allow(const config::authority& address);
 
     /// Allow clients with the following ip addresses (black list).
     void deny(const config::authority& address);
-
-    /// Allow clients with certificates in the following path (white list).
-    /// An empty path will disable (or not enable) client cert requirement.
-    bool certificates(const boost::filesystem::path& path);
 
 private:
     void* authenticator_;

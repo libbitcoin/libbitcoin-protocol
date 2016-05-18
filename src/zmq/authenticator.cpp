@@ -19,7 +19,7 @@
  */
 #include <bitcoin/protocol/zmq/authenticator.hpp>
 
-#include <boost/filesystem.hpp>
+#include <string>
 ////#include <zmq.h>
 #include <bitcoin/bitcoin.hpp>
 
@@ -45,6 +45,12 @@ authenticator::operator const bool() const
     return authenticator_ != nullptr;
 }
 
+void authenticator::allow(const std::string& public_key)
+{
+    // Declares that a client cert must be matched (unless empty).
+    ////zauth_configure_curve(authenticator_, "*", path.c_str());
+}
+
 void authenticator::allow(const config::authority& address)
 {
     ////zauth_allow(authenticator_, address.c_str());
@@ -53,15 +59,6 @@ void authenticator::allow(const config::authority& address)
 void authenticator::deny(const config::authority& address)
 {
     ////zauth_deny(authenticator_, address.c_str());
-}
-
-bool authenticator::certificates(const path& path)
-{
-    return false;
-    // Clear requriement if empty.
-    // Return false if the path cannot be created.
-    // Declares that a client cert must be matched (unless empty).
-    ////zauth_configure_curve(authenticator_, "*", path.c_str());
 }
 
 } // namespace zmq
