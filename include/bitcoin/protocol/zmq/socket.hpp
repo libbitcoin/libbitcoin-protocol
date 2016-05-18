@@ -71,9 +71,6 @@ public:
     void* self();
     void* self() const;
 
-    /// The port to whicih the socket is bound, or zero.
-    uint16_t port() const;
-
     /// The socket identifier is an opaue correlation idenfier.
     identifier id() const;
 
@@ -111,7 +108,6 @@ private:
     bool destroy();
 
     void* socket_;
-    uint16_t port_;
     const int32_t send_buffer_;
     const int32_t receive_buffer_;
     const int32_t linger_milliseconds_;

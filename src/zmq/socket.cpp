@@ -29,7 +29,6 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-static constexpr uint16_t no_port = 0;
 static constexpr int32_t zmq_true = 1;
 static constexpr int32_t zmq_fail = -1;
 static constexpr int32_t zmq_forever = -1;
@@ -43,7 +42,6 @@ socket::socket()
 
 socket::socket(void* zmq_socket)
   : socket_(zmq_socket),
-    port_(no_port),
     send_buffer_(zmq_send_buffer),
     receive_buffer_(zmq_receive_buffer),
     linger_milliseconds_(zmq_forever)
@@ -93,9 +91,6 @@ bool socket::destroy()
 
     const auto linger = set(ZMQ_LINGER, linger_milliseconds_);
     const auto closed = zmq_close(socket_) != zmq_fail;
-
-    // Always clear state even if the socket is leaked.
-    port_ = no_port;
     socket_ = nullptr;
 
     return linger && closed;
@@ -107,20 +102,15 @@ void socket::assign(socket&& other)
     destroy();
 
     // Assume ownership of the other socket's state.
-    port_ = other.port_;
     socket_ = other.socket_;
 
     // Don't destroy other socket's resource as it would destroy ours.
-    other.port_ = no_port;
     other.socket_ = nullptr;
 }
 
 bool socket::bind(const std::string& address)
 {
-    // Returns zero if the bind fails, otherwise the port (ports are 16 bit).
-    const auto port = zmq_bind(socket_, address.c_str());
-    port_ = static_cast<uint16_t>(port);
-    return port_ != no_port;
+    return zmq_bind(socket_, address.c_str()) != zmq_fail;
 }
 
 bool socket::connect(const std::string& address)
@@ -181,11 +171,6 @@ void* socket::self()
 void* socket::self() const
 {
     return socket_;
-}
-
-uint16_t socket::port() const
-{
-    return port_;
 }
 
 socket::identifier socket::id() const
