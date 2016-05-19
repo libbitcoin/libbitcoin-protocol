@@ -31,7 +31,6 @@ namespace zmq {
 
 static constexpr int32_t zmq_true = 1;
 static constexpr int32_t zmq_fail = -1;
-static constexpr int32_t zmq_forever = -1;
 static constexpr int32_t zmq_send_buffer = 1000;
 static constexpr int32_t zmq_receive_buffer = 1000;
 
@@ -40,11 +39,13 @@ socket::socket()
 {
 }
 
+// zmq_term terminates blocking operations but blocks until either each socket
+// in the context has been explicitly closed or the linger period is exceeded.
 socket::socket(void* zmq_socket)
   : socket_(zmq_socket),
     send_buffer_(zmq_send_buffer),
     receive_buffer_(zmq_receive_buffer),
-    linger_milliseconds_(zmq_forever)
+    linger_milliseconds_(0)
 {
 }
 

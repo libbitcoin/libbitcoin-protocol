@@ -50,8 +50,8 @@ bool context::destroy()
     if (self_ == nullptr)
         return true;
 
-    // This will cause all related sockets to close and will block until
-    // all sockets open within context have been closed with zmq_close().
+    // This terminates blocking operations but blocks until either each socket
+    // in the context is explicitly closed or its linger period is exceeded.
     return zmq_term(self_) != zmq_fail;
 }
 
