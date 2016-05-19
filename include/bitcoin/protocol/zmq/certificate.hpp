@@ -32,10 +32,10 @@ namespace zmq {
 class BCP_API certificate
 {
 public:
-    /// Contruct a new certificate (can we inject randomness).
+    /// Construct a new certificate (can we inject randomness).
     certificate();
 
-    /// Contruct a certificate from a private key (generates public key).
+    /// Construct a certificate from a private key (generates public key).
     certificate(const std::string& private_key);
 
     /// True if the certificate is valid.
@@ -46,6 +46,10 @@ public:
 
     /// The secret key base85 text.
     const std::string& private_key() const;
+
+protected:
+    void create(std::string& out_public, std::string& out_private);
+    bool derive(std::string& out_public, const std::string& private_key);
 
 private:
     std::string public_;

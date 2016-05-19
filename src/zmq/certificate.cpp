@@ -26,17 +26,59 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-// TODO:
-// Loop until neither key's base85 encoding includes the # character.
+static constexpr int32_t zmq_fail = -1;
+static constexpr size_t zmq_encoded_key_size = 40;
+
 certificate::certificate()
 {
+    create(public_, private_);
 }
 
-// TODO:
-// Validate the private key and create the public key from the private.
+void certificate::create(std::string& out_public, std::string& out_private)
+{
+    const auto valid_setting = [](const std::string& key)
+    {
+        return key.find_first_of('#') == std::string::npos;
+    };
+
+    // Loop until neither key's base85 encoding includes the # character.
+    // This ensures that the value can be used in libbitcoin settings files.
+    for (uint8_t iteration = 0; iteration <= max_uint8; iteration++)
+    {
+        char public_key[zmq_encoded_key_size + 1] = { 0 };
+        char private_key[zmq_encoded_key_size + 1] = { 0 };
+
+        if (zmq_curve_keypair(public_key, private_key) == zmq_fail)
+            return;
+
+        if (valid_setting(public_key) && !valid_setting(private_key))
+        {
+            out_public = public_key;
+            out_private = private_key;
+            return;
+        }
+    }
+}
+
+bool certificate::derive(std::string& out_public,
+    const std::string& private_key)
+{
+    if (private_key.size() != zmq_encoded_key_size)
+        return false;
+
+    char public_key[zmq_encoded_key_size + 1] = { 0 };
+
+    if (zmq_curve_public(public_key, private_key.data()) == zmq_fail)
+        return false;
+
+    out_public = public_key;
+    return true;
+}
+
 certificate::certificate(const std::string& private_key)
 {
-    private_ = private_key;
+    if (derive(public_, private_key))
+        private_ = private_key;
 }
 
 certificate::operator const bool() const
