@@ -60,14 +60,14 @@ void poller::add(socket& socket)
 // The timeout is typed as 'long' by zermq. This is 32 bit on windows and
 // typically 64 bit on other platforms. So for consistency of config we
 // limit the domain to 32 bit using int32_t. -1 signals infinite wait.
-socket::identifier poller::wait(int32_t timeout_microseconds)
+socket::identifier poller::wait(int32_t timeout_milliseconds)
 {
     const auto size = pollers_.size();
     BITCOIN_ASSERT(size <= max_int32);
 
     const auto size32 = static_cast<int32_t>(size);
     const auto data = reinterpret_cast<zmq_pollitem_t*>(pollers_.data());
-    auto signaled = zmq_poll(data, size32, timeout_microseconds);
+    auto signaled = zmq_poll(data, size32, timeout_milliseconds);
 
     if (signaled < 0)
     {
