@@ -34,6 +34,14 @@ certificate::certificate()
     create(public_, private_);
 }
 
+certificate::certificate(const std::string& private_key)
+{
+    if (private_key.empty())
+        create(public_, private_);
+    else if (derive(public_, private_key))
+        private_ = private_key;
+}
+
 void certificate::create(std::string& out_public, std::string& out_private)
 {
     const auto valid_setting = [](const std::string& key)
@@ -73,12 +81,6 @@ bool certificate::derive(std::string& out_public,
 
     out_public = public_key;
     return true;
-}
-
-certificate::certificate(const std::string& private_key)
-{
-    if (derive(public_, private_key))
-        private_ = private_key;
 }
 
 certificate::operator const bool() const
