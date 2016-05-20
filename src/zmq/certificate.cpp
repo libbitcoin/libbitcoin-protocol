@@ -42,8 +42,11 @@ certificate::certificate(const std::string& private_key)
         private_ = private_key;
 }
 
+// TODO: create a fast override that doesn't loop (for ephemeral keygen).
 void certificate::create(std::string& out_public, std::string& out_private)
 {
+    // TODO: update settings loader so this isn't necessary.
+    // BUGBUG: this limitation weakens security by reducing key space.
     const auto valid_setting = [](const std::string& key)
     {
         return key.find_first_of('#') == std::string::npos;

@@ -50,7 +50,7 @@ int poller_example()
 
     // Build and send the message.
     zmq::message message;
-    message.append(hello);
+    message.enqueue(hello);
     result = message.send(vent);
     assert(result);
 
@@ -65,11 +65,10 @@ int poller_example()
     assert(result);
 
     // Check the size.
-    const auto& parts = message.parts();
-    assert(parts.size() == 1);
+    assert(message.size() == 1);
 
     // Check the value.
-    const auto& part = parts[0];
-    assert(std::equal(part.begin(), part.end(), hello.begin()));
+    const auto payload = message.dequeue_text();
+    assert(payload == hello);
     return 0;
 }

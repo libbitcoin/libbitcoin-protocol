@@ -53,7 +53,7 @@ void server_task(const std::string& server_private_key,
 
     //  Send the test message.
     zmq::message message;
-    message.append("helllo world!");
+    message.enqueue("helllo world!");
     result = message.send(server);
     assert(result);
 
@@ -86,7 +86,7 @@ void client_task(const std::string& client_private_key,
     zmq::message message;
     result = message.receive(client);
     assert(result);
-    assert(message.text() == "helllo world!");
+    assert(message.dequeue_text() == "helllo world!");
 
     puts("Ironhouse test OK");
 }
@@ -105,7 +105,7 @@ int ironhouse2_example()
     std::thread server_thread(server_task, server_cert.private_key(),
         client_cert.public_key(), localhost);
 
-    // Start a client, allos connections only to server with cert.
+    // Start a client, allows connections only to server with cert.
     std::thread client_thread(client_task, client_cert.private_key(),
         server_cert.public_key());
 

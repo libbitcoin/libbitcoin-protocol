@@ -20,6 +20,7 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_MESSAGE_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_MESSAGE_HPP
 
+#include <queue>
 #include <string>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
@@ -31,28 +32,51 @@ namespace zmq {
 class BCP_API message
 {
 public:
+    /// Add an empty message part to the outgoing message.
+    void enqueue();
+
+    /// Add an interable message part to the outgoing message.
+    template <typename Iterable>
+    void enqueue(const Iterable& value)
+    {
+        queue_.emplace(to_chunk(value));
+    }
+
     /// Add a message part to the outgoing message.
-    void append(data_chunk&& part);
-    void append(const data_chunk& part);
-    void append(const std::string& part);
+    template <typename Unsigned>
+    void enqueue_little_endian(Unsigned value)
+    {
+        enqueue(to_little_endian<Unsigned>(value));
+    }
 
-    // Obtain the parts of the created or read message.
-    const data_stack& parts() const;
+    /// Remove a message part from the top of the queue, empty if empty queue.
+    data_chunk dequeue_data();
+    std::string dequeue_text();
 
-    // Obtain the first part as a text string, or empty if no parts.
-    std::string text() const;
+    /// Remove a message part from the top of the queue, false if empty queue.
+    bool dequeue();
+    bool dequeue(uint32_t& value);
+    bool dequeue(data_chunk& value);
+    bool dequeue(std::string& value);
+    bool dequeue(hash_digest& value);
 
-    /// Clear the stack of message parts.
+    /// Clear the queue of message parts.
     void clear();
 
-    /// Send the message in parts. If a send fails the unsent parts remain.
-    bool send(socket& sock);
+    /// True if the queue is empty.
+    bool empty() const;
 
-    /// Receve a message (clears the stack first).
-    bool receive(socket& sock);
+    /// The number of items on the queue.
+    size_t size() const;
+
+    /// Send the message in parts. If a send fails the unsent parts remain.
+    bool send(socket& socket);
+
+    /// Receve a message (clears the queue first).
+    bool receive(socket& socket);
 
 private:
-    data_stack parts_;
+    std::queue<data_chunk> queue_;
 };
 
 } // namespace zmq

@@ -20,10 +20,17 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_AUTHENTICATOR_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_AUTHENTICATOR_HPP
 
+#include <atomic>
+#include <cstdint>
+#include <map>
+#include <memory>
 #include <string>
+#include <thread>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
+#include <bitcoin/protocol/zmq/poller.hpp>
+#include <bitcoin/protocol/zmq/socket.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -32,30 +39,49 @@ namespace zmq {
 class BCP_API authenticator
 {
 public:
-    /// Construct an instance.
+    /// Start the ZAP monitor for the context.
+    /// There may be only one authenticator per process (otherwise bridge).
     authenticator(context& context);
-
-    /// Free authenticator resources.
-    ~authenticator();
 
     /// This class is not copyable.
     authenticator(const authenticator&) = delete;
     void operator=(const authenticator&) = delete;
 
-    /// True if the construction succeeded.
+    /// Stop the ZAP monitor.
+    ~authenticator();
+
+    /// True if the ZAP monitor started successfully.
     operator const bool() const;
 
-    /// Allow clients with the following public keys (white list).
-    void allow(const std::string& public_key);
+    /// Allow clients with the following public keys (whitelist).
+    void allow(const hash_digest& public_key);
 
-    /// Allow clients with the following ip addresses (white list).
+    /// Allow clients with the following ip addresses (whitelist).
     void allow(const config::authority& address);
 
-    /// Allow clients with the following ip addresses (black list).
+    /// Allow clients with the following ip addresses (blacklist).
     void deny(const config::authority& address);
 
 private:
-    void* authenticator_;
+    void monitor();
+    bool allowed(const std::string& address);
+    bool allowed(const hash_digest& public_key);
+
+    // These are not thread safe, they are protected by sequential access.
+
+    poller poller_;
+    socket socket_;
+    std::shared_ptr<std::thread> thread_;
+
+    bool require_key_;
+    std::map<hash_digest, bool> keys_;
+
+    bool require_address_;
+    std::map<std::string, bool> adresses_;
+
+    // These are thread safe.
+    std::atomic<bool> stopped_;
+    const uint32_t interval_milliseconds_;
 };
 
 } // namespace zmq
