@@ -16,7 +16,7 @@ includedir=@includedir@
 # Metadata
 #==============================================================================
 Name: libbitcoin-protocol
-Description: Bitcoin Blockchain Query Privacy Protocol
+Description: Bitcoin Blockchain Query Protocol
 URL: https://github.com/libbitcoin/libbitcoin-protocol
 Version: @PACKAGE_VERSION@
 
