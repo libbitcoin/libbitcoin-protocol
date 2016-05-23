@@ -34,32 +34,24 @@ poller::poller()
 {
 }
 
-poller::~poller()
-{
-}
-
+// Parameter fd is non-zmq socket (unused when socket is set).
 void poller::add(socket& socket)
 {
     zmq_pollitem item;
-
-    // zmq socket.
     item.socket = socket.self();
-
-    // non-zmq socket (unused when socket is set).
     item.fd = 0;
-
-    // flags.
     item.events = ZMQ_POLLIN;
-
-    // return events.
     item.revents = 0;
-
     pollers_.push_back(item);
 }
 
+// BUGBUG: zeromq 4.2 has an overflow  bug in timer parameterization.
 // The timeout is typed as 'long' by zermq. This is 32 bit on windows and
-// typically 64 bit on other platforms. So for consistency of config we
-// limit the domain to 32 bit using int32_t. -1 signals infinite wait.
+// actually less (potentially 1000 or 1 second) on other platforms.
+// And on non-windows platforms negative doesn't actually produce infinity.
+
+// For consistency of config we limit the domain to 32 bit using int32_t,
+// where negative implies infinite wait.
 socket::identifier poller::wait(int32_t timeout_milliseconds)
 {
     const auto size = pollers_.size();

@@ -21,6 +21,7 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_POLLER_HPP
 
 #include <cstdint>
+#include <memory>
 #include <vector>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
@@ -28,19 +29,21 @@
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
-
+    
+/// This class is not thread safe.
 class BCP_API poller
+  : public enable_shared_from_base<poller>
 {
 public:
+    /// A shared poller pointer.
+    typedef std::shared_ptr<poller> ptr;
+
     /// Construct an empty poller (sockets must be added).
     poller();
 
     /// This class is not copyable.
     poller(const poller&) = delete;
     void operator=(const poller&) = delete;
-
-    /// Free poller resources.
-    ~poller();
 
     /// True if the timeout occurred.
     bool expired() const;

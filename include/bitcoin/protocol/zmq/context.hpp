@@ -21,20 +21,27 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_CONTEXT_HPP
 
 #include <cstdint>
+#include <memory>
+#include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
 
+/// This class is not thread safe.
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
 class BCP_API context
+  : public enable_shared_from_base<context>
 {
 public:
+    /// A shared context pointer.
+    typedef std::shared_ptr<context> ptr;
+
     /// Construct a context.
     context();
 
     /// Cause all sockets of this context to close.
-    ~context();
+    virtual ~context();
 
     /// This class is not copyable.
     context(const context&) = delete;

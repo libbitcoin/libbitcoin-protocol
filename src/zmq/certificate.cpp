@@ -21,6 +21,7 @@
 
 #include <string>
 #include <zmq.h>
+#include <bitcoin/bitcoin.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -29,46 +30,29 @@ namespace zmq {
 static constexpr int32_t zmq_fail = -1;
 static constexpr size_t zmq_encoded_key_size = 40;
 
-certificate::certificate()
+certificate::certificate(bool setting)
 {
-    create(public_, private_);
+    create(public_, private_, setting);
 }
 
-certificate::certificate(const std::string& private_key)
+certificate::certificate(const hash_digest& private_key)
 {
-    if (private_key.empty())
-        create(public_, private_);
-    else if (derive(public_, private_key))
-        private_ = private_key;
+    std::string base85_private_key;
+
+    // This cannot fail but we handle anyway.
+    if (!encode_base85(base85_private_key, private_key))
+        return;
+
+    // If we successfully derive the public then set the private.
+    if (derive(public_, base85_private_key))
+        private_ = base85_private_key;
 }
 
-// TODO: create a fast override that doesn't loop (for ephemeral keygen).
-void certificate::create(std::string& out_public, std::string& out_private)
+certificate::certificate(const std::string& base85_private_key)
 {
-    // TODO: update settings loader so this isn't necessary.
-    // BUGBUG: this limitation weakens security by reducing key space.
-    const auto valid_setting = [](const std::string& key)
-    {
-        return key.find_first_of('#') == std::string::npos;
-    };
-
-    // Loop until neither key's base85 encoding includes the # character.
-    // This ensures that the value can be used in libbitcoin settings files.
-    for (uint8_t iteration = 0; iteration <= max_uint8; iteration++)
-    {
-        char public_key[zmq_encoded_key_size + 1] = { 0 };
-        char private_key[zmq_encoded_key_size + 1] = { 0 };
-
-        if (zmq_curve_keypair(public_key, private_key) == zmq_fail)
-            return;
-
-        if (valid_setting(public_key) && !valid_setting(private_key))
-        {
-            out_public = public_key;
-            out_private = private_key;
-            return;
-        }
-    }
+    // If we successfully derive the public then set the private.
+    if (derive(public_, base85_private_key))
+        private_ = base85_private_key;
 }
 
 bool certificate::derive(std::string& out_public,
@@ -84,6 +68,37 @@ bool certificate::derive(std::string& out_public,
 
     out_public = public_key;
     return true;
+}
+
+bool certificate::create(std::string& out_public, std::string& out_private,
+    bool setting)
+{
+    // TODO: update settings loader so this isn't necessary.
+    // BUGBUG: this limitation weakens security by reducing key space.
+    const auto ok_setting = [](const std::string& key)
+    {
+        return key.find_first_of('#') == std::string::npos;
+    };
+
+    // Loop until neither key's base85 encoding includes the # character.
+    // This ensures that the value can be used in libbitcoin settings files.
+    for (uint8_t attempt = 0; attempt <= max_uint8; attempt++)
+    {
+        char public_key[zmq_encoded_key_size + 1] = { 0 };
+        char private_key[zmq_encoded_key_size + 1] = { 0 };
+
+        if (zmq_curve_keypair(public_key, private_key) == zmq_fail)
+            return false;
+
+        if (!setting || (ok_setting(public_key) && ok_setting(private_key)))
+        {
+            out_public = public_key;
+            out_private = private_key;
+            return true;
+        }
+    }
+
+    return false;
 }
 
 certificate::operator const bool() const

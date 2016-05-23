@@ -21,6 +21,7 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_SOCKET_HPP
 
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
@@ -30,7 +31,9 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+/// This class is not thread safe.
 class BCP_API socket
+  : public enable_shared_from_base<socket>
 {
 public:
     /// The full set of socket roles defined by zeromq.
@@ -50,7 +53,10 @@ public:
         streamer
     };
 
-    // A locally unique idenfitier for this socket.
+    /// A shared socket pointer.
+    typedef std::shared_ptr<socket> ptr;
+
+    /// A locally unique idenfitier for this socket.
     typedef intptr_t identifier;
 
     socket();
@@ -62,7 +68,7 @@ public:
     void operator=(const socket&) = delete;
 
     /// Free socket resources.
-    ~socket();
+    virtual ~socket();
 
     /// True if there is an encapsultaed zeromq socket.
     operator const bool() const;

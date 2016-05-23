@@ -36,22 +36,31 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+/// This class is not thread safe.
+/// This class must be constructed as a shared pointer.
 class BCP_API authenticator
+  : public enable_shared_from_base<authenticator>
 {
 public:
+    /// A shared authenticator pointer.
+    typedef std::shared_ptr<authenticator> ptr;
+
     /// Start the ZAP monitor for the context.
     /// There may be only one authenticator per process (otherwise bridge).
-    authenticator(context& context);
+    authenticator(context& context, threadpool& threadpool);
 
     /// This class is not copyable.
     authenticator(const authenticator&) = delete;
     void operator=(const authenticator&) = delete;
 
-    /// Stop the ZAP monitor.
-    ~authenticator();
+    /// Start the ZAP monitor.
+    void authenticator::start();
 
-    /// True if the ZAP monitor started successfully.
-    operator const bool() const;
+    /// Stop the ZAP monitor.
+    void authenticator::stop();
+
+    /// True if the ZAP monitor is stopped.
+    bool authenticator::stopped() const;
 
     /// Allow clients with the following public keys (whitelist).
     void allow(const hash_digest& public_key);
@@ -64,19 +73,16 @@ public:
 
 private:
     void monitor();
-    bool allowed(const std::string& address);
-    bool allowed(const hash_digest& public_key);
+    bool allowed(const std::string& address) const;
+    bool allowed(const hash_digest& public_key) const;
 
     // These are not thread safe, they are protected by sequential access.
 
     poller poller_;
     socket socket_;
-    std::shared_ptr<std::thread> thread_;
-
-    bool require_key_;
-    std::map<hash_digest, bool> keys_;
-
+    dispatcher dispatch_;
     bool require_address_;
+    std::map<hash_digest, bool> keys_;
     std::map<std::string, bool> adresses_;
 
     // These are thread safe.

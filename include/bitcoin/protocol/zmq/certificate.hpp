@@ -21,8 +21,10 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_CERTIFICATE_HPP
 
 #include <string>
+#include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
 
+/// This class is not thread safe.
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
@@ -33,10 +35,14 @@ class BCP_API certificate
 {
 public:
     /// Construct a new certificate (can we inject randomness).
-    certificate();
+    /// The setting option reduces keyspace, disallowing '#' in text encoding.
+    certificate(bool setting=false);
 
     /// Construct a certificate from a private key (generates public key).
-    certificate(const std::string& private_key);
+    certificate(const hash_digest& private_key);
+
+    /// Construct a certificate from base85 private key (generates public key).
+    certificate(const std::string& base85_private_key);
 
     /// True if the certificate is valid.
     operator const bool() const;
@@ -44,12 +50,14 @@ public:
     /// The public key base85 text.
     const std::string& public_key() const;
 
-    /// The secret key base85 text.
+    /// The private key base85 text.
     const std::string& private_key() const;
 
 protected:
-    void create(std::string& out_public, std::string& out_private);
-    bool derive(std::string& out_public, const std::string& private_key);
+    static bool derive(std::string& out_public,
+        const std::string& private_key);
+    static bool create(std::string& out_public, std::string& out_private,
+        bool setting);
 
 private:
     std::string public_;

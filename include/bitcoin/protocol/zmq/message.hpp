@@ -28,7 +28,8 @@
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
-
+    
+/// This class is not thread safe.
 class BCP_API message
 {
 public:

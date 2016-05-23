@@ -20,17 +20,23 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_FRAME_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_FRAME_HPP
 
+#include <memory>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
+/// This class is not thread safe.
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
 class BCP_API frame
+  : public enable_shared_from_base<frame>
 {
 public:
+    /// A shared frame pointer.
+    typedef std::shared_ptr<frame> ptr;
+
     /// Construct a frame with no payload (for receiving).
     frame();
 
@@ -38,7 +44,7 @@ public:
     frame(const data_chunk& data);
 
     /// Free the frame's allocated memory.
-    ~frame();
+    virtual ~frame();
 
     /// This class is not copyable.
     frame(const frame&) = delete;
