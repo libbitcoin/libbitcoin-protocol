@@ -59,13 +59,13 @@ public:
 
 private:
     // zmq_pollitem_t alias, keeps zmq.h out of our headers.
-    typedef struct zmq_pollitem
+    typedef struct
     {
         void* socket;
         file_descriptor fd;
         short events;
         short revents;
-    };
+    } zmq_pollitem;
 
     typedef std::vector<zmq_pollitem> pollers;
 
