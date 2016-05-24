@@ -40,48 +40,45 @@ static const auto zap_endpoint = "inproc://zeromq.zap.01";
 
 static constexpr uint32_t polling_interval_milliseconds = 1;
 
-// The authenticator creates its own context, use to create secure sockets.
 authenticator::authenticator(threadpool& pool)
-  : socket_(context_, socket::role::router),
+  : socket_(*this, socket::role::router),
     dispatch_(pool, NAME),
-    require_address_(false),
-    interval_milliseconds_(polling_interval_milliseconds)
+    require_address_(false)
 {
-    BITCOIN_ASSERT(socket_);
+    // If the contained context is invalid so is the socket and bool override.
+    if (self() == nullptr)
+        return;
 
     // The authenticator establishes a well-known endpoint.
     // There may be only one such endpoint per process, tied to one context.
     poller_.add(socket_);
 }
 
-context& authenticator::context()
+bool authenticator::start()
 {
-    return context_;
-}
-
-void authenticator::start()
-{
-    if (!socket_.bind(zap_endpoint))
-        return;
+    if (self() == nullptr || !socket_.bind(zap_endpoint))
+        return false;
 
     // The dispatched thread closes when the monitor loop exits (stop).
     dispatch_.concurrent(
         std::bind(&authenticator::monitor,
-            shared_from_this()));
-}
+            shared_from_base<authenticator>()));
 
-/// This terminates the context, terminating all of its sockets.
-void authenticator::stop()
-{
-    context_.close();
+    return true;
 }
 
 // github.com/zeromq/rfc/blob/master/src/spec_27.c
 void authenticator::monitor()
 {
-    // The id can be zero (terminate) or socket_ id.
-    while (poller_.wait(interval_milliseconds_) == socket_.id())
+    // Ignore expired and keep looping, exiting the thread when terminated.
+    while (!poller_.terminated())
     {
+        const auto socket_id = poller_.wait(polling_interval_milliseconds);
+
+        // If the id doesn't match the poll is either terminated or expired.
+        if (socket_id == socket_.id())
+            continue;
+
         data_chunk origin;
         data_chunk delimiter;
         std::string version;
@@ -203,7 +200,7 @@ void authenticator::monitor()
         response.enqueue(userid);
         response.enqueue(metadata);
 
-        DEBUG_ONLY(const auto sent =) response.send(socket_);
+        DEBUG_ONLY(const auto sent = ) response.send(socket_);
         BITCOIN_ASSERT_MSG(sent, "Failed to send ZAP response.");
     }
 }

@@ -20,12 +20,9 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_AUTHENTICATOR_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_AUTHENTICATOR_HPP
 
-#include <atomic>
-#include <cstdint>
 #include <map>
 #include <memory>
 #include <string>
-#include <thread>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
@@ -39,7 +36,7 @@ namespace zmq {
 /// This class is not thread safe.
 /// This class must be constructed as a shared pointer.
 class BCP_API authenticator
-  : public enable_shared_from_base<authenticator>
+  : public context
 {
 public:
     /// A shared authenticator pointer.
@@ -49,18 +46,8 @@ public:
     /// There may be only one authenticator per process (otherwise bridge).
     authenticator(threadpool& threadpool);
 
-    /// This class is not copyable.
-    authenticator(const authenticator&) = delete;
-    void operator=(const authenticator&) = delete;
-
-    /// Get the context to which this authenticator applies.
-    zmq::context& context();
-
     /// Start the ZAP monitor.
-    void start();
-
-    /// Stop the ZAP monitor and all sockets on the context.
-    void stop();
+    bool start();
 
     /// Allow clients with the following public keys (whitelist).
     void allow(const hash_digest& public_key);
@@ -77,17 +64,12 @@ private:
     bool allowed(const hash_digest& public_key) const;
 
     // These are not thread safe, they are protected by sequential access.
-
-    zmq::context context_;
     socket socket_;
     poller poller_;
     dispatcher dispatch_;
     bool require_address_;
     std::map<hash_digest, bool> keys_;
     std::map<std::string, bool> adresses_;
-
-    // These are thread safe.
-    const uint32_t interval_milliseconds_;
 };
 
 } // namespace zmq
