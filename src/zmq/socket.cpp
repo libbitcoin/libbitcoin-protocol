@@ -169,11 +169,6 @@ void* socket::self()
     return socket_;
 }
 
-void* socket::self() const
-{
-    return socket_;
-}
-
 socket::identifier socket::id() const
 {
     return reinterpret_cast<socket::identifier>(socket_);

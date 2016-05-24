@@ -75,7 +75,6 @@ public:
 
     /// The underlying zeromq socket.
     void* self();
-    void* self() const;
 
     /// The socket identifier is an opaue correlation idenfier.
     identifier id() const;
