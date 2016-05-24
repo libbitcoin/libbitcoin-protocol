@@ -29,7 +29,7 @@
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
-    
+
 /// This class is not thread safe.
 class BCP_API poller
   : public enable_shared_from_base<poller>

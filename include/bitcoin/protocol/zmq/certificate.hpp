@@ -24,11 +24,11 @@
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
 
-/// This class is not thread safe.
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+/// This class is not thread safe.
 /// A simplified "certificate" class to manage a curve key pair.
 /// If valid the class always retains a consistent key pair.
 class BCP_API certificate

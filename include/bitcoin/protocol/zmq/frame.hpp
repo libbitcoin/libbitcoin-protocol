@@ -25,11 +25,11 @@
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
-/// This class is not thread safe.
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+/// This class is not thread safe.
 class BCP_API frame
   : public enable_shared_from_base<frame>
 {
