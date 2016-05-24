@@ -53,9 +53,10 @@ public:
     /// The underlying zeromq context.
     void* self();
 
-private:
-    bool destroy();
+    /// Close the context, terminating all socket activity.
+    bool close();
 
+private:
     int32_t threads_;
     void* self_;
 };

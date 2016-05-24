@@ -30,9 +30,6 @@ namespace zmq {
 static constexpr int32_t zmq_fail = -1;
 static constexpr int32_t zmq_io_threads = 1;
 
-// TODO: Each socket should maintain a smart pointer reference to the context.
-// TODO: When all sockets are closed the context is free to be destroyed.
-// TODO: Add call to zmq_term on the context that causes all sockets to close.
 context::context()
   : threads_(zmq_io_threads),
     self_(zmq_init(threads_))
@@ -41,16 +38,16 @@ context::context()
 
 context::~context()
 {
-    DEBUG_ONLY(const auto result =) destroy();
+    DEBUG_ONLY(const auto result =) close();
     BITCOIN_ASSERT(result);
 }
 
-bool context::destroy()
+bool context::close()
 {
     if (self_ == nullptr)
         return true;
 
-    // This terminates blocking operations but blocks until either each socket
+    // This aborts blocking operations but blocks here until either each socket
     // in the context is explicitly closed or its linger period is exceeded.
     return zmq_term(self_) != zmq_fail;
 }

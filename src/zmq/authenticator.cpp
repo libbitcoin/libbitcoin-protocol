@@ -40,11 +40,11 @@ static const auto zap_endpoint = "inproc://zeromq.zap.01";
 
 static constexpr uint32_t polling_interval_milliseconds = 1;
 
-authenticator::authenticator(context& context, threadpool& pool)
-  : socket_(context, socket::role::router),
+// The authenticator creates its own context, use to create secure sockets.
+authenticator::authenticator(threadpool& pool)
+  : socket_(context_, socket::role::router),
     dispatch_(pool, NAME),
     require_address_(false),
-    stopped_(true),
     interval_milliseconds_(polling_interval_milliseconds)
 {
     BITCOIN_ASSERT(socket_);
@@ -54,12 +54,15 @@ authenticator::authenticator(context& context, threadpool& pool)
     poller_.add(socket_);
 }
 
+context& authenticator::context()
+{
+    return context_;
+}
+
 void authenticator::start()
 {
     if (!socket_.bind(zap_endpoint))
         return;
-
-    stopped_.store(false);
 
     // The dispatched thread closes when the monitor loop exits (stop).
     dispatch_.concurrent(
@@ -67,149 +70,141 @@ void authenticator::start()
             shared_from_this()));
 }
 
-/// This terminates the monitor, allowing the threadpool to join.
+/// This terminates the context, terminating all of its sockets.
 void authenticator::stop()
 {
-    stopped_.store(true);
-}
-
-bool authenticator::stopped() const
-{
-    return stopped_.load();
+    context_.close();
 }
 
 // github.com/zeromq/rfc/blob/master/src/spec_27.c
 void authenticator::monitor()
 {
-    while (!stopped())
+    // The id can be zero (terminate) or socket_ id.
+    while (poller_.wait(interval_milliseconds_) == socket_.id())
     {
-        // The id can be zero (none) or socket_ id.
-        if (poller_.wait(interval_milliseconds_) == socket_.id())
+        data_chunk origin;
+        data_chunk delimiter;
+        std::string version;
+        std::string sequence;
+        std::string status_code;
+        std::string status_text;
+        std::string userid;
+        std::string metadata;
+
+        message request;
+        const auto received = request.receive(socket_);
+
+        if (!received || request.size() < 8)
         {
-            data_chunk origin;
-            data_chunk delimiter;
-            std::string version;
-            std::string sequence;
-            std::string status_code;
-            std::string status_text;
-            std::string userid;
-            std::string metadata;
+            status_code = "500";
+            status_text = "Internal error.";
+        }
+        else
+        {
+            origin = request.dequeue_data();
+            delimiter = request.dequeue_data();
+            version = request.dequeue_text();
+            sequence = request.dequeue_text();
+            const auto domain = request.dequeue_text();
+            const auto address = request.dequeue_text();
+            const auto identity = request.dequeue_text();
+            const auto mechanism = request.dequeue_text();
 
-            message request;
-            const auto received = request.receive(socket_);
-
-            if (!received || request.size() < 8)
+            // Each socket on the authenticated context must set a domain.
+            if (origin.empty() || !delimiter.empty() || version != "1.0" ||
+                sequence.empty() || domain.empty() || !identity.empty())
             {
                 status_code = "500";
                 status_text = "Internal error.";
             }
+            else if (!allowed(address))
+            {
+                // Address restrictons are independent of mechanisms.
+                status_code = "400";
+                status_text = "Address not enabled for access.";
+            }
             else
             {
-                origin = request.dequeue_data();
-                delimiter = request.dequeue_data();
-                version = request.dequeue_text();
-                sequence = request.dequeue_text();
-                const auto domain = request.dequeue_text();
-                const auto address = request.dequeue_text();
-                const auto identity = request.dequeue_text();
-                const auto mechanism = request.dequeue_text();
-
-                // Each socket on the authenticated context must set a domain.
-                if (origin.empty() || !delimiter.empty() || version != "1.0" ||
-                    sequence.empty() || domain.empty() || !identity.empty())
+                if (mechanism == "NULL")
                 {
-                    status_code = "500";
-                    status_text = "Internal error.";
-                }
-                else if (!allowed(address))
-                {
-                    // Address restrictons are independent of mechanisms.
-                    status_code = "400";
-                    status_text = "Address not enabled for access.";
-                }
-                else
-                {
-                    if (mechanism == "NULL")
+                    if (request.size() != 0)
                     {
-                        if (request.size() != 0)
-                        {
-                            status_code = "400";
-                            status_text = "Incorrect NULL parameterization.";
-                        }
-                        else
-                        {
-                            ////status_code = "200";
-                            ////status_text = "OK";
-                            ////userid = "anonymous";
-                            status_code = "400";
-                            status_text = "NULL mechanism not allowed.";
-                        }
-                    }
-                    else if (mechanism == "CURVE")
-                    {
-                        if (request.size() != 1)
-                        {
-                            status_code = "400";
-                            status_text = "Incorrect CURVE parameterization.";
-                        }
-                        else
-                        {
-                            hash_digest public_key;
-
-                            if (!request.dequeue(public_key))
-                            {
-                                status_code = "400";
-                                status_text = "Invalid public key.";
-                            }
-                            else if (!allowed(public_key))
-                            {
-                                status_code = "400";
-                                status_text = "Public key not authorized.";
-                            }
-                            else
-                            {
-                                status_code = "200";
-                                status_text = "OK";
-                                userid = "unspecified";
-                            }
-                        }
-                    }
-                    else if (mechanism == "PLAIN")
-                    {
-                        if (request.size() != 2)
-                        {
-                            status_code = "400";
-                            status_text = "Incorrect PLAIN parameterization.";
-                        }
-                        else
-                        {
-                            ////userid = request.dequeue_text();
-                            ////const auto password = request.dequeue_text();
-                            status_code = "400";
-                            status_text = "PLAIN mechanism not allowed.";
-                        }
+                        status_code = "400";
+                        status_text = "Incorrect NULL parameterization.";
                     }
                     else
                     {
+                        ////status_code = "200";
+                        ////status_text = "OK";
+                        ////userid = "anonymous";
                         status_code = "400";
-                        status_text = "Security mechanism not supported.";
+                        status_text = "NULL mechanism not allowed.";
                     }
                 }
+                else if (mechanism == "CURVE")
+                {
+                    if (request.size() != 1)
+                    {
+                        status_code = "400";
+                        status_text = "Incorrect CURVE parameterization.";
+                    }
+                    else
+                    {
+                        hash_digest public_key;
+
+                        if (!request.dequeue(public_key))
+                        {
+                            status_code = "400";
+                            status_text = "Invalid public key.";
+                        }
+                        else if (!allowed(public_key))
+                        {
+                            status_code = "400";
+                            status_text = "Public key not authorized.";
+                        }
+                        else
+                        {
+                            status_code = "200";
+                            status_text = "OK";
+                            userid = "unspecified";
+                        }
+                    }
+                }
+                else if (mechanism == "PLAIN")
+                {
+                    if (request.size() != 2)
+                    {
+                        status_code = "400";
+                        status_text = "Incorrect PLAIN parameterization.";
+                    }
+                    else
+                    {
+                        ////userid = request.dequeue_text();
+                        ////const auto password = request.dequeue_text();
+                        status_code = "400";
+                        status_text = "PLAIN mechanism not allowed.";
+                    }
+                }
+                else
+                {
+                    status_code = "400";
+                    status_text = "Security mechanism not supported.";
+                }
             }
-
-            message response;
-            response.enqueue(origin);
-            response.enqueue(delimiter);
-            response.enqueue(version);
-            response.enqueue(sequence);
-            response.enqueue(status_code);
-            response.enqueue(status_text);
-            response.enqueue(userid);
-            response.enqueue(metadata);
-
-            DEBUG_ONLY(const auto sent =) response.send(socket_);
-            BITCOIN_ASSERT_MSG(sent, "Failed to send ZAP response.");
         }
+
+        message response;
+        response.enqueue(origin);
+        response.enqueue(delimiter);
+        response.enqueue(version);
+        response.enqueue(sequence);
+        response.enqueue(status_code);
+        response.enqueue(status_text);
+        response.enqueue(userid);
+        response.enqueue(metadata);
+
+        DEBUG_ONLY(const auto sent =) response.send(socket_);
+        BITCOIN_ASSERT_MSG(sent, "Failed to send ZAP response.");
     }
 }
 

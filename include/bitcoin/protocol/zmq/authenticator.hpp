@@ -47,20 +47,20 @@ public:
 
     /// Start the ZAP monitor for the context.
     /// There may be only one authenticator per process (otherwise bridge).
-    authenticator(context& context, threadpool& threadpool);
+    authenticator(threadpool& threadpool);
 
     /// This class is not copyable.
     authenticator(const authenticator&) = delete;
     void operator=(const authenticator&) = delete;
 
+    /// Get the context to which this authenticator applies.
+    zmq::context& context();
+
     /// Start the ZAP monitor.
-    void authenticator::start();
+    void start();
 
-    /// Stop the ZAP monitor.
-    void authenticator::stop();
-
-    /// True if the ZAP monitor is stopped.
-    bool authenticator::stopped() const;
+    /// Stop the ZAP monitor and all sockets on the context.
+    void stop();
 
     /// Allow clients with the following public keys (whitelist).
     void allow(const hash_digest& public_key);
@@ -78,15 +78,15 @@ private:
 
     // These are not thread safe, they are protected by sequential access.
 
-    poller poller_;
+    zmq::context context_;
     socket socket_;
+    poller poller_;
     dispatcher dispatch_;
     bool require_address_;
     std::map<hash_digest, bool> keys_;
     std::map<std::string, bool> adresses_;
 
     // These are thread safe.
-    std::atomic<bool> stopped_;
     const uint32_t interval_milliseconds_;
 };
 
