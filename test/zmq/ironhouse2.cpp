@@ -28,17 +28,16 @@ void server_task(const std::string& server_private_key,
     const std::string& client_public_key,
     const config::authority& client_address)
 {
-    // Create a context for the server.
-    zmq::context context;
-    assert(context);
+    // Create a threadpool for the authenticator.
+    threadpool threadpool(1);
 
     // Establish the context's authentication whitelist.
-    zmq::authenticator authenticator(context);
+    zmq::authenticator authenticator(threadpool);
     authenticator.allow(client_address);
     authenticator.allow(client_public_key);
 
-    // Create a push socket using the server's authenticated context.
-    zmq::socket server(context, zmq::socket::role::pusher);
+    // Create a push socket using the authenticated context.
+    zmq::socket server(authenticator, zmq::socket::role::pusher);
     assert(server);
 
     // Configure the server to provide identity and require client identity.
@@ -57,14 +56,18 @@ void server_task(const std::string& server_private_key,
     result = message.send(server);
     assert(result);
 
-    // Give client time to complete (hack).
+    // Give client time to complete (normally would have external hook here).
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
+    // Stop the authentication context monitor and join the thread.
+    authenticator.stop();
+    threadpool.join();
 }
 
 void client_task(const std::string& client_private_key,
     const std::string& server_public_key)
 {
-    // Create a context for the client.
+    // Create an unauthenticated context for the client.
     zmq::context context;
     assert(context);
 
