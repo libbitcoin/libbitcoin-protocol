@@ -25,11 +25,11 @@
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
 
-/// This class is not thread safe.
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+/// This class is not thread safe.
 class BCP_API context
   : public enable_shared_from_base<context>
 {
@@ -53,8 +53,8 @@ public:
     /// The underlying zeromq context.
     void* self();
 
-    /// Close the context, terminating all socket activity.
-    bool close();
+    /// Stop all socket activity by closing the zeromq context.
+    bool stop();
 
 private:
     int32_t threads_;

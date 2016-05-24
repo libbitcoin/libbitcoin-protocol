@@ -38,13 +38,13 @@ context::context()
 
 context::~context()
 {
-    DEBUG_ONLY(const auto result =) close();
+    DEBUG_ONLY(const auto result =) stop();
     BITCOIN_ASSERT(result);
 }
 
-bool context::close()
+bool context::stop()
 {
-    if (self_ == nullptr)
+    if (self() == nullptr)
         return true;
 
     // This aborts blocking operations but blocks here until either each socket
