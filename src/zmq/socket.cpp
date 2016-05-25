@@ -50,7 +50,7 @@ socket::socket(void* zmq_socket)
 }
 
 socket::socket(context& context, role socket_role)
-    : socket(zmq_socket(context.self(), to_socket_type(socket_role)))
+  : socket(zmq_socket(context.self(), to_socket_type(socket_role)))
 {
     if (socket_ == nullptr)
         return;
