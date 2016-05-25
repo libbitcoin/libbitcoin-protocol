@@ -54,6 +54,9 @@ public:
     /// Add a socket to be polled (not thread safe).
     void add(socket& sock);
 
+    /// Remove all sockets from the poller. Must not be in wait call.
+    void clear();
+
     /// Wait specified milliseconds for any socket to receive, -1 is forever.
     socket::identifier wait(int32_t timeout_milliseconds);
 

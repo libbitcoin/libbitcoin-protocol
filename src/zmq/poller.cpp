@@ -45,6 +45,11 @@ void poller::add(socket& socket)
     pollers_.push_back(item);
 }
 
+void poller::clear()
+{
+    return pollers_.clear();
+}
+
 // BUGBUG: zeromq 4.2 has an overflow  bug in timer parameterization.
 // The timeout is typed as 'long' by zermq. This is 32 bit on windows and
 // actually less (potentially 1000 or 1 second) on other platforms.
