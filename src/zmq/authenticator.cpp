@@ -113,7 +113,7 @@ void authenticator::monitor()
             }
             else if (!allowed(address))
             {
-                // Address restrictons are independent of mechanisms.
+                // Address restrictions are independent of mechanisms.
                 status_code = "400";
                 status_text = "Address not enabled for access.";
             }
