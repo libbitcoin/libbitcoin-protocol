@@ -76,7 +76,7 @@ void authenticator::monitor()
         const auto socket_id = poller_.wait(polling_interval_milliseconds);
 
         // If the id doesn't match the poll is either terminated or expired.
-        if (socket_id == socket_.id())
+        if (socket_id != socket_.id())
             continue;
 
         data_chunk origin;
@@ -200,9 +200,12 @@ void authenticator::monitor()
         response.enqueue(userid);
         response.enqueue(metadata);
 
-        DEBUG_ONLY(const auto sent = ) response.send(socket_);
+        DEBUG_ONLY(const auto sent =) response.send(socket_);
         BITCOIN_ASSERT_MSG(sent, "Failed to send ZAP response.");
     }
+
+    DEBUG_ONLY(const auto stopped =) socket_.stop();
+    BITCOIN_ASSERT_MSG(stopped, "Failed to close socket.");
 }
 
 bool authenticator::allowed(const hash_digest& public_key) const
