@@ -34,7 +34,6 @@ namespace protocol {
 namespace zmq {
 
 /// This class is not thread safe.
-/// This class must be constructed as a shared pointer.
 class BCP_API authenticator
   : public context
 {
@@ -43,6 +42,7 @@ public:
     typedef std::shared_ptr<authenticator> ptr;
 
     /// Start the ZAP monitor for the context.
+    /// The threadpool must be joined prior to destruct.
     /// There may be only one authenticator per process (otherwise bridge).
     authenticator(threadpool& threadpool);
 
