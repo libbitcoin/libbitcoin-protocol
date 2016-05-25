@@ -46,8 +46,7 @@ frame::frame(const data_chunk& data)
 
 frame::~frame()
 {
-    DEBUG_ONLY(const auto result =) destroy();
-    BITCOIN_ASSERT(result);
+    destroy();
 }
 
 // static

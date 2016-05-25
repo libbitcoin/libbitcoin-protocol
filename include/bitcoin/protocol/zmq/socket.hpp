@@ -106,16 +106,17 @@ public:
     /// Apply the keys of the specified certificate to the socket.
     bool set_certificate(const certificate& certificate);
 
+    /// Close the socket.
+    bool stop();
+
 private:
     static int to_socket_type(role socket_role);
     bool set(int32_t option, int32_t value);
     bool set(int32_t option, const std::string& value);
-    bool destroy();
 
     void* socket_;
     const int32_t send_buffer_;
     const int32_t receive_buffer_;
-    const int32_t linger_milliseconds_;
 };
 
 } // namespace zmq

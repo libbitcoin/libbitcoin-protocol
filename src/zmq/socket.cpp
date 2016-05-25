@@ -33,6 +33,7 @@ static constexpr int32_t zmq_true = 1;
 static constexpr int32_t zmq_fail = -1;
 static constexpr int32_t zmq_send_buffer = 1000;
 static constexpr int32_t zmq_receive_buffer = 1000;
+static constexpr int32_t zmq_linger_milliseconds = 10;
 
 socket::socket()
   : socket(nullptr)
@@ -44,25 +45,26 @@ socket::socket()
 socket::socket(void* zmq_socket)
   : socket_(zmq_socket),
     send_buffer_(zmq_send_buffer),
-    receive_buffer_(zmq_receive_buffer),
-    linger_milliseconds_(0)
+    receive_buffer_(zmq_receive_buffer)
 {
 }
 
 socket::socket(context& context, role socket_role)
-  : socket(zmq_socket(context.self(), to_socket_type(socket_role)))
+    : socket(zmq_socket(context.self(), to_socket_type(socket_role)))
 {
     if (socket_ == nullptr)
         return;
 
-    if (!set(ZMQ_SNDHWM, send_buffer_) || !set(ZMQ_RCVHWM, receive_buffer_))
-        destroy();
+    if (!set(ZMQ_SNDHWM, send_buffer_) || !set(ZMQ_RCVHWM, receive_buffer_) ||
+        !set(ZMQ_LINGER, zmq_linger_milliseconds))
+    {
+        stop();
+    }
 }
 
 socket::~socket()
 {
-    DEBUG_ONLY(const auto result =) destroy();
-    BITCOIN_ASSERT(result);
+    stop();
 }
 
 int32_t socket::to_socket_type(role socket_role)
@@ -85,22 +87,20 @@ int32_t socket::to_socket_type(role socket_role)
     }
 }
 
-bool socket::destroy()
+bool socket::stop()
 {
     if (socket_ == nullptr)
         return false;
 
-    const auto linger = set(ZMQ_LINGER, linger_milliseconds_);
     const auto closed = zmq_close(socket_) != zmq_fail;
     socket_ = nullptr;
-
-    return linger && closed;
+    return closed;
 }
 
 void socket::assign(socket&& other)
 {
     // Free any existing socket resources.
-    destroy();
+    stop();
 
     // Assume ownership of the other socket's state.
     socket_ = other.socket_;

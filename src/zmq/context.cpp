@@ -38,8 +38,7 @@ context::context()
 
 context::~context()
 {
-    DEBUG_ONLY(const auto result =) stop();
-    BITCOIN_ASSERT(result);
+    stop();
 }
 
 bool context::stop()
@@ -48,7 +47,8 @@ bool context::stop()
         return true;
 
     // This aborts blocking operations but blocks here until either each socket
-    // in the context is explicitly closed or its linger period is exceeded.
+    // in the context is explicitly closed.
+    // It is possible for this to fail do to signal interrupt.
     return zmq_term(self_) != zmq_fail;
 }
 
