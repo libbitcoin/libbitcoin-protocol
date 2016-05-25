@@ -60,9 +60,9 @@ bool authenticator::start()
         return false;
 
     // The dispatched thread closes when the monitor loop exits (stop).
+    // This requires that the threadpool be joined prior to this destruct.
     dispatch_.concurrent(
-        std::bind(&authenticator::monitor,
-            shared_from_base<authenticator>()));
+        std::bind(&authenticator::monitor, this));
 
     return true;
 }

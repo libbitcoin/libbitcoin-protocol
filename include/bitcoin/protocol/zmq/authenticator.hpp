@@ -20,9 +20,9 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_AUTHENTICATOR_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_AUTHENTICATOR_HPP
 
-#include <map>
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
@@ -34,7 +34,6 @@ namespace protocol {
 namespace zmq {
 
 /// This class is not thread safe.
-/// This class must be constructed as a shared pointer.
 class BCP_API authenticator
   : public context
 {
@@ -43,6 +42,7 @@ public:
     typedef std::shared_ptr<authenticator> ptr;
 
     /// Start the ZAP monitor for the context.
+    /// The threadpool must be joined prior to destruct.
     /// There may be only one authenticator per process (otherwise bridge).
     authenticator(threadpool& threadpool);
 
@@ -68,8 +68,8 @@ private:
     poller poller_;
     dispatcher dispatch_;
     bool require_address_;
-    std::map<hash_digest, bool> keys_;
-    std::map<std::string, bool> adresses_;
+    std::unordered_map<hash_digest, bool> keys_;
+    std::unordered_map<std::string, bool> adresses_;
 };
 
 } // namespace zmq
