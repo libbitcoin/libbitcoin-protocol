@@ -20,7 +20,9 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_POLLER_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_POLLER_HPP
 
-#include <czmq.h>
+#include <cstdint>
+#include <memory>
+#include <vector>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
@@ -28,32 +30,52 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+/// This class is not thread safe.
 class BCP_API poller
+  : public enable_shared_from_base<poller>
 {
 public:
-    template <typename... SocketArgs>
-    poller(SocketArgs&&... sockets);
+    /// A shared poller pointer.
+    typedef std::shared_ptr<poller> ptr;
+
+    /// Construct an empty poller (sockets must be added).
+    poller();
+
+    /// This class is not copyable.
     poller(const poller&) = delete;
-    ~poller();
+    void operator=(const poller&) = delete;
 
-    operator const bool() const;
+    /// True if the timeout occurred.
+    bool expired() const;
 
-    zpoller_t* self();
+    /// True if the connection is closed.
+    bool terminated() const;
 
+    /// Add a socket to be polled (not thread safe).
     void add(socket& sock);
-    socket wait(int timeout);
-    bool expired();
-    bool terminated();
+
+    /// Wait specified milliseconds for any socket to receive, -1 is forever.
+    socket::identifier wait(int32_t timeout_milliseconds);
 
 private:
-    zpoller_t* self_;
+    // zmq_pollitem_t alias, keeps zmq.h out of our headers.
+    typedef struct
+    {
+        void* socket;
+        file_descriptor fd;
+        short events;
+        short revents;
+    } zmq_pollitem;
+
+    typedef std::vector<zmq_pollitem> pollers;
+
+    bool expired_;
+    bool terminated_;
+    pollers pollers_;
 };
 
 } // namespace zmq
 } // namespace protocol
 } // namespace libbitcoin
 
-#include <bitcoin/protocol/zmq/impl/poller.ipp>
-
 #endif
-

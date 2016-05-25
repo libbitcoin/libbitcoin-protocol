@@ -19,94 +19,101 @@
  */
 #include <string>
 #include <thread>
-#include <czmq.h>
 #include <bitcoin/protocol.hpp>
 
 using namespace bc;
 using namespace bc::protocol;
 
-////void client_task(const std::string& server_public_text)
-////{
-////    // Load our persistent certificate from disk
-////    zmq::certificate client_cert("client_cert.txt");
-////    assert(client_cert);
-////
-////    // Create a pull socket.
-////    zmq::context context;
-////    assert(context);
-////    zmq::socket client(context, ZMQ_PULL);
-////    assert(client);
-////
-////    // Configure the client to provide a certificate and use the server key.
-////    client_cert.apply(client);
-////    client.set_curve_serverkey(server_public_text);
-////
-////    // Connect to the server.
-////    int rc = client.connect("tcp://127.0.0.1:9000");
-////    assert(rc == 0);
-////
-////    // Wait for our message, which signals the test was successful.
-////    zmq::message msg;
-////    msg.receive(client);
-////    assert(msg.parts().size() == 1);
-////    assert((msg.parts()[0] == data_chunk{ { 0xde, 0xad, 0xbe, 0xef } }));
-////
-////    puts("Ironhouse test OK");
-////}
-////
-////void server_task(zmq::certificate& server_cert)
-////{
-////    zmq::context context;
-////    assert(context);
-////
-////    // Start the authenticator on the context and tell it authenticate clients
-////    // via the certificates stored in the .curve directory.
-////    zmq::authenticator authenticator(context);
-////    authenticator.set_verbose(true);
-////    authenticator.allow("127.0.0.1");
-////    authenticator.configure_curve("*", ".curve");
-////
-////    // Bind a push socket to the authenticated context.
-////    zmq::socket server(context, ZMQ_PUSH);
-////    assert(server);
-////    server_cert.apply(server);
-////    server.set_curve_server();
-////    int rc = server.bind("tcp://*:9000");
-////    assert(rc != -1);
-////
-////    //  Send our test message, just once
-////    zmq::message msg;
-////    msg.append({ { 0xde, 0xad, 0xbe, 0xef } });
-////    msg.send(server);
-////
-////    zclock_sleep(200);
-////}
-////
-////int main()
-////{
-////    // Create the certificate store directory.
-////    int rc = zsys_dir_create(".curve");
-////    assert(rc == 0);
-////
-////    // Create the client certificate.
-////    zmq::certificate client_cert;
-////
-////    // Save the client certificate.
-////    rc = client_cert.save("client_cert.txt");
-////    assert(rc == 0);
-////
-////    // Save the client public certificate.
-////    rc = client_cert.save_public(".curve/test_cert.pub");
-////    assert(rc == 0);
-////
-////    // Create the server certificate.
-////    zmq::certificate server_cert;
-////
-////    // Start the two detached threads, each with own ZeroMQ context.
-////    std::thread server_thread(server_task, std::ref(server_cert));
-////    std::thread client_thread(client_task, server_cert.public_text());
-////
-////    client_thread.join();
-////    server_thread.join();
-////    return 0;
-////}
+void server_task(const std::string& server_private_key,
+    const std::string& client_public_key,
+    const config::authority& client_address)
+{
+    // Create a threadpool for the authenticator.
+    threadpool threadpool(1);
+
+    // Establish the context's authentication whitelist.
+    zmq::authenticator authenticator(threadpool);
+    authenticator.allow(client_address);
+    authenticator.allow(client_public_key);
+
+    // Create a push socket using the authenticated context.
+    zmq::socket server(authenticator, zmq::socket::role::pusher);
+    assert(server);
+
+    // Configure the server to provide identity and require client identity.
+    auto result = server.set_private_key(server_private_key);
+    assert(result);
+    result = server.set_curve_server();
+    assert(result);
+
+    // Bind the server to a tcp port on all local addresses.
+    result = server.bind("tcp://*:9000");
+    assert(result);
+
+    //  Send the test message.
+    zmq::message message;
+    message.enqueue("helllo world!");
+    result = message.send(server);
+    assert(result);
+
+    // Give client time to complete (normally would have external hook here).
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
+    // Stop the authentication context monitor and join the thread.
+    authenticator.stop();
+    threadpool.join();
+}
+
+void client_task(const std::string& client_private_key,
+    const std::string& server_public_key)
+{
+    // Create an unauthenticated context for the client.
+    zmq::context context;
+    assert(context);
+
+    // Bind a pull socket to the client context.
+    zmq::socket client(context, zmq::socket::role::puller);
+    assert(client);
+
+    // Configure the client to provide identity and require server identity.
+    auto result = client.set_private_key(client_private_key);
+    assert(result);
+    result = client.set_curve_client(server_public_key);
+    assert(result);
+
+    // Connect to the server's tcp port on the local host.
+    result = client.connect("tcp://127.0.0.1:9000");
+    assert(result);
+
+    // Wait for the message, which signals the test was successful.
+    zmq::message message;
+    result = message.receive(client);
+    assert(result);
+    assert(message.dequeue_text() == "helllo world!");
+
+    puts("Ironhouse test OK");
+}
+
+int ironhouse2_example()
+{
+    static const auto localhost = config::authority("127.0.0.1");
+
+    // Create client and server certificates (generated secrets).
+    zmq::certificate client_cert;
+    assert(client_cert);
+    zmq::certificate server_cert;
+    assert(server_cert);
+
+    // Start a server, require the client cert and localhost address.
+    std::thread server_thread(server_task, server_cert.private_key(),
+        client_cert.public_key(), localhost);
+
+    // Start a client, allows connections only to server with cert.
+    std::thread client_thread(client_task, client_cert.private_key(),
+        server_cert.public_key());
+
+    // Wait for thread completions.
+    client_thread.join();
+    server_thread.join();
+    return 0;
+}

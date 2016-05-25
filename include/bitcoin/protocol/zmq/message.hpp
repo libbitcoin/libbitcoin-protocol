@@ -20,9 +20,8 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_MESSAGE_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_MESSAGE_HPP
 
-#include <cstdint>
-#include <vector>
-#include <czmq.h>
+#include <queue>
+#include <string>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
@@ -30,19 +29,55 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+/// This class is not thread safe.
 class BCP_API message
 {
 public:
-    void append(const data_chunk& part);
-    void append(data_chunk&& part);
+    /// Add an empty message part to the outgoing message.
+    void enqueue();
 
-    const data_stack& parts() const;
+    /// Add an interable message part to the outgoing message.
+    template <typename Iterable>
+    void enqueue(const Iterable& value)
+    {
+        queue_.emplace(to_chunk(value));
+    }
 
-    bool send(socket& sock);
-    bool receive(socket& sock);
+    /// Add a message part to the outgoing message.
+    template <typename Unsigned>
+    void enqueue_little_endian(Unsigned value)
+    {
+        enqueue(to_little_endian<Unsigned>(value));
+    }
+
+    /// Remove a message part from the top of the queue, empty if empty queue.
+    data_chunk dequeue_data();
+    std::string dequeue_text();
+
+    /// Remove a message part from the top of the queue, false if empty queue.
+    bool dequeue();
+    bool dequeue(uint32_t& value);
+    bool dequeue(data_chunk& value);
+    bool dequeue(std::string& value);
+    bool dequeue(hash_digest& value);
+
+    /// Clear the queue of message parts.
+    void clear();
+
+    /// True if the queue is empty.
+    bool empty() const;
+
+    /// The number of items on the queue.
+    size_t size() const;
+
+    /// Send the message in parts. If a send fails the unsent parts remain.
+    bool send(socket& socket);
+
+    /// Receve a message (clears the queue first).
+    bool receive(socket& socket);
 
 private:
-    data_stack parts_;
+    std::queue<data_chunk> queue_;
 };
 
 } // namespace zmq

@@ -21,39 +21,47 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_CERTIFICATE_HPP
 
 #include <string>
-#include <czmq.h>
+#include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
-#include <bitcoin/protocol/zmq/socket.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+/// This class is not thread safe.
+/// A simplified "certificate" class to manage a curve key pair.
+/// If valid the class always retains a consistent key pair.
 class BCP_API certificate
 {
 public:
-    certificate();
-    certificate(zcert_t* self);
-    certificate(certificate&& other);
-    certificate(const std::string& filename);
-    certificate(const certificate&) = delete;
-    ~certificate();
+    /// Construct a new certificate (can we inject randomness).
+    /// The setting option reduces keyspace, disallowing '#' in text encoding.
+    certificate(bool setting=false);
 
+    /// Construct a certificate from a private key (generates public key).
+    certificate(const hash_digest& private_key);
+
+    /// Construct a certificate from base85 private key (generates public key).
+    certificate(const std::string& base85_private_key);
+
+    /// True if the certificate is valid.
     operator const bool() const;
 
-    zcert_t* self();
+    /// The public key base85 text.
+    const std::string& public_key() const;
 
-    void reset(zcert_t* self);
-    void reset(const std::string& filename);
-    void set_meta(const std::string& name, const std::string& value);
-    int save(const std::string& filename);
-    int save_public(const std::string& filename);
-    int save_secret(const std::string& filename);
-    std::string public_text() const;
-    void apply(socket& sock);
+    /// The private key base85 text.
+    const std::string& private_key() const;
+
+protected:
+    static bool derive(std::string& out_public,
+        const std::string& private_key);
+    static bool create(std::string& out_public, std::string& out_private,
+        bool setting);
 
 private:
-    zcert_t* self_;
+    std::string public_;
+    std::string private_;
 };
 
 } // namespace zmq

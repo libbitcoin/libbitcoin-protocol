@@ -20,98 +20,100 @@
 #include <bitcoin/protocol/zmq/certificate.hpp>
 
 #include <string>
-#include <czmq.h>
-#include <bitcoin/protocol/zmq/socket.hpp>
+#include <zmq.h>
+#include <bitcoin/bitcoin.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-certificate::certificate()
-  : self_(zcert_new())
+static constexpr int32_t zmq_fail = -1;
+static constexpr size_t zmq_encoded_key_size = 40;
+
+certificate::certificate(bool setting)
 {
-    // May be invalid (unlikely).
-}
-certificate::certificate(zcert_t* self)
-  : self_(self)
-{
-    // May be invalid.
+    create(public_, private_, setting);
 }
 
-certificate::certificate(certificate&& other)
-  : self_(other.self_)
+certificate::certificate(const hash_digest& private_key)
 {
-    // May be invalid.
-    // Transfer of pointer ownership.
-    other.self_ = nullptr;
+    std::string base85_private_key;
+
+    // This cannot fail but we handle anyway.
+    if (!encode_base85(base85_private_key, private_key))
+        return;
+
+    // If we successfully derive the public then set the private.
+    if (derive(public_, base85_private_key))
+        private_ = base85_private_key;
 }
 
-certificate::certificate(const std::string& filename)
-  : self_(zcert_load(filename.c_str()))
+certificate::certificate(const std::string& base85_private_key)
 {
-    // May be invalid.
+    // If we successfully derive the public then set the private.
+    if (derive(public_, base85_private_key))
+        private_ = base85_private_key;
 }
-certificate::~certificate()
+
+bool certificate::derive(std::string& out_public,
+    const std::string& private_key)
 {
-    reset(nullptr);
+    if (private_key.size() != zmq_encoded_key_size)
+        return false;
+
+    char public_key[zmq_encoded_key_size + 1] = { 0 };
+
+    if (zmq_curve_public(public_key, private_key.data()) == zmq_fail)
+        return false;
+
+    out_public = public_key;
+    return true;
+}
+
+bool certificate::create(std::string& out_public, std::string& out_private,
+    bool setting)
+{
+    // TODO: update settings loader so this isn't necessary.
+    // BUGBUG: this limitation weakens security by reducing key space.
+    const auto ok_setting = [](const std::string& key)
+    {
+        return key.find_first_of('#') == std::string::npos;
+    };
+
+    // Loop until neither key's base85 encoding includes the # character.
+    // This ensures that the value can be used in libbitcoin settings files.
+    for (uint8_t attempt = 0; attempt <= max_uint8; attempt++)
+    {
+        char public_key[zmq_encoded_key_size + 1] = { 0 };
+        char private_key[zmq_encoded_key_size + 1] = { 0 };
+
+        if (zmq_curve_keypair(public_key, private_key) == zmq_fail)
+            return false;
+
+        if (!setting || (ok_setting(public_key) && ok_setting(private_key)))
+        {
+            out_public = public_key;
+            out_private = private_key;
+            return true;
+        }
+    }
+
+    return false;
 }
 
 certificate::operator const bool() const
 {
-    return self_ != nullptr;
+    return !public_.empty();
 }
 
-void certificate::reset(zcert_t* self)
+const std::string& certificate::public_key() const
 {
-    if (self_ != nullptr)
-        zcert_destroy(&self_);
-
-    // May be invalid.
-    self_ = self;
+    return public_;
 }
 
-void certificate::reset(const std::string& filename)
+const std::string& certificate::private_key() const
 {
-    if (self_ != nullptr)
-        zcert_destroy(&self_);
-
-    // May be invalid.
-    self_ = zcert_load(filename.c_str());
-}
-
-zcert_t* certificate::self()
-{
-    return self_;
-}
-
-void certificate::set_meta(const std::string& name, const std::string& value)
-{
-    zcert_set_meta(self_, name.c_str(), value.c_str());
-}
-
-int certificate::save(const std::string& filename)
-{
-    return zcert_save(self_, filename.c_str());
-}
-
-int certificate::save_public(const std::string& filename)
-{
-    return zcert_save_public(self_, filename.c_str());
-}
-
-int certificate::save_secret(const std::string& filename)
-{
-    return zcert_save_secret(self_, filename.c_str());
-}
-
-std::string certificate::public_text() const
-{
-    return std::string(zcert_public_txt(self_));
-}
-
-void certificate::apply(socket& sock)
-{
-    zcert_apply(self_, sock.self());
+    return private_;
 }
 
 } // namespace zmq

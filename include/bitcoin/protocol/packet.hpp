@@ -39,9 +39,9 @@ public:
     void set_destination(const data_chunk& destination);
 
     bool receive(zmq::socket& socket);
-    bool receive(const std::shared_ptr<zmq::socket>& socket);
+    ////bool receive(const std::shared_ptr<zmq::socket>& socket);
     bool send(zmq::socket& socket);
-    bool send(const std::shared_ptr<zmq::socket>& socket);
+    ////bool send(const std::shared_ptr<zmq::socket>& socket);
 
 protected:
     virtual bool encode_payload(zmq::message& message) const = 0;

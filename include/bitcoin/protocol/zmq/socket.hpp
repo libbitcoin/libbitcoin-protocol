@@ -20,40 +20,103 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_SOCKET_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_SOCKET_HPP
 
+#include <cstdint>
+#include <memory>
 #include <string>
 #include <bitcoin/protocol/define.hpp>
+#include <bitcoin/protocol/zmq/certificate.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+/// This class is not thread safe.
 class BCP_API socket
+  : public enable_shared_from_base<socket>
 {
 public:
+    /// The full set of socket roles defined by zeromq.
+    enum class role
+    {
+        pair,
+        publisher,
+        subscriber,
+        requester,
+        replier,
+        dealer,
+        router,
+        puller,
+        pusher,
+        extended_publisher,
+        extended_subscriber,
+        streamer
+    };
+
+    /// A shared socket pointer.
+    typedef std::shared_ptr<socket> ptr;
+
+    /// A locally unique idenfitier for this socket.
+    typedef intptr_t identifier;
+
     socket();
-    socket(void* self);
-    socket(socket&& other);
+    socket(void* zmq_socket);
+    socket(context& context, role socket_role);
+
+    /// This class is not const copyable.
     socket(const socket&) = delete;
-    socket(context& context, int type);
+    void operator=(const socket&) = delete;
 
+    /// Free socket resources.
+    virtual ~socket();
+
+    /// True if there is an encapsultaed zeromq socket.
     operator const bool() const;
-    bool operator==(const socket& other) const;
-    bool operator!=(const socket& other) const;
 
+    /// The underlying zeromq socket.
     void* self();
-    void* self() const;
 
-    void destroy(context& context);
-    int bind(const std::string& address);
-    int connect(const std::string& address);
+    /// The socket identifier is an opaue correlation idenfier.
+    identifier id() const;
 
-    void set_curve_server();
-    void set_curve_serverkey(const std::string& key);
-    void set_zap_domain(const std::string& domain);
+    /// Transfer ownership of this socket to another.
+    void assign(socket&& other);
+
+    /// Bind the socket to the specified local address.
+    bool bind(const std::string& address);
+
+    /// Connect the socket to the specified remote address.
+    bool connect(const std::string& address);
+
+    /// Sets the domain for ZAP (ZMQ RFC 27) authentication.
+    bool set_authentication_domain(const std::string& domain);
+
+    /// Configure the socket as a curve server (also set the secrety key).
+    bool set_curve_server();
+
+    /// Configure the socket as client to the curve server.
+    bool set_curve_client(const std::string& server_public_key);
+
+    /// Apply the specified public key to the socket.
+    bool set_public_key(const std::string& key);
+
+    /// Apply the specified private key to the socket.
+    bool set_private_key(const std::string& key);
+
+    /// Apply the keys of the specified certificate to the socket.
+    bool set_certificate(const certificate& certificate);
+
+    /// Close the socket.
+    bool stop();
 
 private:
-    void* self_;
+    static int to_socket_type(role socket_role);
+    bool set(int32_t option, int32_t value);
+    bool set(int32_t option, const std::string& value);
+
+    void* socket_;
+    const int32_t send_buffer_;
+    const int32_t receive_buffer_;
 };
 
 } // namespace zmq

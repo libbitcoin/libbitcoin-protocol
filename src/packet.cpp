@@ -49,65 +49,42 @@ bool packet::receive(zmq::socket& socket)
 {
     zmq::message message;
 
-    if (!message.receive(socket))
+    if (!message.receive(socket) || message.empty())
         return false;
 
-    const auto& parts = message.parts();
+    // Optional - ROUTER sockets strip this.
+    if (message.size() > 2)
+        origin_ = message.dequeue_data();
 
-    if (parts.size() == 0)
-        return true;
+    // Remove empty delimiter frame.
+    message.dequeue();
 
-    auto it = parts.begin();
-
-    // Extract reply address(es)
-    if (parts.size() > 2)
-    {
-        origin_ = *it;
-        ++it;
-    }
-
-    // Confirm empty delimiter frame
-    ++it;
-
-    // Parse request payload from data frame
-    if (decode_payload(*it))
-        ++it;
-
-    BITCOIN_ASSERT(it == parts.end());
-    return true;
+    return decode_payload(message.dequeue_data()) && message.empty();
 }
 
-bool packet::receive(const std::shared_ptr<zmq::socket>& socket)
-{
-    if (socket == nullptr)
-        return false;
-
-    return receive(*(socket.get()));
-}
+////bool packet::receive(const std::shared_ptr<zmq::socket>& socket)
+////{
+////    return (socket != nullptr) && receive(*(socket.get()));
+////}
 
 bool packet::send(zmq::socket& socket)
 {
     zmq::message message;
 
+    // Optionally encode the destination.
     if (!destination_.empty())
-        message.append(destination_);
+        message.enqueue(destination_);
 
-    message.append({});
+    // Add empty delimiter frame.
+    message.enqueue(data_chunk{});
 
-    if (!encode_payload(message))
-        return false;
-
-    message.send(socket);
-    return true;
+    return encode_payload(message) && message.send(socket);
 }
 
-bool packet::send(const std::shared_ptr<zmq::socket>& socket)
-{
-    if (socket == nullptr)
-        return false;
-
-    return send(*(socket.get()));
-}
+////bool packet::send(const std::shared_ptr<zmq::socket>& socket)
+////{
+////    return (socket != nullptr) && send(*(socket.get()));
+////}
 
 }
 }

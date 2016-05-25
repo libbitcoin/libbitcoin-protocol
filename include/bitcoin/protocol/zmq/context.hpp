@@ -20,26 +20,45 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_CONTEXT_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_CONTEXT_HPP
 
-#include <czmq.h>
+#include <cstdint>
+#include <memory>
+#include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+/// This class is not thread safe.
 class BCP_API context
+  : public enable_shared_from_base<context>
 {
 public:
-    context();
-    context(const context&) = delete;
-    ~context();
+    /// A shared context pointer.
+    typedef std::shared_ptr<context> ptr;
 
+    /// Construct a context.
+    context();
+
+    /// Cause all sockets of this context to close.
+    virtual ~context();
+
+    /// This class is not copyable.
+    context(const context&) = delete;
+    void operator=(const context&) = delete;
+
+    /// True if the context construction was successful.
     operator const bool() const;
 
-    zctx_t* self();
+    /// The underlying zeromq context.
+    void* self();
+
+    /// Stop all socket activity by closing the zeromq context.
+    bool stop();
 
 private:
-    zctx_t* self_;
+    int32_t threads_;
+    void* self_;
 };
 
 } // namespace zmq

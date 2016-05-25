@@ -19,94 +19,164 @@
  */
 #include <bitcoin/protocol/zmq/socket.hpp>
 
-#include <czmq.h>
+#include <cstdint>
+#include <string>
+#include <zmq.h>
 #include <bitcoin/bitcoin.hpp>
+#include <bitcoin/protocol/zmq/certificate.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+static constexpr int32_t zmq_true = 1;
+static constexpr int32_t zmq_fail = -1;
+static constexpr int32_t zmq_send_buffer = 1000;
+static constexpr int32_t zmq_receive_buffer = 1000;
+static constexpr int32_t zmq_linger_milliseconds = 10;
+
 socket::socket()
-  : self_(nullptr)
+  : socket(nullptr)
 {
 }
 
-socket::socket(void* self)
-  : self_(self)
+// zmq_term terminates blocking operations but blocks until either each socket
+// in the context has been explicitly closed or the linger period is exceeded.
+socket::socket(void* zmq_socket)
+  : socket_(zmq_socket),
+    send_buffer_(zmq_send_buffer),
+    receive_buffer_(zmq_receive_buffer)
 {
 }
 
-socket::socket(socket&& other)
+socket::socket(context& context, role socket_role)
+    : socket(zmq_socket(context.self(), to_socket_type(socket_role)))
 {
-    BITCOIN_ASSERT(self_ == nullptr);
-    self_ = other.self_;
-    other.self_ = nullptr;
+    if (socket_ == nullptr)
+        return;
+
+    if (!set(ZMQ_SNDHWM, send_buffer_) || !set(ZMQ_RCVHWM, receive_buffer_) ||
+        !set(ZMQ_LINGER, zmq_linger_milliseconds))
+    {
+        stop();
+    }
 }
 
-socket::socket(context& context, int type)
+socket::~socket()
 {
-    self_ = zsocket_new(context.self(), type);
+    stop();
 }
 
-socket::operator const bool() const
+int32_t socket::to_socket_type(role socket_role)
 {
-    return self_ != nullptr;
+    switch (socket_role)
+    {
+        case role::pair: return ZMQ_PAIR;
+        case role::publisher: return ZMQ_PUB;
+        case role::subscriber: return ZMQ_SUB;
+        case role::requester: return ZMQ_REQ;
+        case role::replier: return ZMQ_REP;
+        case role::dealer: return ZMQ_DEALER;
+        case role::router: return ZMQ_ROUTER;
+        case role::puller: return ZMQ_PULL;
+        case role::pusher: return ZMQ_PUSH;
+        case role::extended_publisher: return ZMQ_XPUB;
+        case role::extended_subscriber: return ZMQ_XSUB;
+        case role::streamer: return ZMQ_STREAM;
+        default: return -1;
+    }
 }
 
-bool socket::operator==(const socket& other) const
+bool socket::stop()
 {
-    return self_ == other.self_;
+    if (socket_ == nullptr)
+        return false;
+
+    const auto closed = zmq_close(socket_) != zmq_fail;
+    socket_ = nullptr;
+    return closed;
 }
 
-bool socket::operator!=(const socket& other) const
+void socket::assign(socket&& other)
 {
-    return !(*this == other);
+    // Free any existing socket resources.
+    stop();
+
+    // Assume ownership of the other socket's state.
+    socket_ = other.socket_;
+
+    // Don't destroy other socket's resource as it would destroy ours.
+    other.socket_ = nullptr;
+}
+
+bool socket::bind(const std::string& address)
+{
+    return zmq_bind(socket_, address.c_str()) != zmq_fail;
+}
+
+bool socket::connect(const std::string& address)
+{
+    return zmq_connect(socket_, address.c_str()) != zmq_fail;
+}
+
+bool socket::set(int32_t option, int32_t value)
+{
+    return zmq_setsockopt(socket_, option, &value, sizeof(value)) != zmq_fail;
+}
+
+bool socket::set(int32_t option, const std::string& value)
+{
+    if (value.empty())
+        return true;
+
+    const auto buffer = value.c_str();
+    return zmq_setsockopt(socket_, option, buffer, value.size()) != zmq_fail;
+}
+
+bool socket::set_authentication_domain(const std::string& domain)
+{
+    return set(ZMQ_ZAP_DOMAIN, domain);
+}
+
+bool socket::set_curve_server()
+{
+    return set(ZMQ_CURVE_SERVER, zmq_true);
+}
+
+bool socket::set_curve_client(const std::string& server_public_key)
+{
+    return set(ZMQ_CURVE_SERVERKEY, server_public_key);
+}
+
+bool socket::set_public_key(const std::string& key)
+{
+    return set(ZMQ_CURVE_PUBLICKEY, key);
+}
+
+bool socket::set_private_key(const std::string& key)
+{
+    return set(ZMQ_CURVE_SECRETKEY, key);
+}
+
+bool socket::set_certificate(const certificate& certificate)
+{
+    return certificate && set_public_key(certificate.public_key()) &&
+        set_private_key(certificate.private_key());
 }
 
 void* socket::self()
 {
-    return self_;
+    return socket_;
 }
 
-void* socket::self() const
+socket::identifier socket::id() const
 {
-    return self_;
+    return reinterpret_cast<socket::identifier>(socket_);
 }
 
-void socket::destroy(context& context)
+socket::operator const bool() const
 {
-    BITCOIN_ASSERT(self_);
-    zsocket_destroy(context.self(), self_);
-}
-
-// format-security: format not a string literal and no format arguments.
-int socket::bind(const std::string& address)
-{
-    return zsocket_bind(self_, address.c_str());
-}
-
-// format-security: format not a string literal and no format arguments.
-int socket::connect(const std::string& address)
-{
-    static constexpr int zmq_no_linger = 0;
-
-    zsocket_set_linger(self_, zmq_no_linger);
-    return zsocket_connect(self_, address.c_str());
-}
-
-void socket::set_curve_server()
-{
-    zsocket_set_curve_server(self_, 1);
-}
-
-void socket::set_curve_serverkey(const std::string& key)
-{
-    zsocket_set_curve_serverkey(self_, key.c_str());
-}
-
-void socket::set_zap_domain(const std::string& domain)
-{
-    zsocket_set_zap_domain(self_, domain.c_str());
+    return socket_ != nullptr;
 }
 
 } // namespace zmq

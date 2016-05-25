@@ -19,68 +19,150 @@
  */
 #include <bitcoin/protocol/zmq/message.hpp>
 
-#include <czmq.h>
+#include <string>
 #include <bitcoin/bitcoin.hpp>
-
-static_assert (sizeof(byte) == sizeof(uint8_t), "Incorrect byte size");
+#include <bitcoin/protocol/zmq/frame.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-void message::append(const data_chunk& part)
+void message::enqueue()
 {
-    parts_.push_back(part);
+    queue_.emplace(data_chunk{});
 }
 
-void message::append(data_chunk&& part)
+bool message::dequeue()
 {
-    parts_.emplace_back(std::move(part));
-}
+    if (queue_.empty())
+        return false;
 
-const data_stack& message::parts() const
-{
-    return parts_;
-}
-
-bool message::send(socket& sock)
-{
-    int flags = ZFRAME_MORE;
-    const auto last = parts_.end();
-
-    for (auto part = parts_.begin(); part != last; ++part)
-    {
-        if (part == last - 1)
-            flags = 0;
-
-        auto frame = zframe_new(part->data(), part->size());
-
-        if (zframe_send(&frame, sock.self(), flags) == -1)
-            return false;
-    }
-
+    queue_.pop();
     return true;
 }
 
-bool message::receive(socket& sock)
+bool message::dequeue(uint32_t& value)
 {
+    if (queue_.empty())
+        return false;
+
+    const auto& front = queue_.front();
+
+    if (front.size() == sizeof(uint32_t))
+    {
+        value = from_little_endian_unsafe<uint32_t>(front.begin());
+        queue_.pop();
+        return true;
+    }
+
+    queue_.pop();
+    return false;
+}
+
+bool message::dequeue(data_chunk& value)
+{
+    if (queue_.empty())
+        return false;
+
+    value = dequeue_data();
+    return true;
+}
+
+bool message::dequeue(std::string& value)
+{
+    if (queue_.empty())
+        return false;
+
+    value = dequeue_text();
+    return true;
+}
+
+bool message::dequeue(hash_digest& value)
+{
+    if (queue_.empty())
+        return false;
+
+    const auto& front = queue_.front();
+
+    if (front.size() == hash_size)
+    {
+        std::copy(front.begin(), front.end(), value.begin());
+        queue_.pop();
+        return true;
+    }
+
+    queue_.pop();
+    return false;
+}
+
+data_chunk message::dequeue_data()
+{
+    if (queue_.empty())
+        return{};
+
+    const auto data = queue_.front();
+    queue_.pop();
+    return data;
+}
+
+std::string message::dequeue_text()
+{
+    if (queue_.empty())
+        return{};
+
+    const auto& front = queue_.front();
+    const auto text = std::string(front.begin(), front.end());
+    queue_.pop();
+    return text;
+}
+
+void message::clear()
+{
+    while (!queue_.empty())
+        queue_.pop();
+}
+
+bool message::empty() const
+{
+    return queue_.empty();
+}
+
+size_t message::size() const
+{
+    return queue_.size();
+}
+
+bool message::send(socket& socket)
+{
+    auto count = queue_.size();
+
+    while (!queue_.empty())
+    {
+        frame frame(queue_.front());
+        queue_.pop();
+
+        if (!frame.send(socket, --count == 0))
+            return false;
+    }
+
+    BITCOIN_ASSERT(queue_.empty());
+    return true;
+}
+
+bool message::receive(socket& socket)
+{
+    clear();
     auto done = false;
 
     while (!done)
     {
-        auto frame = zframe_recv(sock.self());
+        frame frame;
 
-        if (frame == nullptr)
-        {
-            zframe_destroy(&frame);
+        if (!frame.receive(socket))
             return false;
-        }
 
-        done = zframe_more(frame) == 0;
-        auto first = zframe_data(frame);
-        auto last = first + zframe_size(frame);
-        parts_.push_back({ first, last });
-        zframe_destroy(&frame);
+        queue_.emplace(frame.payload());
+        done = !frame.more();
     }
 
     return true;

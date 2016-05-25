@@ -19,64 +19,220 @@
  */
 #include <bitcoin/protocol/zmq/authenticator.hpp>
 
-#include <czmq.h>
+#include <cstdint>
+#include <functional>
+#include <memory>
+#include <string>
+#include <thread>
+#include <zmq.h>
+#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/protocol/zmq/message.hpp>
+#include <bitcoin/protocol/zmq/socket.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-authenticator::authenticator(context& context)
-  : self_(zauth_new(context.self()))
+#define NAME "authenticator"
+
+// ZAP endpoint, see: rfc.zeromq.org/spec:27/ZAP
+static const auto zap_endpoint = "inproc://zeromq.zap.01";
+
+static constexpr uint32_t polling_interval_milliseconds = 1;
+
+authenticator::authenticator(threadpool& pool)
+  : socket_(*this, socket::role::router),
+    dispatch_(pool, NAME),
+    require_address_(false)
 {
+    // If the contained context is invalid so is the socket and bool override.
+    if (self() == nullptr)
+        return;
+
+    // The authenticator establishes a well-known endpoint.
+    // There may be only one such endpoint per process, tied to one context.
+    poller_.add(socket_);
 }
 
-authenticator::~authenticator()
+bool authenticator::start()
 {
-    BITCOIN_ASSERT(self_);
-    zauth_destroy(&self_);
+    if (self() == nullptr || !socket_.bind(zap_endpoint))
+        return false;
+
+    // The dispatched thread closes when the monitor loop exits (stop).
+    dispatch_.concurrent(
+        std::bind(&authenticator::monitor,
+            shared_from_base<authenticator>()));
+
+    return true;
 }
 
-authenticator::operator const bool() const
+// github.com/zeromq/rfc/blob/master/src/spec_27.c
+void authenticator::monitor()
 {
-    return self_ != nullptr;
+    // Ignore expired and keep looping, exiting the thread when terminated.
+    while (!poller_.terminated())
+    {
+        const auto socket_id = poller_.wait(polling_interval_milliseconds);
+
+        // If the id doesn't match the poll is either terminated or expired.
+        if (socket_id != socket_.id())
+            continue;
+
+        data_chunk origin;
+        data_chunk delimiter;
+        std::string version;
+        std::string sequence;
+        std::string status_code;
+        std::string status_text;
+        std::string userid;
+        std::string metadata;
+
+        message request;
+        const auto received = request.receive(socket_);
+
+        if (!received || request.size() < 8)
+        {
+            status_code = "500";
+            status_text = "Internal error.";
+        }
+        else
+        {
+            origin = request.dequeue_data();
+            delimiter = request.dequeue_data();
+            version = request.dequeue_text();
+            sequence = request.dequeue_text();
+            const auto domain = request.dequeue_text();
+            const auto address = request.dequeue_text();
+            const auto identity = request.dequeue_text();
+            const auto mechanism = request.dequeue_text();
+
+            // Each socket on the authenticated context must set a domain.
+            if (origin.empty() || !delimiter.empty() || version != "1.0" ||
+                sequence.empty() || domain.empty() || !identity.empty())
+            {
+                status_code = "500";
+                status_text = "Internal error.";
+            }
+            else if (!allowed(address))
+            {
+                // Address restrictons are independent of mechanisms.
+                status_code = "400";
+                status_text = "Address not enabled for access.";
+            }
+            else
+            {
+                if (mechanism == "NULL")
+                {
+                    if (request.size() != 0)
+                    {
+                        status_code = "400";
+                        status_text = "Incorrect NULL parameterization.";
+                    }
+                    else
+                    {
+                        ////status_code = "200";
+                        ////status_text = "OK";
+                        ////userid = "anonymous";
+                        status_code = "400";
+                        status_text = "NULL mechanism not allowed.";
+                    }
+                }
+                else if (mechanism == "CURVE")
+                {
+                    if (request.size() != 1)
+                    {
+                        status_code = "400";
+                        status_text = "Incorrect CURVE parameterization.";
+                    }
+                    else
+                    {
+                        hash_digest public_key;
+
+                        if (!request.dequeue(public_key))
+                        {
+                            status_code = "400";
+                            status_text = "Invalid public key.";
+                        }
+                        else if (!allowed(public_key))
+                        {
+                            status_code = "400";
+                            status_text = "Public key not authorized.";
+                        }
+                        else
+                        {
+                            status_code = "200";
+                            status_text = "OK";
+                            userid = "unspecified";
+                        }
+                    }
+                }
+                else if (mechanism == "PLAIN")
+                {
+                    if (request.size() != 2)
+                    {
+                        status_code = "400";
+                        status_text = "Incorrect PLAIN parameterization.";
+                    }
+                    else
+                    {
+                        ////userid = request.dequeue_text();
+                        ////const auto password = request.dequeue_text();
+                        status_code = "400";
+                        status_text = "PLAIN mechanism not allowed.";
+                    }
+                }
+                else
+                {
+                    status_code = "400";
+                    status_text = "Security mechanism not supported.";
+                }
+            }
+        }
+
+        message response;
+        response.enqueue(origin);
+        response.enqueue(delimiter);
+        response.enqueue(version);
+        response.enqueue(sequence);
+        response.enqueue(status_code);
+        response.enqueue(status_text);
+        response.enqueue(userid);
+        response.enqueue(metadata);
+
+        DEBUG_ONLY(const auto sent =) response.send(socket_);
+        BITCOIN_ASSERT_MSG(sent, "Failed to send ZAP response.");
+    }
+
+    DEBUG_ONLY(const auto stopped =) socket_.stop();
+    BITCOIN_ASSERT_MSG(stopped, "Failed to close socket.");
 }
 
-zauth_t* authenticator::self()
+bool authenticator::allowed(const hash_digest& public_key) const
 {
-    return self_;
+    return !keys_.empty() || keys_.find(public_key) != keys_.end();
 }
 
-void authenticator::allow(const std::string& address)
+bool authenticator::allowed(const std::string& ip_address) const
 {
-    zauth_allow(self_, address.c_str());
+    return !require_address_ || adresses_.find(ip_address) != adresses_.end();
 }
 
-void authenticator::deny(const std::string& address)
+void authenticator::allow(const hash_digest& public_key)
 {
-    zauth_deny(self_, address.c_str());
+    keys_.emplace(public_key, true);
 }
 
-void authenticator::configure_plain(const std::string& domain,
-    const std::string& filename)
+void authenticator::allow(const config::authority& address)
 {
-    zauth_configure_plain(self_, domain.c_str(), filename.c_str());
+    require_address_ = true;
+    adresses_.emplace(address.to_hostname(), true);
 }
 
-void authenticator::configure_curve(const std::string& domain,
-    const std::string& location)
+void authenticator::deny(const config::authority& address)
 {
-    zauth_configure_curve(self_, domain.c_str(), location.c_str());
-}
-
-void authenticator::set_verbose(bool verbose)
-{
-#ifndef _MSC_VER
-    // Hack to prevent czmq from writing to stdout/stderr on Windows.
-    // This will prevent authentication feedback, but also prevent crashes.
-    // It is necessary to prevent stdio when using our utf8-everywhere pattern.
-    // TODO: drop czmq and use latest zmq to avoid hadcoded stdio logging.
-    zauth_set_verbose(self_, verbose);
-#endif
+    // Denial is effective independent of whitelisting.
+    adresses_.emplace(address.to_hostname(), false);
 }
 
 } // namespace zmq

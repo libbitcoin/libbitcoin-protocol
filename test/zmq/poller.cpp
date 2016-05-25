@@ -18,46 +18,57 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 #include <string>
-#include <thread>
-#include <czmq.h>
 #include <bitcoin/protocol.hpp>
 
 using namespace bc;
 using namespace bc::protocol;
 
-int main_disabled()
+int poller_example()
 {
     zmq::context context;
     assert(context);
 
     // Create a few sockets
-    zmq::socket vent(context, ZMQ_PUSH);
-    int rc = vent.bind("tcp://*:9000");
-    assert(rc != -1);
+    zmq::socket vent(context, zmq::socket::role::pusher);
+    auto result = vent.bind("tcp://*:9000");
+    assert(result);
 
-    zmq::socket sink(context, ZMQ_PULL);
-    rc = sink.connect("tcp://localhost:9000");
-    assert(rc != -1);
+    zmq::socket sink(context, zmq::socket::role::puller);
+    result = sink.connect("tcp://localhost:9000");
+    assert(result);
 
-    zmq::socket bowl(context, ZMQ_PULL);
-    zmq::socket dish(context, ZMQ_PULL);
+    zmq::socket bowl(context, zmq::socket::role::puller);
+    zmq::socket dish(context, zmq::socket::role::puller);
 
     // Set-up poller.
-    zmq::poller poller(bowl, sink, dish);
-    assert(poller);
+    zmq::poller poller;
+    poller.add(bowl);
+    poller.add(sink);
+    poller.add(dish);
 
-    rc = zstr_send(vent.self(), "Hello, World");
-    assert(rc != -1);
+    const std::string hello = "Hello, World";
+
+    // Build and send the message.
+    zmq::message message;
+    message.enqueue(hello);
+    result = message.send(vent);
+    assert(result);
 
     // We expect a message only on the sink.
-    auto which = poller.wait(-1);
-    assert(which == sink);
+    const auto id = poller.wait(-1);
+    assert(id == sink.id());
     assert(!poller.expired());
     assert(!poller.terminated());
 
-    auto message = zstr_recv(which.self());
-    assert(streq(message, "Hello, World"));
+    // Receive the message.
+    result = message.receive(sink);
+    assert(result);
 
-    free(message);
+    // Check the size.
+    assert(message.size() == 1);
+
+    // Check the value.
+    const auto payload = message.dequeue_text();
+    assert(payload == hello);
     return 0;
 }

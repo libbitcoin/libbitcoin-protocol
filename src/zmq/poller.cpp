@@ -19,7 +19,8 @@
  */
 #include <bitcoin/protocol/zmq/poller.hpp>
 
-#include <czmq.h>
+#include <cstdint>
+#include <zmq.h>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
@@ -27,41 +28,66 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-poller::~poller()
+poller::poller()
+  : expired_(false),
+    terminated_(false)
 {
-    BITCOIN_ASSERT(self_);
-    zpoller_destroy(&self_);
 }
 
-poller::operator const bool() const
+// Parameter fd is non-zmq socket (unused when socket is set).
+void poller::add(socket& socket)
 {
-    return self_ != nullptr;
+    zmq_pollitem item;
+    item.socket = socket.self();
+    item.fd = 0;
+    item.events = ZMQ_POLLIN;
+    item.revents = 0;
+    pollers_.push_back(item);
 }
 
-zpoller_t* poller::self()
+// BUGBUG: zeromq 4.2 has an overflow  bug in timer parameterization.
+// The timeout is typed as 'long' by zermq. This is 32 bit on windows and
+// actually less (potentially 1000 or 1 second) on other platforms.
+// And on non-windows platforms negative doesn't actually produce infinity.
+
+// For consistency of config we limit the domain to 32 bit using int32_t,
+// where negative implies infinite wait.
+socket::identifier poller::wait(int32_t timeout_milliseconds)
 {
-    return self_;
+    const auto size = pollers_.size();
+    BITCOIN_ASSERT(size <= max_int32);
+
+    const auto size32 = static_cast<int32_t>(size);
+    const auto data = reinterpret_cast<zmq_pollitem_t*>(pollers_.data());
+    auto signaled = zmq_poll(data, size32, timeout_milliseconds);
+
+    if (signaled < 0)
+    {
+        terminated_ = true;
+        return 0;
+    }
+
+    if (signaled == 0)
+    {
+        expired_ = true;
+        return 0;
+    }
+
+    for (const auto& poller: pollers_)
+        if ((poller.revents & ZMQ_POLLIN) != 0)
+            return reinterpret_cast<socket::identifier>(poller.socket);
+
+    return 0;
 }
 
-void poller::add(socket& sock)
+bool poller::expired() const
 {
-    zpoller_add(self_, sock.self());
+    return expired_;
 }
 
-socket poller::wait(int timeout)
+bool poller::terminated() const
 {
-    auto sock_ptr = zpoller_wait(self_, timeout);
-    return socket(sock_ptr);
-}
-
-bool poller::expired()
-{
-    return zpoller_expired(self_);
-}
-
-bool poller::terminated()
-{
-    return zpoller_terminated(self_);
+    return terminated_;
 }
 
 } // namespace zmq

@@ -19,32 +19,37 @@
  */
 #include <bitcoin/protocol/zmq/context.hpp>
 
-#include <czmq.h>
+#include <cstdint>
+#include <zmq.h>
 #include <bitcoin/bitcoin.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-context::context()
-  : self_(zctx_new())
-{
-    // Disable czmq signal handling.
-    zsys_handler_set(NULL);
+static constexpr int32_t zmq_fail = -1;
+static constexpr int32_t zmq_io_threads = 1;
 
-#ifdef _MSC_VER
-    // Hack to prevent czmq from writing to stdout/stderr on Windows.
-    // This will prevent authentication feedback, but also prevent crashes.
-    // It is necessary to prevent stdio when using our utf8-everywhere pattern.
-    // TODO: provide a FILE* here that we can direct to our own log/console.
-    zsys_set_logstream(NULL);
-#endif
+context::context()
+  : threads_(zmq_io_threads),
+    self_(zmq_init(threads_))
+{
 }
 
 context::~context()
 {
-    BITCOIN_ASSERT(self_);
-    zctx_destroy(&self_);
+    stop();
+}
+
+bool context::stop()
+{
+    if (self() == nullptr)
+        return true;
+
+    // This aborts blocking operations but blocks here until either each socket
+    // in the context is explicitly closed.
+    // It is possible for this to fail do to signal interrupt.
+    return zmq_term(self_) != zmq_fail;
 }
 
 context::operator const bool() const
@@ -52,7 +57,7 @@ context::operator const bool() const
     return self_ != nullptr;
 }
 
-zctx_t* context::self()
+void* context::self()
 {
     return self_;
 }
