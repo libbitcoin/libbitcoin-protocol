@@ -57,7 +57,6 @@ public:
     bool stop();
 
 private:
-    int32_t threads_;
     void* self_;
 };
 
