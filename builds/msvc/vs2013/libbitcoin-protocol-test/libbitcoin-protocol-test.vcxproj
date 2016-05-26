@@ -66,11 +66,16 @@
   </ImportGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\test\converter.cpp" />
+    <ClCompile Include="..\..\..\..\test\examples\authenticator_example.cpp" />
+    <ClCompile Include="..\..\..\..\test\examples\poller_example.cpp" />
     <ClCompile Include="..\..\..\..\test\main.cpp" />
-    <ClCompile Include="..\..\..\..\test\protocol.cpp" />
-    <ClCompile Include="..\..\..\..\test\zmq\ironhouse2.cpp" />
+    <ClCompile Include="..\..\..\..\test\zmq\authenticator.cpp" />
+    <ClCompile Include="..\..\..\..\test\zmq\certificate.cpp" />
+    <ClCompile Include="..\..\..\..\test\zmq\context.cpp" />
+    <ClCompile Include="..\..\..\..\test\zmq\frame.cpp" />
+    <ClCompile Include="..\..\..\..\test\zmq\message.cpp" />
     <ClCompile Include="..\..\..\..\test\zmq\poller.cpp" />
-    <ClCompile Include="..\..\..\..\test\zmq\zmq.cpp" />
+    <ClCompile Include="..\..\..\..\test\zmq\socket.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

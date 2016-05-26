@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2015 libbitcoin developers (see AUTHORS)
+ * Copyright (c) 2016 libbitcoin developers (see AUTHORS)
  *
  * This file is part of libbitcoin-protocol.
  *
@@ -21,9 +21,9 @@
 #include <boost/test/unit_test_suite.hpp>
 #include <bitcoin/protocol.hpp>
 
-BOOST_AUTO_TEST_SUITE(protocol_tests)
+BOOST_AUTO_TEST_SUITE(certificate_tests)
 
-BOOST_AUTO_TEST_CASE(protocol_test)
+BOOST_AUTO_TEST_CASE(certificate_test)
 {
 }
 

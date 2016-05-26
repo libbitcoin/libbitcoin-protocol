@@ -9,7 +9,7 @@
 # Define tests and options.
 #==============================================================================
 BOOST_UNIT_TEST_OPTIONS=\
-"--run_test=* "\
+"--run_test=authenticator_tests,certificate_tests,context_tests,frame_tests,message_tests,poller_tests,socket_tests "\
 "--show_progress=no "\
 "--detect_memory_leak=0 "\
 "--report_level=no "\

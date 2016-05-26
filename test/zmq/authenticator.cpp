@@ -21,9 +21,9 @@
 #include <boost/test/unit_test_suite.hpp>
 #include <bitcoin/protocol.hpp>
 
-BOOST_AUTO_TEST_SUITE(poller_tests)
+BOOST_AUTO_TEST_SUITE(authenticator_tests)
 
-BOOST_AUTO_TEST_CASE(poller_test)
+BOOST_AUTO_TEST_CASE(authenticator_test)
 {
 }
 
