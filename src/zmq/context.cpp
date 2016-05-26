@@ -28,11 +28,9 @@ namespace protocol {
 namespace zmq {
 
 static constexpr int32_t zmq_fail = -1;
-static constexpr int32_t zmq_io_threads = 1;
 
 context::context()
-  : threads_(zmq_io_threads),
-    self_(zmq_init(threads_))
+  : self_(zmq_ctx_new())
 {
 }
 
@@ -41,6 +39,8 @@ context::~context()
     stop();
 }
 
+// This could be made non-blocking by using zmq_ctx_shutdown here and
+// zmq_ctx_term in a close method (invoked from the destructor).
 bool context::stop()
 {
     if (self() == nullptr)
@@ -49,7 +49,9 @@ bool context::stop()
     // This aborts blocking operations but blocks here until either each socket
     // in the context is explicitly closed.
     // It is possible for this to fail due to signal interrupt.
-    return zmq_term(self_) != zmq_fail;
+    const auto result = zmq_ctx_term(self_) != zmq_fail;
+    self_ = nullptr;
+    return result;
 }
 
 context::operator const bool() const

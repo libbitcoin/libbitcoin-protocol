@@ -97,6 +97,11 @@ bool socket::stop()
     return closed;
 }
 
+socket::operator const bool() const
+{
+    return socket_ != nullptr;
+}
+
 void socket::assign(socket&& other)
 {
     // Free any existing socket resources.
@@ -172,11 +177,6 @@ void* socket::self()
 socket::identifier socket::id() const
 {
     return reinterpret_cast<socket::identifier>(socket_);
-}
-
-socket::operator const bool() const
-{
-    return socket_ != nullptr;
 }
 
 } // namespace zmq

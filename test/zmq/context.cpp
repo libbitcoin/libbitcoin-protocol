@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2015 libbitcoin developers (see AUTHORS)
+ * Copyright (c) 2016 libbitcoin developers (see AUTHORS)
  *
  * This file is part of libbitcoin-protocol.
  *
@@ -21,10 +21,37 @@
 #include <boost/test/unit_test_suite.hpp>
 #include <bitcoin/protocol.hpp>
 
-BOOST_AUTO_TEST_SUITE(protocol_tests)
+using namespace bc::protocol::zmq;
 
-BOOST_AUTO_TEST_CASE(protocol_test)
+// These tests don't validate calls to zmq_ctx_new or zmq_ctx_term.
+// These should be moved to trivial virtual methods for test isolation.
+
+BOOST_AUTO_TEST_SUITE(context_tests)
+
+BOOST_AUTO_TEST_CASE(context__constructor__always__creates_valid_instance)
 {
+    context instance;
+    BOOST_REQUIRE(instance);
+}
+
+BOOST_AUTO_TEST_CASE(context__stop__always__invalidates_instance)
+{
+    context instance;
+    instance.stop();
+    BOOST_REQUIRE(!instance);
+}
+
+BOOST_AUTO_TEST_CASE(context__self__valid_instance__is_not_null)
+{
+    context instance;
+    BOOST_REQUIRE(instance.self() != nullptr);
+}
+
+BOOST_AUTO_TEST_CASE(context__self__invalid_instance__is_null)
+{
+    context instance;
+    instance.stop();
+    BOOST_REQUIRE(instance.self() == nullptr);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

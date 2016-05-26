@@ -60,10 +60,15 @@ test_libbitcoin_protocol_test_LDADD = src/libbitcoin-protocol.la ${boost_unit_te
 test_libbitcoin_protocol_test_SOURCES = \
     test/converter.cpp \
     test/main.cpp \
-    test/protocol.cpp \
-    test/zmq/ironhouse2.cpp \
+    test/examples/authenticator_example.cpp \
+    test/examples/poller_example.cpp \
+    test/zmq/authenticator.cpp \
+    test/zmq/certificate.cpp \
+    test/zmq/context.cpp \
+    test/zmq/frame.cpp \
+    test/zmq/message.cpp \
     test/zmq/poller.cpp \
-    test/zmq/zmq.cpp
+    test/zmq/socket.cpp
 
 endif WITH_TESTS
 

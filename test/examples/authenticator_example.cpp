@@ -94,7 +94,8 @@ void client_task(const std::string& client_private_key,
     puts("Ironhouse test OK");
 }
 
-int ironhouse2_example()
+// TODO: move to test case.
+int authenticator_example()
 {
     static const auto localhost = config::authority("127.0.0.1");
 
