@@ -70,7 +70,7 @@ public:
     /// Free socket resources.
     virtual ~socket();
 
-    /// True if there is an encapsultaed zeromq socket.
+    /// True if the socket is valid.
     operator const bool() const;
 
     /// The underlying zeromq socket.

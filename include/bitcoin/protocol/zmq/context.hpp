@@ -47,7 +47,7 @@ public:
     context(const context&) = delete;
     void operator=(const context&) = delete;
 
-    /// True if the context construction was successful.
+    /// True if the context is valid.
     operator const bool() const;
 
     /// The underlying zeromq context.
