@@ -215,7 +215,7 @@ void authenticator::monitor()
 
 bool authenticator::allowed(const hash_digest& public_key) const
 {
-    return !keys_.empty() || keys_.find(public_key) != keys_.end();
+    return keys_.empty() || keys_.find(public_key) != keys_.end();
 }
 
 bool authenticator::allowed(const std::string& ip_address) const
