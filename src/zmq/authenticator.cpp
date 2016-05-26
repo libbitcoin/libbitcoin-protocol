@@ -45,19 +45,16 @@ authenticator::authenticator(threadpool& pool)
     dispatch_(pool, NAME),
     require_address_(false)
 {
-    // If the contained context is invalid so is the socket and bool override.
-    if (self() == nullptr)
-        return;
-
-    // The authenticator establishes a well-known endpoint.
-    // There may be only one such endpoint per process, tied to one context.
-    poller_.add(socket_);
 }
 
 bool authenticator::start()
 {
+    // There may be only one such endpoint per process, tied to one context.
     if (self() == nullptr || !socket_.bind(zap_endpoint))
         return false;
+
+    // The authenticator establishes a well-known endpoint.
+    poller_.add(socket_);
 
     // The dispatched thread closes when the monitor loop exits (stop).
     // This requires that the threadpool be joined prior to this destruct.
@@ -116,7 +113,7 @@ void authenticator::monitor()
             }
             else if (!allowed(address))
             {
-                // Address restrictons are independent of mechanisms.
+                // Address restrictions are independent of mechanisms.
                 status_code = "400";
                 status_text = "Address not enabled for access.";
             }
@@ -129,13 +126,18 @@ void authenticator::monitor()
                         status_code = "400";
                         status_text = "Incorrect NULL parameterization.";
                     }
+                    else if (!keys_.empty())
+                    {
+                        status_code = "400";
+                        status_text = "NULL mechanism not authorized.";
+                    }
                     else
                     {
-                        ////status_code = "200";
-                        ////status_text = "OK";
-                        ////userid = "anonymous";
-                        status_code = "400";
-                        status_text = "NULL mechanism not allowed.";
+                        // It is more efficient to use an unsecured context or
+                        // to not start the authenticator, but this works too.
+                        status_code = "200";
+                        status_text = "OK";
+                        userid = "anonymous";
                     }
                 }
                 else if (mechanism == "CURVE")
@@ -179,7 +181,7 @@ void authenticator::monitor()
                         ////userid = request.dequeue_text();
                         ////const auto password = request.dequeue_text();
                         status_code = "400";
-                        status_text = "PLAIN mechanism not allowed.";
+                        status_text = "PLAIN mechanism not supported.";
                     }
                 }
                 else
@@ -204,8 +206,11 @@ void authenticator::monitor()
         BITCOIN_ASSERT_MSG(sent, "Failed to send ZAP response.");
     }
 
-    DEBUG_ONLY(const auto stopped =) socket_.stop();
+    const auto stopped = socket_.stop();
     BITCOIN_ASSERT_MSG(stopped, "Failed to close socket.");
+
+    if (stopped)
+        poller_.clear();
 }
 
 bool authenticator::allowed(const hash_digest& public_key) const
