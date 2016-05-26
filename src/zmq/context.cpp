@@ -49,7 +49,9 @@ bool context::stop()
     // This aborts blocking operations but blocks here until either each socket
     // in the context is explicitly closed.
     // It is possible for this to fail due to signal interrupt.
-    return zmq_term(self_) != zmq_fail;
+    const auto result = zmq_term(self_) != zmq_fail;
+    self_ = nullptr;
+    return result;
 }
 
 context::operator const bool() const
