@@ -64,6 +64,25 @@ bool authenticator::start()
     return true;
 }
 
+void authenticator::set_private_key(const std::string& private_key)
+{
+    private_key_ = private_key;
+}
+
+bool authenticator::apply(socket& socket, const std::string& domain)
+{
+    // An arbitrary authentication domain is required.
+    if (domain.empty() || !socket.set_authentication_domain(domain))
+        return false;
+
+    // Only the NULL mechanism is enabled when there is no private key.
+    if (private_key_.empty())
+        return true;
+
+    // Server identification does not require the public key.
+    return socket.set_private_key(private_key_) && socket.set_curve_server();
+}
+
 // github.com/zeromq/rfc/blob/master/src/spec_27.c
 void authenticator::monitor()
 {

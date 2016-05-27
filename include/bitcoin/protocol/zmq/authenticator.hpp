@@ -47,16 +47,22 @@ public:
     authenticator(threadpool& threadpool);
 
     /// Start the ZAP monitor.
-    bool start();
+    virtual bool start();
 
     /// Allow clients with the following public keys (whitelist).
-    void allow(const hash_digest& public_key);
+    virtual void allow(const hash_digest& public_key);
 
     /// Allow clients with the following ip addresses (whitelist).
-    void allow(const config::authority& address);
+    virtual void allow(const config::authority& address);
 
     /// Allow clients with the following ip addresses (blacklist).
-    void deny(const config::authority& address);
+    virtual void deny(const config::authority& address);
+
+    /// Set the server private key (required for curve security).
+    virtual void set_private_key(const std::string& private_key);
+
+    /// Apply authentication to the socket for the given arbitrary domain.
+    virtual bool apply(socket& socket, const std::string& domain);
 
 private:
     void monitor();
@@ -68,6 +74,7 @@ private:
     poller poller_;
     dispatcher dispatch_;
     bool require_address_;
+    std::string private_key_;
     std::unordered_map<hash_digest, bool> keys_;
     std::unordered_map<std::string, bool> adresses_;
 };
