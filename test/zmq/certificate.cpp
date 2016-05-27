@@ -22,6 +22,7 @@
 #include <bitcoin/protocol.hpp>
 
 using namespace bc;
+using namespace bc::config;
 using namespace bc::protocol::zmq;
 
 // These tests don't validate calls to zmq_curve_keypair or zmq_curve_public.
@@ -29,38 +30,34 @@ using namespace bc::protocol::zmq;
 
 BOOST_AUTO_TEST_SUITE(certificate_tests)
 
-static std::string base85_alphabet = 
-    "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    ".-:+=^!/*?&<>()[]{}@%$#";
+#define PRIVATE_KEY "JTKVSB%%)wK0E.X)V>+}o?pNmC{O&4W4b!Ni{Lh6"
+#define PUBLIC_KEY "rq:rM>}U?@Lns47E1%kR.o@n%FcmmsL/@{H8]yf7"
 
-
-static const std::string null_private_key = "0000000000000000000000000000000000000000";
-static const std::string null_public_key = "fxERSn6LHg6!4!qu+m-(f-Q<1UF!=7)u0-ysJ-^F";
-
-static inline bool is_valid(const std::string& key, bool setting)
+// Determine if the key is valid as indicated by the setting option.
+static inline bool is_valid(const config::sodium& key, bool setting)
 {
-    for (const auto letter: key)
-    {
+    if (!key)
+        return false;
+
+    for (const auto letter: key.to_string())
         if (setting && letter == '#')
             return false;
 
-        if (base85_alphabet.find_first_of(letter) == std::string::npos)
-            return false;
-    }
-
-    return key.size() == 40;
+    return true;
 }
 
+// Access protected members.
 class certificate_fixture
    : public certificate
 {
 public:
-    static bool derive(std::string& out_public, const std::string& private_key)
+    static bool derive(config::sodium& out_public,
+        const config::sodium& private_key)
     {
         return certificate::derive(out_public, private_key);
     }
 
-    static bool create(std::string& out_public, std::string& out_private,
+    static bool create(config::sodium& out_public, config::sodium& out_private,
         bool setting)
     {
         return certificate::create(out_public, out_private, setting);
@@ -71,53 +68,43 @@ BOOST_AUTO_TEST_CASE(certificate__construct1__default__creates_valid_keypair)
 {
     certificate instance;
     BOOST_REQUIRE(instance);
-    BOOST_REQUIRE(is_valid(instance.public_key(), false));
-    BOOST_REQUIRE(is_valid(instance.private_key(), false));
-}
-
-BOOST_AUTO_TEST_CASE(certificate__construct1__setting__creates_valid_keypair)
-{
-    certificate instance(true);
-    BOOST_REQUIRE(instance);
     BOOST_REQUIRE(is_valid(instance.public_key(), true));
     BOOST_REQUIRE(is_valid(instance.private_key(), true));
 }
 
-BOOST_AUTO_TEST_CASE(certificate__construct2__null_key_string__expected_keypair)
+BOOST_AUTO_TEST_CASE(certificate__construct2__null_hash_private_key__creates_valid_keypair)
 {
-    certificate instance(null_private_key);
+    certificate instance({ null_hash });
     BOOST_REQUIRE(instance);
-    BOOST_REQUIRE_EQUAL(instance.public_key(), null_public_key);
-    BOOST_REQUIRE_EQUAL(instance.private_key(), null_private_key);
+    BOOST_REQUIRE(is_valid(instance.public_key(), false));
+    BOOST_REQUIRE(is_valid(instance.private_key(), false));
 }
 
-BOOST_AUTO_TEST_CASE(certificate__construct2__bogus_invalid_and_empty_keypair)
+BOOST_AUTO_TEST_CASE(certificate__construct2__valid_private_key__derives_expected_keypair)
 {
-    certificate instance(std::string("bogus"));
-    BOOST_REQUIRE(!instance);
-    BOOST_REQUIRE_EQUAL(instance.public_key(), "");
-    BOOST_REQUIRE_EQUAL(instance.private_key(), "");
+    certificate instance({ PRIVATE_KEY });
+    BOOST_REQUIRE(instance);
+    BOOST_REQUIRE_EQUAL(instance.private_key().to_string(), PRIVATE_KEY);
+    BOOST_REQUIRE_EQUAL(instance.public_key().to_string(), PUBLIC_KEY);
 }
 
-BOOST_AUTO_TEST_CASE(certificate__derive__bogus__false_value_unchanged)
+BOOST_AUTO_TEST_CASE(certificate__derive__null_hash__false)
 {
-    const auto expected = "42";
-    std::string out_public = expected;
-    BOOST_REQUIRE(!certificate_fixture::derive(out_public, "bogus"));
-    BOOST_REQUIRE_EQUAL(out_public, expected);
+    config::sodium out_public;
+    BOOST_REQUIRE(!certificate_fixture::derive(out_public, {}));
 }
 
-BOOST_AUTO_TEST_CASE(certificate__derive__null_string__expected_public_key)
+BOOST_AUTO_TEST_CASE(certificate__derive__valid__true_expected_public_key)
 {
-    std::string out_public;
-    BOOST_REQUIRE(certificate_fixture::derive(out_public, null_private_key));
-    BOOST_REQUIRE_EQUAL(out_public, null_public_key);
+    config::sodium out_public;
+    BOOST_REQUIRE(certificate_fixture::derive(out_public, { PRIVATE_KEY }));
+    BOOST_REQUIRE_EQUAL(out_public.to_string(), PUBLIC_KEY);
 }
 
 BOOST_AUTO_TEST_CASE(certificate__create__default__valid_keypair)
 {
-    std::string out_public;
-    std::string out_private;
+    config::sodium out_public;
+    config::sodium out_private;
     BOOST_REQUIRE(certificate_fixture::create(out_public, out_private, false));
     BOOST_REQUIRE(is_valid(out_public, false));
     BOOST_REQUIRE(is_valid(out_private, false));
@@ -125,8 +112,8 @@ BOOST_AUTO_TEST_CASE(certificate__create__default__valid_keypair)
 
 BOOST_AUTO_TEST_CASE(certificate__create__setting__valid_keypair)
 {
-    std::string out_public;
-    std::string out_private;
+    config::sodium out_public;
+    config::sodium out_private;
     BOOST_REQUIRE(certificate_fixture::create(out_public, out_private, true));
     BOOST_REQUIRE(is_valid(out_public, true));
     BOOST_REQUIRE(is_valid(out_private, true));

@@ -114,14 +114,14 @@ void socket::assign(socket&& other)
     other.socket_ = nullptr;
 }
 
-bool socket::bind(const std::string& address)
+bool socket::bind(const config::endpoint& address)
 {
-    return zmq_bind(socket_, address.c_str()) != zmq_fail;
+    return zmq_bind(socket_, address.to_string().c_str()) != zmq_fail;
 }
 
-bool socket::connect(const std::string& address)
+bool socket::connect(const config::endpoint& address)
 {
-    return zmq_connect(socket_, address.c_str()) != zmq_fail;
+    return zmq_connect(socket_, address.to_string().c_str()) != zmq_fail;
 }
 
 bool socket::set(int32_t option, int32_t value)
@@ -148,25 +148,26 @@ bool socket::set_curve_server()
     return set(ZMQ_CURVE_SERVER, zmq_true);
 }
 
-bool socket::set_curve_client(const std::string& server_public_key)
+bool socket::set_curve_client(const config::sodium& server_public_key)
 {
-    return set(ZMQ_CURVE_SERVERKEY, server_public_key);
+    return set(ZMQ_CURVE_SERVERKEY, server_public_key.to_string());
 }
 
-bool socket::set_public_key(const std::string& key)
+bool socket::set_public_key(const config::sodium& key)
 {
-    return set(ZMQ_CURVE_PUBLICKEY, key);
+    return set(ZMQ_CURVE_PUBLICKEY, key.to_string());
 }
 
-bool socket::set_private_key(const std::string& key)
+bool socket::set_private_key(const config::sodium& key)
 {
-    return set(ZMQ_CURVE_SECRETKEY, key);
+    return set(ZMQ_CURVE_SECRETKEY, key.to_string());
 }
 
 bool socket::set_certificate(const certificate& certificate)
 {
-    return certificate && set_public_key(certificate.public_key()) &&
-        set_private_key(certificate.private_key());
+    return certificate && 
+        set_public_key(certificate.public_key().to_string()) &&
+        set_private_key(certificate.private_key().to_string());
 }
 
 void* socket::self()

@@ -30,49 +30,52 @@ namespace zmq {
 static constexpr int32_t zmq_fail = -1;
 static constexpr size_t zmq_encoded_key_size = 40;
 
-certificate::certificate(bool setting)
+certificate::certificate()
 {
-    create(public_, private_, setting);
+    // HACK: restricted key space for use with config files.
+    create(public_, private_, true);
 }
 
-certificate::certificate(const std::string& base85_private_key)
+// Full key space.
+certificate::certificate(const config::sodium& private_key)
 {
-    if (base85_private_key.empty())
+    if (!private_key)
     {
+        // Full key space (may include '#' character in z85 encoding).
         create(public_, private_, false);
         return;
     }
 
-    // If we successfully derive the public then set the private.
-    if (derive(public_, base85_private_key))
-        private_ = base85_private_key;
+    if (derive(public_, private_key))
+        private_ = private_key;
 }
 
-bool certificate::derive(std::string& out_public,
-    const std::string& private_key)
+bool certificate::derive(config::sodium& out_public,
+    const config::sodium& private_key)
 {
-    if (private_key.size() != zmq_encoded_key_size)
+    if (!private_key)
         return false;
 
+    const auto key = private_key.to_string();
     char public_key[zmq_encoded_key_size + 1] = { 0 };
 
-    if (zmq_curve_public(public_key, private_key.data()) == zmq_fail)
+    if (zmq_curve_public(public_key, key.data()) == zmq_fail)
         return false;
 
-    out_public = public_key;
-    return true;
+    out_public = config::sodium(public_key);
+    return out_public;
 }
 
-bool certificate::create(std::string& out_public, std::string& out_private,
-    bool setting)
+// TODO: update settings loader so this isn't necessary.
+// BUGBUG: this limitation weakens security by reducing key space.
+static inline bool ok_setting(const std::string& key)
 {
-    // TODO: update settings loader so this isn't necessary.
-    // BUGBUG: this limitation weakens security by reducing key space.
-    const auto ok_setting = [](const std::string& key)
-    {
-        return key.find_first_of('#') == std::string::npos;
-    };
+    return key.find_first_of('#') == std::string::npos;
+};
 
+bool certificate::create(config::sodium& out_public,
+    config::sodium& out_private, bool setting)
+{
     // Loop until neither key's base85 encoding includes the # character.
     // This ensures that the value can be used in libbitcoin settings files.
     for (uint8_t attempt = 0; attempt <= max_uint8; attempt++)
@@ -85,9 +88,9 @@ bool certificate::create(std::string& out_public, std::string& out_private,
 
         if (!setting || ((ok_setting(public_key) && ok_setting(private_key))))
         {
-            out_public = public_key;
-            out_private = private_key;
-            return true;
+            out_public = config::sodium(public_key);
+            out_private = config::sodium(private_key);
+            return out_public;
         }
     }
 
@@ -96,15 +99,15 @@ bool certificate::create(std::string& out_public, std::string& out_private,
 
 certificate::operator const bool() const
 {
-    return !public_.empty();
+    return public_;
 }
 
-const std::string& certificate::public_key() const
+const config::sodium& certificate::public_key() const
 {
     return public_;
 }
 
-const std::string& certificate::private_key() const
+const config::sodium& certificate::private_key() const
 {
     return private_;
 }

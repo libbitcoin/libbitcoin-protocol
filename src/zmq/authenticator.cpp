@@ -35,11 +35,15 @@ namespace zmq {
 
 #define NAME "authenticator"
 
+using namespace bc::config;
+
 // ZAP endpoint, see: rfc.zeromq.org/spec:27/ZAP
-static const auto zap_endpoint = "inproc://zeromq.zap.01";
+static const endpoint zap("inproc://zeromq.zap.01");
 
 static constexpr uint32_t polling_interval_milliseconds = 1;
 
+// The authenticator establishes a well-known endpoint.
+// There may be only one such endpoint per process, tied to one context.
 authenticator::authenticator(threadpool& pool)
   : socket_(*this, socket::role::router),
     dispatch_(pool, NAME),
@@ -49,38 +53,46 @@ authenticator::authenticator(threadpool& pool)
 
 bool authenticator::start()
 {
-    // There may be only one such endpoint per process, tied to one context.
-    if (self() == nullptr || !socket_.bind(zap_endpoint))
+    if (self() == nullptr || !socket_.bind(zap))
         return false;
 
-    // The authenticator establishes a well-known endpoint.
     poller_.add(socket_);
 
     // The dispatched thread closes when the monitor loop exits (stop).
     // This requires that the threadpool be joined prior to this destruct.
     dispatch_.concurrent(
-        std::bind(&authenticator::monitor, this));
+        std::bind(&authenticator::monitor,
+            this));
 
     return true;
 }
 
-void authenticator::set_private_key(const std::string& private_key)
+void authenticator::set_private_key(const sodium& private_key)
 {
     private_key_ = private_key;
 }
 
-bool authenticator::apply(socket& socket, const std::string& domain)
+bool authenticator::apply(socket& socket, const std::string& domain,
+    bool secure)
 {
     // An arbitrary authentication domain is required.
     if (domain.empty() || !socket.set_authentication_domain(domain))
         return false;
 
-    // Only the NULL mechanism is enabled when there is no private key.
-    if (private_key_.empty())
+    if (!secure)
+    {
+        weak_domains_.emplace(domain);
         return true;
+    }
 
-    // Server identification does not require the public key.
-    return socket.set_private_key(private_key_) && socket.set_curve_server();
+    if (private_key_)
+    {
+        return socket.set_private_key(private_key_) &&
+            socket.set_curve_server();
+    }
+
+    // We do not have a private key to set so we cannot set secure.
+    return false;
 }
 
 // github.com/zeromq/rfc/blob/master/src/spec_27.c
@@ -89,10 +101,8 @@ void authenticator::monitor()
     // Ignore expired and keep looping, exiting the thread when terminated.
     while (!poller_.terminated())
     {
-        const auto socket_id = poller_.wait(polling_interval_milliseconds);
-
         // If the id doesn't match the poll is either terminated or expired.
-        if (socket_id != socket_.id())
+        if (poller_.wait(polling_interval_milliseconds) != socket_.id())
             continue;
 
         data_chunk origin;
@@ -145,7 +155,7 @@ void authenticator::monitor()
                         status_code = "400";
                         status_text = "Incorrect NULL parameterization.";
                     }
-                    else if (!keys_.empty())
+                    else if (weak_domains_.find(domain) == weak_domains_.end())
                     {
                         status_code = "400";
                         status_text = "NULL mechanism not authorized.";
@@ -244,7 +254,7 @@ bool authenticator::allowed(const std::string& ip_address) const
 
 void authenticator::allow(const hash_digest& public_key)
 {
-    keys_.emplace(public_key, true);
+    keys_.emplace(public_key);
 }
 
 void authenticator::allow(const config::authority& address)

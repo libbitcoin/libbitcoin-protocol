@@ -35,31 +35,32 @@ class BCP_API certificate
 {
 public:
     /// Construct an arbitary keypair as a new certificate.
-    /// The setting option reduces keyspace, disallowing '#' in text encoding.
-    certificate(bool setting=false);
+    /// This always reduces keyspace, disallowing '#' in text encoding.
+    /// Use certificate({ null_hash }) to allow full key space.
+    certificate();
 
-    /// Construct a certificate from base85 private key (generates public key).
-    /// This generates an arbitary key pair if the parameter is empty.
-    certificate(const std::string& base85_private_key);
+    /// Construct a certificate from private key (generates public key).
+    /// This generates an arbitary key pair if the parameter is uninitialized.
+    certificate(const config::sodium& private_key);
 
     /// True if the certificate is valid.
     operator const bool() const;
 
     /// The public key base85 text.
-    const std::string& public_key() const;
+    const config::sodium& public_key() const;
 
     /// The private key base85 text.
-    const std::string& private_key() const;
+    const config::sodium& private_key() const;
 
 protected:
-    static bool derive(std::string& out_public,
-        const std::string& private_key);
-    static bool create(std::string& out_public, std::string& out_private,
-        bool setting);
+    static bool derive(config::sodium& out_public,
+        const config::sodium& private_key);
+    static bool create(config::sodium& out_public,
+        config::sodium& out_private, bool setting);
 
 private:
-    std::string public_;
-    std::string private_;
+    config::sodium public_;
+    config::sodium private_;
 };
 
 } // namespace zmq
