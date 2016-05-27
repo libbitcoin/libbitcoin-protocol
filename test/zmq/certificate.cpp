@@ -66,7 +66,7 @@ public:
 
 BOOST_AUTO_TEST_CASE(certificate__construct1__default__creates_valid_keypair)
 {
-    certificate instance;
+    const certificate instance;
     BOOST_REQUIRE(instance);
     BOOST_REQUIRE(is_valid(instance.public_key(), true));
     BOOST_REQUIRE(is_valid(instance.private_key(), true));
@@ -74,7 +74,8 @@ BOOST_AUTO_TEST_CASE(certificate__construct1__default__creates_valid_keypair)
 
 BOOST_AUTO_TEST_CASE(certificate__construct2__null_hash_private_key__creates_valid_keypair)
 {
-    certificate instance({ null_hash });
+    const sodium key(null_hash);
+    const certificate instance(key);
     BOOST_REQUIRE(instance);
     BOOST_REQUIRE(is_valid(instance.public_key(), false));
     BOOST_REQUIRE(is_valid(instance.private_key(), false));
@@ -82,7 +83,8 @@ BOOST_AUTO_TEST_CASE(certificate__construct2__null_hash_private_key__creates_val
 
 BOOST_AUTO_TEST_CASE(certificate__construct2__valid_private_key__derives_expected_keypair)
 {
-    certificate instance({ PRIVATE_KEY });
+    const sodium key(PRIVATE_KEY);
+    const certificate instance(key);
     BOOST_REQUIRE(instance);
     BOOST_REQUIRE_EQUAL(instance.private_key().to_string(), PRIVATE_KEY);
     BOOST_REQUIRE_EQUAL(instance.public_key().to_string(), PUBLIC_KEY);
