@@ -34,14 +34,12 @@ namespace zmq {
 class BCP_API certificate
 {
 public:
-    /// Construct a new certificate (can we inject randomness).
+    /// Construct an arbitary keypair as a new certificate.
     /// The setting option reduces keyspace, disallowing '#' in text encoding.
     certificate(bool setting=false);
 
-    /// Construct a certificate from a private key (generates public key).
-    certificate(const hash_digest& private_key);
-
     /// Construct a certificate from base85 private key (generates public key).
+    /// This generates an arbitary key pair if the parameter is empty.
     certificate(const std::string& base85_private_key);
 
     /// True if the certificate is valid.

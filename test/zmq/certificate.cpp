@@ -83,15 +83,7 @@ BOOST_AUTO_TEST_CASE(certificate__construct1__setting__creates_valid_keypair)
     BOOST_REQUIRE(is_valid(instance.private_key(), true));
 }
 
-BOOST_AUTO_TEST_CASE(certificate__construct2__null_hash__expected_keypair)
-{
-    certificate instance(null_hash);
-    BOOST_REQUIRE(instance);
-    BOOST_REQUIRE_EQUAL(instance.public_key(), null_public_key);
-    BOOST_REQUIRE_EQUAL(instance.private_key(), null_private_key);
-}
-
-BOOST_AUTO_TEST_CASE(certificate__construct3__null_key_string__expected_keypair)
+BOOST_AUTO_TEST_CASE(certificate__construct2__null_key_string__expected_keypair)
 {
     certificate instance(null_private_key);
     BOOST_REQUIRE(instance);
@@ -99,7 +91,7 @@ BOOST_AUTO_TEST_CASE(certificate__construct3__null_key_string__expected_keypair)
     BOOST_REQUIRE_EQUAL(instance.private_key(), null_private_key);
 }
 
-BOOST_AUTO_TEST_CASE(certificate__construct3__bogus_invalid_and_empty_keypair)
+BOOST_AUTO_TEST_CASE(certificate__construct2__bogus_invalid_and_empty_keypair)
 {
     certificate instance(std::string("bogus"));
     BOOST_REQUIRE(!instance);

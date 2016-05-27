@@ -35,21 +35,14 @@ certificate::certificate(bool setting)
     create(public_, private_, setting);
 }
 
-certificate::certificate(const hash_digest& private_key)
-{
-    std::string base85_private_key;
-
-    // This cannot fail but we handle anyway.
-    if (!encode_base85(base85_private_key, private_key))
-        return;
-
-    // If we successfully derive the public then set the private.
-    if (derive(public_, base85_private_key))
-        private_ = base85_private_key;
-}
-
 certificate::certificate(const std::string& base85_private_key)
 {
+    if (base85_private_key.empty())
+    {
+        create(public_, private_, false);
+        return;
+    }
+
     // If we successfully derive the public then set the private.
     if (derive(public_, base85_private_key))
         private_ = base85_private_key;
