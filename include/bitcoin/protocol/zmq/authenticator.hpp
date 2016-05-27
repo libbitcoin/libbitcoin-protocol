@@ -23,6 +23,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
@@ -47,16 +48,23 @@ public:
     authenticator(threadpool& threadpool);
 
     /// Start the ZAP monitor.
-    bool start();
+    virtual bool start();
 
     /// Allow clients with the following public keys (whitelist).
-    void allow(const hash_digest& public_key);
+    virtual void allow(const hash_digest& public_key);
 
     /// Allow clients with the following ip addresses (whitelist).
-    void allow(const config::authority& address);
+    virtual void allow(const config::authority& address);
 
     /// Allow clients with the following ip addresses (blacklist).
-    void deny(const config::authority& address);
+    virtual void deny(const config::authority& address);
+
+    /// Set the server private key (required for curve security).
+    virtual void set_private_key(const config::sodium& private_key);
+
+    /// Apply authentication to the socket for the given arbitrary domain.
+    /// Set secure false to enable null security, otherwise curve is required.
+    virtual bool apply(socket& socket, const std::string& domain, bool secure);
 
 private:
     void monitor();
@@ -68,7 +76,9 @@ private:
     poller poller_;
     dispatcher dispatch_;
     bool require_address_;
-    std::unordered_map<hash_digest, bool> keys_;
+    config::sodium private_key_;
+    std::unordered_set<hash_digest> keys_;
+    std::unordered_set<std::string> weak_domains_;
     std::unordered_map<std::string, bool> adresses_;
 };
 

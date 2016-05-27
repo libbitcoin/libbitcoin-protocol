@@ -83,10 +83,10 @@ public:
     void assign(socket&& other);
 
     /// Bind the socket to the specified local address.
-    bool bind(const std::string& address);
+    bool bind(const config::endpoint& address);
 
     /// Connect the socket to the specified remote address.
-    bool connect(const std::string& address);
+    bool connect(const config::endpoint& address);
 
     /// Sets the domain for ZAP (ZMQ RFC 27) authentication.
     bool set_authentication_domain(const std::string& domain);
@@ -95,13 +95,13 @@ public:
     bool set_curve_server();
 
     /// Configure the socket as client to the curve server.
-    bool set_curve_client(const std::string& server_public_key);
+    bool set_curve_client(const config::sodium& server_public_key);
 
     /// Apply the specified public key to the socket.
-    bool set_public_key(const std::string& key);
+    bool set_public_key(const config::sodium& key);
 
     /// Apply the specified private key to the socket.
-    bool set_private_key(const std::string& key);
+    bool set_private_key(const config::sodium& key);
 
     /// Apply the keys of the specified certificate to the socket.
     bool set_certificate(const certificate& certificate);

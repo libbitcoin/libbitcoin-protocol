@@ -24,8 +24,8 @@
 using namespace bc;
 using namespace bc::protocol;
 
-void server_task(const std::string& server_private_key,
-    const std::string& client_public_key,
+void server_task(const config::sodium& server_private_key,
+    const config::sodium& client_public_key,
     const config::authority& client_address)
 {
     // Create a threadpool for the authenticator.
@@ -47,7 +47,7 @@ void server_task(const std::string& server_private_key,
     assert(result);
 
     // Bind the server to a tcp port on all local addresses.
-    result = server.bind("tcp://*:9000");
+    result = server.bind({ "tcp://*:9000" });
     assert(result);
 
     //  Send the test message.
@@ -64,8 +64,8 @@ void server_task(const std::string& server_private_key,
     threadpool.join();
 }
 
-void client_task(const std::string& client_private_key,
-    const std::string& server_public_key)
+void client_task(const config::sodium& client_private_key,
+    const config::sodium& server_public_key)
 {
     // Create an unauthenticated context for the client.
     zmq::context context;
@@ -82,7 +82,7 @@ void client_task(const std::string& client_private_key,
     assert(result);
 
     // Connect to the server's tcp port on the local host.
-    result = client.connect("tcp://127.0.0.1:9000");
+    result = client.connect({ "tcp://127.0.0.1:9000" });
     assert(result);
 
     // Wait for the message, which signals the test was successful.

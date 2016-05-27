@@ -31,11 +31,11 @@ int poller_example()
 
     // Create a few sockets
     zmq::socket vent(context, zmq::socket::role::pusher);
-    auto result = vent.bind("tcp://*:9000");
+    auto result = vent.bind({ "tcp://*:9000" });
     assert(result);
 
     zmq::socket sink(context, zmq::socket::role::puller);
-    result = sink.connect("tcp://localhost:9000");
+    result = sink.connect({ "tcp://localhost:9000" });
     assert(result);
 
     zmq::socket bowl(context, zmq::socket::role::puller);
