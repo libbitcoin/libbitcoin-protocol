@@ -107,7 +107,7 @@ public:
     bool set_certificate(const certificate& certificate);
 
     /// Close the socket.
-    bool stop();
+    virtual bool stop();
 
 private:
     static int to_socket_type(role socket_role);
