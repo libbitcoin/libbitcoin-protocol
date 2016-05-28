@@ -51,6 +51,11 @@ authenticator::authenticator(threadpool& pool)
 {
 }
 
+authenticator::~authenticator()
+{
+    stop();
+}
+
 bool authenticator::start()
 {
     if (self() == nullptr || !socket_.bind(zap))
@@ -65,6 +70,12 @@ bool authenticator::start()
             this));
 
     return true;
+}
+
+bool authenticator::stop()
+{
+    socket_.stop();
+    return context::stop();
 }
 
 void authenticator::set_private_key(const sodium& private_key)
@@ -235,7 +246,7 @@ void authenticator::monitor()
         BITCOIN_ASSERT_MSG(sent, "Failed to send ZAP response.");
     }
 
-    const auto stopped = socket_.stop();
+    const auto stopped = stop();
     BITCOIN_ASSERT_MSG(stopped, "Failed to close socket.");
 
     if (stopped)

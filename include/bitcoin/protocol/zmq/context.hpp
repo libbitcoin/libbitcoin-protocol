@@ -54,7 +54,7 @@ public:
     void* self();
 
     /// Stop all socket activity by closing the zeromq context.
-    bool stop();
+    virtual bool stop();
 
 private:
     void* self_;

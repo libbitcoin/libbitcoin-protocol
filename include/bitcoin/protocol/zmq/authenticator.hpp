@@ -47,8 +47,14 @@ public:
     /// There may be only one authenticator per process (otherwise bridge).
     authenticator(threadpool& threadpool);
 
+    /// Cause all sockets of this authenticated context to close.
+    virtual ~authenticator();
+
     /// Start the ZAP monitor.
     virtual bool start();
+
+    /// Stop the ZAP monitor and close the context.
+    virtual bool stop() override;
 
     /// Allow clients with the following public keys (whitelist).
     virtual void allow(const hash_digest& public_key);
