@@ -51,7 +51,7 @@ socket::socket(void* zmq_socket)
         !set(ZMQ_RCVHWM, receive_buffer_) ||
         !set(ZMQ_LINGER, zmq_linger_milliseconds))
     {
-        self_ = nullptr;
+        stop();
     }
 }
 
