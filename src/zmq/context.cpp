@@ -29,9 +29,11 @@ namespace zmq {
 
 static constexpr int32_t zmq_fail = -1;
 
+// Context is started by default, but is restartable.
 context::context()
   : self_(nullptr)
 {
+    start();
 }
 
 context::~context()

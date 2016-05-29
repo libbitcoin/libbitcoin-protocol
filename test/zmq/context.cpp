@@ -28,25 +28,25 @@ using namespace bc::protocol::zmq;
 
 BOOST_AUTO_TEST_SUITE(context_tests)
 
-BOOST_AUTO_TEST_CASE(context__constructor__always__creates_invalid_instance)
+BOOST_AUTO_TEST_CASE(context__constructor__always__creates_valid_instance)
 {
     context instance;
-    BOOST_REQUIRE(!instance);
-}
-
-BOOST_AUTO_TEST_CASE(context__start__always__sets_invalid_instance)
-{
-    context instance;
-    instance.start();
     BOOST_REQUIRE(instance);
 }
 
 BOOST_AUTO_TEST_CASE(context__stop__always__invalidates_instance)
 {
     context instance;
-    instance.start();
     instance.stop();
     BOOST_REQUIRE(!instance);
+}
+
+BOOST_AUTO_TEST_CASE(context__start__always__resets_valid_instance)
+{
+    context instance;
+    instance.stop();
+    instance.start();
+    BOOST_REQUIRE(instance);
 }
 
 BOOST_AUTO_TEST_CASE(context__self__valid_instance__is_not_null)
@@ -59,6 +59,7 @@ BOOST_AUTO_TEST_CASE(context__self__valid_instance__is_not_null)
 BOOST_AUTO_TEST_CASE(context__self__invalid_instance__is_null)
 {
     context instance;
+    instance.stop();
     BOOST_REQUIRE(instance.self() == nullptr);
 }
 
