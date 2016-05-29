@@ -104,22 +104,27 @@ bool authenticator::apply(socket& socket, const std::string& domain,
     if (domain.empty() || !socket.set_authentication_domain(domain))
         return false;
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    config_mutex_.lock_shared();
+    const auto private_key = private_key_;
+    const auto have_public_keys = !keys_.empty();
+    config_mutex_.unlock_shared();
+    ///////////////////////////////////////////////////////////////////////////
+
+    // A private server key is required if there are public client keys.
+    if (have_public_keys && !private_key)
+        return false;
+
     if (!secure)
     {
         weak_domains_.emplace(domain);
         return true;
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Critical Section
-    config_mutex_.lock_shared();
-    const bool private_key = private_key_;
-    config_mutex_.unlock_shared();
-    ///////////////////////////////////////////////////////////////////////////
-
     if (private_key)
     {
-        return socket.set_private_key(private_key_) &&
+        return socket.set_private_key(private_key) &&
             socket.set_curve_server();
     }
 
