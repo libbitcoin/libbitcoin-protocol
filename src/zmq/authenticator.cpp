@@ -56,13 +56,15 @@ authenticator::~authenticator()
     stop();
 }
 
+// The authenticator is not restartable because the socket is not restartable.
+// But we do not start the authenticator from construct because of the monitor.
 bool authenticator::start()
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
     unique_lock lock(socket_mutex_);
 
-    if (!context::start() || !socket_.bind(zap))
+    if (!socket_.bind(zap))
         return false;
 
     // The dispatched thread closes when the monitor loop exits (stop).
