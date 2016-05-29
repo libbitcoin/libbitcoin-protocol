@@ -41,9 +41,18 @@ BOOST_AUTO_TEST_CASE(context__stop__always__invalidates_instance)
     BOOST_REQUIRE(!instance);
 }
 
+BOOST_AUTO_TEST_CASE(context__start__always__resets_valid_instance)
+{
+    context instance;
+    instance.stop();
+    instance.start();
+    BOOST_REQUIRE(instance);
+}
+
 BOOST_AUTO_TEST_CASE(context__self__valid_instance__is_not_null)
 {
     context instance;
+    instance.start();
     BOOST_REQUIRE(instance.self() != nullptr);
 }
 

@@ -58,10 +58,12 @@ authenticator::~authenticator()
 
 bool authenticator::start()
 {
-    if (self() == nullptr || !socket_.bind(zap))
-        return false;
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    unique_lock lock(socket_mutex_);
 
-    poller_.add(socket_);
+    if (!context::start() || !socket_.bind(zap))
+        return false;
 
     // The dispatched thread closes when the monitor loop exits (stop).
     // This requires that the threadpool be joined prior to this destruct.
@@ -70,17 +72,29 @@ bool authenticator::start()
             this));
 
     return true;
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 bool authenticator::stop()
 {
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    unique_lock lock(socket_mutex_);
+
+    // We ignore socket stop failure. The context stop will catch as necessary.
     socket_.stop();
     return context::stop();
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 void authenticator::set_private_key(const sodium& private_key)
 {
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    unique_lock lock(config_mutex_);
+
     private_key_ = private_key;
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 bool authenticator::apply(socket& socket, const std::string& domain,
@@ -96,7 +110,14 @@ bool authenticator::apply(socket& socket, const std::string& domain,
         return true;
     }
 
-    if (private_key_)
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    config_mutex_.lock_shared();
+    const bool private_key = private_key_;
+    config_mutex_.unlock_shared();
+    ///////////////////////////////////////////////////////////////////////////
+
+    if (private_key)
     {
         return socket.set_private_key(private_key_) &&
             socket.set_curve_server();
@@ -107,13 +128,17 @@ bool authenticator::apply(socket& socket, const std::string& domain,
 }
 
 // github.com/zeromq/rfc/blob/master/src/spec_27.c
+// This is only started by start method, so socket_ is protected.
 void authenticator::monitor()
 {
+    poller poller;
+    poller.add(socket_);
+
     // Ignore expired and keep looping, exiting the thread when terminated.
-    while (!poller_.terminated())
+    while (!poller.terminated())
     {
         // If the id doesn't match the poll is either terminated or expired.
-        if (poller_.wait(polling_interval_milliseconds) != socket_.id())
+        if (poller.wait(polling_interval_milliseconds) != socket_.id())
             continue;
 
         data_chunk origin;
@@ -151,7 +176,7 @@ void authenticator::monitor()
                 status_code = "500";
                 status_text = "Internal error.";
             }
-            else if (!allowed(address))
+            else if (!allowed_address(address))
             {
                 // Address restrictions are independent of mechanisms.
                 status_code = "400";
@@ -166,7 +191,7 @@ void authenticator::monitor()
                         status_code = "400";
                         status_text = "Incorrect NULL parameterization.";
                     }
-                    else if (weak_domains_.find(domain) == weak_domains_.end())
+                    else if (!allowed_weak(domain))
                     {
                         status_code = "400";
                         status_text = "NULL mechanism not authorized.";
@@ -196,7 +221,7 @@ void authenticator::monitor()
                             status_code = "400";
                             status_text = "Invalid public key.";
                         }
-                        else if (!allowed(public_key))
+                        else if (!allowed_key(public_key))
                         {
                             status_code = "400";
                             status_text = "Public key not authorized.";
@@ -246,38 +271,69 @@ void authenticator::monitor()
         BITCOIN_ASSERT_MSG(sent, "Failed to send ZAP response.");
     }
 
-    const auto stopped = stop();
-    BITCOIN_ASSERT_MSG(stopped, "Failed to close socket.");
-
-    if (stopped)
-        poller_.clear();
+    stop();
 }
 
-bool authenticator::allowed(const hash_digest& public_key) const
+bool authenticator::allowed_address(const std::string& ip_address) const
 {
-    return keys_.empty() || keys_.find(public_key) != keys_.end();
-}
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    shared_lock lock(config_mutex_);
 
-bool authenticator::allowed(const std::string& ip_address) const
-{
     return !require_address_ || adresses_.find(ip_address) != adresses_.end();
+    ///////////////////////////////////////////////////////////////////////////
+}
+
+bool authenticator::allowed_key(const hash_digest& public_key) const
+{
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    shared_lock lock(config_mutex_);
+
+    return keys_.empty() || keys_.find(public_key) != keys_.end();
+    ///////////////////////////////////////////////////////////////////////////
+}
+
+bool authenticator::allowed_weak(const std::string& domain) const
+{
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    shared_lock lock(config_mutex_);
+
+    return weak_domains_.find(domain) != weak_domains_.end();
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 void authenticator::allow(const hash_digest& public_key)
 {
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    unique_lock lock(config_mutex_);
+
     keys_.emplace(public_key);
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 void authenticator::allow(const config::authority& address)
 {
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    unique_lock lock(config_mutex_);
+
     require_address_ = true;
     adresses_.emplace(address.to_hostname(), true);
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 void authenticator::deny(const config::authority& address)
 {
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    unique_lock lock(config_mutex_);
+
     // Denial is effective independent of whitelisting.
     adresses_.emplace(address.to_hostname(), false);
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 } // namespace zmq

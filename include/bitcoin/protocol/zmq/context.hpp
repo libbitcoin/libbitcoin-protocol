@@ -29,7 +29,7 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-/// This class is not thread safe.
+/// This class is thread safe.
 class BCP_API context
   : public enable_shared_from_base<context>
 {
@@ -47,17 +47,23 @@ public:
     context(const context&) = delete;
     void operator=(const context&) = delete;
 
-    /// True if the context is valid.
+    /// True if the context is valid and started.
     operator const bool() const;
 
     /// The underlying zeromq context.
     void* self();
 
+    /// Create the zeromq context.
+    virtual bool start();
+
     /// Stop all socket activity by closing the zeromq context.
     virtual bool stop();
 
 private:
+
+    // The context pointer is protected by mutex.
     void* self_;
+    mutable shared_mutex mutex_;
 };
 
 } // namespace zmq

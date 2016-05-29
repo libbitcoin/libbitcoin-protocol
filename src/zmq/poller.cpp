@@ -37,17 +37,27 @@ poller::poller()
 // Parameter fd is non-zmq socket (unused when socket is set).
 void poller::add(socket& socket)
 {
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    unique_lock lock(mutex_);
+
     zmq_pollitem item;
     item.socket = socket.self();
     item.fd = 0;
     item.events = ZMQ_POLLIN;
     item.revents = 0;
     pollers_.push_back(item);
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 void poller::clear()
 {
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    unique_lock lock(mutex_);
+
     return pollers_.clear();
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 // BUGBUG: zeromq 4.2 has an overflow  bug in timer parameterization.
@@ -59,6 +69,10 @@ void poller::clear()
 // where negative implies infinite wait.
 socket::identifier poller::wait(int32_t timeout_milliseconds)
 {
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    shared_lock lock(mutex_);
+
     const auto size = pollers_.size();
     BITCOIN_ASSERT(size <= max_int32);
 
@@ -83,16 +97,27 @@ socket::identifier poller::wait(int32_t timeout_milliseconds)
             return reinterpret_cast<socket::identifier>(poller.socket);
 
     return 0;
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 bool poller::expired() const
 {
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    shared_lock lock(mutex_);
+
     return expired_;
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 bool poller::terminated() const
 {
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    shared_lock lock(mutex_);
+
     return terminated_;
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 } // namespace zmq
