@@ -35,31 +35,28 @@ static constexpr int32_t zmq_send_buffer = 1000;
 static constexpr int32_t zmq_receive_buffer = 1000;
 static constexpr int32_t zmq_linger_milliseconds = 10;
 
-socket::socket()
-  : socket(nullptr)
-{
-}
-
-// zmq_term terminates blocking operations but blocks until either each socket
-// in the context has been explicitly closed or the linger period is exceeded.
+// zmq_term terminates blocking operations but blocks until each socket in the
+// context is explicitly closed. Socket close kills transfers after linger.
 socket::socket(void* zmq_socket)
-  : socket_(zmq_socket),
+  : self_(zmq_socket),
     send_buffer_(zmq_send_buffer),
     receive_buffer_(zmq_receive_buffer)
 {
+    if (self_ == nullptr)
+        return;
+
+    // Because self is only set on construct, sockets are not restartable.
+    if (!set(ZMQ_SNDHWM, send_buffer_) ||
+        !set(ZMQ_RCVHWM, receive_buffer_) ||
+        !set(ZMQ_LINGER, zmq_linger_milliseconds))
+    {
+        self_ = nullptr;
+    }
 }
 
 socket::socket(context& context, role socket_role)
   : socket(zmq_socket(context.self(), to_socket_type(socket_role)))
 {
-    if (socket_ == nullptr)
-        return;
-
-    if (!set(ZMQ_SNDHWM, send_buffer_) || !set(ZMQ_RCVHWM, receive_buffer_) ||
-        !set(ZMQ_LINGER, zmq_linger_milliseconds))
-    {
-        stop();
-    }
 }
 
 socket::~socket()
@@ -89,53 +86,71 @@ int32_t socket::to_socket_type(role socket_role)
 
 bool socket::stop()
 {
-    if (socket_ == nullptr)
-        return false;
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    unique_lock lock(mutex_);
 
-    const auto closed = zmq_close(socket_) != zmq_fail;
-    socket_ = nullptr;
-    return closed;
+    if (self_ == nullptr)
+        return true;
+
+    auto self = self_;
+    self_ = nullptr;
+    return zmq_close(self) != zmq_fail;
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 socket::operator const bool() const
 {
-    return socket_ != nullptr;
-}
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    shared_lock lock(mutex_);
 
-void socket::assign(socket&& other)
-{
-    // Free any existing socket resources.
-    stop();
-
-    // Assume ownership of the other socket's state.
-    socket_ = other.socket_;
-
-    // Don't destroy other socket's resource as it would destroy ours.
-    other.socket_ = nullptr;
+    return self_ != nullptr;
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 bool socket::bind(const config::endpoint& address)
 {
-    return zmq_bind(socket_, address.to_string().c_str()) != zmq_fail;
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    unique_lock lock(mutex_);
+
+    return zmq_bind(self_, address.to_string().c_str()) != zmq_fail;
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 bool socket::connect(const config::endpoint& address)
 {
-    return zmq_connect(socket_, address.to_string().c_str()) != zmq_fail;
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    unique_lock lock(mutex_);
+
+    return zmq_connect(self_, address.to_string().c_str()) != zmq_fail;
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 bool socket::set(int32_t option, int32_t value)
 {
-    return zmq_setsockopt(socket_, option, &value, sizeof(value)) != zmq_fail;
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    unique_lock lock(mutex_);
+
+    return zmq_setsockopt(self_, option, &value, sizeof(value)) != zmq_fail;
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 bool socket::set(int32_t option, const std::string& value)
 {
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    unique_lock lock(mutex_);
+
     if (value.empty())
         return true;
 
     const auto buffer = value.c_str();
-    return zmq_setsockopt(socket_, option, buffer, value.size()) != zmq_fail;
+    return zmq_setsockopt(self_, option, buffer, value.size()) != zmq_fail;
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 bool socket::set_authentication_domain(const std::string& domain)
@@ -172,12 +187,23 @@ bool socket::set_certificate(const certificate& certificate)
 
 void* socket::self()
 {
-    return socket_;
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    shared_lock lock(mutex_);
+
+    // This may become invalid after return. The guard only ensures atomicity.
+    return self_;
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 socket::identifier socket::id() const
 {
-    return reinterpret_cast<socket::identifier>(socket_);
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    shared_lock lock(mutex_);
+
+    return reinterpret_cast<socket::identifier>(self_);
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 } // namespace zmq

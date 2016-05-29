@@ -31,7 +31,8 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-/// This class is not thread safe.
+/// This class is thread safe (including dynamic configuration).
+/// Because the socket is only set on construct, sockets are not restartable.
 class BCP_API socket
   : public enable_shared_from_base<socket>
 {
@@ -59,7 +60,6 @@ public:
     /// A locally unique idenfitier for this socket.
     typedef intptr_t identifier;
 
-    socket();
     socket(void* zmq_socket);
     socket(context& context, role socket_role);
 
@@ -78,9 +78,6 @@ public:
 
     /// The socket identifier is an opaue correlation idenfier.
     identifier id() const;
-
-    /// Transfer ownership of this socket to another.
-    void assign(socket&& other);
 
     /// Bind the socket to the specified local address.
     bool bind(const config::endpoint& address);
@@ -114,9 +111,11 @@ private:
     bool set(int32_t option, int32_t value);
     bool set(int32_t option, const std::string& value);
 
-    void* socket_;
+    // The socket is protected by mutex.
+    void* self_;
     const int32_t send_buffer_;
     const int32_t receive_buffer_;
+    mutable shared_mutex mutex_;
 };
 
 } // namespace zmq

@@ -30,7 +30,7 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-/// This class is not thread safe.
+/// This class is thread safe (including dynamic configuration).
 class BCP_API poller
   : public enable_shared_from_base<poller>
 {
@@ -72,9 +72,11 @@ private:
 
     typedef std::vector<zmq_pollitem> pollers;
 
+    // These values are protected by mutex.
     bool expired_;
     bool terminated_;
     pollers pollers_;
+    mutable shared_mutex mutex_;
 };
 
 } // namespace zmq

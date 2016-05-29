@@ -34,7 +34,7 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-/// This class is not thread safe.
+/// This class is thread safe (including dynamic configuration).
 class BCP_API authenticator
   : public context
 {
@@ -51,7 +51,7 @@ public:
     virtual ~authenticator();
 
     /// Start the ZAP monitor.
-    virtual bool start();
+    virtual bool start() override;
 
     /// Stop the ZAP monitor and close the context.
     virtual bool stop() override;
@@ -74,18 +74,22 @@ public:
 
 private:
     void monitor();
-    bool allowed(const std::string& address) const;
-    bool allowed(const hash_digest& public_key) const;
+    bool allowed_address(const std::string& address) const;
+    bool allowed_key(const hash_digest& public_key) const;
+    bool allowed_weak(const std::string& domain) const;
 
-    // These are not thread safe, they are protected by sequential access.
+    // These are protected by socket mutex.
     socket socket_;
-    poller poller_;
     dispatcher dispatch_;
+    mutable shared_mutex socket_mutex_;
+
+    // These are protected by config mutex.
     bool require_address_;
     config::sodium private_key_;
     std::unordered_set<hash_digest> keys_;
     std::unordered_set<std::string> weak_domains_;
     std::unordered_map<std::string, bool> adresses_;
+    mutable shared_mutex config_mutex_;
 };
 
 } // namespace zmq

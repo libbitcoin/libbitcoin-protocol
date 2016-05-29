@@ -30,7 +30,7 @@ namespace zmq {
 static constexpr int32_t zmq_fail = -1;
 
 context::context()
-  : self_(zmq_ctx_new())
+  : self_(nullptr)
 {
 }
 
@@ -39,29 +39,58 @@ context::~context()
     stop();
 }
 
+bool context::start()
+{
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    unique_lock lock(mutex_);
+
+    if (self_ != nullptr)
+        return false;
+
+    self_ = zmq_ctx_new();
+    return self_ != nullptr;
+    ///////////////////////////////////////////////////////////////////////////
+}
+
 // This could be made non-blocking by using zmq_ctx_shutdown here and
 // zmq_ctx_term in a close method (invoked from the destructor).
 bool context::stop()
 {
-    if (self() == nullptr)
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    unique_lock lock(mutex_);
+
+    if (self_ == nullptr)
         return true;
 
     // This aborts blocking operations but blocks here until either each socket
-    // in the context is explicitly closed.
-    // It is possible for this to fail due to signal interrupt.
-    const auto result = zmq_ctx_term(self_) != zmq_fail;
+    // in the context is explicitly closed. This can fail by signal interrupt.
+    auto self = self_;
     self_ = nullptr;
-    return result;
+    return zmq_ctx_term(self) != zmq_fail;
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 context::operator const bool() const
 {
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    shared_lock lock(mutex_);
+
     return self_ != nullptr;
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 void* context::self()
 {
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    shared_lock lock(mutex_);
+
+    // This may become invalid after return. The guard only ensures atomicity.
     return self_;
+    ///////////////////////////////////////////////////////////////////////////
 }
 
 } // namespace zmq
