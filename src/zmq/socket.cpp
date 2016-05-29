@@ -40,7 +40,8 @@ static constexpr int32_t zmq_linger_milliseconds = 10;
 socket::socket(void* zmq_socket)
   : self_(zmq_socket),
     send_buffer_(zmq_send_buffer),
-    receive_buffer_(zmq_receive_buffer)
+    receive_buffer_(zmq_receive_buffer),
+    identifier_(reinterpret_cast<identifier>(zmq_socket))
 {
     if (self_ == nullptr)
         return;
@@ -198,12 +199,7 @@ void* socket::self()
 
 socket::identifier socket::id() const
 {
-    ///////////////////////////////////////////////////////////////////////////
-    // Critical Section
-    shared_lock lock(mutex_);
-
-    return reinterpret_cast<socket::identifier>(self_);
-    ///////////////////////////////////////////////////////////////////////////
+    return identifier_;
 }
 
 } // namespace zmq

@@ -113,6 +113,7 @@ private:
 
     // The socket is protected by mutex.
     void* self_;
+    const identifier identifier_;
     const int32_t send_buffer_;
     const int32_t receive_buffer_;
     mutable shared_mutex mutex_;
