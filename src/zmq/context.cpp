@@ -29,7 +29,6 @@ namespace zmq {
 
 static constexpr int32_t zmq_fail = -1;
 
-// Context is started by default, but is restartable.
 context::context()
   : self_(nullptr)
 {
@@ -41,6 +40,7 @@ context::~context()
     stop();
 }
 
+// The context is restartable and started by default.
 bool context::start()
 {
     ///////////////////////////////////////////////////////////////////////////
@@ -55,8 +55,7 @@ bool context::start()
     ///////////////////////////////////////////////////////////////////////////
 }
 
-// This could be made non-blocking by using zmq_ctx_shutdown here and
-// zmq_ctx_term in a close method (invoked from the destructor).
+// Signal termination and block until all sockets closed.
 bool context::stop()
 {
     ///////////////////////////////////////////////////////////////////////////
