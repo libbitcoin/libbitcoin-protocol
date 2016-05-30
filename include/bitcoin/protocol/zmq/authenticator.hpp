@@ -21,6 +21,8 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_AUTHENTICATOR_HPP
 
 #include <memory>
+#include <functional>
+#include <future>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -53,8 +55,15 @@ public:
     /// Start the ZAP monitor.
     virtual bool start() override;
 
-    /// Stop the ZAP monitor and close the context.
+    /// Stop the ZAP monitor.
     virtual bool stop() override;
+
+    /// Apply authentication to the socket for the given arbitrary domain.
+    /// Set secure false to enable null security, otherwise curve is required.
+    virtual bool apply(socket& socket, const std::string& domain, bool secure);
+
+    /// Set the server private key (required for curve security).
+    virtual void set_private_key(const config::sodium& private_key);
 
     /// Allow clients with the following public keys (whitelist).
     virtual void allow(const hash_digest& public_key);
@@ -65,31 +74,25 @@ public:
     /// Allow clients with the following ip addresses (blacklist).
     virtual void deny(const config::authority& address);
 
-    /// Set the server private key (required for curve security).
-    virtual void set_private_key(const config::sodium& private_key);
-
-    /// Apply authentication to the socket for the given arbitrary domain.
-    /// Set secure false to enable null security, otherwise curve is required.
-    virtual bool apply(socket& socket, const std::string& domain, bool secure);
-
 private:
-    void monitor();
+    typedef std::function<void(const code&)> completion_handler;
+
+    void monitor(std::promise<code>& started);
+
     bool allowed_address(const std::string& address) const;
     bool allowed_key(const hash_digest& public_key) const;
     bool allowed_weak(const std::string& domain) const;
 
-    // These are protected by socket mutex.
-    socket socket_;
+    // These are protected by mutex.
     dispatcher dispatch_;
-    mutable shared_mutex socket_mutex_;
-
-    // These are protected by config mutex.
     bool require_address_;
     config::sodium private_key_;
     std::unordered_set<hash_digest> keys_;
     std::unordered_set<std::string> weak_domains_;
     std::unordered_map<std::string, bool> adresses_;
-    mutable shared_mutex config_mutex_;
+
+    std::promise<code> stopped_;
+    mutable upgrade_mutex mutex_;
 };
 
 } // namespace zmq
