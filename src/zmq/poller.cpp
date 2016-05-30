@@ -37,15 +37,19 @@ poller::poller()
 // Parameter fd is non-zmq socket (unused when socket is set).
 void poller::add(socket& socket)
 {
-    ///////////////////////////////////////////////////////////////////////////
-    // Critical Section
-    unique_lock lock(mutex_);
-
     zmq_pollitem item;
     item.socket = socket.self();
     item.fd = 0;
     item.events = ZMQ_POLLIN;
     item.revents = 0;
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Critical Section
+    unique_lock lock(mutex_);
+
+    // See comments in wait method.
+    BITCOIN_ASSERT_MSG(pollers_.empty(), "multiple pollers not supported");
+
     pollers_.push_back(item);
     ///////////////////////////////////////////////////////////////////////////
 }
@@ -60,13 +64,20 @@ void poller::clear()
     ///////////////////////////////////////////////////////////////////////////
 }
 
-// BUGBUG: zeromq 4.2 has an overflow  bug in timer parameterization.
-// The timeout is typed as 'long' by zermq. This is 32 bit on windows and
-// actually less (potentially 1000 or 1 second) on other platforms.
-// And on non-windows platforms negative doesn't actually produce infinity.
+// This must be called on the socket thread.
+socket::identifier poller::wait()
+{
+    // This is the maximum safe value on all platforms, due to zeromq bug.
+    static constexpr int32_t maximum_safe_wait_milliseconds = 1000;
 
-// For consistency of config we limit the domain to 32 bit using int32_t,
-// where negative implies infinite wait.
+    return wait(maximum_safe_wait_milliseconds);
+}
+
+// This must be called on the socket thread.
+// BUGBUG: zeromq 4.2 has an overflow  bug in timer parameterization.
+// The timeout is typed as 'long' by zeromq. This is 32 bit on windows and
+// actually less (potentially 1000 or 1 second) on other platforms.
+// On non-windows platforms negative doesn't actually produce infinity.
 socket::identifier poller::wait(int32_t timeout_milliseconds)
 {
     ///////////////////////////////////////////////////////////////////////////
@@ -80,22 +91,28 @@ socket::identifier poller::wait(int32_t timeout_milliseconds)
     const auto data = reinterpret_cast<zmq_pollitem_t*>(pollers_.data());
     auto signaled = zmq_poll(data, size32, timeout_milliseconds);
 
+    // Not good for multiple socket operation.
+    // Either one of the sockets was terminated or a signal intervened.
     if (signaled < 0)
     {
         terminated_ = true;
         return 0;
     }
 
+    // No events have been signaled and no failure, so ther timer expired.
     if (signaled == 0)
     {
         expired_ = true;
         return 0;
     }
 
+    // Not good for multiple socket operation.
+    // This computes only the first socket with incoming data.
     for (const auto& poller: pollers_)
         if ((poller.revents & ZMQ_POLLIN) != 0)
             return reinterpret_cast<socket::identifier>(poller.socket);
 
+    // At least one non-ZMQ_POLLIN event was signaled.
     return 0;
     ///////////////////////////////////////////////////////////////////////////
 }

@@ -19,15 +19,14 @@
  */
 #include <bitcoin/protocol/zmq/authenticator.hpp>
 
-#include <cstdint>
 #include <functional>
 #include <future>
-#include <memory>
 #include <string>
-#include <thread>
 #include <zmq.h>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/message.hpp>
+#include <bitcoin/protocol/zmq/context.hpp>
+#include <bitcoin/protocol/zmq/poller.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
 namespace libbitcoin {
@@ -40,8 +39,6 @@ using namespace bc::config;
 
 // ZAP endpoint, see: rfc.zeromq.org/spec:27/ZAP
 static const endpoint zap("inproc://zeromq.zap.01");
-
-static constexpr uint32_t polling_interval_milliseconds = 1;
 
 // The authenticator establishes a well-known endpoint.
 // There may be only one such endpoint per process, tied to one context.
@@ -56,9 +53,12 @@ authenticator::~authenticator()
     stop();
 }
 
+// This must be called on the authenticator thread.
 // The authenticator is restartable but not started by default.
 bool authenticator::start()
 {
+    std::promise<code> started;
+
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
     unique_lock lock(mutex_);
@@ -67,8 +67,7 @@ bool authenticator::start()
     if (!*this && !context::start())
         return false;
 
-    std::promise<code> started;
-    stopped_ = std::promise<code>();
+    stopping_ = std::promise<code>();
 
     // Create the monitor thread, socket and start polling.
     dispatch_.concurrent(
@@ -79,12 +78,13 @@ bool authenticator::start()
     if (!started.get_future().get())
         return true;
 
+    // Stop the zeromq context on failure.
     context::stop();
     return false;
     ///////////////////////////////////////////////////////////////////////////
 }
 
-// This must be invoked in the thread that called start.
+// This must be called on the authenticator thread.
 bool authenticator::stop()
 {
     ///////////////////////////////////////////////////////////////////////////
@@ -98,20 +98,22 @@ bool authenticator::stop()
     const auto result = context::stop();
 
     // Wait on monitor stop, ignoring any socket close error (context gets it).
-    stopped_.get_future().wait();
+    stopping_.get_future().wait();
+
+    // Stop the zeromq context in case the poll terminated for other reason.
+    context::stop();
     return result;
     ///////////////////////////////////////////////////////////////////////////
 }
 
 // github.com/zeromq/rfc/blob/master/src/spec_27.c
-// All socket operations must occur on this monitor's thread.
 void authenticator::monitor(std::promise<code>& started)
 {
     socket socket(*this, socket::role::router);
 
     if (!socket.bind(zap))
     {
-        stopped_.set_value(error::success);
+        stopping_.set_value(error::success);
         started.set_value(error::operation_failed);
         return;
     }
@@ -120,11 +122,9 @@ void authenticator::monitor(std::promise<code>& started)
     poller.add(socket);
     started.set_value(error::success);
 
-    // Ignore expired and keep looping, exiting the thread when terminated.
     while (!poller.terminated())
     {
-        // If the id doesn't match the poll is either terminated or expired.
-        if (poller.wait(polling_interval_milliseconds) != socket.id())
+        if (poller.wait() != socket.id())
             continue;
 
         data_chunk origin;
@@ -258,10 +258,10 @@ void authenticator::monitor(std::promise<code>& started)
     }
 
     auto result = socket.stop() ? error::success : error::operation_failed;
-    stopped_.set_value(result);
+    stopping_.set_value(result);
 }
 
-// This must be called in the socket's thread.
+// This must be called on the socket thread.
 bool authenticator::apply(socket& socket, const std::string& domain,
     bool secure)
 {

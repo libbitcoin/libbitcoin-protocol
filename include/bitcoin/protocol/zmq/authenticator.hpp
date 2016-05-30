@@ -29,14 +29,13 @@
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
-#include <bitcoin/protocol/zmq/poller.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-/// This class is thread safe (including dynamic configuration).
+/// This class is thread safe except as noted.
 class BCP_API authenticator
   : public context
 {
@@ -45,19 +44,22 @@ public:
     typedef std::shared_ptr<authenticator> ptr;
 
     /// Start the ZAP monitor for the context.
-    /// The threadpool must be joined prior to destruct.
-    /// There may be only one authenticator per process (otherwise bridge).
+    /// There may be only one authenticator per process.
     authenticator(threadpool& threadpool);
 
     /// Cause all sockets of this authenticated context to close.
+    /// The object must be destroyed on the authenticator thread if not stopped.
     virtual ~authenticator();
 
-    /// Start the ZAP monitor.
+    /// Start the monitor.
+    /// This must be called on the authenticator thread.
     virtual bool start() override;
 
-    /// Stop the ZAP monitor.
+    /// This must be called on the authenticator thread.
+    /// Stop the monitor (optional, must close or destroy before context stop).
     virtual bool stop() override;
 
+    /// This must be called on the socket thread.
     /// Apply authentication to the socket for the given arbitrary domain.
     /// Set secure false to enable null security, otherwise curve is required.
     virtual bool apply(socket& socket, const std::string& domain, bool secure);
@@ -75,8 +77,6 @@ public:
     virtual void deny(const config::authority& address);
 
 private:
-    typedef std::function<void(const code&)> completion_handler;
-
     void monitor(std::promise<code>& started);
 
     bool allowed_address(const std::string& address) const;
@@ -90,9 +90,8 @@ private:
     std::unordered_set<hash_digest> keys_;
     std::unordered_set<std::string> weak_domains_;
     std::unordered_map<std::string, bool> adresses_;
-
-    std::promise<code> stopped_;
-    mutable upgrade_mutex mutex_;
+    std::promise<code> stopping_;
+    mutable shared_mutex mutex_;
 };
 
 } // namespace zmq

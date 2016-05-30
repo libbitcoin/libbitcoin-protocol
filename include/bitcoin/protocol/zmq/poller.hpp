@@ -29,8 +29,8 @@
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
-
-/// This class is thread safe (including dynamic configuration).
+    
+/// This class is thread safe except as noted.
 class BCP_API poller
   : public enable_shared_from_base<poller>
 {
@@ -51,13 +51,19 @@ public:
     /// True if the connection is closed.
     bool terminated() const;
 
-    /// Add a socket to be polled (not thread safe).
+    /// Add a socket to be polled.
     void add(socket& sock);
 
-    /// Remove all sockets from the poller. Must not be in wait call.
+    /// Remove all sockets from the poller.
     void clear();
 
-    /// Wait specified milliseconds for any socket to receive, -1 is forever.
+    /// This must be called on the socket thread.
+    /// Wait one second for any socket to receive.
+
+    socket::identifier wait();
+
+    /// This must be called on the socket thread.
+    /// Wait specified time for any socket to receive, -1 is forever.
     socket::identifier wait(int32_t timeout_milliseconds);
 
 private:

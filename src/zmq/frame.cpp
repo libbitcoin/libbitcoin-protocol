@@ -96,6 +96,7 @@ data_chunk frame::payload()
     return{ begin, begin + size };
 }
 
+// Must be called on the socket thread.
 bool frame::receive(socket& socket)
 {
     if (!valid_)
@@ -106,6 +107,7 @@ bool frame::receive(socket& socket)
         set_more(socket);
 }
 
+// Must be called on the socket thread.
 bool frame::send(socket& socket, bool last)
 {
     if (!valid_)

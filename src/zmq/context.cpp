@@ -40,6 +40,7 @@ context::~context()
     stop();
 }
 
+// This must be called on the context thread.
 // The context is restartable and started by default.
 bool context::start()
 {
@@ -55,6 +56,7 @@ bool context::start()
     ///////////////////////////////////////////////////////////////////////////
 }
 
+// This must be called on the context thread.
 // Signal termination and block until all sockets closed.
 bool context::stop()
 {

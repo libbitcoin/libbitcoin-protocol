@@ -132,6 +132,7 @@ size_t message::size() const
     return queue_.size();
 }
 
+// Must be called on the socket thread.
 bool message::send(socket& socket)
 {
     auto count = queue_.size();
@@ -149,6 +150,7 @@ bool message::send(socket& socket)
     return true;
 }
 
+// Must be called on the socket thread.
 bool message::receive(socket& socket)
 {
     clear();

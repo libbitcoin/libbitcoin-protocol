@@ -59,9 +59,11 @@ public:
     /// The initialized or received payload of the frame.
     data_chunk payload();
 
+    /// Must be called on the socket thread.
     /// Receive a frame on the socket.
     bool receive(socket& socket);
 
+    /// Must be called on the socket thread.
     /// Send a frame on the socket.
     bool send(socket& socket, bool more);
 
