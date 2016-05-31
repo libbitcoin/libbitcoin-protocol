@@ -39,8 +39,11 @@ class BCP_API identifiers
 
 public:
 
+    /// True if the result set contains no identifiers.
+    bool empty() const;
+
     /// True if the result set contains the identifier.
-    virtual bool contains(identifier value) const;
+    bool contains(identifier value) const;
 
 protected:
     virtual void push(const void* socket);

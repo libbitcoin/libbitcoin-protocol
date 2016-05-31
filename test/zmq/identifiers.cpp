@@ -35,6 +35,19 @@ public:
     }
 };
 
+BOOST_AUTO_TEST_CASE(identifiers__empty__default__true)
+{
+    identifiers_fixture instance;
+    BOOST_REQUIRE(instance.empty());
+}
+
+BOOST_AUTO_TEST_CASE(identifiers__empty__one_value__false)
+{
+    identifiers_fixture instance;
+    instance.push(reinterpret_cast<void*>(42u));
+    BOOST_REQUIRE(instance.empty());
+}
+
 BOOST_AUTO_TEST_CASE(identifiers__contains__default__not_zero)
 {
     identifiers_fixture instance;

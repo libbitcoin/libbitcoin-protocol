@@ -26,6 +26,11 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+bool identifiers::empty() const
+{
+    return ids_.empty();
+}
+
 bool identifiers::contains(identifier value) const
 {
     return std::find(ids_.begin(), ids_.end(), value) != ids_.end();
