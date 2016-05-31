@@ -59,7 +59,6 @@ public:
 
     /// This must be called on the socket thread.
     /// Wait one second for any socket to receive.
-
     socket::identifier wait();
 
     /// This must be called on the socket thread.
