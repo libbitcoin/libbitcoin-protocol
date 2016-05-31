@@ -35,7 +35,7 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-/// This class is thread safe except as noted.
+/// This class is thread safe.
 class BCP_API authenticator
   : public context
 {
@@ -43,23 +43,20 @@ public:
     /// A shared authenticator pointer.
     typedef std::shared_ptr<authenticator> ptr;
 
-    /// Start the ZAP monitor for the context.
+    /// Start the ZAP router for the context.
     /// There may be only one authenticator per process.
     authenticator(threadpool& threadpool);
 
     /// Cause all sockets of this authenticated context to close.
-    /// The object must be destroyed on the authenticator thread if not stopped.
     virtual ~authenticator();
 
-    /// Start the monitor.
-    /// This must be called on the authenticator thread.
+    /// Start the router.
     virtual bool start() override;
 
-    /// This must be called on the authenticator thread.
-    /// Stop the monitor (optional, must close or destroy before context stop).
+    /// Stop the router (optional, must close or destroy before context stop).
     virtual bool stop() override;
 
-    /// This must be called on the socket thread.
+    // This must be called on the socket thread.
     /// Apply authentication to the socket for the given arbitrary domain.
     /// Set secure false to enable null security, otherwise curve is required.
     virtual bool apply(socket& socket, const std::string& domain, bool secure);
@@ -77,7 +74,7 @@ public:
     virtual void deny(const config::authority& address);
 
 private:
-    void monitor(std::promise<code>& started);
+    void router(std::promise<code>& started);
 
     bool allowed_address(const std::string& address) const;
     bool allowed_key(const hash_digest& public_key) const;

@@ -40,8 +40,7 @@ using namespace bc::config;
 // ZAP endpoint, see: rfc.zeromq.org/spec:27/ZAP
 static const endpoint zap("inproc://zeromq.zap.01");
 
-// The authenticator establishes a well-known endpoint.
-// There may be only one such endpoint per process, tied to one context.
+// There may be only one authenticator per process.
 authenticator::authenticator(threadpool& pool)
   : dispatch_(pool, NAME),
     require_address_(false)
@@ -53,7 +52,6 @@ authenticator::~authenticator()
     stop();
 }
 
-// This must be called on the authenticator thread.
 // The authenticator is restartable but not started by default.
 bool authenticator::start()
 {
@@ -69,9 +67,9 @@ bool authenticator::start()
 
     stopping_ = std::promise<code>();
 
-    // Create the monitor thread, socket and start polling.
+    // Create the router thread, socket and start polling.
     dispatch_.concurrent(
-        std::bind(&authenticator::monitor,
+        std::bind(&authenticator::router,
             this, std::ref(started)));
 
     // Wait on monitor start.
@@ -84,7 +82,6 @@ bool authenticator::start()
     ///////////////////////////////////////////////////////////////////////////
 }
 
-// This must be called on the authenticator thread.
 bool authenticator::stop()
 {
     ///////////////////////////////////////////////////////////////////////////
@@ -107,7 +104,7 @@ bool authenticator::stop()
 }
 
 // github.com/zeromq/rfc/blob/master/src/spec_27.c
-void authenticator::monitor(std::promise<code>& started)
+void authenticator::router(std::promise<code>& started)
 {
     socket socket(*this, socket::role::router);
 

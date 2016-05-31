@@ -146,7 +146,6 @@ bool message::send(socket& socket)
             return false;
     }
 
-    BITCOIN_ASSERT(queue_.empty());
     return true;
 }
 
