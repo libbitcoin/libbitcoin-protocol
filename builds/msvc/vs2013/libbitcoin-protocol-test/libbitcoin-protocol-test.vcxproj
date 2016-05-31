@@ -76,6 +76,7 @@
     <ClCompile Include="..\..\..\..\test\zmq\identifiers.cpp" />
     <ClCompile Include="..\..\..\..\test\zmq\message.cpp" />
     <ClCompile Include="..\..\..\..\test\zmq\poller.cpp" />
+    <ClCompile Include="..\..\..\..\test\zmq\worker.cpp" />
     <ClCompile Include="..\..\..\..\test\zmq\socket.cpp" />
   </ItemGroup>
   <ItemGroup>
