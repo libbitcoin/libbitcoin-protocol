@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2011-2016 libbitcoin developers (see AUTHORS)
  *
  * This file is part of libbitcoin-protocol.
@@ -26,6 +26,7 @@
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
+#include <bitcoin/protocol/zmq/identifiers.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -56,9 +57,6 @@ public:
 
     /// A shared socket pointer.
     typedef std::shared_ptr<socket> ptr;
-
-    /// A locally unique idenfitier for this socket.
-    typedef intptr_t identifier;
 
     /// Construct a socket.
     socket(void* zmq_socket);

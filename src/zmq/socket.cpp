@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2011-2016 libbitcoin developers (see AUTHORS)
  *
  * This file is part of libbitcoin-protocol.
@@ -24,6 +24,7 @@
 #include <zmq.h>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
+#include <bitcoin/protocol/zmq/identifiers.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -123,7 +124,7 @@ void* socket::self()
 }
 
 // To preserve idetity the id survives after the socket is destroyed.
-socket::identifier socket::id() const
+identifier socket::id() const
 {
     return identifier_;
 }

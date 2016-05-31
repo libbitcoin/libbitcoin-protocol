@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2011-2016 libbitcoin developers (see AUTHORS)
  *
  * This file is part of libbitcoin-protocol.
@@ -124,7 +124,7 @@ void authenticator::monitor(std::promise<code>& started)
 
     while (!poller.terminated())
     {
-        if (poller.wait() != socket.id())
+        if (!poller.wait().contains(socket.id()))
             continue;
 
         data_chunk origin;

@@ -56,8 +56,8 @@ int poller_example()
     assert(result);
 
     // We expect a message only on the sink.
-    const auto id = poller.wait(-1);
-    assert(id == sink.id());
+    const auto ids = poller.wait(1000);
+    assert(ids.contains(sink.id()));
     assert(!poller.expired());
     assert(!poller.terminated());
 

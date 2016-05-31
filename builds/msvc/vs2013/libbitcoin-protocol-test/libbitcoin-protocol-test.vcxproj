@@ -73,6 +73,7 @@
     <ClCompile Include="..\..\..\..\test\zmq\certificate.cpp" />
     <ClCompile Include="..\..\..\..\test\zmq\context.cpp" />
     <ClCompile Include="..\..\..\..\test\zmq\frame.cpp" />
+    <ClCompile Include="..\..\..\..\test\zmq\identifiers.cpp" />
     <ClCompile Include="..\..\..\..\test\zmq\message.cpp" />
     <ClCompile Include="..\..\..\..\test\zmq\poller.cpp" />
     <ClCompile Include="..\..\..\..\test\zmq\socket.cpp" />

@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2011-2016 libbitcoin developers (see AUTHORS)
  *
  * This file is part of libbitcoin-protocol.
@@ -22,6 +22,7 @@
 #include <cstdint>
 #include <zmq.h>
 #include <bitcoin/bitcoin.hpp>
+#include <bitcoin/protocol/zmq/identifiers.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
 namespace libbitcoin {
@@ -47,9 +48,6 @@ void poller::add(socket& socket)
     // Critical Section
     unique_lock lock(mutex_);
 
-    // See comments in wait method.
-    BITCOIN_ASSERT_MSG(pollers_.empty(), "multiple pollers not supported");
-
     pollers_.push_back(item);
     ///////////////////////////////////////////////////////////////////////////
 }
@@ -65,7 +63,7 @@ void poller::clear()
 }
 
 // This must be called on the socket thread.
-socket::identifier poller::wait()
+identifiers poller::wait()
 {
     // This is the maximum safe value on all platforms, due to zeromq bug.
     static constexpr int32_t maximum_safe_wait_milliseconds = 1000;
@@ -78,7 +76,7 @@ socket::identifier poller::wait()
 // The timeout is typed as 'long' by zeromq. This is 32 bit on windows and
 // actually less (potentially 1000 or 1 second) on other platforms.
 // On non-windows platforms negative doesn't actually produce infinity.
-socket::identifier poller::wait(int32_t timeout_milliseconds)
+identifiers poller::wait(int32_t timeout_milliseconds)
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
@@ -87,33 +85,31 @@ socket::identifier poller::wait(int32_t timeout_milliseconds)
     const auto size = pollers_.size();
     BITCOIN_ASSERT(size <= max_int32);
 
-    const auto size32 = static_cast<int32_t>(size);
-    const auto data = reinterpret_cast<zmq_pollitem_t*>(pollers_.data());
-    auto signaled = zmq_poll(data, size32, timeout_milliseconds);
+    const auto item_count = static_cast<int32_t>(size);
+    const auto items = reinterpret_cast<zmq_pollitem_t*>(pollers_.data());
+    const auto signaled = zmq_poll(items, item_count, timeout_milliseconds);
 
-    // Not good for multiple socket operation.
     // Either one of the sockets was terminated or a signal intervened.
     if (signaled < 0)
     {
         terminated_ = true;
-        return 0;
+        return{};
     }
 
     // No events have been signaled and no failure, so ther timer expired.
     if (signaled == 0)
     {
         expired_ = true;
-        return 0;
+        return{};
     }
 
-    // Not good for multiple socket operation.
-    // This computes only the first socket with incoming data.
+    identifiers result;
     for (const auto& poller: pollers_)
         if ((poller.revents & ZMQ_POLLIN) != 0)
-            return reinterpret_cast<socket::identifier>(poller.socket);
+            result.push(poller.socket);
 
-    // At least one non-ZMQ_POLLIN event was signaled.
-    return 0;
+    // At least one event was signaled, but this poll-in set may be empty.
+    return result;
     ///////////////////////////////////////////////////////////////////////////
 }
 

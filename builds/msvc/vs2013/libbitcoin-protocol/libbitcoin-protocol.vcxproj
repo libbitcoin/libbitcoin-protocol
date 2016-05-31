@@ -80,6 +80,7 @@
     <ClCompile Include="..\..\..\..\src\zmq\certificate.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\context.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\frame.cpp" />
+    <ClCompile Include="..\..\..\..\src\zmq\identifiers.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\message.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\poller.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\socket.cpp" />
@@ -98,6 +99,7 @@
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\certificate.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\context.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\frame.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\identifiers.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\message.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\poller.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\socket.hpp" />
