@@ -43,12 +43,12 @@ public:
     /// Construct a frame with the specified payload (for sending).
     frame(const data_chunk& data);
 
-    /// Free the frame's allocated memory.
-    virtual ~frame();
-
     /// This class is not copyable.
     frame(const frame&) = delete;
     void operator=(const frame&) = delete;
+
+    /// Free the frame's allocated memory.
+    virtual ~frame();
 
     /// True if the construction was successful.
     operator const bool() const;
