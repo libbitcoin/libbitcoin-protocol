@@ -29,10 +29,11 @@ namespace zmq {
 
 static constexpr int32_t zmq_fail = -1;
 
-context::context()
+context::context(bool started)
   : self_(nullptr)
 {
-    start();
+    if (started)
+        start();
 }
 
 context::~context()
@@ -40,7 +41,7 @@ context::~context()
     stop();
 }
 
-// The context is restartable and started by default.
+// Restartable after stop and optionally started on construct.
 bool context::start()
 {
     ///////////////////////////////////////////////////////////////////////////

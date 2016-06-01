@@ -38,15 +38,15 @@ public:
     typedef std::shared_ptr<context> ptr;
 
     /// Construct a context.
-    context();
-
-    /// Blocks until all child sockets are closed.
-    /// Stops all child socket activity by closing the zeromq context.
-    virtual ~context();
+    context(bool started=true);
 
     /// This class is not copyable.
     context(const context&) = delete;
     void operator=(const context&) = delete;
+
+    /// Blocks until all child sockets are closed.
+    /// Stops all child socket activity by closing the zeromq context.
+    virtual ~context();
 
     /// True if the context is valid and started.
     operator const bool() const;
