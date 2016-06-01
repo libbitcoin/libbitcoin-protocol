@@ -48,5 +48,11 @@
     <ClCompile Include="..\..\..\..\test\examples\poller_example.cpp">
       <Filter>src\examples</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\test\zmq\identifiers.cpp">
+      <Filter>src\zmq</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\test\zmq\worker.cpp">
+      <Filter>src\zmq</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

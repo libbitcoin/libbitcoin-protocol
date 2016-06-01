@@ -44,9 +44,11 @@ src_libbitcoin_protocol_la_SOURCES = \
     src/zmq/certificate.cpp \
     src/zmq/context.cpp \
     src/zmq/frame.cpp \
+    src/zmq/identifiers.cpp \
     src/zmq/message.cpp \
     src/zmq/poller.cpp \
-    src/zmq/socket.cpp
+    src/zmq/socket.cpp \
+    src/zmq/worker.cpp
 
 # local: test/libbitcoin_protocol_test
 #------------------------------------------------------------------------------
@@ -66,9 +68,11 @@ test_libbitcoin_protocol_test_SOURCES = \
     test/zmq/certificate.cpp \
     test/zmq/context.cpp \
     test/zmq/frame.cpp \
+    test/zmq/identifiers.cpp \
     test/zmq/message.cpp \
     test/zmq/poller.cpp \
-    test/zmq/socket.cpp
+    test/zmq/socket.cpp \
+    test/zmq/worker.cpp
 
 endif WITH_TESTS
 
@@ -95,7 +99,9 @@ include_bitcoin_protocol_zmq_HEADERS = \
     include/bitcoin/protocol/zmq/certificate.hpp \
     include/bitcoin/protocol/zmq/context.hpp \
     include/bitcoin/protocol/zmq/frame.hpp \
+    include/bitcoin/protocol/zmq/identifiers.hpp \
     include/bitcoin/protocol/zmq/message.hpp \
     include/bitcoin/protocol/zmq/poller.hpp \
-    include/bitcoin/protocol/zmq/socket.hpp
+    include/bitcoin/protocol/zmq/socket.hpp \
+    include/bitcoin/protocol/zmq/worker.hpp
 

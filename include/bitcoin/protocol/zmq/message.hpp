@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2011-2016 libbitcoin developers (see AUTHORS)
  *
  * This file is part of libbitcoin-protocol.
@@ -70,9 +70,11 @@ public:
     /// The number of items on the queue.
     size_t size() const;
 
+    /// Must be called on the socket thread.
     /// Send the message in parts. If a send fails the unsent parts remain.
     bool send(socket& socket);
 
+    /// Must be called on the socket thread.
     /// Receve a message (clears the queue first).
     bool receive(socket& socket);
 

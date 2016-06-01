@@ -27,8 +27,10 @@
 #include <bitcoin/protocol/zmq/certificate.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
 #include <bitcoin/protocol/zmq/frame.hpp>
+#include <bitcoin/protocol/zmq/identifiers.hpp>
 #include <bitcoin/protocol/zmq/message.hpp>
 #include <bitcoin/protocol/zmq/poller.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
+#include <bitcoin/protocol/zmq/worker.hpp>
 
 #endif

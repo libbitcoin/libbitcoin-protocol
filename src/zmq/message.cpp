@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2011-2016 libbitcoin developers (see AUTHORS)
  *
  * This file is part of libbitcoin-protocol.
@@ -132,6 +132,7 @@ size_t message::size() const
     return queue_.size();
 }
 
+// Must be called on the socket thread.
 bool message::send(socket& socket)
 {
     auto count = queue_.size();
@@ -145,10 +146,10 @@ bool message::send(socket& socket)
             return false;
     }
 
-    BITCOIN_ASSERT(queue_.empty());
     return true;
 }
 
+// Must be called on the socket thread.
 bool message::receive(socket& socket)
 {
     clear();

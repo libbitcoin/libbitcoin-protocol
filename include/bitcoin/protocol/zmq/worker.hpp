@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2011-2016 libbitcoin developers (see AUTHORS)
  *
  * This file is part of libbitcoin-protocol.
@@ -17,54 +17,59 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef LIBBITCOIN_PROTOCOL_ZMQ_CONTEXT_HPP
-#define LIBBITCOIN_PROTOCOL_ZMQ_CONTEXT_HPP
+#ifndef LIBBITCOIN_PROTOCOL_ZMQ_WORKER_HPP
+#define LIBBITCOIN_PROTOCOL_ZMQ_WORKER_HPP
 
-#include <cstdint>
+#include <atomic>
 #include <memory>
+#include <future>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
+#include <bitcoin/protocol/zmq/socket.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
 /// This class is thread safe.
-class BCP_API context
-  : public enable_shared_from_base<context>
+class BCP_API worker
 {
 public:
-    /// A shared context pointer.
-    typedef std::shared_ptr<context> ptr;
+    /// A shared worker pointer.
+    typedef std::shared_ptr<worker> ptr;
 
-    /// Construct a context.
-    context(bool started=true);
+    /// Construct a worker.
+    worker(threadpool& pool);
 
     /// This class is not copyable.
-    context(const context&) = delete;
-    void operator=(const context&) = delete;
+    worker(const worker&) = delete;
+    void operator=(const worker&) = delete;
 
-    /// Blocks until all child sockets are closed.
-    /// Stops all child socket activity by closing the zeromq context.
-    virtual ~context();
+    /// Stop the worker.
+    virtual ~worker();
 
-    /// True if the context is valid and started.
-    operator const bool() const;
-
-    /// The underlying zeromq context.
-    void* self();
-
-    /// Create the zeromq context.
+    /// Start the worker.
     virtual bool start();
 
-    /// Blocks until all child sockets are closed.
-    /// Stops all child socket activity by closing the zeromq context.
+    /// Stop the worker (optional).
     virtual bool stop();
+
+protected:
+    bool stopped();
+    bool started(bool result);
+    bool finished(bool result);
+    bool forward(socket& from, socket& to);
+    void relay(socket& left, socket& right);
+
+    virtual void work() = 0;
 
 private:
 
-    // The context pointer is protected by mutex.
-    void* self_;
+    // These are protected by mutex.
+    dispatcher dispatch_;
+    std::atomic<bool> stopped_;
+    std::promise<bool> started_;
+    std::promise<bool> finished_;
     mutable shared_mutex mutex_;
 };
 
@@ -73,4 +78,3 @@ private:
 } // namespace libbitcoin
 
 #endif
-

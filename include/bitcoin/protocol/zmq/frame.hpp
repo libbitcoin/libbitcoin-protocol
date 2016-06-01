@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2011-2016 libbitcoin developers (see AUTHORS)
  *
  * This file is part of libbitcoin-protocol.
@@ -43,12 +43,12 @@ public:
     /// Construct a frame with the specified payload (for sending).
     frame(const data_chunk& data);
 
-    /// Free the frame's allocated memory.
-    virtual ~frame();
-
     /// This class is not copyable.
     frame(const frame&) = delete;
     void operator=(const frame&) = delete;
+
+    /// Free the frame's allocated memory.
+    virtual ~frame();
 
     /// True if the construction was successful.
     operator const bool() const;
@@ -59,9 +59,11 @@ public:
     /// The initialized or received payload of the frame.
     data_chunk payload();
 
+    /// Must be called on the socket thread.
     /// Receive a frame on the socket.
     bool receive(socket& socket);
 
+    /// Must be called on the socket thread.
     /// Send a frame on the socket.
     bool send(socket& socket, bool more);
 

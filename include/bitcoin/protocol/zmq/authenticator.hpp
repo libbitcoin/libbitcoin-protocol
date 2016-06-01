@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2011-2016 libbitcoin developers (see AUTHORS)
  *
  * This file is part of libbitcoin-protocol.
@@ -29,35 +29,40 @@
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
-#include <bitcoin/protocol/zmq/poller.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
+#include <bitcoin/protocol/zmq/worker.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-/// This class is thread safe (including dynamic configuration).
+/// This class is thread safe.
 class BCP_API authenticator
-  : public context
+  : public worker
 {
 public:
     /// A shared authenticator pointer.
     typedef std::shared_ptr<authenticator> ptr;
 
-    /// Start the ZAP monitor for the context.
-    /// The threadpool must be joined prior to destruct.
-    /// There may be only one authenticator per process (otherwise bridge).
+    /// The fixed inprocess authentication endpoint.
+    static const config::endpoint endpoint;
+
+    /// There may be only one authenticator per process.
     authenticator(threadpool& threadpool);
 
-    /// Cause all sockets of this authenticated context to close.
+    /// Stop the router.
     virtual ~authenticator();
 
-    /// Start the ZAP monitor.
-    virtual bool start() override;
+    /// Expose the authenticated context.
+    operator context&();
 
-    /// Stop the ZAP monitor.
-    virtual bool stop() override;
+    /// Start the ZAP router for the context.
+    virtual bool start();
 
+    /// Stop the router (optional).
+    virtual bool stop();
+
+    // This must be called on the socket thread.
     /// Apply authentication to the socket for the given arbitrary domain.
     /// Set secure false to enable null security, otherwise curve is required.
     virtual bool apply(socket& socket, const std::string& domain, bool secure);
@@ -74,25 +79,24 @@ public:
     /// Allow clients with the following ip addresses (blacklist).
     virtual void deny(const config::authority& address);
 
+protected:
+    void work() override;
+
 private:
-    typedef std::function<void(const code&)> completion_handler;
-
-    void monitor(std::promise<code>& started);
-
     bool allowed_address(const std::string& address) const;
     bool allowed_key(const hash_digest& public_key) const;
     bool allowed_weak(const std::string& domain) const;
 
+    // This is thread safe.
+    context context_;
+
     // These are protected by mutex.
-    dispatcher dispatch_;
     bool require_address_;
     config::sodium private_key_;
     std::unordered_set<hash_digest> keys_;
     std::unordered_set<std::string> weak_domains_;
     std::unordered_map<std::string, bool> adresses_;
-
-    std::promise<code> stopped_;
-    mutable upgrade_mutex mutex_;
+    mutable shared_mutex mutex_;
 };
 
 } // namespace zmq
