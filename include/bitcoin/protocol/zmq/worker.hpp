@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef LIBBITCOIN_PROTOCOL_ZMQ_PUMP_HPP
-#define LIBBITCOIN_PROTOCOL_ZMQ_PUMP_HPP
+#ifndef LIBBITCOIN_PROTOCOL_ZMQ_WORKER_HPP
+#define LIBBITCOIN_PROTOCOL_ZMQ_WORKER_HPP
 
 #include <atomic>
 #include <memory>
@@ -41,8 +41,9 @@ public:
     /// Construct a worker.
     worker(threadpool& pool);
 
-    /// True if the worker is valid and started.
-    operator const bool() const;
+    /// This class is not copyable.
+    worker(const worker&) = delete;
+    void operator=(const worker&) = delete;
 
     /// Stop the worker.
     virtual ~worker();
@@ -58,6 +59,7 @@ protected:
     bool started(bool result);
     bool finished(bool result);
     bool forward(socket& from, socket& to);
+    void relay(socket& left, socket& right);
 
     virtual void work() = 0;
 

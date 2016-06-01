@@ -19,6 +19,7 @@
  */
 #include <bitcoin/protocol/zmq/worker.hpp>
 
+#include <zmq.h>
 #include <functional>
 #include <future>
 #include <bitcoin/bitcoin.hpp>
@@ -43,7 +44,7 @@ worker::~worker()
     stop();
 }
 
-// The worker is restartable but not started by default.
+// Restartable after stop and not started on construct.
 bool worker::start()
 {
     ///////////////////////////////////////////////////////////////////////////
@@ -53,14 +54,17 @@ bool worker::start()
     if (stopped_)
     {
         stopped_ = false;
-        started_ = std::promise<bool>();
 
         // Create the replier thread and socket and start polling.
         dispatch_.concurrent(
             std::bind(&worker::work, this));
 
-        // Wait on replier start, convert code to bool.
-        return !started_.get_future().get();
+        // Wait on replier start.
+        const auto result = started_.get_future().get();
+
+        // Reset for restartability.
+        started_ = std::promise<bool>();
+        return result;
     }
 
     return false;
@@ -76,36 +80,18 @@ bool worker::stop()
     if (!stopped_)
     {
         stopped_ = true;
-        finished_ = std::promise<bool>();
 
-        // Wait on replier stop, convert code to bool.
-        return !finished_.get_future().get();
+        // Wait on replier stop.
+        const auto result = finished_.get_future().get();
+
+        // Reset for restartability.
+        finished_ = std::promise<bool>();
+        return result;
     }
 
     return true;
     ///////////////////////////////////////////////////////////////////////////
 }
-
-////// Implement to define a worker type.
-////void worker::work()
-////{
-////    // Workers can play any role.
-////    socket socket(context_, socket::role::replier);
-////
-////    // Workers can bind or connect to the end point.
-////    if (!started(socket.connect(endpoint_)))
-////        return;
-////
-////    poller poller;
-////    poller.add(socket);
-////
-////    // Echo messages until context termination or explicit worker stop.
-////    while (!poller.terminated() && !stopped())
-////        if (poller.wait().contains(socket.id()))
-////            forward(socket, socket);
-////
-////    finished(socket.stop());
-////}
 
 // Utilities.
 //-----------------------------------------------------------------------------
@@ -127,10 +113,10 @@ bool worker::started(bool result)
     return result;
 }
 
-// Call from work when finished working.
+// Call from work when finished working, do not call if started was called.
 bool worker::finished(bool result)
 {
-    started_.set_value(result);
+    finished_.set_value(result);
     return result;
 }
 
@@ -140,6 +126,20 @@ bool worker::forward(socket& from, socket& to)
     message packet;
     return packet.receive(from) && packet.send(to);
 }
+
+// Call from work to establish a proxy between two sockets.
+void worker::relay(socket& left, socket& right)
+{
+    ////// TODO: have stop method connect to local control and send terminate.
+    ////context context;
+    ////socket control(context, socket::role::pair);
+    ////control.bind({ "inproc://relay-####" });
+
+    // This can be stopped by sending "TERMINATE" to control.
+    // Otherwise blocks until the context is terminated, always returns -1.
+    zmq_proxy_steerable(left.self(), right.self(), nullptr, nullptr);
+}
+
 
 } // namespace zmq
 } // namespace protocol
