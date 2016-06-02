@@ -40,19 +40,19 @@ int32_t socket::to_socket_type(role socket_role)
 {
     switch (socket_role)
     {
-    case role::pair: return ZMQ_PAIR;
-    case role::publisher: return ZMQ_PUB;
-    case role::subscriber: return ZMQ_SUB;
-    case role::requester: return ZMQ_REQ;
-    case role::replier: return ZMQ_REP;
-    case role::dealer: return ZMQ_DEALER;
-    case role::router: return ZMQ_ROUTER;
-    case role::puller: return ZMQ_PULL;
-    case role::pusher: return ZMQ_PUSH;
-    case role::extended_publisher: return ZMQ_XPUB;
-    case role::extended_subscriber: return ZMQ_XSUB;
-    case role::streamer: return ZMQ_STREAM;
-    default: return -1;
+        case role::pair: return ZMQ_PAIR;
+        case role::publisher: return ZMQ_PUB;
+        case role::subscriber: return ZMQ_SUB;
+        case role::requester: return ZMQ_REQ;
+        case role::replier: return ZMQ_REP;
+        case role::dealer: return ZMQ_DEALER;
+        case role::router: return ZMQ_ROUTER;
+        case role::puller: return ZMQ_PULL;
+        case role::pusher: return ZMQ_PUSH;
+        case role::extended_publisher: return ZMQ_XPUB;
+        case role::extended_subscriber: return ZMQ_XSUB;
+        case role::streamer: return ZMQ_STREAM;
+        default: return -1;
     }
 }
 
