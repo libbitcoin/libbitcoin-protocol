@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+#include <cassert>
 #include <string>
 #include <thread>
 #include <bitcoin/protocol.hpp>
@@ -47,14 +48,14 @@ void server_task(const config::sodium& server_private_key,
     assert(result);
 
     // Bind the server to a tcp port on all local addresses.
-    result = server.bind({ "tcp://*:9000" });
-    assert(result);
+    auto ec = server.bind({ "tcp://*:9000" });
+    assert(!ec);
 
     //  Send the test message.
     zmq::message message;
     message.enqueue("helllo world!");
-    result = message.send(server);
-    assert(result);
+    ec = message.send(server);
+    assert(!ec);
 
     // Give client time to complete (normally would have external hook here).
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
@@ -82,13 +83,13 @@ void client_task(const config::sodium& client_private_key,
     assert(result);
 
     // Connect to the server's tcp port on the local host.
-    result = client.connect({ "tcp://127.0.0.1:9000" });
-    assert(result);
+    auto ec = client.connect({ "tcp://127.0.0.1:9000" });
+    assert(!ec);
 
     // Wait for the message, which signals the test was successful.
     zmq::message message;
-    result = message.receive(client);
-    assert(result);
+    ec = message.receive(client);
+    assert(!ec);
     assert(message.dequeue_text() == "helllo world!");
 
     puts("Ironhouse test OK");

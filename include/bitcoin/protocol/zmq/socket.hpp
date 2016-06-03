@@ -85,11 +85,11 @@ public:
 
     /// This must be called on the socket thread.
     /// Bind the socket to the specified local address.
-    bool bind(const config::endpoint& address);
+    code bind(const config::endpoint& address);
 
     /// This must be called on the socket thread.
     /// Connect the socket to the specified remote address.
-    bool connect(const config::endpoint& address);
+    code connect(const config::endpoint& address);
 
     /// This must be called on the socket thread.
     /// Sets the domain for ZAP (ZMQ RFC 27) authentication.

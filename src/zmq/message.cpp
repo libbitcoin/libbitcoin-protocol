@@ -133,7 +133,7 @@ size_t message::size() const
 }
 
 // Must be called on the socket thread.
-bool message::send(socket& socket)
+code message::send(socket& socket)
 {
     auto count = queue_.size();
 
@@ -141,16 +141,17 @@ bool message::send(socket& socket)
     {
         frame frame(queue_.front());
         queue_.pop();
+        const auto ec = frame.send(socket, --count == 0);
 
-        if (!frame.send(socket, --count == 0))
-            return false;
+        if (ec)
+            return ec;
     }
 
-    return true;
+    return error::success;
 }
 
 // Must be called on the socket thread.
-bool message::receive(socket& socket)
+code message::receive(socket& socket)
 {
     clear();
     auto done = false;
@@ -158,15 +159,16 @@ bool message::receive(socket& socket)
     while (!done)
     {
         frame frame;
+        const auto ec = frame.receive(socket);
 
-        if (!frame.receive(socket))
-            return false;
+        if (ec)
+            return ec;
 
         queue_.emplace(frame.payload());
         done = !frame.more();
     }
 
-    return true;
+    return error::success;
 }
 
 } // namespace zmq

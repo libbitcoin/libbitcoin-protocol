@@ -25,6 +25,7 @@
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
+#include <bitcoin/protocol/zmq/zeromq.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -130,15 +131,21 @@ identifier socket::id() const
 }
 
 // This must be called on the socket thread.
-bool socket::bind(const config::endpoint& address)
+code socket::bind(const config::endpoint& address)
 {
-    return zmq_bind(self_, address.to_string().c_str()) != zmq_fail;
+    if (zmq_bind(self_, address.to_string().c_str()) == zmq_fail)
+        return get_last_error();
+
+    return error::success;
 }
 
 // This must be called on the socket thread.
-bool socket::connect(const config::endpoint& address)
+code socket::connect(const config::endpoint& address)
 {
-    return zmq_connect(self_, address.to_string().c_str()) != zmq_fail;
+    if (zmq_connect(self_, address.to_string().c_str()) == zmq_fail)
+        return get_last_error();
+
+    return error::success;
 }
 
 // private

@@ -72,11 +72,11 @@ public:
 
     /// Must be called on the socket thread.
     /// Send the message in parts. If a send fails the unsent parts remain.
-    bool send(socket& socket);
+    code send(socket& socket);
 
     /// Must be called on the socket thread.
     /// Receve a message (clears the queue first).
-    bool receive(socket& socket);
+    code receive(socket& socket);
 
 private:
     std::queue<data_chunk> queue_;
