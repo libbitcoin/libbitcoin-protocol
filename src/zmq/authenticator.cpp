@@ -105,9 +105,9 @@ void authenticator::work()
         std::string metadata;
 
         message request;
-        const auto received = request.receive(router);
+        auto ec = router.receive(request);
 
-        if (received != error::success || request.size() < 8)
+        if (ec != error::success || request.size() < 8)
         {
             status_code = "500";
             status_text = "Internal error.";
@@ -123,7 +123,7 @@ void authenticator::work()
             const auto identity = request.dequeue_text();
             const auto mechanism = request.dequeue_text();
 
-            // Each socket on the authenticated context must set a domain.
+            // ZAP authentication should not occur with an empty domain.
             if (origin.empty() || !delimiter.empty() || version != "1.0" ||
                 sequence.empty() || domain.empty() || !identity.empty())
             {
@@ -221,7 +221,7 @@ void authenticator::work()
         response.enqueue(userid);
         response.enqueue(metadata);
 
-        DEBUG_ONLY(const auto ec =) response.send(router);
+        DEBUG_ONLY(ec =) router.send(response);
         BITCOIN_ASSERT_MSG(!ec, "Failed to send ZAP response.");
     }
 
@@ -232,7 +232,7 @@ void authenticator::work()
 bool authenticator::apply(socket& socket, const std::string& domain,
     bool secure)
 {
-    // An arbitrary authentication domain is required.
+    // ZAP authentication will not occur with an empty domain.
     if (domain.empty() || !socket.set_authentication_domain(domain))
         return false;
 

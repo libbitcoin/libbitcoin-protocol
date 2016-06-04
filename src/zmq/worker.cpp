@@ -124,7 +124,7 @@ bool worker::finished(bool result)
 bool worker::forward(socket& from, socket& to)
 {
     message packet;
-    return packet.receive(from) && packet.send(to);
+    return from.receive(packet) && to.send(packet);
 }
 
 // Call from work to establish a proxy between two sockets.
