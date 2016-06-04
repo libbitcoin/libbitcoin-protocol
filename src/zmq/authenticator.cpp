@@ -105,9 +105,9 @@ void authenticator::work()
         std::string metadata;
 
         message request;
-        const auto received = request.receive(router);
+        auto ec = router.receive(request);
 
-        if (received != error::success || request.size() < 8)
+        if (ec != error::success || request.size() < 8)
         {
             status_code = "500";
             status_text = "Internal error.";
@@ -221,7 +221,7 @@ void authenticator::work()
         response.enqueue(userid);
         response.enqueue(metadata);
 
-        DEBUG_ONLY(const auto ec =) response.send(router);
+        DEBUG_ONLY(ec =) router.send(response);
         BITCOIN_ASSERT_MSG(!ec, "Failed to send ZAP response.");
     }
 

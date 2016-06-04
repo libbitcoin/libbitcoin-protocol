@@ -54,7 +54,7 @@ void server_task(const config::sodium& server_private_key,
     //  Send the test message.
     zmq::message message;
     message.enqueue("helllo world!");
-    ec = message.send(server);
+    ec = server.send(message);
     assert(!ec);
 
     // Give client time to complete (normally would have external hook here).
@@ -88,7 +88,7 @@ void client_task(const config::sodium& client_private_key,
 
     // Wait for the message, which signals the test was successful.
     zmq::message message;
-    ec = message.receive(client);
+    ec = client.receive(message);
     assert(!ec);
     assert(message.dequeue_text() == "helllo world!");
 

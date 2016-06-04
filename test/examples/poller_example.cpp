@@ -52,7 +52,7 @@ int poller_example()
     // Build and send the message.
     zmq::message message;
     message.enqueue(hello);
-    auto ec = message.send(vent);
+    auto ec = vent.send(message);
     assert(!ec);
 
     // We expect a message only on the sink.
@@ -62,7 +62,7 @@ int poller_example()
     assert(!poller.terminated());
 
     // Receive the message.
-    ec = message.receive(sink);
+    ec = sink.receive(message);
     assert(!ec);
 
     // Check the size.
