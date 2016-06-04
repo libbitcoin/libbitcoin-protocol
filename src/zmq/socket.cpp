@@ -25,6 +25,7 @@
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
+#include <bitcoin/protocol/zmq/zeromq.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -40,19 +41,19 @@ int32_t socket::to_socket_type(role socket_role)
 {
     switch (socket_role)
     {
-    case role::pair: return ZMQ_PAIR;
-    case role::publisher: return ZMQ_PUB;
-    case role::subscriber: return ZMQ_SUB;
-    case role::requester: return ZMQ_REQ;
-    case role::replier: return ZMQ_REP;
-    case role::dealer: return ZMQ_DEALER;
-    case role::router: return ZMQ_ROUTER;
-    case role::puller: return ZMQ_PULL;
-    case role::pusher: return ZMQ_PUSH;
-    case role::extended_publisher: return ZMQ_XPUB;
-    case role::extended_subscriber: return ZMQ_XSUB;
-    case role::streamer: return ZMQ_STREAM;
-    default: return -1;
+        case role::pair: return ZMQ_PAIR;
+        case role::publisher: return ZMQ_PUB;
+        case role::subscriber: return ZMQ_SUB;
+        case role::requester: return ZMQ_REQ;
+        case role::replier: return ZMQ_REP;
+        case role::dealer: return ZMQ_DEALER;
+        case role::router: return ZMQ_ROUTER;
+        case role::puller: return ZMQ_PULL;
+        case role::pusher: return ZMQ_PUSH;
+        case role::extended_publisher: return ZMQ_XPUB;
+        case role::extended_subscriber: return ZMQ_XSUB;
+        case role::streamer: return ZMQ_STREAM;
+        default: return -1;
     }
 }
 
@@ -130,15 +131,21 @@ identifier socket::id() const
 }
 
 // This must be called on the socket thread.
-bool socket::bind(const config::endpoint& address)
+code socket::bind(const config::endpoint& address)
 {
-    return zmq_bind(self_, address.to_string().c_str()) != zmq_fail;
+    if (zmq_bind(self_, address.to_string().c_str()) == zmq_fail)
+        return get_last_error();
+
+    return error::success;
 }
 
 // This must be called on the socket thread.
-bool socket::connect(const config::endpoint& address)
+code socket::connect(const config::endpoint& address)
 {
-    return zmq_connect(self_, address.to_string().c_str()) != zmq_fail;
+    if (zmq_connect(self_, address.to_string().c_str()) == zmq_fail)
+        return get_last_error();
+
+    return error::success;
 }
 
 // private

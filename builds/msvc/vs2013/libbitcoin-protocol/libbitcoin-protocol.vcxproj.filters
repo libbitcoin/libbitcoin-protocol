@@ -66,6 +66,9 @@
     <ClCompile Include="..\..\..\..\src\zmq\worker.cpp">
       <Filter>src\zmq</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\zmq\zeromq.cpp">
+      <Filter>src\zmq</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol.hpp">
@@ -120,6 +123,9 @@
       <Filter>include\bitcoin\protocol\zmq</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\worker.hpp">
+      <Filter>include\bitcoin\protocol\zmq</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\zeromq.hpp">
       <Filter>include\bitcoin\protocol\zmq</Filter>
     </ClInclude>
   </ItemGroup>

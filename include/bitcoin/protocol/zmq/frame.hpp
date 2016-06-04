@@ -24,6 +24,7 @@
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
+#include <bitcoin/protocol/zmq/zeromq.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -61,11 +62,11 @@ public:
 
     /// Must be called on the socket thread.
     /// Receive a frame on the socket.
-    bool receive(socket& socket);
+    code receive(socket& socket);
 
     /// Must be called on the socket thread.
     /// Send a frame on the socket.
-    bool send(socket& socket, bool more);
+    code send(socket& socket, bool more);
 
 private:
     // zmq_msg_t alias, keeps zmq.h out of our headers.

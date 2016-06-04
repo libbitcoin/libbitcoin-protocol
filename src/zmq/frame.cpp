@@ -25,11 +25,15 @@
 #include <zmq.h>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
+#include <bitcoin/protocol/zmq/zeromq.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+// If ZMQ_DONTWAIT is set we fail on busy socket.
+// This would happen if a message is being read when we try to send.
+static auto constexpr wait_flag = 0;
 static constexpr auto zmq_fail = -1;
 
 // Use for receiving.
@@ -97,25 +101,28 @@ data_chunk frame::payload()
 }
 
 // Must be called on the socket thread.
-bool frame::receive(socket& socket)
+code frame::receive(socket& socket)
 {
     if (!valid_)
-        return false;
+        return error::operation_failed;
 
     const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
-    return zmq_recvmsg(socket.self(), buffer, ZMQ_DONTWAIT) != zmq_fail &&
+    const auto result =
+        zmq_recvmsg(socket.self(), buffer, wait_flag) != zmq_fail &&
         set_more(socket);
+    return get_last_error();
 }
 
 // Must be called on the socket thread.
-bool frame::send(socket& socket, bool last)
+code frame::send(socket& socket, bool last)
 {
     if (!valid_)
-        return false;
+        return error::operation_failed;
 
-    const int flags = last ? 0 : ZMQ_SNDMORE | ZMQ_DONTWAIT;
+    const int flags = (last ? 0 : ZMQ_SNDMORE) | wait_flag;
     const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
-    return zmq_sendmsg(socket.self(), buffer, flags) != zmq_fail;
+    const auto result = zmq_sendmsg(socket.self(), buffer, flags) != zmq_fail;
+    return get_last_error();
 }
 
 // private

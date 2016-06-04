@@ -84,7 +84,7 @@ void authenticator::work()
 {
     socket router(context_, zmq::socket::role::router);
 
-    if (!started(router.bind(endpoint)))
+    if (!started(router.bind(endpoint) == error::success))
         return;
 
     poller poller;

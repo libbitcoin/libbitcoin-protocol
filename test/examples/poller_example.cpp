@@ -52,8 +52,8 @@ int poller_example()
     // Build and send the message.
     zmq::message message;
     message.enqueue(hello);
-    result = message.send(vent);
-    assert(result);
+    auto ec = message.send(vent);
+    assert(!ec);
 
     // We expect a message only on the sink.
     const auto ids = poller.wait(1000);
@@ -62,8 +62,8 @@ int poller_example()
     assert(!poller.terminated());
 
     // Receive the message.
-    result = message.receive(sink);
-    assert(result);
+    ec = message.receive(sink);
+    assert(!ec);
 
     // Check the size.
     assert(message.size() == 1);

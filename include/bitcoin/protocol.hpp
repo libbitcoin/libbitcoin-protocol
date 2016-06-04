@@ -32,5 +32,6 @@
 #include <bitcoin/protocol/zmq/poller.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 #include <bitcoin/protocol/zmq/worker.hpp>
+#include <bitcoin/protocol/zmq/zeromq.hpp>
 
 #endif
