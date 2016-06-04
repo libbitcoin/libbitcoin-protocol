@@ -25,6 +25,7 @@
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
+#include <bitcoin/protocol/zmq/message.hpp>
 #include <bitcoin/protocol/zmq/zeromq.hpp>
 
 namespace libbitcoin {
@@ -200,6 +201,16 @@ bool socket::set_certificate(const certificate& certificate)
     return certificate && 
         set_public_key(certificate.public_key().to_string()) &&
         set_private_key(certificate.private_key().to_string());
+}
+
+code socket::send(message& packet)
+{
+    return packet.send(*this);
+}
+
+code socket::receive(message& packet)
+{
+    return packet.receive(*this);
 }
 
 } // namespace zmq

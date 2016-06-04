@@ -32,6 +32,8 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+class message;
+
 /// This class is thread safe except as noted.
 /// Because the socket is only set on construct, sockets are not restartable.
 class BCP_API socket
@@ -114,6 +116,12 @@ public:
     /// This must be called on the socket thread.
     /// Apply the keys of the specified certificate to the socket.
     bool set_certificate(const certificate& certificate);
+
+    /// Send a message on this socket.
+    code send(message& packet);
+
+    /// Receive a message from this socket.
+    code receive(message& packet);
 
 private:
     static int to_socket_type(role socket_role);
