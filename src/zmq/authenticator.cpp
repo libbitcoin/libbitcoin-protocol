@@ -123,7 +123,7 @@ void authenticator::work()
             const auto identity = request.dequeue_text();
             const auto mechanism = request.dequeue_text();
 
-            // Each socket on the authenticated context must set a domain.
+            // ZAP authentication should not occur with an empty domain.
             if (origin.empty() || !delimiter.empty() || version != "1.0" ||
                 sequence.empty() || domain.empty() || !identity.empty())
             {
@@ -232,7 +232,7 @@ void authenticator::work()
 bool authenticator::apply(socket& socket, const std::string& domain,
     bool secure)
 {
-    // An arbitrary authentication domain is required.
+    // ZAP authentication will not occur with an empty domain.
     if (domain.empty() || !socket.set_authentication_domain(domain))
         return false;
 
