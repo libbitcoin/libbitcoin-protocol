@@ -221,8 +221,8 @@ void authenticator::work()
         response.enqueue(userid);
         response.enqueue(metadata);
 
-        DEBUG_ONLY(const auto sent =) response.send(router);
-        BITCOIN_ASSERT_MSG(sent, "Failed to send ZAP response.");
+        DEBUG_ONLY(const auto ec =) response.send(router);
+        BITCOIN_ASSERT_MSG(!ec, "Failed to send ZAP response.");
     }
 
     finished(router.stop());

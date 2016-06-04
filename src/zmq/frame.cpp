@@ -106,12 +106,10 @@ code frame::receive(socket& socket)
     if (!valid_)
         return error::operation_failed;
 
-    errno = 0;
     const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
-    const auto result =
-        zmq_recvmsg(socket.self(), buffer, wait_flag) != zmq_fail &&
-        set_more(socket);
-    return get_last_error();
+    const auto result = zmq_recvmsg(socket.self(), buffer, wait_flag)
+        != zmq_fail && set_more(socket);
+    return result ? error::success : get_last_error();
 }
 
 // Must be called on the socket thread.
@@ -120,11 +118,10 @@ code frame::send(socket& socket, bool last)
     if (!valid_)
         return error::operation_failed;
 
-    errno = 0;
     const int flags = (last ? 0 : ZMQ_SNDMORE) | wait_flag;
     const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
     const auto result = zmq_sendmsg(socket.self(), buffer, flags) != zmq_fail;
-    return get_last_error();
+    return result ? error::success : get_last_error();
 }
 
 // private
