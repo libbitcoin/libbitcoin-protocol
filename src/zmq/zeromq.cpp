@@ -31,6 +31,9 @@ code get_last_error()
 {
     switch (zmq_errno())
     {
+        case 0:
+            return error::success;
+
 #if defined _WIN32
         case ENOBUFS:
         case ENOTSUP:

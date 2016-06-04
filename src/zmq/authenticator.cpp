@@ -107,7 +107,7 @@ void authenticator::work()
         message request;
         const auto received = request.receive(router);
 
-        if (!received || request.size() < 8)
+        if (received != error::success || request.size() < 8)
         {
             status_code = "500";
             status_text = "Internal error.";
