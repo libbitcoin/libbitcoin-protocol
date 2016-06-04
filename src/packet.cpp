@@ -51,7 +51,7 @@ bool packet::receive(zmq::socket& socket)
 {
     zmq::message message;
 
-    if (!message.receive(socket) || message.empty())
+    if (socket.receive(message) != error::success || message.empty())
         return false;
 
     // Optional - ROUTER sockets strip this.
@@ -80,7 +80,7 @@ bool packet::send(zmq::socket& socket)
     // Add empty delimiter frame.
     message.enqueue(data_chunk{});
 
-    return encode_payload(message) && message.send(socket);
+    return encode_payload(message) && socket.send(message) == error::success;
 }
 
 ////bool packet::send(const std::shared_ptr<zmq::socket>& socket)
