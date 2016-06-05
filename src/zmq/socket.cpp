@@ -23,6 +23,7 @@
 #include <string>
 #include <zmq.h>
 #include <bitcoin/bitcoin.hpp>
+#include <bitcoin/protocol/zmq/authenticator.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
 #include <bitcoin/protocol/zmq/message.hpp>
@@ -81,6 +82,13 @@ socket::socket(void* zmq_socket)
 socket::socket(context& context, role socket_role)
   : socket(zmq_socket(context.self(), to_socket_type(socket_role)))
 {
+}
+
+socket::socket(authenticator& context, role socket_role, std::string domain)
+  : socket(context, socket_role)
+{
+    if (!context.apply(*this, domain, true))
+        stop();
 }
 
 socket::~socket()

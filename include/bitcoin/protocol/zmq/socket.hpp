@@ -33,6 +33,7 @@ namespace protocol {
 namespace zmq {
 
 class message;
+class authenticator;
 
 /// This class is thread safe except as noted.
 /// Because the socket is only set on construct, sockets are not restartable.
@@ -60,9 +61,14 @@ public:
     /// A shared socket pointer.
     typedef std::shared_ptr<socket> ptr;
 
-    /// Construct a socket.
+    /// Construct a socket from an existing zeromq socket.
     socket(void* zmq_socket);
+
+    /// Construct a socket of the given context and role.
     socket(context& context, role socket_role);
+
+    /// Construct a socket of the given context, role and CURVE authentication.
+    socket(authenticator& context, role socket_role, std::string domain);
 
     /// This class is not copyable.
     socket(const socket&) = delete;
