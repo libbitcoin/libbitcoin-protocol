@@ -84,13 +84,6 @@ socket::socket(context& context, role socket_role)
 {
 }
 
-socket::socket(authenticator& context, role socket_role, std::string domain)
-  : socket(context, socket_role)
-{
-    if (!context.apply(*this, domain, true))
-        stop();
-}
-
 socket::~socket()
 {
     stop();

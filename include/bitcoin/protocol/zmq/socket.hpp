@@ -67,9 +67,6 @@ public:
     /// Construct a socket of the given context and role.
     socket(context& context, role socket_role);
 
-    /// Construct a socket of the given context, role and CURVE authentication.
-    socket(authenticator& context, role socket_role, std::string domain);
-
     /// This class is not copyable.
     socket(const socket&) = delete;
     void operator=(const socket&) = delete;
