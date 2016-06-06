@@ -229,18 +229,17 @@ void authenticator::work()
 }
 
 // This must be called on the socket thread.
+// Addresses and client keys may be updated after this is applied.
+// The configuration at the time of this call determines the mode of security.
 bool authenticator::apply(socket& socket, const std::string& domain,
     bool secure)
 {
-    // ZAP authentication will not occur with an empty domain.
-    if (domain.empty() || !socket.set_authentication_domain(domain))
-        return false;
-
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
     mutex_.lock_shared();
     const auto private_key = private_key_;
     const auto have_public_keys = !keys_.empty();
+    const auto require_address = require_address_;
     mutex_.unlock_shared();
     ///////////////////////////////////////////////////////////////////////////
 
@@ -250,15 +249,23 @@ bool authenticator::apply(socket& socket, const std::string& domain,
 
     if (!secure)
     {
-        // This persists after a socket closes so don't reuse domain names.
-        weak_domains_.emplace(domain);
+        if (require_address)
+        {
+            // These persist after a socket closes so don't reuse domain names.
+            weak_domains_.emplace(domain);
+            return socket.set_authentication_domain(domain);
+        }
+
+        // There are no address or curve rules to apply so bypass ZAP.
         return true;
     }
 
     if (private_key)
     {
-        return socket.set_private_key(private_key) &&
-            socket.set_curve_server();
+        return
+            socket.set_private_key(private_key) &&
+            socket.set_curve_server() &&
+            socket.set_authentication_domain(domain);
     }
 
     // We do not have a private key to set so we cannot set secure.

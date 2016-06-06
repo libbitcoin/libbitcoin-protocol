@@ -62,9 +62,10 @@ public:
     /// Stop the router (optional).
     virtual bool stop();
 
-    // This must be called on the socket thread.
+    /// This must be called on the socket thread, empty domain allowed.
+    /// Set secure false to enable NULL mechanism, otherwise curve is required.
+    /// By not applying this method authentication is bypassed altogether.
     /// Apply authentication to the socket for the given arbitrary domain.
-    /// Set secure false to enable null security, otherwise curve is required.
     virtual bool apply(socket& socket, const std::string& domain, bool secure);
 
     /// Set the server private key (required for curve security).

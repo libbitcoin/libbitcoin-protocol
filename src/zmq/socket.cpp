@@ -23,6 +23,7 @@
 #include <string>
 #include <zmq.h>
 #include <bitcoin/bitcoin.hpp>
+#include <bitcoin/protocol/zmq/authenticator.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
 #include <bitcoin/protocol/zmq/message.hpp>
