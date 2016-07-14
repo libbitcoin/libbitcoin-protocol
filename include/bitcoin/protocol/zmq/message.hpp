@@ -20,7 +20,6 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_MESSAGE_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_MESSAGE_HPP
 
-#include <queue>
 #include <string>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
@@ -79,7 +78,7 @@ public:
     code receive(socket& socket);
 
 private:
-    std::queue<data_chunk> queue_;
+    data_queue queue_;
 };
 
 } // namespace zmq
