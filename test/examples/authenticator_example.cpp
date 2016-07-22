@@ -18,7 +18,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 #include <cassert>
-#include <chrono>
 #include <string>
 #include <thread>
 #include <bitcoin/protocol.hpp>
@@ -59,7 +58,7 @@ void server_task(const config::sodium& server_private_key,
     assert(!ec);
 
     // Give client time to complete (normally would have external hook here).
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    std::this_thread::sleep_for(asio::milliseconds(200));
 
     // Stop the authentication context monitor and join the thread.
     authenticator.stop();
