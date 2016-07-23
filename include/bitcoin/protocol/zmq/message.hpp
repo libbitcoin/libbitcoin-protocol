@@ -35,7 +35,7 @@ public:
     /// Add an empty message part to the outgoing message.
     void enqueue();
 
-    /// Add an interable message part to the outgoing message.
+    /// Add an iterable message part to the outgoing message.
     template <typename Iterable>
     void enqueue(const Iterable& value)
     {
