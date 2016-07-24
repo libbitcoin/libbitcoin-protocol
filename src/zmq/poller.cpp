@@ -72,7 +72,7 @@ identifiers poller::wait()
 }
 
 // This must be called on the socket thread.
-// BUGBUG: zeromq 4.2 has an overflow  bug in timer parameterization.
+// BUGBUG: zeromq 4.2 has an overflow bug in timer parameterization.
 // The timeout is typed as 'long' by zeromq. This is 32 bit on windows and
 // actually less (potentially 1000 or 1 second) on other platforms.
 // On non-windows platforms negative doesn't actually produce infinity.
