@@ -130,14 +130,24 @@ bool worker::forward(socket& from, socket& to)
 // Call from work to establish a proxy between two sockets.
 void worker::relay(socket& left, socket& right)
 {
-    ////// TODO: have stop method connect to local control and send terminate.
-    ////context context;
-    ////socket control(context, socket::role::pair);
-    ////control.bind({ "inproc://relay-####" });
-
-    // This can be stopped by sending "TERMINATE" to control.
-    // Otherwise blocks until the context is terminated, always returns -1.
+    // Blocks until the context is terminated, always returns -1.
     zmq_proxy_steerable(left.self(), right.self(), nullptr, nullptr);
+
+    // Equivalent implementation:
+    ////zmq::poller poller;
+    ////poller.add(left);
+    ////poller.add(right);
+    ////
+    ////while (!poller.terminated())
+    ////{
+    ////    const auto signaled = poller.wait();
+    ////
+    ////    if (signaled.contains(left.id()))
+    ////        forward(left, right);
+    ////
+    ////    if (signaled.contains(right.id()))
+    ////        forward(right, left);
+    ////}
 }
 
 
