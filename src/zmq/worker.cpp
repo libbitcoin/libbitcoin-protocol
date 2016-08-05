@@ -150,7 +150,6 @@ void worker::relay(socket& left, socket& right)
     ////}
 }
 
-
 } // namespace zmq
 } // namespace protocol
 } // namespace libbitcoin
