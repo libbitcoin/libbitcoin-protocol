@@ -1,0 +1,12 @@
+# - Config file for the LIBBITCOIN_PROTOCOL package
+#
+#  LIBBITCOIN_PROTOCOL_INCLUDE_DIRS - include directories for LIBBITCOIN_PROTOCOL
+#  LIBBITCOIN_PROTOCOL_LIBRARIES    - libraries to link against
+
+get_filename_component(LIBBITCOIN_PROTOCOL_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+set(LIBBITCOIN_PROTOCOL_INCLUDE_DIRS "@CONF_INCLUDE_DIRS@")
+
+include("${LIBBITCOIN_PROTOCOL_CMAKE_DIR}/libbitcoin-protocolTargets.cmake")
+set(LIBBITCOIN_PROTOCOL_LIBRARIES libbitcoin-protocol)
+
+find_package(libbitcoin 3.0.0 REQUIRED)
