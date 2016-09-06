@@ -1,0 +1,12 @@
+# - Config file for the BITPRIM_PROTOCOL package
+#
+#  BITPRIM_PROTOCOL_INCLUDE_DIRS - include directories for BITPRIM_PROTOCOL
+#  BITPRIM_PROTOCOL_LIBRARIES    - libraries to link against
+
+get_filename_component(BITPRIM_PROTOCOL_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+set(BITPRIM_PROTOCOL_INCLUDE_DIRS "@CONF_INCLUDE_DIRS@")
+
+include("${BITPRIM_PROTOCOL_CMAKE_DIR}/bitprim-protocolTargets.cmake")
+set(BITPRIM_PROTOCOL_LIBRARIES bitprim-protocol)
+
+find_package(bitprim 3.0.0 REQUIRED)

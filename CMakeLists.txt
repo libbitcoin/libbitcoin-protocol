@@ -1,8 +1,8 @@
 cmake_policy(VERSION 3.4)
 
-# libbitcoin-protocol
+# bitprim-protocol
 #==============================================================================
-project(libbitcoin-protocol
+project(bitprim-protocol
   VERSION 3.0.0
   LANGUAGES CXX C)
 cmake_minimum_required(VERSION 3.4)
@@ -38,10 +38,10 @@ find_package(
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package(ZeroMQ 4.2.0 REQUIRED)
 
-# Require bitcoin of at least version 3.0.0 and output ${bitcoin_CPPFLAGS/LIBS/PKG}.
+# Require bitprim-core of at least version 3.0.0 and output ${bitprim_core_CPPFLAGS/LIBS/PKG}.
 #------------------------------------------------------------------------------
-if (NOT TARGET libbitcoin)
-  find_package(libbitcoin 3.0.0 REQUIRED)
+if (NOT TARGET bitprim)
+  find_package(bitprim 3.0.0 REQUIRED)
 endif()
 
 # Set flags.
@@ -123,14 +123,14 @@ _add_cxx_compile_flag(-fvisibility-inlines-hidden _has_visibility_inlines_hidden
 
 # Build
 #==============================================================================
-# src/libbitcoin-protocol.la => ${libdir}
+# src/bitprim-protocol.la => ${libdir}
 #------------------------------------------------------------------------------
 set(MODE STATIC)
 if (ENABLE_SHARED)
   set(MODE SHARED)
 endif()
 
-add_library(libbitcoin-protocol ${MODE}
+add_library(bitprim-protocol ${MODE}
   src/converter.cpp
   src/interface.pb.cc
   src/packet.cpp
@@ -146,27 +146,27 @@ add_library(libbitcoin-protocol ${MODE}
   src/zmq/socket.cpp
   src/zmq/worker.cpp
   src/zmq/zeromq.cpp)
-target_include_directories(libbitcoin-protocol PUBLIC
+target_include_directories(bitprim-protocol PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
-target_compile_definitions(libbitcoin-protocol PUBLIC -DBCP_STATIC)
+target_compile_definitions(bitprim-protocol PUBLIC -DBCP_STATIC)
 
-target_link_libraries(libbitcoin-protocol libbitcoin)
+target_link_libraries(bitprim-protocol bitprim)
 
-# target_include_directories(libbitcoin-protocol PUBLIC ${ZeroMQ_INCLUDE_DIR})
-target_include_directories(libbitcoin-protocol PUBLIC
+# target_include_directories(bitprim-protocol PUBLIC ${ZeroMQ_INCLUDE_DIR})
+target_include_directories(bitprim-protocol PUBLIC
   $<BUILD_INTERFACE:${ZeroMQ_INCLUDE_DIR}>
   $<INSTALL_INTERFACE:>)
-target_link_libraries(libbitcoin-protocol ${ZeroMQ_LIBRARIES})
+target_link_libraries(bitprim-protocol ${ZeroMQ_LIBRARIES})
 
 # Group sources
 file(GLOB_RECURSE headers
   RELATIVE ${CMAKE_CURRENT_LIST_DIR}
   include/*.h include/*.hpp)
-target_sources(libbitcoin-protocol PRIVATE "${headers}")
+target_sources(bitprim-protocol PRIVATE "${headers}")
 
-get_target_property(sources libbitcoin-protocol SOURCES)
+get_target_property(sources bitprim-protocol SOURCES)
 foreach (source ${sources})
   get_filename_component(group ${source} DIRECTORY)
   if (MSVC)
@@ -175,10 +175,10 @@ foreach (source ${sources})
   source_group("${group}" FILES ${source})
 endforeach()
 
-# local: test/libbitcoin_protocol_test
+# local: test/bitprim_protocol_test
 #------------------------------------------------------------------------------
 if (WITH_TESTS)
-  add_executable(libbitcoin_protocol_test
+  add_executable(bitprim_protocol_test
     test/converter.cpp
     test/main.cpp
     test/examples/authenticator_example.cpp
@@ -193,20 +193,20 @@ if (WITH_TESTS)
     test/zmq/socket.cpp
     test/zmq/worker.cpp)
   if (ENABLE_SHARED)
-    target_compile_definitions(libbitcoin_protocol_test PRIVATE -DBOOST_TEST_DYN_LINK)
+    target_compile_definitions(bitprim_protocol_test PRIVATE -DBOOST_TEST_DYN_LINK)
   endif()
-  target_link_libraries(libbitcoin_protocol_test libbitcoin-protocol)
+  target_link_libraries(bitprim_protocol_test bitprim-protocol)
 
-  target_include_directories(libbitcoin_protocol_test SYSTEM PUBLIC ${Boost_INCLUDE_DIR})
-  target_link_libraries(libbitcoin_protocol_test
+  target_include_directories(bitprim_protocol_test SYSTEM PUBLIC ${Boost_INCLUDE_DIR})
+  target_link_libraries(bitprim_protocol_test
     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
   enable_testing()
-  set(_libbitcoin_tests authenticator_tests certificate_tests context_tests frame_tests identifiers_tests message_tests poller_tests socket_tests worker_tests)
-  foreach (_test_name ${_libbitcoin_tests})
+  set(_bitprim_tests authenticator_tests certificate_tests context_tests frame_tests identifiers_tests message_tests poller_tests socket_tests worker_tests)
+  foreach (_test_name ${_bitprim_tests})
     add_test(
       NAME test.${_test_name}
-      COMMAND libbitcoin_protocol_test
+      COMMAND bitprim_protocol_test
         --run_test=${_test_name}
         --show_progress=no
         --detect_memory_leak=0
@@ -217,11 +217,11 @@ endif()
 
 # Install
 #==============================================================================
-install(TARGETS libbitcoin-protocol
-  EXPORT libbitcoin-protocol
+install(TARGETS bitprim-protocol
+  EXPORT bitprim-protocol
   ARCHIVE DESTINATION lib)
 
-set(_libbitcoin_headers
+set(_bitprim_headers
   # include_bitcoin_HEADERS =
   bitcoin/protocol.hpp
   # include_bitcoin_protocol_HEADERS =
@@ -244,7 +244,7 @@ set(_libbitcoin_headers
   bitcoin/protocol/zmq/socket.hpp
   bitcoin/protocol/zmq/worker.hpp
   bitcoin/protocol/zmq/zeromq.hpp)
-foreach (_header ${_libbitcoin_headers})
+foreach (_header ${_bitprim_headers})
   get_filename_component(_directory "${_header}" DIRECTORY)
   install(FILES "include/${_header}" DESTINATION "include/${_directory}")
 endforeach()
@@ -253,9 +253,9 @@ endforeach()
 #==============================================================================
 include(CMakePackageConfigHelpers)
 
-export(EXPORT libbitcoin-protocol
-  FILE "${CMAKE_CURRENT_BINARY_DIR}/libbitcoin-protocolTargets.cmake")
-export(PACKAGE libbitcoin-protocol)
+export(EXPORT bitprim-protocol
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/bitprim-protocolTargets.cmake")
+export(PACKAGE bitprim-protocol)
 
 if (UNIX)
   set(_config_package_location "lib/cmake")
@@ -263,21 +263,21 @@ elseif (WIN32)
   set(_config_package_location "cmake")
 endif()
 
-install(EXPORT libbitcoin-protocol
-  FILE libbitcoin-protocolTargets.cmake
+install(EXPORT bitprim-protocol
+  FILE bitprim-protocolTargets.cmake
   DESTINATION ${_config_package_location})
 
-configure_file(libbitcoin-protocolConfig.cmake.in
-  "${CMAKE_CURRENT_BINARY_DIR}/libbitcoin-protocolConfig.cmake"
+configure_file(bitprim-protocolConfig.cmake.in
+  "${CMAKE_CURRENT_BINARY_DIR}/bitprim-protocolConfig.cmake"
   @ONLY)
 
 write_basic_package_version_file(
-  "${CMAKE_CURRENT_BINARY_DIR}/libbitcoin-protocolConfigVersion.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/bitprim-protocolConfigVersion.cmake"
   VERSION ${PROJECT_VERSION}
   COMPATIBILITY AnyNewerVersion)
 
 install(
   FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/libbitcoin-protocolConfig.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/libbitcoin-protocolConfigVersion.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/bitprim-protocolConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/bitprim-protocolConfigVersion.cmake"
   DESTINATION ${_config_package_location})
