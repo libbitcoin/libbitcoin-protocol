@@ -33,6 +33,13 @@ find_package(
   Boost 1.56.0 REQUIRED
   COMPONENTS unit_test_framework)
 
+# Require protobuf of at least version 3.0.0 and output ${protobuf_CPPFLAGS/LIBS/PKG}.
+#------------------------------------------------------------------------------
+if (DEFINED PROTOBUF_ROOT)
+  set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${PROTOBUF_ROOT})
+endif()
+find_package(Protobuf 3 REQUIRED)
+
 # Require zmq of at least version 4.2.0 and output ${zmq_CPPFLAGS/LIBS/PKG}.
 #------------------------------------------------------------------------------
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
@@ -130,9 +137,36 @@ if (ENABLE_SHARED)
   set(MODE SHARED)
 endif()
 
+set(_bitprim_proto
+  proto/bitcoin/protocol/interface.proto)
+set(_proto_outdir "${CMAKE_CURRENT_BINARY_DIR}/proto")
+foreach (_proto ${_bitprim_proto})
+  get_filename_component(_proto_we ${_proto} NAME_WE)
+  set(_proto_source "${_proto_outdir}/bitcoin/protocol/${_proto_we}.pb.cc")
+  set(_proto_header "${_proto_outdir}/bitcoin/protocol/${_proto_we}.pb.h")
+
+  get_filename_component(_proto_file ${_proto} ABSOLUTE)
+  add_custom_command(
+    OUTPUT "${_proto_source}" "${_proto_header}"
+    COMMAND ${CMAKE_COMMAND}
+    ARGS    -DPROTOBUF_PROTOC_EXECUTABLE=${PROTOBUF_PROTOC_EXECUTABLE}
+            -DPROTO_FILE=${_proto_file}
+            -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/protobuf_generate_cpp.cmake
+    WORKING_DIRECTORY "${_proto_outdir}/bitcoin/protocol"
+    MAIN_DEPENDENCY ${_proto_file}
+    DEPENDS ${PROTOBUF_PROTOC_EXECUTABLE}
+    COMMENT "Running C++ protocol buffer compiler on ${_proto}"
+    VERBATIM )
+  set_source_files_properties(
+    ${_proto_source} ${_proto_header} PROPERTIES
+    GENERATED TRUE)
+
+  list(APPEND _proto_sources "${_proto_source}")
+  list(APPEND _proto_headers "${_proto_header}")
+endforeach()
+
 add_library(bitprim-protocol ${MODE}
   src/converter.cpp
-  src/interface.pb.cc
   src/packet.cpp
   src/request_packet.cpp
   src/response_packet.cpp
@@ -154,10 +188,16 @@ target_compile_definitions(bitprim-protocol PUBLIC -DBCP_STATIC)
 
 target_link_libraries(bitprim-protocol bitprim-core)
 
-# target_include_directories(bitprim-protocol PUBLIC ${ZeroMQ_INCLUDE_DIR})
+target_sources(bitprim-protocol PRIVATE ${_proto_sources})
 target_include_directories(bitprim-protocol PUBLIC
-  $<BUILD_INTERFACE:${ZeroMQ_INCLUDE_DIR}>
-  $<INSTALL_INTERFACE:>)
+  $<BUILD_INTERFACE:${_proto_outdir}>
+  $<INSTALL_INTERFACE:include>)
+target_include_directories(bitprim-protocol PUBLIC ${PROTOBUF_INCLUDE_DIRS})
+target_link_libraries(bitprim-protocol
+  debug ${PROTOBUF_LIBRARY_DEBUG}
+  optimized ${PROTOBUF_LIBRARY})
+
+target_include_directories(bitprim-protocol PUBLIC ${ZeroMQ_INCLUDE_DIR})
 target_link_libraries(bitprim-protocol ${ZeroMQ_LIBRARIES})
 
 # Group sources
@@ -202,7 +242,7 @@ if (WITH_TESTS)
     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
   enable_testing()
-  set(_bitprim_tests authenticator_tests certificate_tests context_tests frame_tests identifiers_tests message_tests poller_tests socket_tests worker_tests)
+  set(_bitprim_tests authenticator_tests certificate_tests context_tests converter_tests frame_tests identifiers_tests message_tests poller_tests socket_tests worker_tests)
   foreach (_test_name ${_bitprim_tests})
     add_test(
       NAME test.${_test_name}
@@ -227,7 +267,6 @@ set(_bitprim_headers
   # include_bitcoin_protocol_HEADERS =
   bitcoin/protocol/converter.hpp
   bitcoin/protocol/define.hpp
-  bitcoin/protocol/interface.pb.h
   bitcoin/protocol/packet.hpp
   bitcoin/protocol/primitives.hpp
   bitcoin/protocol/request_packet.hpp
@@ -247,6 +286,13 @@ set(_bitprim_headers
 foreach (_header ${_bitprim_headers})
   get_filename_component(_directory "${_header}" DIRECTORY)
   install(FILES "include/${_header}" DESTINATION "include/${_directory}")
+endforeach()
+
+foreach (_header ${_proto_headers})
+  get_filename_component(_directory ${_header} ABSOLUTE)
+  get_filename_component(_directory ${_directory} PATH)
+  file(RELATIVE_PATH _directory ${_proto_outdir} ${_directory})
+  install(FILES "${_header}" DESTINATION "include/${_directory}")
 endforeach()
 
 # Export

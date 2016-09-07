@@ -17,8 +17,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifdef LIBBITCOIN_VERSION4
-
 #include <memory>
 #include <string>
 #include <boost/test/test_tools.hpp>
@@ -226,5 +224,3 @@ BOOST_AUTO_TEST_CASE(roundtrip_block_valid)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
-
-#endif
