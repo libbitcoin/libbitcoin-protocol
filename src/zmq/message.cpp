@@ -20,6 +20,8 @@
 #include <bitcoin/protocol/zmq/message.hpp>
 
 #include <string>
+#include <utility>
+#include <google/protobuf/message_lite.h>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/frame.hpp>
 
@@ -30,6 +32,16 @@ namespace zmq {
 void message::enqueue()
 {
     queue_.emplace(data_chunk{});
+}
+
+bool message::enqueue_protobuf_message(const google::protobuf::MessageLite& value)
+{
+    data_chunk chunk(value.ByteSize());
+    if (!value.SerializeToArray(chunk.data(), chunk.size()))
+        return false;
+
+    queue_.emplace(std::move(chunk));
+    return true;
 }
 
 bool message::dequeue()
@@ -93,6 +105,23 @@ bool message::dequeue(hash_digest& value)
 
     queue_.pop();
     return false;
+}
+
+bool message::dequeue(google::protobuf::MessageLite& value)
+{
+    if (queue_.empty())
+        return false;
+
+    const auto& front = queue_.front();
+
+    if (!value.ParseFromArray(front.data(), front.size()))
+    {
+        queue_.pop();
+        return false;
+    }
+
+    queue_.pop();
+    return true;
 }
 
 data_chunk message::dequeue_data()
