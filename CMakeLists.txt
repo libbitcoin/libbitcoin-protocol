@@ -35,8 +35,8 @@ find_package(
 
 # Require protobuf of at least version 3.0.0 and output ${protobuf_CPPFLAGS/LIBS/PKG}.
 #------------------------------------------------------------------------------
-if (DEFINED PROTOBUF_ROOT)
-  set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${PROTOBUF_ROOT})
+if (DEFINED Protobuf_ROOT_DIR)
+  set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${Protobuf_ROOT_DIR})
 endif()
 find_package(Protobuf 3 REQUIRED)
 
@@ -149,12 +149,12 @@ foreach (_proto ${_bitprim_proto})
   add_custom_command(
     OUTPUT "${_proto_source}" "${_proto_header}"
     COMMAND ${CMAKE_COMMAND}
-    ARGS    -DPROTOBUF_PROTOC_EXECUTABLE=${PROTOBUF_PROTOC_EXECUTABLE}
+    ARGS    -DProtobuf_PROTOC_EXECUTABLE=${Protobuf_PROTOC_EXECUTABLE}
             -DPROTO_FILE=${_proto_file}
             -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/protobuf_generate_cpp.cmake
     WORKING_DIRECTORY "${_proto_outdir}/bitcoin/protocol"
     MAIN_DEPENDENCY ${_proto_file}
-    DEPENDS ${PROTOBUF_PROTOC_EXECUTABLE}
+    DEPENDS ${Protobuf_PROTOC_EXECUTABLE}
     COMMENT "Running C++ protocol buffer compiler on ${_proto}"
     VERBATIM )
   set_source_files_properties(
@@ -192,10 +192,8 @@ target_sources(bitprim-protocol PRIVATE ${_proto_sources})
 target_include_directories(bitprim-protocol PUBLIC
   $<BUILD_INTERFACE:${_proto_outdir}>
   $<INSTALL_INTERFACE:include>)
-target_include_directories(bitprim-protocol PUBLIC ${PROTOBUF_INCLUDE_DIRS})
-target_link_libraries(bitprim-protocol
-  debug ${PROTOBUF_LIBRARY_DEBUG}
-  optimized ${PROTOBUF_LIBRARY})
+target_include_directories(bitprim-protocol PUBLIC ${Protobuf_INCLUDE_DIRS})
+target_link_libraries(bitprim-protocol ${Protobuf_LIBRARY})
 
 target_include_directories(bitprim-protocol PUBLIC ${ZeroMQ_INCLUDE_DIR})
 target_link_libraries(bitprim-protocol ${ZeroMQ_LIBRARIES})
