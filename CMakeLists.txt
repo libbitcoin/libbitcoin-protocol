@@ -142,6 +142,7 @@ set(_bitprim_proto
 set(_proto_outdir "${CMAKE_CURRENT_BINARY_DIR}/proto")
 foreach (_proto ${_bitprim_proto})
   get_filename_component(_proto_we ${_proto} NAME_WE)
+  file(MAKE_DIRECTORY "${_proto_outdir}/bitcoin/protocol")
   set(_proto_source "${_proto_outdir}/bitcoin/protocol/${_proto_we}.pb.cc")
   set(_proto_header "${_proto_outdir}/bitcoin/protocol/${_proto_we}.pb.h")
 
