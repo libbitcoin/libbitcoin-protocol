@@ -130,6 +130,27 @@ _add_cxx_compile_flag(-fvisibility-inlines-hidden _has_visibility_inlines_hidden
 
 # Build
 #==============================================================================
+function(_group_sources target sources_dir)
+  file(GLOB_RECURSE _headers
+    ${sources_dir}/include/*.h ${sources_dir}/include/*.hpp)
+  target_sources(${target} PRIVATE ${_headers})
+
+  get_target_property(sources ${target} SOURCES)
+  foreach (source ${sources})
+    get_filename_component(group ${source} ABSOLUTE)
+    get_filename_component(group ${group} DIRECTORY)
+    file(RELATIVE_PATH group "${sources_dir}" "${group}")
+    if (group)
+      if (MSVC)
+        string(REPLACE "/" "\\" group "${group}")
+      endif()
+      source_group("${group}" FILES "${source}")
+    endif()
+  endforeach()
+
+  set_target_properties(${target} PROPERTIES FOLDER "protocol")
+endfunction()
+
 # src/bitprim-protocol.la => ${libdir}
 #------------------------------------------------------------------------------
 set(MODE STATIC)
@@ -181,6 +202,7 @@ add_library(bitprim-protocol ${MODE}
   src/zmq/socket.cpp
   src/zmq/worker.cpp
   src/zmq/zeromq.cpp)
+target_sources(bitprim-protocol PRIVATE ${_bitprim_proto})
 target_include_directories(bitprim-protocol PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
@@ -199,22 +221,7 @@ target_link_libraries(bitprim-protocol ${Protobuf_LIBRARY})
 target_include_directories(bitprim-protocol PUBLIC ${ZeroMQ_INCLUDE_DIR})
 target_link_libraries(bitprim-protocol ${ZeroMQ_LIBRARIES})
 
-set_target_properties(bitprim-protocol PROPERTIES FOLDER "protocol")
-
-# Group sources
-file(GLOB_RECURSE headers
-  RELATIVE ${CMAKE_CURRENT_LIST_DIR}
-  include/*.h include/*.hpp)
-target_sources(bitprim-protocol PRIVATE "${headers}")
-
-get_target_property(sources bitprim-protocol SOURCES)
-foreach (source ${sources})
-  get_filename_component(group ${source} DIRECTORY)
-  if (MSVC)
-    string(REPLACE "/" "\\" group ${group})
-  endif()
-  source_group("${group}" FILES ${source})
-endforeach()
+_group_sources(bitprim-protocol "${CMAKE_CURRENT_LIST_DIR}")
 
 # Tests
 #==============================================================================
@@ -244,7 +251,7 @@ if (WITH_TESTS)
   target_link_libraries(bitprim_protocol_test
     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
-  set_target_properties(bitprim_protocol_test PROPERTIES FOLDER "protocol")
+  _group_sources(bitprim_protocol_test "${CMAKE_CURRENT_LIST_DIR}/test")
 
   enable_testing()
   set(_bitprim_tests authenticator_tests certificate_tests context_tests converter_tests frame_tests identifiers_tests message_tests poller_tests socket_tests worker_tests)
