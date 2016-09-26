@@ -225,6 +225,29 @@ _group_sources(bitprim-protocol "${CMAKE_CURRENT_LIST_DIR}")
 
 # Tests
 #==============================================================================
+function(_add_tests target)
+  if (ENABLE_SHARED)
+    target_compile_definitions(${target} PRIVATE -DBOOST_TEST_DYN_LINK)
+  endif()
+  target_include_directories(${target} SYSTEM PUBLIC ${Boost_INCLUDE_DIR})
+  target_link_libraries(${target} PUBLIC ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+
+  foreach (_test_name ${ARGN})
+    add_test(
+      NAME test.protocol.${_test_name}
+      COMMAND ${target}
+        --run_test=${_test_name}
+        --show_progress=no
+        --detect_memory_leak=0
+        --report_level=no
+        --build_info=yes)
+  endforeach()
+endfunction()
+
+if (WITH_TESTS)
+  enable_testing()
+endif()
+
 # local: test/bitprim_protocol_test
 #------------------------------------------------------------------------------
 if (WITH_TESTS)
@@ -242,29 +265,20 @@ if (WITH_TESTS)
     test/zmq/poller.cpp
     test/zmq/socket.cpp
     test/zmq/worker.cpp)
-  if (ENABLE_SHARED)
-    target_compile_definitions(bitprim_protocol_test PRIVATE -DBOOST_TEST_DYN_LINK)
-  endif()
-  target_link_libraries(bitprim_protocol_test bitprim-protocol)
-
-  target_include_directories(bitprim_protocol_test SYSTEM PUBLIC ${Boost_INCLUDE_DIR})
-  target_link_libraries(bitprim_protocol_test
-    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
-
+  target_link_libraries(bitprim_protocol_test PUBLIC bitprim-protocol)
   _group_sources(bitprim_protocol_test "${CMAKE_CURRENT_LIST_DIR}/test")
 
-  enable_testing()
-  set(_bitprim_tests authenticator_tests certificate_tests context_tests converter_tests frame_tests identifiers_tests message_tests poller_tests socket_tests worker_tests)
-  foreach (_test_name ${_bitprim_tests})
-    add_test(
-      NAME test.${_test_name}
-      COMMAND bitprim_protocol_test
-        --run_test=${_test_name}
-        --show_progress=no
-        --detect_memory_leak=0
-        --report_level=no
-        --build_info=yes)
-  endforeach()
+  _add_tests(bitprim_protocol_test
+    authenticator_tests
+    certificate_tests
+    context_tests
+    converter_tests
+    frame_tests
+    identifiers_tests
+    message_tests
+    poller_tests
+    socket_tests
+    worker_tests)
 endif()
 
 # Install
