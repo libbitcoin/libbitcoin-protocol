@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.4)
 project(bitprim-protocol
   VERSION 3.0.0
   LANGUAGES CXX C)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Check for baseline language coverage in the compiler for the C++11 standard.
 #------------------------------------------------------------------------------
@@ -198,6 +199,8 @@ target_link_libraries(bitprim-protocol ${Protobuf_LIBRARY})
 target_include_directories(bitprim-protocol PUBLIC ${ZeroMQ_INCLUDE_DIR})
 target_link_libraries(bitprim-protocol ${ZeroMQ_LIBRARIES})
 
+set_target_properties(bitprim-protocol PROPERTIES FOLDER "protocol")
+
 # Group sources
 file(GLOB_RECURSE headers
   RELATIVE ${CMAKE_CURRENT_LIST_DIR}
@@ -213,6 +216,8 @@ foreach (source ${sources})
   source_group("${group}" FILES ${source})
 endforeach()
 
+# Tests
+#==============================================================================
 # local: test/bitprim_protocol_test
 #------------------------------------------------------------------------------
 if (WITH_TESTS)
@@ -238,6 +243,8 @@ if (WITH_TESTS)
   target_include_directories(bitprim_protocol_test SYSTEM PUBLIC ${Boost_INCLUDE_DIR})
   target_link_libraries(bitprim_protocol_test
     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+
+  set_target_properties(bitprim_protocol_test PROPERTIES FOLDER "protocol")
 
   enable_testing()
   set(_bitprim_tests authenticator_tests certificate_tests context_tests converter_tests frame_tests identifiers_tests message_tests poller_tests socket_tests worker_tests)
