@@ -120,6 +120,9 @@ public:
     /// Apply the keys of the specified certificate to the socket.
     bool set_certificate(const certificate& certificate);
 
+    /// Configure the socket to connect through the specified socks5 proxy.
+    bool set_socks_proxy(const config::authority& socks_proxy);
+
     /// Send a message on this socket.
     code send(message& packet);
 
