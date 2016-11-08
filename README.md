@@ -2,11 +2,11 @@
 
 [![Coverage Status](https://coveralls.io/repos/libbitcoin/libbitcoin-protocol/badge.svg)](https://coveralls.io/r/libbitcoin/libbitcoin-protocol)
 
-# Libbitcoin Protocol
+# Bitprim Protocol
 
 *Bitcoin Blockchain Query Protocol Library*
 
-Make sure you have installed [libbitcoin](https://github.com/libbitcoin/libbitcoin) beforehand according to its build instructions, as well as libzmq.
+Make sure you have installed [bitprim-core](https://github.com/bitprim/bitprim-core) beforehand according to its build instructions, as well as libzmq.
 
 ```sh
 $ ./autogen.sh
@@ -16,4 +16,4 @@ $ sudo make install
 $ sudo ldconfig
 ```
 
-libbitcoin-protocol is now installed in `/usr/local/`.
+bitprim-protocol is now installed in `/usr/local/`.
