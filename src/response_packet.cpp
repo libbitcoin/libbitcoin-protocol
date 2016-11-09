@@ -17,8 +17,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifdef LIBBITCOIN_VERSION4
-
 #include <bitcoin/protocol/packet.hpp>
 
 #include <memory>
@@ -52,7 +50,7 @@ bool response_packet::encode_payload(zmq::message& message) const
         return false;
 
     const auto data = response_->SerializeAsString();
-    message.append({ data.begin(), data.end() });
+    message.enqueue(data);
     return true;
 }
 
@@ -69,5 +67,3 @@ bool response_packet::decode_payload(const data_chunk& payload)
 
 }
 }
-
-#endif

@@ -21,6 +21,7 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_MESSAGE_HPP
 
 #include <string>
+#include <google/protobuf/message_lite.h>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
@@ -42,6 +43,9 @@ public:
         queue_.emplace(to_chunk(value));
     }
 
+    /// Add a protobuf message part to the outgoing message.
+    bool enqueue_protobuf_message(const google::protobuf::MessageLite& value);
+
     /// Add a message part to the outgoing message.
     template <typename Unsigned>
     void enqueue_little_endian(Unsigned value)
@@ -59,6 +63,7 @@ public:
     bool dequeue(data_chunk& value);
     bool dequeue(std::string& value);
     bool dequeue(hash_digest& value);
+    bool dequeue(google::protobuf::MessageLite& value);
 
     /// Clear the queue of message parts.
     void clear();

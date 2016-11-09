@@ -17,8 +17,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifdef LIBBITCOIN_VERSION4
-
 #include <bitcoin/protocol/converter.hpp>
 
 #include <string>
@@ -68,7 +66,7 @@ bool converter::from_protocol(const tx_input* input, chain::input& result)
     chain::output_point previous;
     if (!input->has_previous_output() ||
         !from_protocol(&(input->previous_output()), previous) ||
-        !input->has_script())
+        input->script().empty())
         return false;
 
     result.previous_output = previous;
@@ -90,7 +88,7 @@ bool converter::from_protocol(const std::shared_ptr<tx_input> input,
 
 bool converter::from_protocol(const tx_output* output, chain::output& result)
 {
-    if (output == nullptr || !output->has_script())
+    if (output == nullptr || output->script().empty())
         return false;
 
     result.value = output->value();
@@ -383,5 +381,3 @@ protocol::block* converter::to_protocol(const chain::block& block)
 
 }
 }
-
-#endif
