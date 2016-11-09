@@ -30,7 +30,7 @@ if (NOT ENABLE_SHARED)
   set(Boost_USE_STATIC_LIBS ON)
 endif()
 find_package(
-  Boost 1.56.0 REQUIRED
+  Boost 1.54.0 REQUIRED
   COMPONENTS unit_test_framework)
 
 # Require zmq of at least version 4.2.0 and output ${zmq_CPPFLAGS/LIBS/PKG}.
