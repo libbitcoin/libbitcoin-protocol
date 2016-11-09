@@ -40,10 +40,10 @@ if (DEFINED Protobuf_ROOT_DIR)
 endif()
 find_package(Protobuf 3 REQUIRED)
 
-# Require zmq of at least version 4.2.0 and output ${zmq_CPPFLAGS/LIBS/PKG}.
+# Require zmq of at least version 4.1.1 and output ${zmq_CPPFLAGS/LIBS/PKG}.
 #------------------------------------------------------------------------------
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-find_package(ZeroMQ 4.2.0 REQUIRED)
+find_package(ZeroMQ 4.1.1 REQUIRED)
 
 # Require bitprim-core of at least version 3.0.0 and output ${bitprim_core_CPPFLAGS/LIBS/PKG}.
 #------------------------------------------------------------------------------
