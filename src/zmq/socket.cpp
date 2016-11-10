@@ -204,6 +204,12 @@ bool socket::set_certificate(const certificate& certificate)
         set_private_key(certificate.private_key().to_string());
 }
 
+// This must be called on the socket thread.
+bool socket::set_socks_proxy(const config::authority& socks_proxy)
+{
+    return socks_proxy && set(ZMQ_SOCKS_PROXY, socks_proxy.to_string());
+}
+
 code socket::send(message& packet)
 {
     return packet.send(*this);

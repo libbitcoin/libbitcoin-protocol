@@ -57,10 +57,10 @@ public:
     operator context&();
 
     /// Start the ZAP router for the context.
-    virtual bool start();
+    virtual bool start() override;
 
     /// Stop the router (optional).
-    virtual bool stop();
+    virtual bool stop() override;
 
     /// This must be called on the socket thread, empty domain allowed.
     /// Set secure false to enable NULL mechanism, otherwise curve is required.
