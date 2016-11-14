@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.org/libbitcoin/libbitcoin-protocol.svg?branch=master)](https://travis-ci.org/libbitcoin/libbitcoin-protocol)
-
-[![Coverage Status](https://coveralls.io/repos/libbitcoin/libbitcoin-protocol/badge.svg)](https://coveralls.io/r/libbitcoin/libbitcoin-protocol)
+[![Build Status](https://travis-ci.org/bitprim/bitprim-protocol.svg?branch=master)](https://travis-ci.org/bitprim/bitprim-protocol)
 
 # Bitprim Protocol
 
