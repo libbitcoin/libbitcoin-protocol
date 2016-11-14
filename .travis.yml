@@ -1,98 +1,383 @@
-###############################################################################
-#  Copyright (c) 2014-2015 libbitcoin-protocol developers (see COPYING).
+# Bitprim-protocol
 #
-#         GENERATED SOURCE CODE, DO NOT EDIT EXCEPT EXPERIMENTALLY
-#
-###############################################################################
-sudo:
-    - false
+# Copyright (c) 2016 Bitprim developers (see AUTHORS)
+# Distributed under the Boost Software License, Version 1.0. (See accompanying
+# file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-language:
-    - cpp
-
-addons:
-    apt:
-        sources:
-            - boost-latest
-            - ubuntu-toolchain-r-test
-        packages:
-            - g++-4.8
-
+language: cpp
+# sudo: false
+# sudo: required
+# dist: trusty
+git:
+  submodules: false
+  
 matrix:
-    include:
-        - os: linux
-          compiler: clang
-          env: LINK=dynamic
-          apt:
-            sources:
-                - sourceline: 'ppa:h-rayflood/llvm'
-            packages:
-                - clang-3.4
-        - os: linux
-          compiler: clang
-          env: LINK=static
-          apt:
-            sources:
-                - sourceline: 'ppa:h-rayflood/llvm'
-            packages:
-                - clang-3.4
-        - os: linux
-          compiler: gcc
-          env: LINK=dynamic
-          apt:
-        - os: linux
-          compiler: gcc
-          env: LINK=static
-          apt:
-            packages:
-                - lcov
-        - os: osx
-          compiler: clang
-          env: LINK=dynamic
-        - os: osx
-          compiler: clang
-          env: LINK=static
-    fast_finish:
-        - true
+  include:
+
+    # Linux clang-3.6 Debug
+    - env: CLANG_VERSION=3.6 CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+      os: linux
+      sudo: required
+      dist: trusty
+      addons: &clang36
+        apt:
+          packages:
+            - clang-3.6
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+
+    # Linux clang-3.6 Release
+    - env: CLANG_VERSION=3.6 CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+      os: linux
+      sudo: required
+      dist: trusty
+      addons: &clang36
+        apt:
+          packages:
+            - clang-3.6
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+
+    # Linux clang-3.7 Debug
+    - env: CLANG_VERSION=3.7 CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+      os: linux
+      sudo: required
+      dist: trusty
+      addons: &clang37
+        apt:
+          packages:
+            - clang-3.7
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+
+    # Linux clang-3.7 Release
+    - env: CLANG_VERSION=3.7 CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+      os: linux
+      sudo: required
+      dist: trusty
+      addons: &clang37
+        apt:
+          packages:
+            - clang-3.7
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+
+    # Linux clang-3.8 Debug
+    - env: CLANG_VERSION=3.8 CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+      os: linux
+      sudo: required
+      dist: trusty
+      addons: &clang38
+        apt:
+          packages:
+            - clang-3.8
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.8
+
+    # Linux clang-3.8 Release
+    - env: CLANG_VERSION=3.8 CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+      os: linux
+      sudo: required
+      dist: trusty
+      addons: &clang38
+        apt:
+          packages:
+            - clang-3.8
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.8
+
+    # gcc-4.9 Debug
+    - env: GCC_VERSION=4.9 CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+      os: linux
+      sudo: required
+      dist: trusty
+      addons: &gcc49
+        apt:
+          packages:
+            - g++-4.9
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+
+    # gcc-4.9 Release
+    - env: GCC_VERSION=4.9 CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+      os: linux
+      sudo: required
+      dist: trusty
+      addons: &gcc49
+        apt:
+          packages:
+            - g++-4.9
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+
+    # OSX
+
+    # Xcode 7 Debug
+    - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+      os: osx
+      osx_image: xcode7
+      addons: &xcode7
+
+    # Xcode 7 Release
+    - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+      os: osx
+      osx_image: xcode7
+      addons: &xcode7
+
+    # ZeroMQ NOT WORKING
+    ## Xcode 8 Debug 
+    #- env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+    #  os: osx
+    #  osx_image: xcode8
+    #  addons: &xcode8
+
+    ## Xcode 8 Release
+    #- env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+    #  os: osx
+    #  osx_image: xcode8
+    #  addons: &xcode8
+
+
+    ##########################################################################
+    # Benchmarks
+    ##########################################################################
+    # - env: BENCHMARKS=true COMPILER=clang++-3.6 CXX_FLAGS="-std=c++14" CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release"
+    # - env: BENCHMARKS=true COMPILER=clang++-3.7 CXX_FLAGS="-std=c++14" CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release"
+    # - env: BENCHMARKS=true COMPILER=clang++-3.8 CXX_FLAGS="-std=c++14" CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release"
+
+
+    #- env: BENCHMARKS=true CLANG_VERSION=3.6 CXX_FLAGS="-std=c++14" BUILD_TYPE=Release
+    #  os: linux
+    #  addons: *clang36
+
+
+branches:
+  only:
+    - master
+    #- develop
 
 before_install:
 
-    # Set aliases for readability.
-    - if [[ $CC             == gcc     ]]; then
-        GCC=true;
-        export CC=gcc-4.8;
-        export CXX=g++-4.8;
-      fi
-    - if [[ $CC             == clang   ]]; then CLANG=true; fi
-    - if [[ $LINK           == static  ]]; then STATIC=true; fi
-    - if [[ $LINK           == dynamic ]]; then DYNAMIC=true; fi
-    - if [[ $TRAVIS_OS_NAME == osx     ]]; then OSX=true; fi
-    - if [[ $TRAVIS_OS_NAME == linux   ]]; then LINUX=true; fi
+  # Update submodules 
+  - git submodule update --init --recursive
+
+  # Update apt lists (in order to install boost 1.58+)
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      cat /etc/apt/sources.list
+      cp /etc/apt/sources.list /tmp/sources.list
+      echo 'deb http://archive.ubuntu.com/ubuntu xenial main restricted universe multiverse' >> /tmp/sources.list
+      echo 'deb-src http://archive.ubuntu.com/ubuntu xenial main restricted universe multiverse' >> /tmp/sources.list
+      sudo mv /tmp/sources.list /etc/apt/sources.list
+    fi
+  
+  # protobuf prerequisites
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      sudo apt-get install -y autoconf automake libtool curl make unzip
+    fi
+
+  - if [ -n "$GCC_VERSION" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
+  - if [ -n "$CLANG_VERSION" ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
+  
+  # - if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then brew install cmake; fi
 
 install:
+  ############################################################################
+  # All the dependencies are installed in ${TRAVIS_BUILD_DIR}/deps/
+  ############################################################################
+  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+  - mkdir ${DEPS_DIR} && cd ${DEPS_DIR}
 
-    # Download and install packages for osx/clang/dynamic.
-    - if [[ $OSX   && $CLANG && $DYNAMIC ]]; then brew unlink boost; brew install boost; fi
+  ############################################################################
+  # Install a recent CMake
+  ############################################################################
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      CMAKE_URL="https://cmake.org/files/v3.7/cmake-3.7.0-rc3-Linux-x86_64.tar.gz"
+      mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+      export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+    fi
+    
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+      #osx>7 already has cmake 3.6
+      brew unlink cmake
+      brew install cmake
+    fi
+    
+
+  # Install boost 1.58+
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      sudo apt-get -qq update
+      sudo apt-get install -y libboost-all-dev
+    fi
+    #boost 1.60 already installed in osx
+    #brew install boost
+
+  ############################################################################
+  # Install Boost
+  ############################################################################  
+  
+  #- sudo apt-get -y install libboost-{chrono,program-options,date-time,thread,system,filesystem,regex,serialization,iostreams,locale}1.58{-dev,.0}
+    
+  ############################################################################
+  # Install ZeroMQ
+  ############################################################################    
+  - wget https://github.com/zeromq/libzmq/releases/download/v4.2.0/zeromq-4.2.0.tar.gz
+  - tar -xzvf zeromq-4.2.0.tar.gz
+  - cd zeromq-4.2.0 && ./autogen.sh && ./configure --prefix=/usr && make --silent && sudo make install --silent
+  - cd ..
+  ############################################################################
+  # Install protobuf
+  ############################################################################
+  - wget https://github.com/google/protobuf/releases/download/v3.1.0/protobuf-cpp-3.1.0.tar.gz
+  - tar -xzvf protobuf-cpp-3.1.0.tar.gz
+  - cd protobuf-3.1.0 && ./configure --prefix=/usr && make --silent && sudo make install --silent
+  - cd ..
+  ############################################################################
+  # Ldconfig only in linux
+  ############################################################################
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      sudo ldconfig      
+    fi
+  
+  # ############################################################################
+  # # Install and use a more recent Ruby and install the gems for the benchmarks
+  # ############################################################################
+  # - rvm use 2.1 --install --binary --fuzzy
+  # - gem install ruby-progressbar tilt
+
+# install:
+#   - mkdir build
+#   - cd build
+#   - export CXX_FLAGS="${CXX_FLAGS} -Wall -Wextra -Werror"
+#   - cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" ..
+
+
+before_script:
+  ############################################################################
+  # Set the git identity (for pushing the documentation and the benchmarks)
+  ############################################################################
+  - git config --global user.name "Travis bot"
+  - git config --global user.email travis-bot@travis-ci.org
+
+  ############################################################################
+  # Go back to the root of the project and setup the build directory
+  ############################################################################
+
+  # - export CXX_FLAGS="${CXX_FLAGS} -Wall -Wextra -Werror"
+  # - export CXX_FLAGS="${CXX_FLAGS} -Wall -Wextra"
+
+  # - if [ -n "$GCC_VERSION" ]; then export CXX_FLAGS="${CXX_FLAGS} -Wall -Wextra -Weffc++ -pedantic"; fi
+  # - if [ -n "$CLANG_VERSION" ]; then export CXX_FLAGS="${CXX_FLAGS} -Weverything -pedantic"; fi
+
+  # - if [ -n "$GCC_VERSION" ]; then export CXX_FLAGS="${CXX_FLAGS} -Wall -Wextra -Weffc++ -Wpedantic"; fi
+  # - if [ -n "$CLANG_VERSION" ]; then export CXX_FLAGS="${CXX_FLAGS} -Weverything -Wpedantic"; fi
+
+  - if [ -n "$GCC_VERSION" ]; then export CXX_FLAGS="${CXX_FLAGS} -Wall -Wextra"; fi
+  - if [ -n "$CLANG_VERSION" ]; then export CXX_FLAGS="${CXX_FLAGS} -Wall -Wextra"; fi
+
+
+  - cd ${TRAVIS_BUILD_DIR}
+  # - (mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" ..)
+  # - (mkdir build &&
+  # - cd build
+  # - cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" ..
+  - (mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" ..)
+
 script:
 
-    # Download and build libbitcoin-protocol and all dependencies.
-    - if [[ $OSX   && $CLANG && $STATIC  ]]; then CC=$CC CXX=$CXX ./install.sh --disable-shared --build-boost --prefix=$TRAVIS_BUILD_DIR/my-prefix; fi
-    - if [[ $LINUX && $CLANG && $STATIC  ]]; then CC=$CC CXX=$CXX ./install.sh --disable-shared --build-boost --prefix=$TRAVIS_BUILD_DIR/my-prefix CFLAGS='-Os' CXXFLAGS='-Os'; fi
-    - if [[ $LINUX && $GCC   && $STATIC  ]]; then CC=$CC CXX=$CXX ./install.sh --build-boost --disable-shared --build-dir=my-build --prefix=$TRAVIS_BUILD_DIR/my-prefix CFLAGS='-Og -g --coverage' CXXFLAGS='-Og -g --coverage'; fi
-    - if [[ $OSX   && $CLANG && $DYNAMIC ]]; then CC=$CC CXX=$CXX ./install.sh ; fi
-    - if [[ $LINUX && $CLANG && $DYNAMIC ]]; then CC=$CC CXX=$CXX ./install.sh --build-boost --disable-ndebug --disable-static --prefix=$TRAVIS_BUILD_DIR/my-prefix CFLAGS='-Os' CXXFLAGS='-Os'; fi
-    - if [[ $LINUX && $GCC   && $DYNAMIC ]]; then CC=$CC CXX=$CXX ./install.sh --disable-static --build-boost --prefix=$TRAVIS_BUILD_DIR/my-prefix CFLAGS='-Os -s' CXXFLAGS='-Os -s'; fi
+  - (cd build && make tests && make -j2 && make install)
+  # - make tests -k
 
-after_success:
+  # ############################################################################
+  # # We only run the full benchmarks on `master` when we're not in a pull
+  # # request, because otherwise it takes too much Travis resources. Otherwise,
+  # # we only run partial benchmarks to make sure they compile and run properly.
+  # #
+  # # Note: The benchmarks associated to a version of the documentation are
+  # #       stored in `doc/html/benchmarks/`.
+  # ############################################################################
+  # - |
+  #   if [[ "${BENCHMARKS}" == "true" ]]; then
+  #     if [[ "${TRAVIS_PULL_REQUEST}" == "false" && "${TRAVIS_BRANCH}" == "master" ]]; then
+  #       (cd build && make benchmarks) || exit 1
+  #       # pwd
+  #       # ls
+  #       # ls build
+  #       # ls build/benchmark
 
-    # Install coveralls and current lcov.
-    - if [[ $LINUX && $GCC   && $STATIC  ]]; then gem install coveralls-lcov; fi
+  #       # uname -a
+  #       # pwd
+  #       # uname -i
+  #       # pwd
+  #       # uname -m
+  #       # pwd
+  #       # getconf LONG_BIT
+  #       # pwd
+  #       # cat /proc/cpuinfo
 
-    # Capture coverage info, filter out system and test code, and debug before upload.
-    - if [[ $LINUX && $GCC   && $STATIC  ]]; then lcov --directory . --capture --output-file coverage.info; fi
-    - if [[ $LINUX && $GCC   && $STATIC  ]]; then lcov --remove coverage.info "/usr/*" "$TRAVIS_BUILD_DIR/my-prefix/*" "my-build/*" "test/*" "interface.pb.*" --output-file coverage.info; fi
-    - if [[ $LINUX && $GCC   && $STATIC  ]]; then lcov --list coverage.info; fi
+  #       pwd 
+  #       python --version
+  #       pwd 
 
-    # Upload coverage info to coveralls service (--repo-token <private coveralls repo token>).
-    - if [[ $LINUX && $GCC   && $STATIC  ]]; then coveralls-lcov coverage.info; fi
+
+  #       compiler_slug=$(cd build && make travis_compiler_slug | grep 'travis_compiler_slug:' | cut -d ' ' -f 2)
+  #       config_slug=$(cd build && make travis_config_slug | grep 'travis_config_slug:' | cut -d ' ' -f 2)
+  #       cpu_arch=$(uname -m)
+
+  #       # os_name=$(uname -s)
+  #       os_name=$(echo "$(uname -s)" | tr '[:upper:]' '[:lower:]') 
+
+
+
+  #       # Suppress output to avoid leaking the token when the command fails
+  #       git clone https://fpelliccioni:${GITHUB_TOKEN}@github.com/tao-cpp/algorithm --depth 1 --branch=gh-pages doc/html &>/dev/null
+  #       rm -rf doc/html/benchmarks/${config_slug}/${os_name}-${cpu_arch}/${compiler_slug}/
+  #       mkdir -p doc/html/benchmarks/${config_slug}/${os_name}-${cpu_arch}/${compiler_slug}/
+
+  #       ls doc/html/benchmarks/${config_slug}/${os_name}-${cpu_arch}/${compiler_slug}/
+
+  #       # for benchmark in $(ls build/benchmark/*.exe | grep -v ".erb"); do
+  #       for benchmark in $(ls build/benchmark/bench.*); do
+  #         cp ${benchmark} doc/html/benchmarks/${config_slug}/${os_name}-${cpu_arch}/${compiler_slug}/
+  #       done
+
+  #       ls doc/html/benchmarks/${config_slug}/${os_name}-${cpu_arch}/${compiler_slug}/
+
+  #       pushd doc/html
+  #       git add --all .
+  #       git commit --allow-empty -m "Update benchmarks to ${TRAVIS_COMMIT:0:7} for build type '${config_slug}' and compiler '${compiler_slug}'"
+
+  #       # Suppress output to avoid leaking the token
+  #       travis_retry git push origin gh-pages &>/dev/null
+  #       # travis_retry git push origin gh-pages
+
+  #       popd
+  #     else
+  #       export BOOST_HANA_JUST_CHECK_BENCHMARKS=true
+  #       (cd build && make benchmarks -j2)
+  #     fi
+  #   fi
+
+  # # - make benchmarks -k
+
+
+notifications:
+  email: false
+  webhooks:
+    urls: https://webhooks.gitter.im/e/a19dd2b03bf676d2b622
+    on_success: change
+    on_failure: always
 
