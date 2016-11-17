@@ -17,6 +17,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+#ifdef LIBBITCOIN_VERSION4
+
 #include <bitcoin/protocol/packet.hpp>
 
 #include <bitcoin/bitcoin.hpp>
@@ -88,3 +90,5 @@ bool packet::send(zmq::socket& socket)
 
 }
 }
+
+#endif
