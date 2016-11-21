@@ -240,10 +240,20 @@ install:
   ############################################################################
   # Install protobuf
   ############################################################################
-  - wget https://github.com/google/protobuf/releases/download/v3.1.0/protobuf-cpp-3.1.0.tar.gz
-  - tar -xzvf protobuf-cpp-3.1.0.tar.gz
-  - cd protobuf-3.1.0 && ./configure --prefix=/usr && make --silent && sudo make install --silent
-  - cd ..
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      wget https://github.com/google/protobuf/releases/download/v3.1.0/protobuf-cpp-3.1.0.tar.gz
+      tar -xzvf protobuf-cpp-3.1.0.tar.gz
+      cd protobuf-3.1.0 && ./configure --prefix=/usr && make --silent && sudo make install --silent
+      cd ..
+    fi
+    
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+      brew unlink protobuf
+      brew install protobuf
+    fi
+    
   ############################################################################
   # Ldconfig only in linux
   ############################################################################
@@ -271,7 +281,7 @@ install:
   - cd secp256k1
   - mkdir build
   - cd build
-  - cmake ..
+  - cmake .. -DENABLE_MODULE_RECOVERY=ON 
   - make -j2 --silent
   - sudo make install --silent
   - cd ..
