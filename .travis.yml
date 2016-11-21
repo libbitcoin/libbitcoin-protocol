@@ -117,34 +117,86 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.6
+            
+    # gcc-5
+    - env: GCC_VERSION=5 CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+      os: linux
+      sudo: required
+      dist: trusty
+      addons: &gcc5
+        apt:
+          packages:
+            - cmake
+            - g++-5
+          sources:
+            - ubuntu-toolchain-r-test
+
+    - env: GCC_VERSION=5 CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+      os: linux
+      sudo: required
+      dist: trusty
+      addons: &gcc5
+        apt:
+          packages:
+            - cmake
+            - g++-5
+          sources:
+            - ubuntu-toolchain-r-test
+            
+    # gcc-6
+    - env: GCC_VERSION=6 CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+      os: linux
+      sudo: required
+      dist: trusty
+      addons: &gcc6
+        apt:
+          packages:
+            - cmake
+            - g++-6
+          sources:
+            - ubuntu-toolchain-r-test
+    
+    - env: GCC_VERSION=6 CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+      os: linux
+      sudo: required
+      dist: trusty
+      addons: &gcc6
+        apt:
+          packages:
+            - cmake
+            - g++-6
+          sources:
+            - ubuntu-toolchain-r-test
 
     # OSX
 
     # Xcode 7 Debug
     - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
       os: osx
-      osx_image: xcode7
-      addons: &xcode7
+      osx_image: xcode73
+      addons: &xcode73
+      sudo: requiered
 
     # Xcode 7 Release
     - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
       os: osx
-      osx_image: xcode7
-      addons: &xcode7
-
-    # ZeroMQ NOT WORKING
-    ## Xcode 8 Debug 
-    #- env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
-    #  os: osx
-    #  osx_image: xcode8
-    #  addons: &xcode8
-
-    ## Xcode 8 Release
-    #- env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
-    #  os: osx
-    #  osx_image: xcode8
-    #  addons: &xcode8
-
+      osx_image: xcode73
+      addons: &xcode73
+      sudo: requiered
+      
+    # Xcode 8 Release
+    - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+      os: osx
+      osx_image: xcode8
+      addons: &xcode8
+      sudo: requiered
+      
+    # Xcode 8 Release
+    - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+      os: osx
+      osx_image: xcode8
+      addons: &xcode8
+      sudo: requiered
 
     ##########################################################################
     # Benchmarks
@@ -235,7 +287,11 @@ install:
   ############################################################################    
   - wget https://github.com/zeromq/libzmq/releases/download/v4.2.0/zeromq-4.2.0.tar.gz
   - tar -xzvf zeromq-4.2.0.tar.gz
-  - cd zeromq-4.2.0 && ./autogen.sh && ./configure --prefix=/usr && make --silent && sudo make install --silent
+  - cd zeromq-4.2.0
+  - sudo ./autogen.sh
+  - sudo ./configure #--prefix=/usr 
+  - sudo make --silent 
+  - sudo make install --silent
   - cd ..
   ############################################################################
   # Install protobuf
@@ -244,15 +300,18 @@ install:
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
       wget https://github.com/google/protobuf/releases/download/v3.1.0/protobuf-cpp-3.1.0.tar.gz
       tar -xzvf protobuf-cpp-3.1.0.tar.gz
-      cd protobuf-3.1.0 && ./configure --prefix=/usr && make --silent && sudo make install --silent
+      cd protobuf-3.1.0
+      sudo ./configure #--prefix=/usr 
+      sudo make --silent
+      sudo make install --silent
       cd ..
     fi
-    
+  
   - |
     if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
       brew unlink protobuf
       brew install protobuf
-    fi
+    fi  
     
   ############################################################################
   # Ldconfig only in linux
