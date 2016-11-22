@@ -19,6 +19,13 @@ matrix:
       os: linux
       sudo: required
       dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
       addons: &clang36
         apt:
           packages:
@@ -32,6 +39,13 @@ matrix:
       os: linux
       sudo: required
       dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
       addons: &clang36
         apt:
           packages:
@@ -45,6 +59,13 @@ matrix:
       os: linux
       sudo: required
       dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
       addons: &clang37
         apt:
           packages:
@@ -58,6 +79,13 @@ matrix:
       os: linux
       sudo: required
       dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
       addons: &clang37
         apt:
           packages:
@@ -71,6 +99,13 @@ matrix:
       os: linux
       sudo: required
       dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
       addons: &clang38
         apt:
           packages:
@@ -84,7 +119,13 @@ matrix:
       os: linux
       sudo: required
       dist: trusty
-      addons: &clang38
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
         apt:
           packages:
             - clang-3.8
@@ -97,6 +138,13 @@ matrix:
       os: linux
       sudo: required
       dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
       addons: &gcc49
         apt:
           packages:
@@ -110,6 +158,13 @@ matrix:
       os: linux
       sudo: required
       dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
       addons: &gcc49
         apt:
           packages:
@@ -123,6 +178,13 @@ matrix:
       os: linux
       sudo: required
       dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
       addons: &gcc5
         apt:
           packages:
@@ -135,6 +197,13 @@ matrix:
       os: linux
       sudo: required
       dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
       addons: &gcc5
         apt:
           packages:
@@ -148,6 +217,13 @@ matrix:
       os: linux
       sudo: required
       dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
       addons: &gcc6
         apt:
           packages:
@@ -160,6 +236,13 @@ matrix:
       os: linux
       sudo: required
       dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
       addons: &gcc6
         apt:
           packages:
@@ -175,62 +258,38 @@ matrix:
       os: osx
       osx_image: xcode73
       addons: &xcode73
-      sudo: requiered
+      sudo: required
 
     # Xcode 7 Release
     - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
       os: osx
       osx_image: xcode73
       addons: &xcode73
-      sudo: requiered
+      sudo: required
       
     # Xcode 8 Release
     - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
       os: osx
       osx_image: xcode8
       addons: &xcode8
-      sudo: requiered
+      sudo: required
       
     # Xcode 8 Release
     - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
       os: osx
       osx_image: xcode8
       addons: &xcode8
-      sudo: requiered
-
-    ##########################################################################
-    # Benchmarks
-    ##########################################################################
-    # - env: BENCHMARKS=true COMPILER=clang++-3.6 CXX_FLAGS="-std=c++14" CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release"
-    # - env: BENCHMARKS=true COMPILER=clang++-3.7 CXX_FLAGS="-std=c++14" CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release"
-    # - env: BENCHMARKS=true COMPILER=clang++-3.8 CXX_FLAGS="-std=c++14" CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release"
-
-
-    #- env: BENCHMARKS=true CLANG_VERSION=3.6 CXX_FLAGS="-std=c++14" BUILD_TYPE=Release
-    #  os: linux
-    #  addons: *clang36
-
+      sudo: required
 
 branches:
   only:
     - master
-    #- develop
 
 before_install:
 
   # Update submodules 
   - git submodule update --init --recursive
 
-  # Update apt lists (in order to install boost 1.58+)
-  - |
-    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      cat /etc/apt/sources.list
-      cp /etc/apt/sources.list /tmp/sources.list
-      echo 'deb http://archive.ubuntu.com/ubuntu xenial main restricted universe multiverse' >> /tmp/sources.list
-      echo 'deb-src http://archive.ubuntu.com/ubuntu xenial main restricted universe multiverse' >> /tmp/sources.list
-      sudo mv /tmp/sources.list /etc/apt/sources.list
-    fi
-  
   # protobuf prerequisites
   - |
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
@@ -239,8 +298,6 @@ before_install:
 
   - if [ -n "$GCC_VERSION" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
   - if [ -n "$CLANG_VERSION" ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
-  
-  # - if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then brew install cmake; fi
 
 install:
   ############################################################################
@@ -266,47 +323,77 @@ install:
       brew install cmake
     fi
     
-
-  # Install boost 1.58+
-  - |
-    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      sudo apt-get -qq update
-      sudo apt-get install -y libboost-all-dev
-    fi
-    #boost 1.60 already installed in osx
-    #brew install boost
-
   ############################################################################
   # Install Boost
   ############################################################################  
-  
-  #- sudo apt-get -y install libboost-{chrono,program-options,date-time,thread,system,filesystem,regex,serialization,iostreams,locale}1.58{-dev,.0}
-    
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      if [ ! -d "$HOME/boost/lib" ]; then
+        wget -O boost.tar.gz https://sourceforge.net/projects/boost/files/boost/1.61.0/boost_1_61_0.tar.gz/download
+        tar -xzf boost.tar.gz
+        cd boost_1_61_0
+        ./bootstrap.sh --prefix=$HOME/boost
+        ./b2 #--toolset="gcc-${GCC_VERSION}"
+        sudo ./b2 install
+        cd ..
+      else
+        echo 'Using cached directory for boost.';
+        export BOOST_ROOT="/home/travis/boost"
+        export BOOST_INCLUDE="/home/travis/boost/include"
+        export BOOST_LIBDIR="/home/travis/boost/lib"
+        export BOOST_OPTS = "-DBOOST_ROOT=${BOOST_ROOT} -DBOOST_INCLUDEDIR=${BOOST_INCLUDE} -DBOOST_LIBRARYDIR=${BOOST_LIBDIR}"
+        ls -A $HOME/boost
+      fi
+    fi
+
   ############################################################################
   # Install ZeroMQ
   ############################################################################    
-  - wget https://github.com/zeromq/libzmq/releases/download/v4.2.0/zeromq-4.2.0.tar.gz
-  - tar -xzvf zeromq-4.2.0.tar.gz
-  - cd zeromq-4.2.0
-  - sudo ./autogen.sh
-  - sudo ./configure #--prefix=/usr 
-  - sudo make --silent 
-  - sudo make install --silent
-  - cd ..
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      if [ ! -d "$HOME/zeromq/lib" ]; then
+        wget https://github.com/zeromq/libzmq/releases/download/v4.2.0/zeromq-4.2.0.tar.gz
+        tar -xzvf zeromq-4.2.0.tar.gz
+        cd zeromq-4.2.0
+        sudo ./autogen.sh
+        sudo ./configure --prefix=$HOME/zeromq
+        sudo make --silent 
+        sudo make install --silent
+        cd ..
+        export ZEROMQ=""
+      else
+        echo 'Using cached directory for zeromq.';
+        export ZeroMQ_ROOT_DIR="/home/travis/zeromq"
+        export ZeroMQ_INCLUDE_DIR="/home/travis/zeromq/include"
+        export ZeroMQ_LIBRARIES="/home/travis/zeromq/lib"
+
+        export ZEROMQ=" -DZeroMQ_ROOT_DIR=/home/travis/zeromq "
+      fi
+    fi
   ############################################################################
   # Install protobuf
   ############################################################################
   - |
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      wget https://github.com/google/protobuf/releases/download/v3.1.0/protobuf-cpp-3.1.0.tar.gz
-      tar -xzvf protobuf-cpp-3.1.0.tar.gz
-      cd protobuf-3.1.0
-      sudo ./configure #--prefix=/usr 
-      sudo make --silent
-      sudo make install --silent
-      cd ..
+      if [ ! -d "$HOME/protobuf/lib" ]; then
+        wget https://github.com/google/protobuf/releases/download/v3.1.0/protobuf-cpp-3.1.0.tar.gz
+        tar -xzvf protobuf-cpp-3.1.0.tar.gz
+        cd protobuf-3.1.0
+        sudo ./configure --prefix=$HOME/protobuf 
+        sudo make --silent
+        sudo make install --silent
+        cd ..
+        export PROTOBUF=""
+      else
+        echo 'Using cached directory for protobuf.';
+        export Protobuf_ROOT_DIR="/home/travis/protobuf"
+        export Protobuf_INCLUDE_DIR="/home/travis/protobuf/include"
+        export Protobuf_LIBRARY="/home/travis/protobuf/lib"
+        export Protobuf_PROTOC_EXECUTABLE="/home/travis/protobuf/bin"
+        export PATH=/home/travis/protobuf/bin:${PATH}
+        export PROTOBUF=" -DProtobuf_ROOT_DIR=/home/travis/protobuf "
+      fi  
     fi
-  
   - |
     if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
       brew unlink protobuf
@@ -321,17 +408,6 @@ install:
       sudo ldconfig      
     fi
   
-  # ############################################################################
-  # # Install and use a more recent Ruby and install the gems for the benchmarks
-  # ############################################################################
-  # - rvm use 2.1 --install --binary --fuzzy
-  # - gem install ruby-progressbar tilt
-
-# install:
-#   - mkdir build
-#   - cd build
-#   - export CXX_FLAGS="${CXX_FLAGS} -Wall -Wextra -Werror"
-#   - cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" ..
 
   ############################################################################
   # secp256k1
@@ -362,7 +438,7 @@ install:
   - cd bitprim-core
   - mkdir build
   - cd build
-  - cmake .. -DENABLE_TESTS=OFF -DWITH_TESTS=OFF -DWITH_EXAMPLES=OFF -DENABLE_MODULE_RECOVERY=ON -DWITH_TOOLS=OFF -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}"
+  - cmake .. -DENABLE_TESTS=OFF -DWITH_TESTS=OFF -DWITH_EXAMPLES=OFF -DENABLE_MODULE_RECOVERY=ON -DWITH_TOOLS=OFF -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" ${BOOST_OPTS}
   - make -j2 --silent
   - sudo make install --silent
   - cd ..
@@ -384,109 +460,20 @@ before_script:
   - git config --global user.name "Travis bot"
   - git config --global user.email travis-bot@travis-ci.org
 
-  ############################################################################
-  # Go back to the root of the project and setup the build directory
-  ############################################################################
-
-  # - export CXX_FLAGS="${CXX_FLAGS} -Wall -Wextra -Werror"
-  # - export CXX_FLAGS="${CXX_FLAGS} -Wall -Wextra"
-
-  # - if [ -n "$GCC_VERSION" ]; then export CXX_FLAGS="${CXX_FLAGS} -Wall -Wextra -Weffc++ -pedantic"; fi
-  # - if [ -n "$CLANG_VERSION" ]; then export CXX_FLAGS="${CXX_FLAGS} -Weverything -pedantic"; fi
-
-  # - if [ -n "$GCC_VERSION" ]; then export CXX_FLAGS="${CXX_FLAGS} -Wall -Wextra -Weffc++ -Wpedantic"; fi
-  # - if [ -n "$CLANG_VERSION" ]; then export CXX_FLAGS="${CXX_FLAGS} -Weverything -Wpedantic"; fi
-
   - if [ -n "$GCC_VERSION" ]; then export CXX_FLAGS="${CXX_FLAGS} -Wall -Wextra"; fi
   - if [ -n "$CLANG_VERSION" ]; then export CXX_FLAGS="${CXX_FLAGS} -Wall -Wextra"; fi
 
 
   - cd ${TRAVIS_BUILD_DIR}
-  # - (mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" ..)
-  # - (mkdir build &&
-  # - cd build
-  # - cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" ..
   - mkdir build 
   - cd build 
-  - cmake .. -DWITH_TESTS=OFF -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}"
+  - cmake .. -DWITH_TESTS=OFF ${PROTOBUF} ${ZEROMQ} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" ${BOOST_OPTS}
 
 script:
 
   - make -j2 
   - sudo make install
-  # - make tests -k
 
-  # ############################################################################
-  # # We only run the full benchmarks on `master` when we're not in a pull
-  # # request, because otherwise it takes too much Travis resources. Otherwise,
-  # # we only run partial benchmarks to make sure they compile and run properly.
-  # #
-  # # Note: The benchmarks associated to a version of the documentation are
-  # #       stored in `doc/html/benchmarks/`.
-  # ############################################################################
-  # - |
-  #   if [[ "${BENCHMARKS}" == "true" ]]; then
-  #     if [[ "${TRAVIS_PULL_REQUEST}" == "false" && "${TRAVIS_BRANCH}" == "master" ]]; then
-  #       (cd build && make benchmarks) || exit 1
-  #       # pwd
-  #       # ls
-  #       # ls build
-  #       # ls build/benchmark
-
-  #       # uname -a
-  #       # pwd
-  #       # uname -i
-  #       # pwd
-  #       # uname -m
-  #       # pwd
-  #       # getconf LONG_BIT
-  #       # pwd
-  #       # cat /proc/cpuinfo
-
-  #       pwd 
-  #       python --version
-  #       pwd 
-
-
-  #       compiler_slug=$(cd build && make travis_compiler_slug | grep 'travis_compiler_slug:' | cut -d ' ' -f 2)
-  #       config_slug=$(cd build && make travis_config_slug | grep 'travis_config_slug:' | cut -d ' ' -f 2)
-  #       cpu_arch=$(uname -m)
-
-  #       # os_name=$(uname -s)
-  #       os_name=$(echo "$(uname -s)" | tr '[:upper:]' '[:lower:]') 
-
-
-
-  #       # Suppress output to avoid leaking the token when the command fails
-  #       git clone https://fpelliccioni:${GITHUB_TOKEN}@github.com/tao-cpp/algorithm --depth 1 --branch=gh-pages doc/html &>/dev/null
-  #       rm -rf doc/html/benchmarks/${config_slug}/${os_name}-${cpu_arch}/${compiler_slug}/
-  #       mkdir -p doc/html/benchmarks/${config_slug}/${os_name}-${cpu_arch}/${compiler_slug}/
-
-  #       ls doc/html/benchmarks/${config_slug}/${os_name}-${cpu_arch}/${compiler_slug}/
-
-  #       # for benchmark in $(ls build/benchmark/*.exe | grep -v ".erb"); do
-  #       for benchmark in $(ls build/benchmark/bench.*); do
-  #         cp ${benchmark} doc/html/benchmarks/${config_slug}/${os_name}-${cpu_arch}/${compiler_slug}/
-  #       done
-
-  #       ls doc/html/benchmarks/${config_slug}/${os_name}-${cpu_arch}/${compiler_slug}/
-
-  #       pushd doc/html
-  #       git add --all .
-  #       git commit --allow-empty -m "Update benchmarks to ${TRAVIS_COMMIT:0:7} for build type '${config_slug}' and compiler '${compiler_slug}'"
-
-  #       # Suppress output to avoid leaking the token
-  #       travis_retry git push origin gh-pages &>/dev/null
-  #       # travis_retry git push origin gh-pages
-
-  #       popd
-  #     else
-  #       export BOOST_HANA_JUST_CHECK_BENCHMARKS=true
-  #       (cd build && make benchmarks -j2)
-  #     fi
-  #   fi
-
-  # # - make benchmarks -k
 
 
 notifications:
@@ -495,4 +482,3 @@ notifications:
     urls: https://webhooks.gitter.im/e/a19dd2b03bf676d2b622
     on_success: change
     on_failure: always
-
