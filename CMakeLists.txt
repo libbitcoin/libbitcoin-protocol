@@ -128,6 +128,12 @@ _add_cxx_compile_flag(-fvisibility-hidden _has_visibility_hidden_flag)
 #------------------------------------------------------------------------------
 _add_cxx_compile_flag(-fvisibility-inlines-hidden _has_visibility_inlines_hidden_flag)
 
+# Target Windows Vista. Enabled in msvc only.
+#------------------------------------------------------------------------------
+if (MSVC)
+  add_definitions(-D_WIN32_WINNT=0x0600)
+endif()
+
 # Build
 #==============================================================================
 function(_group_sources target sources_dir)
