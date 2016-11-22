@@ -284,6 +284,7 @@ matrix:
 branches:
   only:
     - master
+    - travis
 
 before_install:
 
