@@ -254,37 +254,36 @@ matrix:
     # OSX
 
     # Xcode 7 Debug
-    - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
-      os: osx
-      osx_image: xcode73
-      addons: &xcode73
-      sudo: required
+#    - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+#      os: osx
+#      osx_image: xcode73
+#      addons: &xcode73
+#      sudo: required
 
     # Xcode 7 Release
-    - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
-      os: osx
-      osx_image: xcode73
-      addons: &xcode73
-      sudo: required
+#    - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+#      os: osx
+#      osx_image: xcode73
+#      addons: &xcode73
+#      sudo: required
       
     # Xcode 8 Release
-    - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
-      os: osx
-      osx_image: xcode8
-      addons: &xcode8
-      sudo: required
+#    - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+#      os: osx
+#      osx_image: xcode8
+#      addons: &xcode8
+#      sudo: required
       
     # Xcode 8 Release
-    - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
-      os: osx
-      osx_image: xcode8
-      addons: &xcode8
-      sudo: required
+#    - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+#      os: osx
+#      osx_image: xcode8
+#      addons: &xcode8
+#      sudo: required
 
 branches:
   only:
     - master
-    - travis
 
 before_install:
   # Update submodules 
