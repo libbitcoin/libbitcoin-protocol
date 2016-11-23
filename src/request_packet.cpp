@@ -52,7 +52,7 @@ bool request_packet::encode_payload(zmq::message& message) const
         return false;
 
     const auto data = request_->SerializeAsString();
-    message.append({ data.begin(), data.end() });
+    message.enqueue(data);
     return true;
 }
 

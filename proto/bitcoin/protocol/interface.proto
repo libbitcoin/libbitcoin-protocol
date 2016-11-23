@@ -1,3 +1,5 @@
+syntax = "proto3";
+
 package libbitcoin.protocol;
 
 // Bitcoin types mapped from descriptions found at
@@ -10,57 +12,57 @@ package libbitcoin.protocol;
 //
 message block_header {
     // protocol version
-    required uint32 version = 1;
+    uint32 version = 1;
     
     // 32-byte previous block hash
-    required bytes previous_block_hash = 2;
+    bytes previous_block_hash = 2;
     
     // 32-byte transactions hash
-    required bytes merkle_root = 3;
+    bytes merkle_root = 3;
     
     // creation
-    required uint32 timestamp = 4;
+    uint32 timestamp = 4;
     
     // difficulty
-    required uint32 bits = 5;
+    uint32 bits = 5;
     
-    required uint32 nonce = 6;
+    uint32 nonce = 6;
     
     // variable length integer in protocol, not involved in hash computation
-    required uint64 tx_count = 7;
+    uint64 tx_count = 7;
 }
 
 //
 // OutPoint corresponding object.
 //
 message point {
-    required bytes hash = 1;
-    required uint32 index = 2;
+    bytes hash = 1;
+    uint32 index = 2;
 }
 
 //
 // TxIn corresponding object.
 //
 message tx_input {
-    required point previous_output = 1;
-    required bytes script = 2;
-    required uint32 sequence = 3;
+    point previous_output = 1;
+    bytes script = 2;
+    uint32 sequence = 3;
 }
 
 //
 // TxOut corresponding object.
 //
 message tx_output {
-    required uint64 value = 1;
-    required bytes script = 2;
+    uint64 value = 1;
+    bytes script = 2;
 }
 
 //
 // Transaction
 //
 message tx {
-    required uint32 version = 1;
-    required uint32 locktime = 2;
+    uint32 version = 1;
+    uint32 locktime = 2;
     repeated tx_input inputs = 3;
     repeated tx_output outputs = 4;
 }
@@ -69,7 +71,7 @@ message tx {
 // Block
 //
 message block {
-    required block_header header = 1;
+    block_header header = 1;
     repeated tx transactions = 2;
     repeated bytes tree = 3;
 }
@@ -78,6 +80,7 @@ message block {
 // Protocol unique members
 
 enum filters {
+    _FILTERS_NONE = 0;
     ADDRESS = 1;
     TRANSACTION = 2;
     STEALTH = 3;
@@ -88,27 +91,27 @@ enum filters {
 // transactions or stealth addresses.
 //
 message filter {
-    required filters filter_type = 1;
-    optional uint32 bits = 2;
-    required bytes prefix = 3;
+    filters filter_type = 1;
+    uint32 bits = 2;
+    bytes prefix = 3;
 }
 
 //
 // A block height, hash tuple.
 //
 message block_id {
-    optional uint32 height = 1;
+    uint32 height = 1;
     
     // 32-bytes
-    optional bytes hash = 2;
+    bytes hash = 2;
 }
 
 //
 // A block identity, merkle branch tuple.
 //
 message block_location {
-    optional block_id identity = 1;
-    optional uint64 index = 2;
+    block_id identity = 1;
+    uint64 index = 2;
     repeated bytes branch = 3;
 }
 
@@ -118,8 +121,8 @@ message block_location {
 // query result_type.
 //
 message tx_hash_result {
-    required bytes hash = 1;
-    required block_location location = 2;
+    bytes hash = 1;
+    block_location location = 2;
 }
 
 //
@@ -128,17 +131,17 @@ message tx_hash_result {
 // query result_type.
 //
 message tx_result {
-    required tx transaction = 1;
-    required block_location location = 2;
+    tx transaction = 1;
+    block_location location = 2;
 }
 
 //
 // A transaction output.
 //
 message output {
-    required uint32 index = 1;
-    required uint64 satoshis = 2;
-    required bytes script = 3;
+    uint32 index = 1;
+    uint64 satoshis = 2;
+    bytes script = 3;
 }
 
 //
@@ -147,8 +150,8 @@ message output {
 // query result_type.
 //
 message utxo_result {
-    required bytes tx_hash = 1;
-    required block_location location = 2;
+    bytes tx_hash = 1;
+    block_location location = 2;
     repeated output outputs = 3;
 }
 
@@ -156,6 +159,7 @@ message utxo_result {
 // Client request
 //
 enum transaction_results {
+    TRANSACTION_RESULTS_NONE = 0;
     TX_HASH = 1;
     TX_RESULT = 2;
     UTXO_RESULT = 3;
@@ -168,20 +172,20 @@ enum locations {
 }
 
 message block_headers_request {
-    optional block_id start = 1;
-    optional uint32 results_per_page = 2;
+    block_id start = 1;
+    uint32 results_per_page = 2;
 }
     
 message transactions_request {
-    optional block_id start = 1;
-    optional uint32 results_per_page = 2;
+    block_id start = 1;
+    uint32 results_per_page = 2;
     repeated filter query = 3;
-    optional transaction_results result_type = 4 [default = TX_HASH];
-    optional locations location_type = 5 [default = NONE];
+    transaction_results result_type = 4; // [default = TX_HASH]
+    locations location_type = 5; // [default = NONE]
 }
 
 message request {
-    required uint32 id = 1;
+    uint32 id = 1;
 
     oneof request_type {
         block_headers_request get_block_headers = 2;
@@ -196,28 +200,26 @@ message request {
 
         block validate_block = 7;
     }
-    
-    extensions 100 to 199;
 }
 
 //
 // Server response
 //
 message response {
-    required uint32 id = 1;
+    uint32 id = 1;
 
     // can encode error codes for calls
-    optional sint32 status = 2;
+    sint32 status = 2;
 
     message block_headers {
-        optional block_id next = 1;
-        optional block_id top = 2;
+        block_id next = 1;
+        block_id top = 2;
         repeated block_header headers = 3;
     }
     
     message transactions {
-        optional block_id next = 1;
-        optional block_id top = 2;
+        block_id next = 1;
+        block_id top = 2;
         repeated tx_hash_result hashes = 3;
         repeated tx_result transactions = 4;
         repeated utxo_result utxos = 5;
@@ -236,7 +238,5 @@ message response {
 
         bool validate_block_succeeded = 8;
     }
-
-    extensions 100 to 199;
 }
 

@@ -1,98 +1,380 @@
-###############################################################################
-#  Copyright (c) 2014-2015 libbitcoin-protocol developers (see COPYING).
+# Bitprim-protocol
 #
-#         GENERATED SOURCE CODE, DO NOT EDIT EXCEPT EXPERIMENTALLY
-#
-###############################################################################
-sudo:
-    - false
+# Copyright (c) 2016 Bitprim developers (see AUTHORS)
+# Distributed under the Boost Software License, Version 1.0. (See accompanying
+# file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-language:
-    - cpp
-
-addons:
-    apt:
-        sources:
-            - boost-latest
-            - ubuntu-toolchain-r-test
-        packages:
-            - g++-4.8
-
+language: cpp
+# sudo: false
+# sudo: required
+# dist: trusty
+git:
+  submodules: false
+  
 matrix:
-    include:
-        - os: linux
-          compiler: clang
-          env: LINK=dynamic
-          apt:
-            sources:
-                - sourceline: 'ppa:h-rayflood/llvm'
-            packages:
-                - clang-3.4
-        - os: linux
-          compiler: clang
-          env: LINK=static
-          apt:
-            sources:
-                - sourceline: 'ppa:h-rayflood/llvm'
-            packages:
-                - clang-3.4
-        - os: linux
-          compiler: gcc
-          env: LINK=dynamic
-          apt:
-        - os: linux
-          compiler: gcc
-          env: LINK=static
-          apt:
-            packages:
-                - lcov
-        - os: osx
-          compiler: clang
-          env: LINK=dynamic
-        - os: osx
-          compiler: clang
-          env: LINK=static
-    fast_finish:
-        - true
+  include:
+
+    # Linux clang-3.6 Debug
+    - env: CLANG_VERSION=3.6 CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+      os: linux
+      sudo: required
+      dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
+      addons: &clang36
+        apt:
+          packages:
+            - clang-3.6
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+
+    # Linux clang-3.6 Release
+    - env: CLANG_VERSION=3.6 CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+      os: linux
+      sudo: required
+      dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
+      addons: &clang36
+        apt:
+          packages:
+            - clang-3.6
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+
+    # Linux clang-3.7 Debug
+    - env: CLANG_VERSION=3.7 CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+      os: linux
+      sudo: required
+      dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
+      addons: &clang37
+        apt:
+          packages:
+            - clang-3.7
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+
+    # Linux clang-3.7 Release
+    - env: CLANG_VERSION=3.7 CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+      os: linux
+      sudo: required
+      dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
+      addons: &clang37
+        apt:
+          packages:
+            - clang-3.7
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+
+    # Linux clang-3.8 Debug
+    - env: CLANG_VERSION=3.8 CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+      os: linux
+      sudo: required
+      dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
+      addons: &clang38
+        apt:
+          packages:
+            - clang-3.8
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.8
+
+    # Linux clang-3.8 Release
+    - env: CLANG_VERSION=3.8 CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+      os: linux
+      sudo: required
+      dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
+        apt:
+          packages:
+            - clang-3.8
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.8
+
+    # gcc-4.9 Debug
+    - env: GCC_VERSION=4.9 CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+      os: linux
+      sudo: required
+      dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
+      addons: &gcc49
+        apt:
+          packages:
+            - g++-4.9
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+
+    # gcc-4.9 Release
+    - env: GCC_VERSION=4.9 CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+      os: linux
+      sudo: required
+      dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
+      addons: &gcc49
+        apt:
+          packages:
+            - g++-4.9
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+            
+    # gcc-5
+    - env: GCC_VERSION=5 CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+      os: linux
+      sudo: required
+      dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
+      addons: &gcc5
+        apt:
+          packages:
+            - cmake
+            - g++-5
+          sources:
+            - ubuntu-toolchain-r-test
+
+    - env: GCC_VERSION=5 CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+      os: linux
+      sudo: required
+      dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
+      addons: &gcc5
+        apt:
+          packages:
+            - cmake
+            - g++-5
+          sources:
+            - ubuntu-toolchain-r-test
+            
+    # gcc-6
+    - env: GCC_VERSION=6 CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+      os: linux
+      sudo: required
+      dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
+      addons: &gcc6
+        apt:
+          packages:
+            - cmake
+            - g++-6
+          sources:
+            - ubuntu-toolchain-r-test
+    
+    - env: GCC_VERSION=6 CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+      os: linux
+      sudo: required
+      dist: trusty
+      cache:
+        ccache: true
+        timeout: 1000
+        directories:
+          - $HOME/boost
+          - $HOME/protobuf
+          - $HOME/zeromq
+      addons: &gcc6
+        apt:
+          packages:
+            - cmake
+            - g++-6
+          sources:
+            - ubuntu-toolchain-r-test
+
+    # OSX
+
+    # Xcode 7 Debug
+#    - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+#      os: osx
+#      osx_image: xcode73
+#      addons: &xcode73
+#      sudo: required
+
+    # Xcode 7 Release
+#    - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+#      os: osx
+#      osx_image: xcode73
+#      addons: &xcode73
+#      sudo: required
+      
+    # Xcode 8 Release
+#    - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Debug
+#      os: osx
+#      osx_image: xcode8
+#      addons: &xcode8
+#      sudo: required
+      
+    # Xcode 8 Release
+#    - env: CXX_FLAGS="-std=c++11" BUILD_TYPE=Release
+#      os: osx
+#      osx_image: xcode8
+#      addons: &xcode8
+#      sudo: required
+
+branches:
+  only:
+    - master
 
 before_install:
+  # Update submodules 
+  - git submodule update --init --recursive
 
-    # Set aliases for readability.
-    - if [[ $CC             == gcc     ]]; then
-        GCC=true;
-        export CC=gcc-4.8;
-        export CXX=g++-4.8;
-      fi
-    - if [[ $CC             == clang   ]]; then CLANG=true; fi
-    - if [[ $LINK           == static  ]]; then STATIC=true; fi
-    - if [[ $LINK           == dynamic ]]; then DYNAMIC=true; fi
-    - if [[ $TRAVIS_OS_NAME == osx     ]]; then OSX=true; fi
-    - if [[ $TRAVIS_OS_NAME == linux   ]]; then LINUX=true; fi
+  - if [ -n "$GCC_VERSION" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
+  - if [ -n "$CLANG_VERSION" ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
+  - if [ -n "$GCC_VERSION" ]; then export CXX_FLAGS="${CXX_FLAGS} -Wall -Wextra"; fi
+  - if [ -n "$CLANG_VERSION" ]; then export CXX_FLAGS="${CXX_FLAGS} -Wall -Wextra"; fi
 
 install:
+  ############################################################################
+  # All the dependencies are installed in ${TRAVIS_BUILD_DIR}/deps/
+  ############################################################################
+  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+  - mkdir ${DEPS_DIR} && cd ${DEPS_DIR}
+  ############################################################################
+  # Install a recent CMake
+  ############################################################################
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      CMAKE_URL="https://cmake.org/files/v3.7/cmake-3.7.0-rc3-Linux-x86_64.tar.gz"
+      mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+      export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+    else 
+      brew unlink cmake
+      brew install cmake
+    fi
+  ############################################################################
+  # Custom script for external dependences
+  ############################################################################
+  - cd ${DEPS_DIR}
+  - wget -O build_deps.sh  https://raw.githubusercontent.com/hanchon/travis_complete_cache/master/build_deps.sh
+  - sudo chmod 777 build_deps.sh  
+  # Install Boost
+  - ./build_deps.sh boost "${TRAVIS_OS_NAME}"
+  # Install ZeroMQ
+  - cd ${DEPS_DIR}
+  - ./build_deps.sh zeromq "${TRAVIS_OS_NAME}"
+  # Install Protobuf
+  - cd ${DEPS_DIR}
+  - ./build_deps.sh protobuf "${TRAVIS_OS_NAME}"
+  #Set linux variables:
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      export BOOST_OPTS="-DBOOST_ROOT=/home/travis/boost -DBOOST_INCLUDEDIR=/home/travis/boost/include -DBOOST_LIBRARYDIR=/home/travis/boost/lib"    
+      export ZEROMQ=" -DZeroMQ_ROOT_DIR=/home/travis/zeromq "  
+      export PROTOBUF=" -DProtobuf_ROOT_DIR=/home/travis/protobuf "
+      export PATH=/home/travis/protobuf/bin:${PATH}
+      sudo ldconfig
+    else
+      export BOOST_OPTS=" "    
+      export ZEROMQ=" "  
+      export PROTOBUF=" "
+    fi  
+  ############################################################################
+  # Custom script for internal dependences
+  ############################################################################
+  - wget -O build_bitprim.sh  https://raw.githubusercontent.com/hanchon/travis_complete_cache/master/build_bitprim.sh
+  - sudo chmod 777 build_bitprim.sh
+  #Install bitprim-secp256k1
+  - ./build_bitprim.sh secp256k1 "${TRAVIS_OS_NAME}"
+  #Install bitprim-core
+  - ./build_bitprim.sh core "${TRAVIS_OS_NAME}"
 
-    # Download and install packages for osx/clang/dynamic.
-    - if [[ $OSX   && $CLANG && $DYNAMIC ]]; then brew unlink boost; brew install boost; fi
+before_script:
+  ############################################################################
+  # Set the git identity (for pushing the documentation and the benchmarks)
+  ############################################################################
+  - git config --global user.name "Travis bot"
+  - git config --global user.email travis-bot@travis-ci.org
+
+  - if [ -n "$GCC_VERSION" ]; then export CXX_FLAGS="${CXX_FLAGS} -Wall -Wextra"; fi
+  - if [ -n "$CLANG_VERSION" ]; then export CXX_FLAGS="${CXX_FLAGS} -Wall -Wextra"; fi
+
+
+  - cd ${TRAVIS_BUILD_DIR}
+  - mkdir build 
+  - cd build 
+  - cmake .. -DWITH_TESTS=OFF ${PROTOBUF} ${ZEROMQ} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" ${BOOST_OPTS}
+
 script:
 
-    # Download and build libbitcoin-protocol and all dependencies.
-    - if [[ $OSX   && $CLANG && $STATIC  ]]; then CC=$CC CXX=$CXX ./install.sh --disable-shared --build-boost --prefix=$TRAVIS_BUILD_DIR/my-prefix; fi
-    - if [[ $LINUX && $CLANG && $STATIC  ]]; then CC=$CC CXX=$CXX ./install.sh --disable-shared --build-boost --prefix=$TRAVIS_BUILD_DIR/my-prefix CFLAGS='-Os' CXXFLAGS='-Os'; fi
-    - if [[ $LINUX && $GCC   && $STATIC  ]]; then CC=$CC CXX=$CXX ./install.sh --build-boost --disable-shared --build-dir=my-build --prefix=$TRAVIS_BUILD_DIR/my-prefix CFLAGS='-Og -g --coverage' CXXFLAGS='-Og -g --coverage'; fi
-    - if [[ $OSX   && $CLANG && $DYNAMIC ]]; then CC=$CC CXX=$CXX ./install.sh ; fi
-    - if [[ $LINUX && $CLANG && $DYNAMIC ]]; then CC=$CC CXX=$CXX ./install.sh --build-boost --disable-ndebug --disable-static --prefix=$TRAVIS_BUILD_DIR/my-prefix CFLAGS='-Os' CXXFLAGS='-Os'; fi
-    - if [[ $LINUX && $GCC   && $DYNAMIC ]]; then CC=$CC CXX=$CXX ./install.sh --disable-static --build-boost --prefix=$TRAVIS_BUILD_DIR/my-prefix CFLAGS='-Os -s' CXXFLAGS='-Os -s'; fi
+  - make -j2 
+  - sudo make install
 
-after_success:
 
-    # Install coveralls and current lcov.
-    - if [[ $LINUX && $GCC   && $STATIC  ]]; then gem install coveralls-lcov; fi
 
-    # Capture coverage info, filter out system and test code, and debug before upload.
-    - if [[ $LINUX && $GCC   && $STATIC  ]]; then lcov --directory . --capture --output-file coverage.info; fi
-    - if [[ $LINUX && $GCC   && $STATIC  ]]; then lcov --remove coverage.info "/usr/*" "$TRAVIS_BUILD_DIR/my-prefix/*" "my-build/*" "test/*" "interface.pb.*" --output-file coverage.info; fi
-    - if [[ $LINUX && $GCC   && $STATIC  ]]; then lcov --list coverage.info; fi
-
-    # Upload coverage info to coveralls service (--repo-token <private coveralls repo token>).
-    - if [[ $LINUX && $GCC   && $STATIC  ]]; then coveralls-lcov coverage.info; fi
-
+notifications:
+  email: false
+  webhooks:
+    urls: https://webhooks.gitter.im/e/a19dd2b03bf676d2b622
+    on_success: change
+    on_failure: always
