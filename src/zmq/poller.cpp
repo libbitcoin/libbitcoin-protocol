@@ -96,7 +96,7 @@ identifiers poller::wait(int32_t timeout_milliseconds)
         return{};
     }
 
-    // No events have been signaled and no failure, so ther timer expired.
+    // No events have been signaled and no failure, so the timer expired.
     if (signaled == 0)
     {
         expired_ = true;
