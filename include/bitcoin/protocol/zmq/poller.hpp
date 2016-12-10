@@ -34,7 +34,7 @@ namespace zmq {
 
 /// This class is thread safe except as noted.
 class BCP_API poller
-  : public enable_shared_from_base<poller>
+  : public enable_shared_from_base<poller>, noncopyable
 {
 public:
     /// A shared poller pointer.
@@ -42,10 +42,6 @@ public:
 
     /// Construct an empty poller (sockets must be added).
     poller();
-
-    /// This class is not copyable.
-    poller(const poller&) = delete;
-    void operator=(const poller&) = delete;
 
     /// True if the timeout occurred.
     bool expired() const;

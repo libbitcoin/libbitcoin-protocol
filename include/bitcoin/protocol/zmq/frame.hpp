@@ -32,7 +32,7 @@ namespace zmq {
 
 /// This class is not thread safe.
 class BCP_API frame
-  : public enable_shared_from_base<frame>
+  : public enable_shared_from_base<frame>, noncopyable
 {
 public:
     /// A shared frame pointer.
@@ -43,10 +43,6 @@ public:
 
     /// Construct a frame with the specified payload (for sending).
     frame(const data_chunk& data);
-
-    /// This class is not copyable.
-    frame(const frame&) = delete;
-    void operator=(const frame&) = delete;
 
     /// Free the frame's allocated memory.
     virtual ~frame();

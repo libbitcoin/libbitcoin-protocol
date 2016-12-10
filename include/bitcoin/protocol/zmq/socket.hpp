@@ -38,7 +38,7 @@ class authenticator;
 /// This class is thread safe except as noted.
 /// Because the socket is only set on construct, sockets are not restartable.
 class BCP_API socket
-  : public enable_shared_from_base<socket>
+  : public enable_shared_from_base<socket>, noncopyable
 {
 public:
     /// The full set of socket roles defined by zeromq.
@@ -66,10 +66,6 @@ public:
 
     /// Construct a socket of the given context and role.
     socket(context& context, role socket_role);
-
-    /// This class is not copyable.
-    socket(const socket&) = delete;
-    void operator=(const socket&) = delete;
 
     /// Close the socket.
     /// The object must be destroyed on the socket thread if not stopped.
