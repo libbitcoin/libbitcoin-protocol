@@ -66,10 +66,11 @@ bool context::stop()
     if (self_ == nullptr)
         return true;
 
-    // This aborts blocking operations but blocks here until either each socket
-    // in the context is explicitly closed. This can fail by signal interrupt.
     auto self = self_;
     self_ = nullptr;
+
+    // This aborts blocking operations but blocks here until either each socket
+    // in the context is explicitly closed. This can fail by signal interrupt.
     return zmq_ctx_term(self) != zmq_fail;
     ///////////////////////////////////////////////////////////////////////////
 }
