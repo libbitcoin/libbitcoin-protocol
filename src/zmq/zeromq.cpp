@@ -56,8 +56,8 @@ code get_last_error()
             return error::bad_stream;
         case EINTR:
         case ETERM:
-            return error::service_stopped;
         case ENOTSOCK:
+            return error::service_stopped;
         case EMTHREAD:
         case ENOCOMPATPROTO:
             return error::operation_failed;
