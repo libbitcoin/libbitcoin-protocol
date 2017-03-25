@@ -106,7 +106,7 @@ code frame::receive(socket& socket)
         return error::operation_failed;
 
     const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
-    const auto result = zmq_recvmsg(socket.self(), buffer, wait_flag)
+    const auto result = zmq_msg_recv(buffer, socket.self(), wait_flag)
         != zmq_fail && set_more(socket);
     return result ? error::success : get_last_error();
 }
@@ -119,7 +119,7 @@ code frame::send(socket& socket, bool last)
 
     const int flags = (last ? 0 : ZMQ_SNDMORE) | wait_flag;
     const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
-    const auto result = zmq_sendmsg(socket.self(), buffer, flags) != zmq_fail;
+    const auto result = zmq_msg_send(buffer, socket.self(), flags) != zmq_fail;
     return result ? error::success : get_last_error();
 }
 
