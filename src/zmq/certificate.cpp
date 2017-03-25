@@ -82,6 +82,7 @@ bool certificate::create(config::sodium& out_public,
         char public_key[zmq_encoded_key_size + 1] = { 0 };
         char private_key[zmq_encoded_key_size + 1] = { 0 };
 
+        // SECURITY: this uses platform random number generation.
         if (zmq_curve_keypair(public_key, private_key) == zmq_fail)
             return false;
 
