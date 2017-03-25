@@ -64,13 +64,6 @@ public:
     code send(socket& socket, bool more);
 
 private:
-    // zmq_msg_t alias, keeps zmq.h out of our headers.
-    typedef union
-    {
-        unsigned char alignment[64];
-        void* pointer;
-    } zmq_msg;
-
     static bool initialize(zmq_msg& message, const data_chunk& data);
 
     bool set_more(socket& socket);
