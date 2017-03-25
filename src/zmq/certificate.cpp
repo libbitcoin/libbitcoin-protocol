@@ -86,7 +86,7 @@ bool certificate::create(config::sodium& out_public,
         if (zmq_curve_keypair(public_key, private_key) == zmq_fail)
             return false;
 
-        if (!setting || ((ok_setting(public_key) && ok_setting(private_key))))
+        if (!setting || (ok_setting(public_key) && ok_setting(private_key)))
         {
             out_public = config::sodium(public_key);
             out_private = config::sodium(private_key);
