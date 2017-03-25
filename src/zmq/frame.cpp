@@ -90,11 +90,14 @@ bool frame::set_more(socket& socket)
     return true;
 }
 
-data_chunk frame::payload()
+data_chunk frame::payload() const
 {
     const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
+
+    // These calls do not actually modify the buffer but are non-const.
     const auto size = zmq_msg_size(buffer);
     const auto data = zmq_msg_data(buffer);
+
     const auto begin = static_cast<uint8_t*>(data);
     return{ begin, begin + size };
 }
