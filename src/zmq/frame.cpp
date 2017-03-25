@@ -37,13 +37,13 @@ static constexpr auto zmq_fail = -1;
 
 // Use for receiving.
 frame::frame()
-  : more_(false), valid_(initialize(message_, {}))
+  : more_(false), valid_(initialize({}))
 {
 }
 
 // Use for sending.
 frame::frame(const data_chunk& data)
-  : more_(false), valid_(initialize(message_, data))
+  : more_(false), valid_(initialize(data))
 {
 }
 
@@ -52,10 +52,10 @@ frame::~frame()
     destroy();
 }
 
-// static
-bool frame::initialize(zmq_msg& message, const data_chunk& data)
+// private
+bool frame::initialize(const data_chunk& data)
 {
-    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message);
+    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
 
     if (data.empty())
         return (zmq_msg_init(buffer) != zmq_fail);

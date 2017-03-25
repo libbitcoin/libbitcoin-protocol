@@ -64,8 +64,7 @@ public:
     code send(socket& socket, bool more);
 
 private:
-    static bool initialize(zmq_msg& message, const data_chunk& data);
-
+    bool initialize(const data_chunk& data);
     bool set_more(socket& socket);
     bool destroy();
 
