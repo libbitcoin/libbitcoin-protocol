@@ -31,9 +31,9 @@ namespace zmq {
 
 #define NAME "worker"
 
-// Derive from this abstract worker to implement real worker.
-worker::worker(threadpool& pool)
-  : dispatch_(pool, NAME),
+// Derive from this abstract worker to implement concrete worker.
+worker::worker(thread_priority priority)
+  : priority_(priority),
     stopped_(true)
 {
 }
@@ -54,9 +54,13 @@ bool worker::start()
     {
         stopped_ = false;
 
+        // Since one thread per started service is required there is no benefit
+        // to using the threadpool. If the threadpool is used there must be
+        // sufficient numbers of threads reserved, which is counterproductive.
+        ////dispatch_.concurrent(std::bind(&worker::work, this));
+
         // Create the replier thread and socket and start polling.
-        dispatch_.concurrent(
-            std::bind(&worker::work, this));
+        thread_ = std::make_shared<asio::thread>(&worker::work, this);
 
         // Wait on replier start.
         const auto result = started_.get_future().get();
@@ -81,6 +85,7 @@ bool worker::stop()
         stopped_ = true;
 
         // Wait on replier stop.
+        // This is used instead of thread join in order to capture result.
         const auto result = finished_.get_future().get();
 
         // Reset for restartability.
@@ -106,7 +111,9 @@ bool worker::started(bool result)
 {
     started_.set_value(result);
 
-    if (!result)
+    if (result)
+        set_priority(priority_);
+    else
         finished(true);
 
     return result;

@@ -28,11 +28,8 @@ void server_task(const config::sodium& server_private_key,
     const config::sodium& client_public_key,
     const config::authority& client_address)
 {
-    // Create a threadpool for the authenticator.
-    threadpool threadpool(1);
-
     // Establish the context's authentication whitelist.
-    zmq::authenticator authenticator(threadpool);
+    zmq::authenticator authenticator(thread_priority::normal);
     authenticator.allow(client_address);
     authenticator.allow(client_public_key);
 
@@ -52,7 +49,7 @@ void server_task(const config::sodium& server_private_key,
 
     //  Send the test message.
     zmq::message message;
-    message.enqueue("helllo world!");
+    message.enqueue("hello world!");
     ec = server.send(message);
     assert(!ec);
 
@@ -61,7 +58,6 @@ void server_task(const config::sodium& server_private_key,
 
     // Stop the authentication context monitor and join the thread.
     authenticator.stop();
-    threadpool.join();
 }
 
 void client_task(const config::sodium& client_private_key,
@@ -89,7 +85,7 @@ void client_task(const config::sodium& client_private_key,
     zmq::message message;
     ec = client.receive(message);
     assert(!ec);
-    assert(message.dequeue_text() == "helllo world!");
+    assert(message.dequeue_text() == "hello world!");
 
     puts("Ironhouse test OK");
 }
