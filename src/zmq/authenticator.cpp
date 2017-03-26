@@ -37,8 +37,8 @@ namespace zmq {
 const config::endpoint authenticator::endpoint("inproc://zeromq.zap.01");
 
 // There may be only one authenticator per process.
-authenticator::authenticator(threadpool& pool)
-  : worker(pool),
+authenticator::authenticator(thread_priority priority)
+  : worker(priority),
     context_(false),
     require_address_(false)
 {

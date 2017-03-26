@@ -53,7 +53,7 @@ public:
     bool more() const;
 
     /// The initialized or received payload of the frame.
-    data_chunk payload();
+    data_chunk payload() const;
 
     /// Must be called on the socket thread.
     /// Receive a frame on the socket.
@@ -64,21 +64,16 @@ public:
     code send(socket& socket, bool more);
 
 private:
-    // zmq_msg_t alias, keeps zmq.h out of our headers.
-    typedef union
-    {
-        unsigned char alignment[64];
-        void* pointer;
-    } zmq_msg;
-
-    static bool initialize(zmq_msg& message, const data_chunk& data);
-
+    bool initialize(const data_chunk& data);
     bool set_more(socket& socket);
     bool destroy();
 
     bool more_;
     const bool valid_;
-    zmq_msg message_;
+
+    // Mutability is a hack around lack of const overloads in zeromq, allowing
+    // the payload method to be properly const while other access is not.
+    mutable zmq_msg message_;
 };
 
 } // namespace zmq

@@ -26,6 +26,35 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+// zmq_msg_t alias, keeps zmq.h out of our headers.
+typedef struct zmq_msg
+{
+#if defined(__GNUC__) || defined(__INTEL_COMPILER) || \
+    (defined(__SUNPRO_C) && __SUNPRO_C >= 0x590) || \
+    (defined(__SUNPRO_CC) && __SUNPRO_CC >= 0x590)
+    unsigned char _[64] __attribute__ ((aligned(sizeof(void*))));
+#elif defined(_MSC_VER) && (defined(_M_X64) || defined(_M_ARM64))
+    __declspec (align(8)) unsigned char _[64];
+#elif defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_ARM_ARMV7VE))
+    __declspec (align(4)) unsigned char _[64];
+#else
+    unsigned char _[64];
+#endif
+} zmq_msg;
+
+// zmq_pollitem_t alias, keeps zmq.h out of our headers.
+typedef struct zmq_pollitem
+{
+    void* socket;
+#if defined(_WIN32)
+    SOCKET fd;
+#else
+    int fd;
+#endif
+    short events;
+    short revents;
+} zmq_pollitem;
+
 code BCP_API get_last_error();
 
 } // namespace zmq

@@ -47,7 +47,7 @@ public:
     static const config::endpoint endpoint;
 
     /// There may be only one authenticator per process.
-    authenticator(threadpool& threadpool);
+    authenticator(thread_priority priority=thread_priority::normal);
 
     /// Stop the router.
     virtual ~authenticator();

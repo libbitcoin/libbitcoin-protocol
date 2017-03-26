@@ -37,13 +37,13 @@ static constexpr auto zmq_fail = -1;
 
 // Use for receiving.
 frame::frame()
-  : more_(false), valid_(initialize(message_, {}))
+  : more_(false), valid_(initialize({}))
 {
 }
 
 // Use for sending.
 frame::frame(const data_chunk& data)
-  : more_(false), valid_(initialize(message_, data))
+  : more_(false), valid_(initialize(data))
 {
 }
 
@@ -52,10 +52,10 @@ frame::~frame()
     destroy();
 }
 
-// static
-bool frame::initialize(zmq_msg& message, const data_chunk& data)
+// private
+bool frame::initialize(const data_chunk& data)
 {
-    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message);
+    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
 
     if (data.empty())
         return (zmq_msg_init(buffer) != zmq_fail);
@@ -90,11 +90,14 @@ bool frame::set_more(socket& socket)
     return true;
 }
 
-data_chunk frame::payload()
+data_chunk frame::payload() const
 {
     const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
+
+    // These calls do not actually modify the buffer but are non-const.
     const auto size = zmq_msg_size(buffer);
     const auto data = zmq_msg_data(buffer);
+
     const auto begin = static_cast<uint8_t*>(data);
     return{ begin, begin + size };
 }
@@ -106,7 +109,7 @@ code frame::receive(socket& socket)
         return error::operation_failed;
 
     const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
-    const auto result = zmq_recvmsg(socket.self(), buffer, wait_flag)
+    const auto result = zmq_msg_recv(buffer, socket.self(), wait_flag)
         != zmq_fail && set_more(socket);
     return result ? error::success : get_last_error();
 }
@@ -119,7 +122,7 @@ code frame::send(socket& socket, bool last)
 
     const int flags = (last ? 0 : ZMQ_SNDMORE) | wait_flag;
     const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
-    const auto result = zmq_sendmsg(socket.self(), buffer, flags) != zmq_fail;
+    const auto result = zmq_msg_send(buffer, socket.self(), flags) != zmq_fail;
     return result ? error::success : get_last_error();
 }
 
