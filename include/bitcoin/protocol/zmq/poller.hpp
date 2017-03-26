@@ -26,6 +26,7 @@
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
+#include <bitcoin/protocol/zmq/zeromq.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -63,15 +64,6 @@ public:
     identifiers wait(int32_t timeout_milliseconds);
 
 private:
-    // zmq_pollitem_t alias, keeps zmq.h out of our headers.
-    typedef struct
-    {
-        void* socket;
-        file_descriptor fd;
-        short events;
-        short revents;
-    } zmq_pollitem;
-
     typedef std::vector<zmq_pollitem> pollers;
 
     // These values are protected by mutex.
