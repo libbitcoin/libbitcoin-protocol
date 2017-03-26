@@ -76,7 +76,7 @@ public:
     /// Receve a message (clears the queue first).
     code receive(socket& socket);
 
-private:
+protected:
     data_queue queue_;
 };
 
