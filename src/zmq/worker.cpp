@@ -54,11 +54,6 @@ bool worker::start()
     {
         stopped_ = false;
 
-        // Since one thread per started service is required there is no benefit
-        // to using the threadpool. If the threadpool is used there must be
-        // sufficient numbers of threads reserved, which is counterproductive.
-        ////dispatch_.concurrent(std::bind(&worker::work, this));
-
         // Create the replier thread and socket and start polling.
         thread_ = std::make_shared<asio::thread>(&worker::work, this);
 
@@ -74,6 +69,7 @@ bool worker::start()
     ///////////////////////////////////////////////////////////////////////////
 }
 
+// Promise is used (vs. join only) to capture stop result code.
 bool worker::stop()
 {
     ///////////////////////////////////////////////////////////////////////////
@@ -85,8 +81,10 @@ bool worker::stop()
         stopped_ = true;
 
         // Wait on replier stop.
-        // This is used instead of thread join in order to capture result.
         const auto result = finished_.get_future().get();
+
+        // Wait for thread to stop.
+        thread_->join();
 
         // Reset for restartability.
         finished_ = std::promise<bool>();
