@@ -19,6 +19,7 @@
 #include <bitcoin/protocol/zmq/message.hpp>
 
 #include <string>
+#include <utility>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/frame.hpp>
 
@@ -29,6 +30,21 @@ namespace zmq {
 void message::enqueue()
 {
     queue_.emplace(data_chunk{});
+}
+
+void message::enqueue(data_chunk&& value)
+{
+    queue_.emplace(std::move(value));
+}
+
+void message::enqueue(const data_chunk& value)
+{
+    queue_.emplace(value);
+}
+
+void message::enqueue(const std::string& value)
+{
+    queue_.emplace(to_chunk(value));
 }
 
 bool message::dequeue()
