@@ -34,18 +34,20 @@ public:
     /// Add an empty message part to the outgoing message.
     void enqueue();
 
-    /// Add an iterable message part to the outgoing message.
-    template <typename Iterable>
-    void enqueue(const Iterable& value)
-    {
-        queue_.emplace(to_chunk(value));
-    }
+    /// Move a data message part to the outgoing message.
+    void enqueue(data_chunk&& value);
 
-    /// Add a message part to the outgoing message.
+    /// Add a data message part to the outgoing message.
+    void enqueue(const data_chunk& value);
+
+    /// Add a text message part to the outgoing message.
+    void enqueue(const std::string& value);
+
+    /// Add an unsigned integer message part to the outgoing message.
     template <typename Unsigned>
     void enqueue_little_endian(Unsigned value)
     {
-        enqueue(to_little_endian<Unsigned>(value));
+        queue_.emplace(to_chunk(to_little_endian<Unsigned>(value)));
     }
 
     /// Remove a message part from the top of the queue, empty if empty queue.
