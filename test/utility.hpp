@@ -33,19 +33,14 @@
     out__.enqueue(TEST_MESSAGE); \
     BC_REQUIRE_SUCCESS(socket.send(out__))
 
-#define WAIT_SUCCESS(socket) \
-    zmq::poller poller__; \
-    poller__.add(socket); \
-    while (!poller__.wait().contains(socket.id()))
-
-#define WAIT_FAILURE(socket) \
-    zmq::poller poller__; \
-    poller__.add(socket); \
-    BOOST_REQUIRE(!poller__.wait(1).contains(socket.id()))
-
 #define RECEIVE_MESSAGE(socket) \
     zmq::message in__; \
     BC_REQUIRE_SUCCESS(socket.receive(in__)); \
     BOOST_REQUIRE_EQUAL(in__.dequeue_text(), TEST_MESSAGE)
+
+#define RECEIVE_FAILURE(socket) \
+    zmq::poller poller__; \
+    poller__.add(socket); \
+    BOOST_REQUIRE(!poller__.wait(1).contains(socket.id()))
 
 #endif
