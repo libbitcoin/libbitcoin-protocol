@@ -251,16 +251,14 @@ bool authenticator::apply(socket& socket, const std::string& domain,
     ///////////////////////////////////////////////////////////////////////////
 
     // A private server key is required if there are public client keys.
-    if ((have_public_keys && !private_key))
+    if ((have_public_keys && !private_key) ||
+        (!secure && require_domain && domain.empty()))
         return false;
 
     if (!secure)
     {
         if (require_domain)
         {
-            if (domain.empty())
-                return false;
-
             // These persist after a socket closes so don't reuse domain names.
             weak_domains_.emplace(domain);
             return socket.set_authentication_domain(domain);
