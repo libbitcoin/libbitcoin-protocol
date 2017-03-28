@@ -66,8 +66,6 @@
   </ImportGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\test\converter.cpp" />
-    <ClCompile Include="..\..\..\..\test\examples\authenticator_example.cpp" />
-    <ClCompile Include="..\..\..\..\test\examples\poller_example.cpp" />
     <ClCompile Include="..\..\..\..\test\main.cpp" />
     <ClCompile Include="..\..\..\..\test\zmq\authenticator.cpp" />
     <ClCompile Include="..\..\..\..\test\zmq\certificate.cpp" />
@@ -120,5 +118,8 @@
     <ProjectReference Include="..\libbitcoin-protocol\libbitcoin-protocol.vcxproj">
       <Project>{6B94E2A5-C054-4790-963D-A7BE493259B0}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\test\utility.hpp" />
   </ItemGroup>
 </Project>

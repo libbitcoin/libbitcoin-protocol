@@ -99,13 +99,62 @@ BOOST_AUTO_TEST_CASE(message__enqueue2__nonempty__ordered)
 BOOST_AUTO_TEST_CASE(message__enqueue3__empty__size_1_expected)
 {
     message_fixture instance;
+    instance.enqueue(bc::to_chunk(chunk1));
+    BOOST_REQUIRE_EQUAL(instance.size(), 1u);
+    BOOST_REQUIRE(instance.queue().front() == chunk1);
+}
+
+BOOST_AUTO_TEST_CASE(message__enqueue3__nonempty__ordered)
+{
+    message_fixture instance;
+    instance.queue().emplace(chunk1);
+    instance.enqueue(bc::to_chunk(chunk2));
+    BOOST_REQUIRE_EQUAL(instance.size(), 2u);
+    BOOST_REQUIRE(instance.queue().front() == chunk1);
+    BOOST_REQUIRE(instance.queue().back() == chunk2);
+}
+
+// enqueue4
+
+BOOST_AUTO_TEST_CASE(message__enqueue4__empty__size_1_expected)
+{
+    // Ensure we aren't capturing the null terminator.
+    const std::string text2(chunk2.begin(), chunk2.end());
+    BOOST_REQUIRE_EQUAL(text2.size(), 4u);
+
+    message_fixture instance;
+    instance.enqueue(text2);
+    BOOST_REQUIRE_EQUAL(instance.size(), 1u);
+    const auto& value = instance.queue().front();
+    BOOST_REQUIRE(value == chunk2);
+}
+
+BOOST_AUTO_TEST_CASE(message__enqueue4__nonempty__ordered)
+{
+    // Ensure we aren't capturing the null terminator.
+    const std::string text2(chunk2.begin(), chunk2.end());
+    BOOST_REQUIRE_EQUAL(text2.size(), 4u);
+
+    message_fixture instance;
+    instance.queue().emplace(chunk1);
+    instance.enqueue(text2);
+    BOOST_REQUIRE_EQUAL(instance.size(), 2u);
+    BOOST_REQUIRE(instance.queue().front() == chunk1);
+    BOOST_REQUIRE(instance.queue().back() == chunk2);
+}
+
+// enqueue_little_endian
+
+BOOST_AUTO_TEST_CASE(message__enqueue_little_endian__empty__size_1_expected)
+{
+    message_fixture instance;
     instance.enqueue_little_endian<uint32_t>(number2);
     BOOST_REQUIRE_EQUAL(instance.size(), 1u);
     const auto bytes = instance.queue().front().begin();
     BOOST_REQUIRE_EQUAL(bc::from_little_endian_unsafe<uint32_t>(bytes), number2);
 }
 
-BOOST_AUTO_TEST_CASE(message__enqueue3__nonempty__ordered)
+BOOST_AUTO_TEST_CASE(message__enqueue_little_endian__nonempty__ordered)
 {
     message_fixture instance;
     instance.queue().emplace(chunk1);

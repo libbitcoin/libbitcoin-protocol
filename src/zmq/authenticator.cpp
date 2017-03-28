@@ -40,7 +40,7 @@ const config::endpoint authenticator::endpoint("inproc://zeromq.zap.01");
 authenticator::authenticator(thread_priority priority)
   : worker(priority),
     context_(false),
-    require_address_(false)
+    require_allow_(false)
 {
 }
 
@@ -122,16 +122,16 @@ void authenticator::work()
             const auto identity = request.dequeue_text();
             const auto mechanism = request.dequeue_text();
 
-            // ZAP authentication should not occur with an empty domain.
             if (origin.empty() || !delimiter.empty() || version != "1.0" ||
-                sequence.empty() || domain.empty() || !identity.empty())
+                sequence.empty() || !identity.empty())
             {
                 status_code = "500";
                 status_text = "Internal error.";
             }
             else if (!allowed_address(address))
             {
-                // Address restrictions are independent of mechanisms.
+                // Address restrictions are independent of mechanisms, but NULL
+                // security requires a nonempty domain for this to be called.
                 status_code = "400";
                 status_text = "Address not enabled for access.";
             }
@@ -139,7 +139,14 @@ void authenticator::work()
             {
                 if (mechanism == "NULL")
                 {
-                    if (request.size() != 0)
+                    // NULL ZAP calls are only made for non-empty domain.
+                    // For PLAIN/CURVE, ZAP calls always made if running.
+                    if (domain.empty())
+                    {
+                        status_code = "400";
+                        status_text = "NULL mechanism requires domain.";
+                    }
+                    else if (request.size() != 0)
                     {
                         status_code = "400";
                         status_text = "Incorrect NULL parameterization.";
@@ -220,6 +227,7 @@ void authenticator::work()
         response.enqueue(userid);
         response.enqueue(metadata);
 
+        // This is returned to the zeromq ZAP dispatcher, not the caller.
         DEBUG_ONLY(ec =) router.send(response);
         BITCOIN_ASSERT_MSG(!ec, "Failed to send ZAP response.");
     }
@@ -238,17 +246,18 @@ bool authenticator::apply(socket& socket, const std::string& domain,
     mutex_.lock_shared();
     const auto private_key = private_key_;
     const auto have_public_keys = !keys_.empty();
-    const auto require_address = require_address_;
+    const auto require_domain = !adresses_.empty();
     mutex_.unlock_shared();
     ///////////////////////////////////////////////////////////////////////////
 
     // A private server key is required if there are public client keys.
-    if (have_public_keys && !private_key)
+    if ((have_public_keys && !private_key) ||
+        (!secure && require_domain && domain.empty()))
         return false;
 
     if (!secure)
     {
-        if (require_address)
+        if (require_domain)
         {
             // These persist after a socket closes so don't reuse domain names.
             weak_domains_.emplace(domain);
@@ -287,7 +296,10 @@ bool authenticator::allowed_address(const std::string& ip_address) const
     // Critical Section
     shared_lock lock(mutex_);
 
-    return !require_address_ || adresses_.find(ip_address) != adresses_.end();
+    const auto entry = adresses_.find(ip_address);
+    const auto found = entry != adresses_.end();
+    return (require_allow_ && found && entry->second) ||
+        (!require_allow_ && (!found || entry->second));
     ///////////////////////////////////////////////////////////////////////////
 }
 
@@ -327,7 +339,9 @@ void authenticator::allow(const config::authority& address)
     // Critical Section
     unique_lock lock(mutex_);
 
-    require_address_ = true;
+    require_allow_ = true;
+
+    // Due to emplace behavior, first writer wins allow/deny conflict.
     adresses_.emplace(address.to_hostname(), true);
     ///////////////////////////////////////////////////////////////////////////
 }
@@ -339,6 +353,7 @@ void authenticator::deny(const config::authority& address)
     unique_lock lock(mutex_);
 
     // Denial is effective independent of whitelisting.
+    // Due to emplace behavior, first writer wins allow/deny conflict.
     adresses_.emplace(address.to_hostname(), false);
     ///////////////////////////////////////////////////////////////////////////
 }
