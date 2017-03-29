@@ -97,7 +97,8 @@ private:
     std::unordered_set<hash_digest> keys_;
     std::unordered_set<std::string> weak_domains_;
     std::unordered_map<std::string, bool> adresses_;
-    mutable shared_mutex mutex_;
+    mutable shared_mutex property_mutex_;
+    mutable shared_mutex stop_mutex_;
 };
 
 } // namespace zmq
