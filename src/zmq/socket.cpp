@@ -98,9 +98,10 @@ bool socket::stop()
     if (self_ == nullptr)
         return true;
 
-    auto self = self_;
+    const auto result = zmq_close(self_) != zmq_fail;
+
     self_ = nullptr;
-    return zmq_close(self) != zmq_fail;
+    return result;
     ///////////////////////////////////////////////////////////////////////////
 }
 
