@@ -28,24 +28,7 @@ using role = zmq::socket::role;
 
 BOOST_AUTO_TEST_SUITE(socket_tests)
 
-BOOST_AUTO_TEST_CASE(socket__push_pull__grasslands__received)
-{
-    zmq::context context;
-    BOOST_REQUIRE(context);
-
-    zmq::socket pusher(context, role::pusher);
-    BOOST_REQUIRE(pusher);
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
-
-    zmq::socket puller(context, role::puller);
-    BOOST_REQUIRE(puller);
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
-
-    SEND_MESSAGE(pusher);
-    RECEIVE_MESSAGE(puller);
-}
-
-// There is no authenticator running, so this fails despite configuration.
+// There is no authenticator running, so this blocks despite configuration.
 BOOST_AUTO_TEST_CASE(socket__push_pull__brickhouse__blocked)
 {
     zmq::certificate server_certificate;
@@ -68,6 +51,97 @@ BOOST_AUTO_TEST_CASE(socket__push_pull__brickhouse__blocked)
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
+
+// PUSH and PULL are asymmetrical, synchronous and not enveloped.
+BOOST_AUTO_TEST_CASE(socket__push_pull__grasslands__received)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    zmq::socket server(context, role::pusher);
+    BOOST_REQUIRE(server);
+    BC_REQUIRE_SUCCESS(server.bind({ TEST_URL }));
+
+    zmq::socket client(context, role::puller);
+    BOOST_REQUIRE(client);
+    BC_REQUIRE_SUCCESS(client.connect({ TEST_URL }));
+
+    SEND_MESSAGE(server);
+    RECEIVE_MESSAGE(client);
+    server.stop();
+    client.stop();
+}
+
+// PAIR is symmetrical, synchronous and not enveloped.
+BOOST_AUTO_TEST_CASE(socket__pair_pair__grasslands__received)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    zmq::socket server(context, role::pair);
+    BOOST_REQUIRE(server);
+    BC_REQUIRE_SUCCESS(server.bind({ TEST_URL }));
+
+    zmq::socket client(context, role::pair);
+    BOOST_REQUIRE(client);
+    BC_REQUIRE_SUCCESS(client.connect({ TEST_URL }));
+
+    SEND_MESSAGE(server);
+    RECEIVE_MESSAGE(client);
+    server.stop();
+    client.stop();
+}
+
+// REQ and REP are asymetrical, synchronous and enveloped.
+// zguide.zeromq.org/page:all#The-Simple-Reply-Envelope
+BOOST_AUTO_TEST_CASE(socket__requester_replier__grasslands__received)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    zmq::socket server(context, role::replier);
+    BOOST_REQUIRE(server);
+    BC_REQUIRE_SUCCESS(server.bind({ TEST_URL }));
+
+    zmq::socket client(context, role::requester);
+    BOOST_REQUIRE(client);
+    BC_REQUIRE_SUCCESS(client.connect({ TEST_URL }));
+
+    SEND_MESSAGE(client);
+    RECEIVE_MESSAGE(server);
+    client.stop();
+    server.stop();
+}
+
+////// PUB and SUB are asymmtrical, asynchronous and not enveloped.
+////BOOST_AUTO_TEST_CASE(socket__publisher_subscriber__grasslands__received)
+////{
+////    zmq::context context;
+////    BOOST_REQUIRE(context);
+////
+////    zmq::socket server(context, role::publisher);
+////    BOOST_REQUIRE(server);
+////    BC_REQUIRE_SUCCESS(server.bind({ TEST_URL }));
+////
+////    zmq::socket client(context, role::subscriber);
+////    BOOST_REQUIRE(client);
+////    BC_REQUIRE_SUCCESS(client.connect({ TEST_URL }));
+////
+////    SEND_MESSAGE(server);
+////
+////    // TODO: use thread.
+////    // Pub/Sub communication is asynchronous.
+////    // If a “publish” service has been started already and then when you start
+////    // “subscribe” service, it would not receive message already published. 
+////    RECEIVE_MESSAGE(client);
+////    server.stop();
+////    client.stop();
+////}
+
+// XPUB and XSUB are for routing PUB-SUB subscriptions
+// ROUTER and DEALER are for routing REQ-REP messages
 
 BOOST_AUTO_TEST_SUITE_END()
