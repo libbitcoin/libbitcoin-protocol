@@ -54,6 +54,7 @@ BOOST_AUTO_TEST_CASE(authenticator__started__before_socket__valid_context)
     BOOST_REQUIRE(authenticator.start());
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
+    pusher.stop();
 }
 
 // apply
@@ -66,6 +67,7 @@ BOOST_AUTO_TEST_CASE(authenticator__apply__public_without_server_private_key__tr
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
+    pusher.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__apply__public_empty_domain_no_addresses__true)
@@ -76,6 +78,7 @@ BOOST_AUTO_TEST_CASE(authenticator__apply__public_empty_domain_no_addresses__tru
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, "", false));
+    pusher.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__apply__public_empty_domain_with_allow__false)
@@ -87,6 +90,7 @@ BOOST_AUTO_TEST_CASE(authenticator__apply__public_empty_domain_with_allow__false
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(!authenticator.apply(pusher, "", false));
+    pusher.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__apply__public_empty_domain_with_deny__false)
@@ -98,6 +102,7 @@ BOOST_AUTO_TEST_CASE(authenticator__apply__public_empty_domain_with_deny__false)
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(!authenticator.apply(pusher, "", false));
+    pusher.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__apply__secure_without_server_private_key__false)
@@ -108,6 +113,7 @@ BOOST_AUTO_TEST_CASE(authenticator__apply__secure_without_server_private_key__fa
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(!authenticator.apply(pusher, TEST_DOMAIN, true));
+    pusher.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__apply__secure_with_server_private_key__true)
@@ -122,6 +128,7 @@ BOOST_AUTO_TEST_CASE(authenticator__apply__secure_with_server_private_key__true)
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
+    pusher.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__apply__secure_with_empty_domain__true)
@@ -136,6 +143,7 @@ BOOST_AUTO_TEST_CASE(authenticator__apply__secure_with_empty_domain__true)
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, "", true));
+    pusher.stop();
 }
 
 // push/pull clent-server tests
@@ -163,6 +171,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands__unauthenticated__rece
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_secure_certified__blocked)
@@ -186,6 +196,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_secure_certified__bloc
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_secure__blocked)
@@ -209,6 +221,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_secure__blocked)
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_certified__blocked)
@@ -229,6 +243,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_certified__blocked)
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_unsecure_uncertified__received)
@@ -249,6 +265,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_unsecure_uncertified__
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 // strawhouse (public and anonymous with IP restrictions)
@@ -270,6 +288,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_bad_allow__blocked)
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_bad_and_good_allow__received)
@@ -290,6 +310,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_bad_and_good_allow__re
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_client_good_allow__received)
@@ -309,6 +331,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_client_good_allow__rec
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_client_bad_deny__received)
@@ -328,6 +352,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_client_bad_deny__recei
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_bad_and_good_deny__blocked)
@@ -348,6 +374,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_bad_and_good_deny__blo
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_client_good_deny__blocked)
@@ -367,6 +395,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_client_good_deny__bloc
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_good_deny_before_same_allow__blocked)
@@ -387,6 +417,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_good_deny_before_same_
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_good_deny_after_same_allow__received)
@@ -407,6 +439,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_good_deny_after_same_a
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 // brickhouse = stonehouse - strawhouse (private and anonymous)
@@ -434,6 +468,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_unsecure__blocked)
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_uncertified__blocked)
@@ -458,6 +494,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_uncertified__blocked)
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_unsecure_uncertified__blocked)
@@ -480,6 +518,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_unsecure_uncertified__
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_secure_certified__received)
@@ -504,6 +544,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_secure_certified__rece
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 // ironhouse (private with mututal authentication)
@@ -534,6 +576,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unapplied__blocked)
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unsecure__blocked)
@@ -562,6 +606,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unsecure__blocked)
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_uncertified__blocked)
@@ -590,6 +636,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_uncertified__blocked)
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unsecure_uncertified__blocked)
@@ -618,6 +666,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unsecure_uncertified__b
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unauthorized__blocked)
@@ -646,6 +696,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unauthorized__blocked)
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_authorized__received)
@@ -674,6 +726,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_authorized__received)
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_bad_allow__blocked)
@@ -703,6 +757,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_bad_allow__blocked)
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 // safehouse = ironhouse + strawhouse (private with mututal authentication and IP restrictions)
@@ -734,6 +790,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_bad_deny__received)
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_bad_and_good_deny__blocked)
@@ -764,6 +822,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_bad_and_good_deny__bloc
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_allow__received)
@@ -793,6 +853,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_allow__received)
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_and_bad_allow__received)
@@ -823,6 +885,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_and_bad_allow__rec
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_deny__blocked)
@@ -852,6 +916,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_deny__blocked)
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_deny_before_same_allow__blocked)
@@ -882,6 +948,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_deny_before_same_a
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_deny_after_same_allow__received)
@@ -912,6 +980,8 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_deny_after_same_al
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
+    pusher.stop();
+    puller.stop();
 }
 
 BOOST_AUTO_TEST_SUITE_END()
