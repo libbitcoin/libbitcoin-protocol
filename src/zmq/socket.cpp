@@ -88,51 +88,27 @@ socket::~socket()
     stop();
 }
 
-// This must be called on the socket thread.
 bool socket::stop()
 {
-    ///////////////////////////////////////////////////////////////////////////
-    // Critical Section
-    unique_lock lock(mutex_);
-
-    if (self_ == nullptr)
-        return true;
-
-    const auto result = zmq_close(self_) != zmq_fail;
-
-    self_ = nullptr;
-    return result;
-    ///////////////////////////////////////////////////////////////////////////
+    return self_ == nullptr || zmq_close(self_) != zmq_fail;
 }
 
 socket::operator const bool() const
 {
-    ///////////////////////////////////////////////////////////////////////////
-    // Critical Section
-    shared_lock lock(mutex_);
-
     return self_ != nullptr;
-    ///////////////////////////////////////////////////////////////////////////
 }
 
 void* socket::self()
 {
-    ///////////////////////////////////////////////////////////////////////////
-    // Critical Section
-    shared_lock lock(mutex_);
-
-    // This may become invalid after return. The guard only ensures atomicity.
     return self_;
-    ///////////////////////////////////////////////////////////////////////////
 }
 
-// To preserve idetity the id survives after the socket is destroyed.
+// To preserve identity the id survives after the socket is destroyed.
 identifier socket::id() const
 {
     return identifier_;
 }
 
-// This must be called on the socket thread.
 code socket::bind(const config::endpoint& address)
 {
     if (zmq_bind(self_, address.to_string().c_str()) == zmq_fail)
@@ -141,7 +117,6 @@ code socket::bind(const config::endpoint& address)
     return error::success;
 }
 
-// This must be called on the socket thread.
 code socket::connect(const config::endpoint& address)
 {
     if (zmq_connect(self_, address.to_string().c_str()) == zmq_fail)
@@ -166,7 +141,6 @@ bool socket::set(int32_t option, const std::string& value)
     return zmq_setsockopt(self_, option, buffer, value.size()) != zmq_fail;
 }
 
-// This must be called on the socket thread.
 // For NULL security, ZAP calls are only made for non-empty domain.
 // For PLAIN/CURVE, calls are always made if ZAP handler is present.
 bool socket::set_authentication_domain(const std::string& domain)
@@ -174,35 +148,30 @@ bool socket::set_authentication_domain(const std::string& domain)
     return set(ZMQ_ZAP_DOMAIN, domain);
 }
 
-// This must be called on the socket thread.
 // Defines whether the socket will act as server for CURVE security.
 bool socket::set_curve_server()
 {
     return set(ZMQ_CURVE_SERVER, zmq_true);
 }
 
-// This must be called on the socket thread.
 // Sets socket's long term server key, must set this on CURVE client sockets.
 bool socket::set_curve_client(const config::sodium& server_public_key)
 {
     return set(ZMQ_CURVE_SERVERKEY, server_public_key.to_string());
 }
 
-// This must be called on the socket thread.
 // Sets socket's long term public key, must set this on CURVE client sockets.
 bool socket::set_public_key(const config::sodium& key)
 {
     return set(ZMQ_CURVE_PUBLICKEY, key.to_string());
 }
 
-// This must be called on the socket thread.
 // You must set this on both CURVE client and server sockets.
 bool socket::set_private_key(const config::sodium& key)
 {
     return set(ZMQ_CURVE_SECRETKEY, key.to_string());
 }
 
-// This must be called on the socket thread.
 // Use on client for both set_public_key and set_private_key from a cert.
 // If CURVE is not required by server, call set_certificate({ null_hash })
 // to generate an arbitrary client certificate for a secure socket.
@@ -213,7 +182,6 @@ bool socket::set_certificate(const certificate& certificate)
         set_private_key(certificate.private_key().to_string());
 }
 
-// This must be called on the socket thread.
 bool socket::set_socks_proxy(const config::authority& socks_proxy)
 {
     return !socks_proxy || set(ZMQ_SOCKS_PROXY, socks_proxy.to_string());
