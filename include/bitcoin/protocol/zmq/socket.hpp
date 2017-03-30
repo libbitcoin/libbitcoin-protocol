@@ -34,7 +34,8 @@ namespace zmq {
 class message;
 class authenticator;
 
-/// This class is thread safe except as noted.
+/// This class is not thread safe.
+/// All calls must be made on the socket thread.
 /// Because the socket is only set on construct, sockets are not restartable.
 class BCP_API socket
   : public enable_shared_from_base<socket>, noncopyable
@@ -67,10 +68,8 @@ public:
     socket(context& context, role socket_role);
 
     /// Close the socket.
-    /// The object must be destroyed on the socket thread if not stopped.
     virtual ~socket();
 
-    /// This must be called on the socket thread.
     /// Close the socket (optional, must close or destroy before context stop).
     virtual bool stop();
 
@@ -83,35 +82,27 @@ public:
     /// An opaue locally unique idenfier, valid after stop.
     identifier id() const;
 
-    /// This must be called on the socket thread.
     /// Bind the socket to the specified local address.
     code bind(const config::endpoint& address);
 
-    /// This must be called on the socket thread.
     /// Connect the socket to the specified remote address.
     code connect(const config::endpoint& address);
 
-    /// This must be called on the socket thread.
     /// Sets the domain for ZAP (ZMQ RFC 27) authentication.
     bool set_authentication_domain(const std::string& domain);
 
-    /// This must be called on the socket thread.
     /// Configure the socket as a curve server (also set the secrety key).
     bool set_curve_server();
 
-    /// This must be called on the socket thread.
     /// Configure the socket as client to the curve server.
     bool set_curve_client(const config::sodium& server_public_key);
 
-    /// This must be called on the socket thread.
     /// Apply the specified public key to the socket.
     bool set_public_key(const config::sodium& key);
 
-    /// This must be called on the socket thread.
     /// Apply the specified private key to the socket.
     bool set_private_key(const config::sodium& key);
 
-    /// This must be called on the socket thread.
     /// Apply the keys of the specified certificate to the socket.
     bool set_certificate(const certificate& certificate);
 
@@ -130,9 +121,8 @@ private:
     bool set(int32_t option, int32_t value);
     bool set(int32_t option, const std::string& value);
 
-    // This is protected by mutex.
+    // This value is unprotected.
     void* self_;
-    mutable shared_mutex mutex_;
 
     const identifier identifier_;
     const int32_t send_buffer_;

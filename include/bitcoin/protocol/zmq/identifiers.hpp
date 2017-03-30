@@ -30,6 +30,7 @@ namespace zmq {
 /// A locally unique idenfitier for this socket.
 typedef intptr_t identifier;
 
+/// This class is not thread safe.
 /// An indicator for a set of socket idenfitiers.
 class BCP_API identifiers
 {

@@ -42,26 +42,14 @@ void poller::add(socket& socket)
     item.fd = 0;
     item.events = ZMQ_POLLIN;
     item.revents = 0;
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Critical Section
-    unique_lock lock(mutex_);
-
     pollers_.push_back(item);
-    ///////////////////////////////////////////////////////////////////////////
 }
 
 void poller::clear()
 {
-    ///////////////////////////////////////////////////////////////////////////
-    // Critical Section
-    unique_lock lock(mutex_);
-
     return pollers_.clear();
-    ///////////////////////////////////////////////////////////////////////////
 }
 
-// This must be called on the socket thread.
 identifiers poller::wait()
 {
     // This is the maximum safe value on all platforms, due to zeromq bug.
@@ -70,17 +58,12 @@ identifiers poller::wait()
     return wait(maximum_safe_wait_milliseconds);
 }
 
-// This must be called on the socket thread.
 // BUGBUG: zeromq 4.2 has an overflow bug in timer parameterization.
 // The timeout is typed as 'long' by zeromq. This is 32 bit on windows and
 // actually less (potentially 1000 or 1 second) on other platforms.
 // On non-windows platforms negative doesn't actually produce infinity.
 identifiers poller::wait(int32_t timeout_milliseconds)
 {
-    ///////////////////////////////////////////////////////////////////////////
-    // Critical Section
-    shared_lock lock(mutex_);
-
     const auto size = pollers_.size();
     BITCOIN_ASSERT(size <= max_int32);
 
@@ -102,34 +85,23 @@ identifiers poller::wait(int32_t timeout_milliseconds)
         return{};
     }
 
+    // At least one event was signaled, but the poll-in set may be empty.
     identifiers result;
     for (const auto& poller: pollers_)
         if ((poller.revents & ZMQ_POLLIN) != 0)
             result.push(poller.socket);
 
-    // At least one event was signaled, but this poll-in set may be empty.
     return result;
-    ///////////////////////////////////////////////////////////////////////////
 }
 
 bool poller::expired() const
 {
-    ///////////////////////////////////////////////////////////////////////////
-    // Critical Section
-    shared_lock lock(mutex_);
-
     return expired_;
-    ///////////////////////////////////////////////////////////////////////////
 }
 
 bool poller::terminated() const
 {
-    ///////////////////////////////////////////////////////////////////////////
-    // Critical Section
-    shared_lock lock(mutex_);
-
     return terminated_;
-    ///////////////////////////////////////////////////////////////////////////
 }
 
 } // namespace zmq
