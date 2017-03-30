@@ -51,11 +51,9 @@ BOOST_AUTO_TEST_CASE(socket__push_pull__brickhouse__blocked)
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
-    pusher.stop();
-    puller.stop();
 }
 
-// PUSH and PULL are asymmetrical, synchronous and not enveloped.
+// PUSH and PULL [asymmetrical, synchronous, unroutable]
 BOOST_AUTO_TEST_CASE(socket__push_pull__grasslands__received)
 {
     zmq::context context;
@@ -71,11 +69,9 @@ BOOST_AUTO_TEST_CASE(socket__push_pull__grasslands__received)
 
     SEND_MESSAGE(server);
     RECEIVE_MESSAGE(client);
-    server.stop();
-    client.stop();
 }
 
-// PAIR is symmetrical, synchronous and not enveloped.
+// PAIR and PAIR [symmetrical, synchronous, unroutable]
 BOOST_AUTO_TEST_CASE(socket__pair_pair__grasslands__received)
 {
     zmq::context context;
@@ -91,11 +87,9 @@ BOOST_AUTO_TEST_CASE(socket__pair_pair__grasslands__received)
 
     SEND_MESSAGE(server);
     RECEIVE_MESSAGE(client);
-    server.stop();
-    client.stop();
 }
 
-// REQ and REP are asymetrical, synchronous and enveloped.
+// REQ and REP [asymetrical, synchronous, routable]
 // zguide.zeromq.org/page:all#The-Simple-Reply-Envelope
 BOOST_AUTO_TEST_CASE(socket__requester_replier__grasslands__received)
 {
@@ -112,11 +106,9 @@ BOOST_AUTO_TEST_CASE(socket__requester_replier__grasslands__received)
 
     SEND_MESSAGE(client);
     RECEIVE_MESSAGE(server);
-    client.stop();
-    server.stop();
 }
 
-////// PUB and SUB are asymmtrical, asynchronous and not enveloped.
+////// PUB and SUB [asymmtrical, asynchronous, routable (subscription)]
 ////BOOST_AUTO_TEST_CASE(socket__publisher_subscriber__grasslands__received)
 ////{
 ////    zmq::context context;
@@ -137,8 +129,6 @@ BOOST_AUTO_TEST_CASE(socket__requester_replier__grasslands__received)
 ////    // If a “publish” service has been started already and then when you start
 ////    // “subscribe” service, it would not receive message already published. 
 ////    RECEIVE_MESSAGE(client);
-////    server.stop();
-////    client.stop();
 ////}
 
 // XPUB and XSUB are for routing PUB-SUB subscriptions
