@@ -81,6 +81,9 @@ socket::socket(void* zmq_socket)
 socket::socket(context& context, role socket_role)
   : socket(zmq_socket(context.self(), to_socket_type(socket_role)))
 {
+    // Configure subscribers to receive all messages.
+    if (socket_role == role::subscriber && !set(ZMQ_SUBSCRIBE, ""))
+        stop();
 }
 
 socket::~socket()
@@ -134,9 +137,6 @@ bool socket::set(int32_t option, int32_t value)
 // private
 bool socket::set(int32_t option, const std::string& value)
 {
-    if (value.empty())
-        return true;
-
     const auto buffer = value.c_str();
     return zmq_setsockopt(self_, option, buffer, value.size()) != zmq_fail;
 }
@@ -145,7 +145,7 @@ bool socket::set(int32_t option, const std::string& value)
 // For PLAIN/CURVE, calls are always made if ZAP handler is present.
 bool socket::set_authentication_domain(const std::string& domain)
 {
-    return set(ZMQ_ZAP_DOMAIN, domain);
+    return domain.empty() || set(ZMQ_ZAP_DOMAIN, domain);
 }
 
 // Defines whether the socket will act as server for CURVE security.
@@ -157,19 +157,20 @@ bool socket::set_curve_server()
 // Sets socket's long term server key, must set this on CURVE client sockets.
 bool socket::set_curve_client(const config::sodium& server_public_key)
 {
-    return set(ZMQ_CURVE_SERVERKEY, server_public_key.to_string());
+    return server_public_key &&
+        set(ZMQ_CURVE_SERVERKEY, server_public_key.to_string());
 }
 
 // Sets socket's long term public key, must set this on CURVE client sockets.
 bool socket::set_public_key(const config::sodium& key)
 {
-    return set(ZMQ_CURVE_PUBLICKEY, key.to_string());
+    return key && set(ZMQ_CURVE_PUBLICKEY, key.to_string());
 }
 
 // You must set this on both CURVE client and server sockets.
 bool socket::set_private_key(const config::sodium& key)
 {
-    return set(ZMQ_CURVE_SECRETKEY, key.to_string());
+    return key && set(ZMQ_CURVE_SECRETKEY, key.to_string());
 }
 
 // Use on client for both set_public_key and set_private_key from a cert.
@@ -184,7 +185,7 @@ bool socket::set_certificate(const certificate& certificate)
 
 bool socket::set_socks_proxy(const config::authority& socks_proxy)
 {
-    return !socks_proxy || set(ZMQ_SOCKS_PROXY, socks_proxy.to_string());
+    return socks_proxy && set(ZMQ_SOCKS_PROXY, socks_proxy.to_string());
 }
 
 code socket::send(message& packet)
