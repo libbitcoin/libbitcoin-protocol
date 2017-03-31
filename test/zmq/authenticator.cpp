@@ -155,11 +155,11 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands__unauthenticated__rece
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
@@ -176,13 +176,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_secure_certified__bloc
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     BOOST_REQUIRE(puller.set_certificate({}));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -199,13 +199,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_secure__blocked)
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     ////BOOST_REQUIRE(puller.set_certificate({}));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -219,13 +219,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_certified__blocked)
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     ////BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     BOOST_REQUIRE(puller.set_certificate({}));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -239,13 +239,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_unsecure_uncertified__
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     ////BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     ////BOOST_REQUIRE(puller.set_certificate({}));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
@@ -262,11 +262,11 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_bad_allow__blocked)
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -282,11 +282,11 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_bad_and_good_allow__re
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
@@ -301,11 +301,11 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_client_good_allow__rec
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
@@ -320,11 +320,11 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_client_bad_deny__recei
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
@@ -340,11 +340,11 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_bad_and_good_deny__blo
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -359,11 +359,11 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_client_good_deny__bloc
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -379,11 +379,11 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_good_deny_before_same_
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -399,11 +399,11 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_good_deny_after_same_a
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
@@ -424,13 +424,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_unsecure__blocked)
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     ////BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     BOOST_REQUIRE(puller.set_certificate({}));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -448,13 +448,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_uncertified__blocked)
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     ////BOOST_REQUIRE(puller.set_certificate({}));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -472,11 +472,11 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_unsecure_uncertified__
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -494,13 +494,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_secure_certified__rece
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     BOOST_REQUIRE(puller.set_certificate({}));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
@@ -524,13 +524,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unapplied__blocked)
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     BOOST_REQUIRE(puller.set_certificate(client_certificate));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -552,13 +552,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unsecure__blocked)
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     /////BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     BOOST_REQUIRE(puller.set_certificate(client_certificate));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -580,13 +580,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_uncertified__blocked)
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     ////BOOST_REQUIRE(puller.set_certificate({}));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -608,13 +608,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unsecure_uncertified__b
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     ////BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     ////BOOST_REQUIRE(puller.set_certificate({}));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -636,13 +636,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unauthorized__blocked)
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     BOOST_REQUIRE(puller.set_certificate({}));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -664,13 +664,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_authorized__received)
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     BOOST_REQUIRE(puller.set_certificate(client_certificate));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
@@ -693,13 +693,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_bad_allow__blocked)
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     BOOST_REQUIRE(puller.set_certificate(client_certificate));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -724,13 +724,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_bad_deny__received)
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     BOOST_REQUIRE(puller.set_certificate(client_certificate));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
@@ -754,13 +754,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_bad_and_good_deny__bloc
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     BOOST_REQUIRE(puller.set_certificate(client_certificate));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -783,13 +783,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_allow__received)
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     BOOST_REQUIRE(puller.set_certificate(client_certificate));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
@@ -813,13 +813,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_and_bad_allow__rec
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     BOOST_REQUIRE(puller.set_certificate(client_certificate));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
@@ -842,13 +842,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_deny__blocked)
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     BOOST_REQUIRE(puller.set_certificate(client_certificate));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -872,13 +872,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_deny_before_same_a
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     BOOST_REQUIRE(puller.set_certificate(client_certificate));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -902,13 +902,13 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_deny_after_same_al
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
     BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     BOOST_REQUIRE(puller.set_certificate(client_certificate));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_URL }));
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
