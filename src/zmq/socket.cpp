@@ -36,7 +36,7 @@ static constexpr int32_t zmq_true = 1;
 static constexpr int32_t zmq_fail = -1;
 static constexpr int32_t zmq_send_buffer = 1000;
 static constexpr int32_t zmq_receive_buffer = 1000;
-static constexpr int32_t zmq_linger_milliseconds = 10;
+static constexpr int32_t zmq_linger_milliseconds = 0;
 
 int32_t socket::to_socket_type(role socket_role)
 {
