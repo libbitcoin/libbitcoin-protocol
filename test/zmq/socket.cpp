@@ -19,8 +19,9 @@
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
 
-#include "../utility.hpp"
+#include <future>
 #include <bitcoin/protocol.hpp>
+#include "../utility.hpp"
 
 using namespace bc;
 using namespace bc::protocol;
@@ -90,7 +91,6 @@ BOOST_AUTO_TEST_CASE(socket__pair_pair__grasslands__received)
 }
 
 // REQ and REP [asymetrical, synchronous, routable]
-// zguide.zeromq.org/page:all#The-Simple-Reply-Envelope
 BOOST_AUTO_TEST_CASE(socket__requester_replier__grasslands__received)
 {
     zmq::context context;
@@ -108,28 +108,49 @@ BOOST_AUTO_TEST_CASE(socket__requester_replier__grasslands__received)
     RECEIVE_MESSAGE(server);
 }
 
-////// PUB and SUB [asymmtrical, asynchronous, routable (subscription)]
-////BOOST_AUTO_TEST_CASE(socket__publisher_subscriber__grasslands__received)
-////{
-////    zmq::context context;
-////    BOOST_REQUIRE(context);
-////
-////    zmq::socket server(context, role::publisher);
-////    BOOST_REQUIRE(server);
-////    BC_REQUIRE_SUCCESS(server.bind({ TEST_URL }));
-////
-////    zmq::socket client(context, role::subscriber);
-////    BOOST_REQUIRE(client);
-////    BC_REQUIRE_SUCCESS(client.connect({ TEST_URL }));
-////
-////    SEND_MESSAGE(server);
-////
-////    // TODO: use thread.
-////    // Pub/Sub communication is asynchronous.
-////    // If a “publish” service has been started already and then when you start
-////    // “subscribe” service, it would not receive message already published. 
-////    RECEIVE_MESSAGE(client);
-////}
+// PUB and SUB [asymmtrical, asynchronous, routable (subscription)]
+BOOST_AUTO_TEST_CASE(socket__publisher_subscriber__grasslands_synchronous__missed)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    zmq::socket server(context, role::publisher);
+    BOOST_REQUIRE(server);
+    BC_REQUIRE_SUCCESS(server.bind({ TEST_URL }));
+
+    zmq::socket client(context, role::subscriber);
+    BOOST_REQUIRE(client);
+    BC_REQUIRE_SUCCESS(client.connect({ TEST_URL }));
+
+    // Because pub-sub is asynchronous, the receive misses the send.
+    SEND_MESSAGE(server);
+    RECEIVE_FAILURE(client);
+}
+
+BOOST_AUTO_TEST_CASE(socket__publisher_subscriber__grasslands_asynchronous__received)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    std::promise<bool> stopped;
+    std::thread thread([&]()
+    {
+        zmq::socket client(context, role::subscriber);
+        BOOST_REQUIRE(client);
+        BC_REQUIRE_SUCCESS(client.connect({ TEST_URL }));
+
+        RECEIVE_MESSAGE(client);
+        client.stop();
+        stopped.set_value(true);
+    });
+
+    zmq::socket server(context, role::publisher);
+    BOOST_REQUIRE(server);
+    BC_REQUIRE_SUCCESS(server.bind({ TEST_URL }));
+
+    SEND_MESSAGES_UNTIL(server, stopped);
+    thread.join();
+}
 
 // XPUB and XSUB are for routing PUB-SUB subscriptions
 // ROUTER and DEALER are for routing REQ-REP messages
