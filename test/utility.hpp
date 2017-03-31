@@ -25,22 +25,28 @@
 #define TEST_HOST_BAD "127.0.0.42"
 #define TEST_URL "tcp://" TEST_HOST ":9000"
 
-#define BC_REQUIRE_SUCCESS(value) \
-    BOOST_REQUIRE_EQUAL(value, error::success)
+#define BC_REQUIRE_SUCCESS(value__) \
+    BOOST_REQUIRE_EQUAL(value__, error::success)
 
-#define SEND_MESSAGE(socket) \
+#define SEND_MESSAGE(socket__) \
     zmq::message out__; \
     out__.enqueue(TEST_MESSAGE); \
-    BC_REQUIRE_SUCCESS(socket.send(out__))
+    BC_REQUIRE_SUCCESS(socket__.send(out__))
 
-#define RECEIVE_MESSAGE(socket) \
+#define RECEIVE_MESSAGE(socket__) \
     zmq::message in__; \
-    BC_REQUIRE_SUCCESS(socket.receive(in__)); \
+    BC_REQUIRE_SUCCESS(socket__.receive(in__)); \
     BOOST_REQUIRE_EQUAL(in__.dequeue_text(), TEST_MESSAGE)
 
-#define RECEIVE_FAILURE(socket) \
+#define RECEIVE_FAILURE(socket__) \
     zmq::poller poller__; \
-    poller__.add(socket); \
-    BOOST_REQUIRE(!poller__.wait(1).contains(socket.id()))
+    poller__.add(socket__); \
+    BOOST_REQUIRE(!poller__.wait(1).contains(socket__.id()))
+
+#define SEND_MESSAGES_UNTIL(socket__, promise__) \
+    auto future__ = promise__.get_future(); \
+    while (future__.wait_for(std::chrono::milliseconds(1)) != \
+        std::future_status::ready) { SEND_MESSAGE(socket__); }
+
 
 #endif
