@@ -50,6 +50,7 @@ code get_last_error()
             return error::channel_timeout;
 #endif
         case EFSM:
+            return error::bad_stream;
         case EAGAIN:
             return error::channel_timeout;
         case EFAULT:

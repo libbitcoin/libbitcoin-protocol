@@ -124,6 +124,7 @@ bool worker::finished(bool result)
     return result;
 }
 
+// TODO: use non-copying private zmq imeplemtation of forward.
 // Call from work to forward a message from one socket to another.
 bool worker::forward(socket& from, socket& to)
 {
