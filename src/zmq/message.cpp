@@ -126,7 +126,8 @@ std::string message::dequeue_text()
         return{};
 
     const auto& front = queue_.front();
-    const auto text = std::string(front.begin(), front.end());
+    auto text = std::string(front.begin(), front.end());
+    text += "\0";
     queue_.pop();
     return text;
 }
