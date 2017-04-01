@@ -19,6 +19,7 @@
 #ifndef LIBBITCOIN_PROTOCOL_TEST_UTILITY_HPP
 #define LIBBITCOIN_PROTOCOL_TEST_UTILITY_HPP
 
+#include <cstddef>
 #include <future>
 #include <thread>
 #include <utility>
@@ -28,7 +29,10 @@
 #define TEST_HOST "127.0.0.1"
 #define TEST_HOST_BAD "127.0.0.42"
 #define TEST_PUBLIC_ENDPOINT "tcp://" TEST_HOST ":9000"
-#define TEST_INPROC_ENDPOINT "tcp://127.0.0.1:9001"
+#define TEST_INPROC_ENDPOINT "inproc://foobar"
+
+#define MESSAGE_ROUTE_SIZE size_t(5)
+#define MESSAGE_DELIMITER_SIZE size_t(0)
 
 #define BC_REQUIRE_SUCCESS(value__) \
     BOOST_REQUIRE_EQUAL(value__, error::success)
@@ -50,7 +54,7 @@
 
 #define SEND_MESSAGES_UNTIL(socket__, promise__) \
     auto future__ = promise__.get_future(); \
-    while (future__.wait_for(std::chrono::milliseconds(1)) != \
+    while (future__.wait_for(std::chrono::milliseconds(10)) != \
         std::future_status::ready) { SEND_MESSAGE(socket__); }
 
 // This precludes the need to invoke thread.join in simple tests.
@@ -66,7 +70,8 @@ public:
 
     ~simple_thread()
     {
-        join();
+        if (joinable())
+            join();
     }
 };
 

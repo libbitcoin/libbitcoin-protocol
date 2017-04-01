@@ -92,6 +92,32 @@ BOOST_AUTO_TEST_CASE(socket__push_pull__grasslands_connect_first__received)
     RECEIVE_MESSAGE(puller);
 }
 
+BOOST_AUTO_TEST_CASE(socket__push_pull__grasslands_disordered__received)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    zmq::socket pusher(context, role::pusher);
+    BOOST_REQUIRE(pusher);
+    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::socket puller(context, role::puller);
+    BOOST_REQUIRE(puller);
+    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::message out;
+    out.enqueue(TEST_MESSAGE "1");
+    BC_REQUIRE_SUCCESS(pusher.send(out));
+    out.enqueue(TEST_MESSAGE "2");
+    BC_REQUIRE_SUCCESS(pusher.send(out));
+
+    zmq::message in;
+    BC_REQUIRE_SUCCESS(puller.receive(in));
+    BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE "1");
+    BC_REQUIRE_SUCCESS(puller.receive(in));
+    BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE "2");
+}
+
 // PAIR and PAIR [symmetrical, synchronous, unroutable]
 BOOST_AUTO_TEST_CASE(socket__pair_pair__grasslands__received)
 {
@@ -109,6 +135,7 @@ BOOST_AUTO_TEST_CASE(socket__pair_pair__grasslands__received)
     SEND_MESSAGE(server);
     RECEIVE_MESSAGE(client);
 }
+
 BOOST_AUTO_TEST_CASE(socket__pair_pair__grasslands_connect_first__received)
 {
     zmq::context context;
@@ -124,6 +151,32 @@ BOOST_AUTO_TEST_CASE(socket__pair_pair__grasslands_connect_first__received)
 
     SEND_MESSAGE(server);
     RECEIVE_MESSAGE(client);
+}
+
+BOOST_AUTO_TEST_CASE(socket__pair_pair__grasslands_disordered__received)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    zmq::socket server(context, role::pair);
+    BOOST_REQUIRE(server);
+    BC_REQUIRE_SUCCESS(server.bind({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::socket client(context, role::pair);
+    BOOST_REQUIRE(client);
+    BC_REQUIRE_SUCCESS(client.connect({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::message out;
+    out.enqueue(TEST_MESSAGE "1");
+    BC_REQUIRE_SUCCESS(client.send(out));
+    out.enqueue(TEST_MESSAGE "2");
+    BC_REQUIRE_SUCCESS(client.send(out));
+
+    zmq::message in;
+    BC_REQUIRE_SUCCESS(server.receive(in));
+    BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE "1");
+    BC_REQUIRE_SUCCESS(server.receive(in));
+    BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE "2");
 }
 
 // REQ and REP [asymetrical, synchronous, routable]
@@ -161,6 +214,112 @@ BOOST_AUTO_TEST_CASE(socket__req_rep__grasslands_connect_first__received)
     RECEIVE_MESSAGE(replier);
 }
 
+BOOST_AUTO_TEST_CASE(socket__req_rep__grasslands_disordered__bad_stream)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    zmq::socket replier(context, role::replier);
+    BOOST_REQUIRE(replier);
+    BC_REQUIRE_SUCCESS(replier.bind({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::socket requester(context, role::requester);
+    BOOST_REQUIRE(requester);
+    BC_REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::message out;
+    out.enqueue(TEST_MESSAGE);
+    BC_REQUIRE_SUCCESS(requester.send(out));
+    out.enqueue(TEST_MESSAGE);
+    BOOST_REQUIRE_EQUAL(requester.send(out), error::bad_stream);
+}
+
+// REQ and ROUTER [asymetrical, synchronous, routed]
+BOOST_AUTO_TEST_CASE(socket__req_router__grasslands__received)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    zmq::socket router(context, role::router);
+    BOOST_REQUIRE(router);
+    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::socket requester(context, role::requester);
+    BOOST_REQUIRE(requester);
+    BC_REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
+
+    SEND_MESSAGE(requester);
+
+    zmq::message in;
+    BC_REQUIRE_SUCCESS(router.receive(in));
+    BOOST_REQUIRE_EQUAL(in.size(), 3u);
+    BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_ROUTE_SIZE);
+    BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
+    BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
+}
+
+BOOST_AUTO_TEST_CASE(socket__req_router__grasslands_connect_first__received)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    zmq::socket requester(context, role::requester);
+    BOOST_REQUIRE(requester);
+    BC_REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::socket router(context, role::router);
+    BOOST_REQUIRE(router);
+    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+
+    SEND_MESSAGE(requester);
+
+    zmq::message in;
+    BC_REQUIRE_SUCCESS(router.receive(in));
+    BOOST_REQUIRE_EQUAL(in.size(), 3u);
+    BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_ROUTE_SIZE);
+    BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
+    BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
+}
+
+BOOST_AUTO_TEST_CASE(socket__req_router__grasslands_disordered__bad_stream)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    zmq::socket router(context, role::router);
+    BOOST_REQUIRE(router);
+    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::socket requester(context, role::requester);
+    BOOST_REQUIRE(requester);
+    BC_REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::message out;
+    out.enqueue(TEST_MESSAGE);
+    BC_REQUIRE_SUCCESS(requester.send(out));
+    out.enqueue(TEST_MESSAGE);
+    BOOST_REQUIRE_EQUAL(requester.send(out), error::bad_stream);
+}
+
+// REP and DEALER [asymetrical, synchronous, routed]
+BOOST_AUTO_TEST_CASE(socket__req_dealer__grasslands__bad_stream)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    zmq::socket replier(context, role::replier);
+    BOOST_REQUIRE(replier);
+    BC_REQUIRE_SUCCESS(replier.bind({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::socket dealer(context, role::dealer);
+    BOOST_REQUIRE(dealer);
+    BC_REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
+
+    // The replier can only reply on an existing route.
+    zmq::message out;
+    out.enqueue(TEST_MESSAGE);
+    BOOST_REQUIRE_EQUAL(replier.send(out), error::bad_stream);
+}
 
 // PUB and SUB [asymmtrical, asynchronous, routable (subscription)]
 BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_synchronous__missed)
@@ -284,7 +443,6 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__decaf__subscribed)
 
     std::promise<bool> received;
 
-    // This simulates internals of a server (bs).
     simple_thread publisher_thread([&]()
     {
         zmq::socket publisher(context, role::publisher);
@@ -292,9 +450,10 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__decaf__subscribed)
         BC_REQUIRE_SUCCESS(publisher.bind({ TEST_INPROC_ENDPOINT }));
 
         SEND_MESSAGES_UNTIL(publisher, received);
+        publisher.stop();
+        context.stop();
     });
 
-    // This simulates a client caller (bx).
     simple_thread subscriber_thread([&]()
     {
         zmq::socket subscriber(context, role::subscriber);
@@ -303,11 +462,6 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__decaf__subscribed)
 
         RECEIVE_MESSAGE(subscriber);
         received.set_value(true);
-
-        // The subscriber must stop so context stop will not block.
-        // The context must be stopped so that zmq_proxy will return. 
-        subscriber.stop();
-        context.stop();
     });
 
     // extended_subscriber connect blocks until the endpoint is bound.
@@ -324,25 +478,35 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__decaf__subscribed)
     // The proxy returns when the current context is closed.
     // There is no difference between frontend and backend (symmetrical).
     zmq_proxy(xsubscriber.self(), xpublisher.self(), nullptr);
+    xsubscriber.stop();
+    xpublisher.stop();
 }
 
-BOOST_AUTO_TEST_CASE(socket__xpub_xsub__decaf_connect_first__subscribed)
+// The cappucino pattern (defined here) changes the pub.bind/xsub.connect to
+// pub.connect/xsub.bind, allowing the binding to remain persistent while the
+// publisher comes and goes. This allows the publisher to work on various
+// threads without holding connections on each of them.
+BOOST_AUTO_TEST_CASE(socket__xpub_xsub__cappucino__subscribed)
 {
     zmq::context context;
     BOOST_REQUIRE(context);
 
     std::promise<bool> received;
 
-    simple_thread publisher_thread([&]()
+    // Workers and clients come and go dynamically.
+
+    simple_thread worker_thread([&]()
     {
         zmq::socket publisher(context, role::publisher);
         BOOST_REQUIRE(publisher);
-        BC_REQUIRE_SUCCESS(publisher.bind({ TEST_INPROC_ENDPOINT }));
+        BC_REQUIRE_SUCCESS(publisher.connect({ TEST_INPROC_ENDPOINT }));
 
         SEND_MESSAGES_UNTIL(publisher, received);
+        publisher.stop();
+        context.stop();
     });
 
-    simple_thread subscriber_thread([&]()
+    simple_thread client_thread([&]()
     {
         zmq::socket subscriber(context, role::subscriber);
         BOOST_REQUIRE(subscriber);
@@ -350,9 +514,9 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__decaf_connect_first__subscribed)
 
         RECEIVE_MESSAGE(subscriber);
         received.set_value(true);
-        subscriber.stop();
-        context.stop();
     });
+
+    // The relay remains bound until context stop.
 
     zmq::socket xpublisher(context, role::extended_publisher);
     BOOST_REQUIRE(xpublisher);
@@ -360,15 +524,57 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__decaf_connect_first__subscribed)
 
     zmq::socket xsubscriber(context, role::extended_subscriber);
     BOOST_REQUIRE(xsubscriber);
-    BC_REQUIRE_SUCCESS(xsubscriber.connect({ TEST_INPROC_ENDPOINT }));
+    BC_REQUIRE_SUCCESS(xsubscriber.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(xsubscriber.self(), xpublisher.self(), nullptr);
+    xsubscriber.stop();
+    xpublisher.stop();
 }
 
 // ROUTER and DEALER [request-response routing]
 BOOST_AUTO_TEST_CASE(socket__router_dealer__grasslands__routed)
 {
-    // TODO
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    std::promise<bool> received;
+
+    simple_thread worker_thread([&]()
+    {
+        zmq::socket replier(context, role::replier);
+        BOOST_REQUIRE(replier);
+        BC_REQUIRE_SUCCESS(replier.connect({ TEST_INPROC_ENDPOINT }));
+
+        RECEIVE_MESSAGE(replier);
+        received.set_value(true);
+    });
+
+    simple_thread client_thread([&]()
+    {
+        zmq::socket requester(context, role::requester);
+        BOOST_REQUIRE(requester);
+        BC_REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
+
+        SEND_MESSAGE(requester);
+        received.get_future().wait();
+        requester.stop();
+        context.stop();
+    });
+
+    // The relay remains bound until context stop.
+
+    zmq::socket router(context, role::router);
+    BOOST_REQUIRE(router);
+    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::socket dealer(context, role::dealer);
+    BOOST_REQUIRE(dealer);
+    BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
+
+    // There is no difference between frontend and backend (symmetrical).
+    zmq_proxy(router.self(), dealer.self(), nullptr);
+    router.stop();
+    dealer.stop();
 }
 
 // ROUTER and DEALER [request-response routing with notifications]
