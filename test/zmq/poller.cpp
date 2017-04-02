@@ -18,12 +18,15 @@
  */
 #include <boost/test/test_tools.hpp>
 #include <boost/test/unit_test_suite.hpp>
+
+#include <zmq.h>
 #include <bitcoin/protocol.hpp>
+#include "../utility.hpp"
+
+using namespace bc;
+using namespace bc::protocol;
+using role = zmq::socket::role;
 
 BOOST_AUTO_TEST_SUITE(poller_tests)
-
-BOOST_AUTO_TEST_CASE(poller_test)
-{
-}
 
 BOOST_AUTO_TEST_SUITE_END()
