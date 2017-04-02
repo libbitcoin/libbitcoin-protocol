@@ -358,6 +358,7 @@ BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_synchronous_connect_first__miss
     RECEIVE_FAILURE(subscriber);
 }
 
+// This is libbitcoin v3 heartbeat service behavior.
 BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_asynchronous__received)
 {
     zmq::context context;
@@ -481,6 +482,7 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__decaf__subscribed)
     xpublisher.stop();
 }
 
+// This is libbitcoin v3 tx/block service behavior.
 // The cappucino pattern (defined here) changes the pub.bind/xsub.connect to
 // pub.connect/xsub.bind, allowing the binding to remain persistent while the
 // publisher comes and goes. This allows the publisher to work on various
@@ -531,49 +533,7 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__cappucino__subscribed)
 }
 
 // ROUTER and DEALER [request-response routing]
-BOOST_AUTO_TEST_CASE(socket__req_router_dealer_rep__broker_one_way__routed)
-{
-    zmq::context context;
-    BOOST_REQUIRE(context);
-
-    std::promise<bool> received;
-
-    simple_thread worker_thread([&]()
-    {
-        zmq::socket replier(context, role::replier);
-        BOOST_REQUIRE(replier);
-        BC_REQUIRE_SUCCESS(replier.connect({ TEST_INPROC_ENDPOINT }));
-
-        RECEIVE_MESSAGE(replier);
-        received.set_value(true);
-    });
-
-    simple_thread client_thread([&]()
-    {
-        zmq::socket requester(context, role::requester);
-        BOOST_REQUIRE(requester);
-        BC_REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
-
-        SEND_MESSAGE(requester);
-        received.get_future().wait();
-        requester.stop();
-        context.stop();
-    });
-
-    zmq::socket router(context, role::router);
-    BOOST_REQUIRE(router);
-    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
-
-    zmq::socket dealer(context, role::dealer);
-    BOOST_REQUIRE(dealer);
-    BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
-
-    zmq_proxy(router.self(), dealer.self(), nullptr);
-    router.stop();
-    dealer.stop();
-}
-
-BOOST_AUTO_TEST_CASE(socket__req_router_dealer_rep__broker_round_trip__routed)
+BOOST_AUTO_TEST_CASE(socket__req_router_dealer_rep__synchronous_broker__routed)
 {
     zmq::context context;
     BOOST_REQUIRE(context);
@@ -584,7 +544,7 @@ BOOST_AUTO_TEST_CASE(socket__req_router_dealer_rep__broker_round_trip__routed)
         BOOST_REQUIRE(replier);
         BC_REQUIRE_SUCCESS(replier.connect({ TEST_INPROC_ENDPOINT }));
 
-        // Because REP is ordered the message routes with no envelope.
+        // Because REP is ordered the message routes with no identity.
         RECEIVE_MESSAGE(replier);
         SEND_MESSAGE(replier);
     });
@@ -595,7 +555,7 @@ BOOST_AUTO_TEST_CASE(socket__req_router_dealer_rep__broker_round_trip__routed)
         BOOST_REQUIRE(requester);
         BC_REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
 
-        // Because REQ is ordered the message routes with no envelope.
+        // Because REQ is ordered the message routes with no identity.
         SEND_MESSAGE(requester);
         RECEIVE_MESSAGE(requester);
         requester.stop();
@@ -615,47 +575,42 @@ BOOST_AUTO_TEST_CASE(socket__req_router_dealer_rep__broker_round_trip__routed)
     dealer.stop();
 }
 
-BOOST_AUTO_TEST_CASE(socket__req_router_dealer_router__broker_round_trip__routed)
+// This is libbitcoin v3 query service/worker behavior.
+BOOST_AUTO_TEST_CASE(socket__req_router_dealer_router__half_asynchronous_broker__routed)
 {
     zmq::context context;
     BOOST_REQUIRE(context);
 
     simple_thread worker_thread([&]()
     {
-        // We can use the identity frame (top) to create a map for sending to
-        // the correct peer via the router. Just attach the identity as the top
-        // frame and send the message via the router. The router will relay the
-        // message to the correct connection...
-
-        // zguide.zeromq.org/page:all#What-s-This-Good-For
-        // --------------------------------------------------------------------
-        // ROUTER sockets don't care about the whole envelope. They don't know
-        // anything about the empty delimiter. All they care about is that one
-        // identity frame that lets them figure out which connection to send a
-        // message to.
         zmq::socket router(context, role::router);
         BOOST_REQUIRE(router);
         BC_REQUIRE_SUCCESS(router.connect({ TEST_INPROC_ENDPOINT }));
 
+        // Read the enveloped request.
+        // [id-dealer] from router2 for response routing (to dealer)
+        // [id-req   ] from router1 for response routing (to req)
+        // [delimiter] from req for data isolation
+        // [data     ] from req
         zmq::message in;
         BC_REQUIRE_SUCCESS(router.receive(in));
-
-        // Read the enveloped request.
-        const auto identity1 = in.dequeue_data();
-        const auto identity2 = in.dequeue_data();
-        BOOST_REQUIRE_EQUAL(identity1.size(), MESSAGE_ROUTE_SIZE);
-        BOOST_REQUIRE_EQUAL(identity2.size(), MESSAGE_ROUTE_SIZE);
+        const auto id_dealer = in.dequeue_data();
+        const auto id_requester = in.dequeue_data();
+        BOOST_REQUIRE_EQUAL(id_dealer.size(), MESSAGE_ROUTE_SIZE);
+        BOOST_REQUIRE_EQUAL(id_requester.size(), MESSAGE_ROUTE_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
 
-        zmq::message out;
-
         // Reconstruct an enveloped response.
-        out.enqueue(identity1);
-        out.enqueue(identity2);
+        // [id-dealer] stripped by router2
+        // [id-req   ] stripped by router1
+        // [delimiter] stripped by req
+        // [data     ] returned by req
+        zmq::message out;
+        out.enqueue(id_dealer);
+        out.enqueue(id_requester);
         out.enqueue();
         out.enqueue(TEST_MESSAGE);
-
         BC_REQUIRE_SUCCESS(router.send(out));
     });
 
@@ -665,10 +620,154 @@ BOOST_AUTO_TEST_CASE(socket__req_router_dealer_router__broker_round_trip__routed
         BOOST_REQUIRE(requester);
         BC_REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
 
-        // Because REQ is ordered the message routes with no envelope.
+        // The REQ always adds/removes delimiter (only).
+        // [delimiter] from req for data isolation
+        // [data     ] from req
         SEND_MESSAGE(requester);
         RECEIVE_MESSAGE(requester);
         requester.stop();
+        context.stop();
+    });
+
+    zmq::socket router(context, role::router);
+    BOOST_REQUIRE(router);
+    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::socket dealer(context, role::dealer);
+    BOOST_REQUIRE(dealer);
+    BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
+
+    zmq_proxy(router.self(), dealer.self(), nullptr);
+    router.stop();
+    dealer.stop();
+}
+
+// This is libbitcoin v3 query client/service/worker behavior.
+BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_router__full_asynchronous_broker__routed)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    simple_thread worker_thread([&]()
+    {
+        zmq::socket router(context, role::router);
+        BOOST_REQUIRE(router);
+        BC_REQUIRE_SUCCESS(router.connect({ TEST_INPROC_ENDPOINT }));
+
+        // Read the enveloped request.
+        // [id-dealer] from router2 for response routing (to dealer)
+        // [id-req   ] from router1 for response routing (to req)
+        // [delimiter] from req for data isolation
+        // [data     ] passed to req
+        zmq::message in;
+        BC_REQUIRE_SUCCESS(router.receive(in));
+        const auto id_dealer = in.dequeue_data();
+        const auto id_requester = in.dequeue_data();
+        BOOST_REQUIRE_EQUAL(id_dealer.size(), MESSAGE_ROUTE_SIZE);
+        BOOST_REQUIRE_EQUAL(id_requester.size(), MESSAGE_ROUTE_SIZE);
+        BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
+        BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
+
+        // Reconstruct the enveloped response.
+        // [id-dealer] stripped by router2
+        // [id-req   ] stripped by router1
+        // [delimiter] stripped by req
+        // [data     ] returned by req
+        zmq::message out;
+        out.enqueue(id_dealer);
+        out.enqueue(id_requester);
+        out.enqueue();
+        out.enqueue(TEST_MESSAGE);
+        BC_REQUIRE_SUCCESS(router.send(out));
+    });
+
+    simple_thread client_thread([&]()
+    {
+        zmq::socket dealer(context, role::dealer);
+        BOOST_REQUIRE(dealer);
+        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
+
+        // Create the enveloped request (emulate REQ).
+        // [delimiter] from req for data isolation
+        // [data     ] from req
+        zmq::message out;
+        out.enqueue();
+        out.enqueue(TEST_MESSAGE);
+        BC_REQUIRE_SUCCESS(dealer.send(out));
+
+        // Read the enveloped request (emulate REQ).
+        // [delimiter] from req for data isolation
+        // [data     ] from req
+        zmq::message in;
+        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
+        BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
+
+        dealer.stop();
+        context.stop();
+    });
+
+    zmq::socket router(context, role::router);
+    BOOST_REQUIRE(router);
+    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::socket dealer(context, role::dealer);
+    BOOST_REQUIRE(dealer);
+    BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
+
+    zmq_proxy(router.self(), dealer.self(), nullptr);
+    router.stop();
+    dealer.stop();
+}
+
+// This is libbitcoin v2 query client/service/worker behavior (supported by v3).
+// When working with a dealer as opposed to a router, the delimiter is conventional.
+// However this prevents a requester from connecting to the server.
+BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_router__full_asynchronous_broker_undelimited_request__routed)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    simple_thread worker_thread([&]()
+    {
+        zmq::socket router(context, role::router);
+        BOOST_REQUIRE(router);
+        BC_REQUIRE_SUCCESS(router.connect({ TEST_INPROC_ENDPOINT }));
+
+        zmq::message in;
+        BC_REQUIRE_SUCCESS(router.receive(in));
+        const auto id_dealer = in.dequeue_data();
+        const auto id_requester = in.dequeue_data();
+        BOOST_REQUIRE_EQUAL(id_dealer.size(), MESSAGE_ROUTE_SIZE);
+        BOOST_REQUIRE_EQUAL(id_requester.size(), MESSAGE_ROUTE_SIZE);
+        ////BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
+        BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
+
+        zmq::message out;
+        out.enqueue(id_dealer);
+        out.enqueue(id_requester);
+        ////out.enqueue();
+        out.enqueue(TEST_MESSAGE);
+        BC_REQUIRE_SUCCESS(router.send(out));
+    });
+
+    simple_thread client_thread([&]()
+    {
+        zmq::socket dealer(context, role::dealer);
+        BOOST_REQUIRE(dealer);
+        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
+
+        zmq::message out;
+        ////out.enqueue();
+        out.enqueue(TEST_MESSAGE);
+        BC_REQUIRE_SUCCESS(dealer.send(out));
+
+        zmq::message in;
+        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        ////BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
+        BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
+
+        dealer.stop();
         context.stop();
     });
 
