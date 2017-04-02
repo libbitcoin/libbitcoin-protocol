@@ -402,7 +402,6 @@ BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_asynchronous_connect_first__rec
     BOOST_REQUIRE(publisher);
     BC_REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
 
-    // We could use the poller, but this is a unit test.
     SEND_MESSAGES_UNTIL(publisher, received);
 }
 
@@ -532,7 +531,7 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__cappucino__subscribed)
 }
 
 // ROUTER and DEALER [request-response routing]
-BOOST_AUTO_TEST_CASE(socket__router_dealer__grasslands__routed)
+BOOST_AUTO_TEST_CASE(socket__req_router_dealer_rep__broker_one_way__routed)
 {
     zmq::context context;
     BOOST_REQUIRE(context);
@@ -561,7 +560,47 @@ BOOST_AUTO_TEST_CASE(socket__router_dealer__grasslands__routed)
         context.stop();
     });
 
-    // The relay remains bound until context stop.
+    zmq::socket router(context, role::router);
+    BOOST_REQUIRE(router);
+    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::socket dealer(context, role::dealer);
+    BOOST_REQUIRE(dealer);
+    BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
+
+    zmq_proxy(router.self(), dealer.self(), nullptr);
+    router.stop();
+    dealer.stop();
+}
+
+BOOST_AUTO_TEST_CASE(socket__req_router_dealer_rep__broker_round_trip__routed)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    simple_thread worker_thread([&]()
+    {
+        zmq::socket replier(context, role::replier);
+        BOOST_REQUIRE(replier);
+        BC_REQUIRE_SUCCESS(replier.connect({ TEST_INPROC_ENDPOINT }));
+
+        // Because REP is ordered the message routes with no envelope.
+        RECEIVE_MESSAGE(replier);
+        SEND_MESSAGE(replier);
+    });
+
+    simple_thread client_thread([&]()
+    {
+        zmq::socket requester(context, role::requester);
+        BOOST_REQUIRE(requester);
+        BC_REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
+
+        // Because REQ is ordered the message routes with no envelope.
+        SEND_MESSAGE(requester);
+        RECEIVE_MESSAGE(requester);
+        requester.stop();
+        context.stop();
+    });
 
     zmq::socket router(context, role::router);
     BOOST_REQUIRE(router);
@@ -571,16 +610,79 @@ BOOST_AUTO_TEST_CASE(socket__router_dealer__grasslands__routed)
     BOOST_REQUIRE(dealer);
     BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
-    // There is no difference between frontend and backend (symmetrical).
     zmq_proxy(router.self(), dealer.self(), nullptr);
     router.stop();
     dealer.stop();
 }
 
-// ROUTER and DEALER [request-response routing with notifications]
-BOOST_AUTO_TEST_CASE(socket__router_dealer_notifications__grasslands__notified)
+BOOST_AUTO_TEST_CASE(socket__req_router_dealer_router__broker_round_trip__routed)
 {
-    // TODO
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    simple_thread worker_thread([&]()
+    {
+        // We can use the identity frame (top) to create a map for sending to
+        // the correct peer via the router. Just attach the identity as the top
+        // frame and send the message via the router. The router will relay the
+        // message to the correct connection...
+
+        // zguide.zeromq.org/page:all#What-s-This-Good-For
+        // --------------------------------------------------------------------
+        // ROUTER sockets don't care about the whole envelope. They don't know
+        // anything about the empty delimiter. All they care about is that one
+        // identity frame that lets them figure out which connection to send a
+        // message to.
+        zmq::socket router(context, role::router);
+        BOOST_REQUIRE(router);
+        BC_REQUIRE_SUCCESS(router.connect({ TEST_INPROC_ENDPOINT }));
+
+        zmq::message in;
+        BC_REQUIRE_SUCCESS(router.receive(in));
+
+        // Read the enveloped request.
+        const auto identity1 = in.dequeue_data();
+        const auto identity2 = in.dequeue_data();
+        BOOST_REQUIRE_EQUAL(identity1.size(), MESSAGE_ROUTE_SIZE);
+        BOOST_REQUIRE_EQUAL(identity2.size(), MESSAGE_ROUTE_SIZE);
+        BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
+        BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
+
+        zmq::message out;
+
+        // Reconstruct an enveloped response.
+        out.enqueue(identity1);
+        out.enqueue(identity2);
+        out.enqueue();
+        out.enqueue(TEST_MESSAGE);
+
+        BC_REQUIRE_SUCCESS(router.send(out));
+    });
+
+    simple_thread client_thread([&]()
+    {
+        zmq::socket requester(context, role::requester);
+        BOOST_REQUIRE(requester);
+        BC_REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
+
+        // Because REQ is ordered the message routes with no envelope.
+        SEND_MESSAGE(requester);
+        RECEIVE_MESSAGE(requester);
+        requester.stop();
+        context.stop();
+    });
+
+    zmq::socket router(context, role::router);
+    BOOST_REQUIRE(router);
+    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::socket dealer(context, role::dealer);
+    BOOST_REQUIRE(dealer);
+    BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
+
+    zmq_proxy(router.self(), dealer.self(), nullptr);
+    router.stop();
+    dealer.stop();
 }
 
 BOOST_AUTO_TEST_SUITE_END()

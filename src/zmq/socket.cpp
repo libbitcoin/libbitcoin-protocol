@@ -69,6 +69,7 @@ socket::socket(void* zmq_socket)
     if (self_ == nullptr)
         return;
 
+    // TODO: make high water marks configurable.
     // Because self is only set on construct, sockets are not restartable.
     if (!set(ZMQ_SNDHWM, send_buffer_) ||
         !set(ZMQ_RCVHWM, receive_buffer_) ||
@@ -93,7 +94,14 @@ socket::~socket()
 
 bool socket::stop()
 {
-    return self_ == nullptr || zmq_close(self_) != zmq_fail;
+    if (self_ == nullptr)
+        return true;
+
+    if (zmq_close(self_) == zmq_fail)
+        return false;
+
+    self_ = nullptr;
+    return true;
 }
 
 socket::operator const bool() const
