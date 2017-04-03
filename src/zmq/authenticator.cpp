@@ -79,7 +79,7 @@ bool authenticator::stop()
 }
 
 // The replier will never drop messages.
-// github.com/zeromq/rfc/blob/master/src/spec_27.c
+// rfc.zeromq.org/spec:27/ZAP/
 void authenticator::work()
 {
     socket replier(context_, zmq::socket::role::replier);
