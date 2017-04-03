@@ -78,24 +78,23 @@ bool authenticator::stop()
     ///////////////////////////////////////////////////////////////////////////
 }
 
+// The replier will never drop messages.
 // github.com/zeromq/rfc/blob/master/src/spec_27.c
 void authenticator::work()
 {
-    socket router(context_, zmq::socket::role::router);
+    socket replier(context_, zmq::socket::role::replier);
 
-    if (!started(router.bind(endpoint) == error::success))
+    if (!started(replier.bind(endpoint) == error::success))
         return;
 
     poller poller;
-    poller.add(router);
+    poller.add(replier);
 
     while (!poller.terminated() && !stopped())
     {
-        if (!poller.wait().contains(router.id()))
+        if (!poller.wait().contains(replier.id()))
             continue;
 
-        data_chunk origin;
-        data_chunk delimiter;
         std::string version;
         std::string sequence;
         std::string status_code;
@@ -104,17 +103,15 @@ void authenticator::work()
         std::string metadata;
 
         message request;
-        auto ec = router.receive(request);
+        auto ec = replier.receive(request);
 
-        if (ec != error::success || request.size() < 8)
+        if (ec != error::success || request.size() < 6)
         {
             status_code = "500";
             status_text = "Internal error.";
         }
         else
         {
-            origin = request.dequeue_data();
-            delimiter = request.dequeue_data();
             version = request.dequeue_text();
             sequence = request.dequeue_text();
             const auto domain = request.dequeue_text();
@@ -122,8 +119,7 @@ void authenticator::work()
             const auto identity = request.dequeue_text();
             const auto mechanism = request.dequeue_text();
 
-            if (origin.empty() || !delimiter.empty() || version != "1.0" ||
-                sequence.empty() || !identity.empty())
+            if (version != "1.0" || sequence.empty() || !identity.empty())
             {
                 status_code = "500";
                 status_text = "Internal error.";
@@ -218,8 +214,6 @@ void authenticator::work()
         }
 
         message response;
-        response.enqueue(origin);
-        response.enqueue(delimiter);
         response.enqueue(version);
         response.enqueue(sequence);
         response.enqueue(status_code);
@@ -228,11 +222,11 @@ void authenticator::work()
         response.enqueue(metadata);
 
         // This is returned to the zeromq ZAP dispatcher, not the caller.
-        DEBUG_ONLY(ec =) router.send(response);
+        DEBUG_ONLY(ec =) replier.send(response);
         BITCOIN_ASSERT(ec == error::success || ec == error::service_stopped);
     }
 
-    finished(router.stop());
+    finished(replier.stop());
 }
 
 // This must be called on the socket thread.
