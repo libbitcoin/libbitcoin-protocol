@@ -34,9 +34,11 @@ namespace zmq {
 
 static constexpr int32_t zmq_true = 1;
 static constexpr int32_t zmq_fail = -1;
-static constexpr int32_t zmq_send_buffer = 1000;
-static constexpr int32_t zmq_receive_buffer = 1000;
 static constexpr int32_t zmq_linger_milliseconds = 0;
+
+// TODO: make high water marks configurable.
+static constexpr int32_t zmq_send_high_water = 1000;
+static constexpr int32_t zmq_receive_high_water = 1000;
 
 int32_t socket::to_socket_type(role socket_role)
 {
@@ -58,21 +60,25 @@ int32_t socket::to_socket_type(role socket_role)
     }
 }
 
+// Because self is only set on construct, sockets are not restartable.
 // zmq_term terminates blocking operations but blocks until each socket in the
 // context is explicitly closed. Socket close kills transfers after linger.
 socket::socket(void* zmq_socket)
   : self_(zmq_socket),
-    send_buffer_(zmq_send_buffer),
-    receive_buffer_(zmq_receive_buffer),
     identifier_(reinterpret_cast<identifier>(zmq_socket))
 {
     if (self_ == nullptr)
         return;
 
-    // TODO: make high water marks configurable.
-    // Because self is only set on construct, sockets are not restartable.
-    if (!set(ZMQ_SNDHWM, send_buffer_) ||
-        !set(ZMQ_RCVHWM, receive_buffer_) ||
+    // api.zeromq.org/4-2:zmq-socket -and- zeromq.org/area:faq#toc6
+    // On PUB and ROUTER sockets, when the SNDHWM is reached on outgoing pipes,
+    // messages are dropped. DEALER and PUSH sockets will block when their
+    // outgoing pipes are full. On incoming pipes, SUB sockets will drop
+    // received messages when they reach their RCVHWM. PULL and DEALER sockets
+    // will refuse new messages and force messages to wait upstream due to TCP
+    // backpressure.
+    if (!set(ZMQ_SNDHWM, zmq_send_high_water) ||
+        !set(ZMQ_RCVHWM, zmq_receive_high_water) ||
         !set(ZMQ_LINGER, zmq_linger_milliseconds))
     {
         stop();
