@@ -914,7 +914,7 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router__asynchronou
     zmq::context context;
     BOOST_REQUIRE(context);
 
-    std::promise<zmq::message> notify;
+    std::promise<zmq::message> subscription;
 
     simple_thread response_thread([&]()
     {
@@ -922,11 +922,6 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router__asynchronou
         BOOST_REQUIRE(router);
         BC_REQUIRE_SUCCESS(router.connect({ TEST_INPROC_ENDPOINT }));
 
-        // Read the enveloped request.
-        // [id-dealer] from router2 for response routing (to dealer)
-        // [id-req   ] from router1 for response routing (to req)
-        // [delimiter] from req for data isolation
-        // [data     ] passed to req
         zmq::message in;
         BC_REQUIRE_SUCCESS(router.receive(in));
         const auto id1 = in.dequeue_data();
@@ -936,11 +931,6 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router__asynchronou
         BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
 
-        // Reconstruct the enveloped response.
-        // [id-dealer] stripped by router2
-        // [id-req   ] stripped by router1
-        // [delimiter] stripped by req
-        // [data     ] returned by req
         zmq::message out;
         out.enqueue(id1);
         out.enqueue(id2);
@@ -948,11 +938,10 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router__asynchronou
         out.enqueue(TEST_MESSAGE);
 
         // Create a notification message using the requester's route.
-        zmq::message notification;
-        notification.enqueue(id2);
-        notification.enqueue();
-        notification.enqueue(TEST_MESSAGE);
-        notify.set_value(notification);
+        // Remove router2's envelope since it will be bypassed upon return.
+        auto notification = out;
+        notification.dequeue();
+        subscription.set_value(notification);
 
         // Send the response (in a race with the two notifications).
         BC_REQUIRE_SUCCESS(router.send(out));
@@ -964,8 +953,8 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router__asynchronou
         BOOST_REQUIRE(dealer);
         BC_REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
 
-        // Wait on and then send the addressed notification message twice.
-        auto notification1 = notify.get_future().get();
+        // Wait on subscription and then send the notification message twice.
+        auto notification1 = subscription.get_future().get();
         auto notification2 = notification1;
         BC_REQUIRE_SUCCESS(dealer.send(notification1));
         BC_REQUIRE_SUCCESS(dealer.send(notification2));
@@ -1028,7 +1017,7 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router_undelimited_
     zmq::context context;
     BOOST_REQUIRE(context);
 
-    std::promise<zmq::message> notify;
+    std::promise<zmq::message> subscription;
 
     simple_thread response_thread([&]()
     {
@@ -1051,11 +1040,11 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router_undelimited_
         ////out.enqueue();
         out.enqueue(TEST_MESSAGE);
 
-        zmq::message notification;
-        notification.enqueue(id2);
-        ////notification.enqueue();
-        notification.enqueue(TEST_MESSAGE);
-        notify.set_value(notification);
+        // Create a notification message using the requester's route.
+        // Remove router2's envelope since it will be bypassed upon return.
+        auto notification = out;
+        notification.dequeue();
+        subscription.set_value(notification);
 
         BC_REQUIRE_SUCCESS(router.send(out));
     });
@@ -1066,8 +1055,172 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router_undelimited_
         BOOST_REQUIRE(dealer);
         BC_REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
 
-        // Wait on and then send the addressed notification message twice.
-        auto notification1 = notify.get_future().get();
+        // Wait on subscription and then send the notification message twice.
+        auto notification1 = subscription.get_future().get();
+        auto notification2 = notification1;
+        BC_REQUIRE_SUCCESS(dealer.send(notification1));
+        BC_REQUIRE_SUCCESS(dealer.send(notification2));
+    });
+
+    simple_thread client_thread([&]()
+    {
+        zmq::socket dealer(context, role::dealer);
+        BOOST_REQUIRE(dealer);
+        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
+
+        zmq::message out;
+        ////out.enqueue();
+        out.enqueue(TEST_MESSAGE);
+        BC_REQUIRE_SUCCESS(dealer.send(out));
+
+        zmq::message in;
+        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        ////BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
+        BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
+
+        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        ////BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
+        BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
+
+        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        ////BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
+        BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
+
+        dealer.stop();
+        context.stop();
+    });
+
+    zmq::socket router(context, role::router);
+    BOOST_REQUIRE(router);
+    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::socket dealer(context, role::dealer);
+    BOOST_REQUIRE(dealer);
+    BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
+
+    zmq_proxy(router.self(), dealer.self(), nullptr);
+    router.stop();
+    dealer.stop();
+}
+
+// This is server v3.1 query dealer/service/worker+notifier behavior.
+BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_dealer__asynchronous_broker__routed_notified)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    std::promise<zmq::message> subscription;
+
+    simple_thread response_thread([&]()
+    {
+        zmq::socket dealer(context, role::dealer);
+        BOOST_REQUIRE(dealer);
+        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
+
+        zmq::message in;
+        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        const auto id = in.dequeue_data();
+        BOOST_REQUIRE_EQUAL(id.size(), MESSAGE_ROUTE_SIZE);
+        BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
+        BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
+
+        zmq::message out;
+        out.enqueue(id);
+        out.enqueue();
+        out.enqueue(TEST_MESSAGE);
+        subscription.set_value(out);
+        BC_REQUIRE_SUCCESS(dealer.send(out));
+    });
+
+    simple_thread notification_thread([&]()
+    {
+        zmq::socket dealer(context, role::dealer);
+        BOOST_REQUIRE(dealer);
+        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
+
+        auto notification1 = subscription.get_future().get();
+        auto notification2 = notification1;
+        BC_REQUIRE_SUCCESS(dealer.send(notification1));
+        BC_REQUIRE_SUCCESS(dealer.send(notification2));
+    });
+
+    simple_thread client_thread([&]()
+    {
+        zmq::socket dealer(context, role::dealer);
+        BOOST_REQUIRE(dealer);
+        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
+
+        zmq::message out;
+        out.enqueue();
+        out.enqueue(TEST_MESSAGE);
+        BC_REQUIRE_SUCCESS(dealer.send(out));
+
+        zmq::message in;
+        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
+        BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
+
+        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
+        BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
+
+        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
+        BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
+
+        dealer.stop();
+        context.stop();
+    });
+
+    zmq::socket router(context, role::router);
+    BOOST_REQUIRE(router);
+    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::socket dealer(context, role::dealer);
+    BOOST_REQUIRE(dealer);
+    BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
+
+    zmq_proxy(router.self(), dealer.self(), nullptr);
+    router.stop();
+    dealer.stop();
+}
+
+// This is server v3.1 query dealer/service/worker+notifier (v2 compatibility).
+BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_dealer_undelimited_request__asynchronous_broker__routed_notified)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    std::promise<zmq::message> subscription;
+
+    simple_thread response_thread([&]()
+    {
+        zmq::socket dealer(context, role::dealer);
+        BOOST_REQUIRE(dealer);
+        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
+
+        zmq::message in;
+        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        const auto id = in.dequeue_data();
+        BOOST_REQUIRE_EQUAL(id.size(), MESSAGE_ROUTE_SIZE);
+        ////BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
+        BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
+
+        zmq::message out;
+        out.enqueue(id);
+        ////out.enqueue();
+        out.enqueue(TEST_MESSAGE);
+        subscription.set_value(out);
+        BC_REQUIRE_SUCCESS(dealer.send(out));
+    });
+
+    simple_thread notification_thread([&]()
+    {
+        zmq::socket dealer(context, role::dealer);
+        BOOST_REQUIRE(dealer);
+        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
+
+        auto notification1 = subscription.get_future().get();
         auto notification2 = notification1;
         BC_REQUIRE_SUCCESS(dealer.send(notification1));
         BC_REQUIRE_SUCCESS(dealer.send(notification2));
