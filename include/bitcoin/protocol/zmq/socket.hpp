@@ -128,12 +128,8 @@ private:
     bool set(int32_t option, int32_t value);
     bool set(int32_t option, const std::string& value);
 
-    // This value is unprotected.
     void* self_;
-
     const identifier identifier_;
-    const int32_t send_buffer_;
-    const int32_t receive_buffer_;
 };
 
 } // namespace zmq
