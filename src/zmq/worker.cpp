@@ -70,6 +70,7 @@ bool worker::start()
 }
 
 // Promise is used (vs. join only) to capture stop result code.
+// BUGBUG: stop is insufficient to stop a worker that uses relay().
 bool worker::stop()
 {
     ///////////////////////////////////////////////////////////////////////////
