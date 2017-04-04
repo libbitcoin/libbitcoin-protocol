@@ -19,6 +19,7 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_CONTEXT_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_CONTEXT_HPP
 
+#include <atomic>
 #include <cstdint>
 #include <memory>
 #include <bitcoin/bitcoin.hpp>
@@ -58,8 +59,10 @@ public:
 
 private:
 
-    // The context pointer is protected by mutex.
-    void* self_;
+    // This is thread safe
+    std::atomic<void*> self_;
+
+    // This guards against a start/stop race.
     mutable shared_mutex mutex_;
 };
 
