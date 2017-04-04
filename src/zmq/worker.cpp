@@ -54,10 +54,10 @@ bool worker::start()
     {
         stopped_ = false;
 
-        // Create the replier thread and socket and start polling.
+        // Create the worker thread and socket and start polling.
         thread_ = std::make_shared<asio::thread>(&worker::work, this);
 
-        // Wait on replier start.
+        // Wait on worker start.
         const auto result = started_.get_future().get();
 
         // Reset for restartability.
@@ -80,7 +80,7 @@ bool worker::stop()
     {
         stopped_ = true;
 
-        // Wait on replier stop.
+        // Wait on worker stop.
         const auto result = finished_.get_future().get();
 
         // Wait for thread to stop.
