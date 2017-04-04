@@ -34,9 +34,19 @@ namespace zmq {
 
 static constexpr int32_t zmq_true = 1;
 static constexpr int32_t zmq_fail = -1;
+
+// The default value of -1 specifies an infinite linger period. Pending 
+// messages shall not be discarded after a call to zmq_close(); attempting to
+// terminate the socket's context with zmq_term() shall block until all pending
+// messages have been sent to a peer. The value 0 specifies no linger period.
 static constexpr int32_t zmq_linger_milliseconds = 0;
 
-// TODO: make high water marks configurable.
+// api.zeromq.org/4-2:zmq-socket -and- zeromq.org/area:faq#toc6
+// On PUB and ROUTER sockets, when the SNDHWM is reached on outgoing pipes,
+// messages are dropped. DEALER and PUSH sockets will block when their
+// outgoing pipes are full. On incoming pipes, SUB sockets will drop received
+// messages when they reach their RCVHWM. PULL and DEALER sockets will refuse
+// new messages and force messages to wait upstream due to TCP backpressure.
 static constexpr int32_t zmq_send_high_water = 1000;
 static constexpr int32_t zmq_receive_high_water = 1000;
 
@@ -70,13 +80,6 @@ socket::socket(void* zmq_socket)
     if (self_ == nullptr)
         return;
 
-    // api.zeromq.org/4-2:zmq-socket -and- zeromq.org/area:faq#toc6
-    // On PUB and ROUTER sockets, when the SNDHWM is reached on outgoing pipes,
-    // messages are dropped. DEALER and PUSH sockets will block when their
-    // outgoing pipes are full. On incoming pipes, SUB sockets will drop
-    // received messages when they reach their RCVHWM. PULL and DEALER sockets
-    // will refuse new messages and force messages to wait upstream due to TCP
-    // backpressure.
     if (!set(ZMQ_SNDHWM, zmq_send_high_water) ||
         !set(ZMQ_RCVHWM, zmq_receive_high_water) ||
         !set(ZMQ_LINGER, zmq_linger_milliseconds))
@@ -88,7 +91,7 @@ socket::socket(void* zmq_socket)
 socket::socket(context& context, role socket_role)
   : socket(zmq_socket(context.self(), to_socket_type(socket_role)))
 {
-    // Configure subscribers to receive all messages.
+    // Configure subscribers to be unfiltered (receive all messages).
     if (socket_role == role::subscriber && !set(ZMQ_SUBSCRIBE, ""))
         stop();
 }
