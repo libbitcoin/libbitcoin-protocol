@@ -47,6 +47,11 @@ void message::enqueue(const std::string& value)
     queue_.emplace(to_chunk(value));
 }
 
+void message::enqueue(const address& value)
+{
+    queue_.emplace(to_chunk(value));
+}
+
 bool message::dequeue()
 {
     if (queue_.empty())
@@ -92,6 +97,25 @@ bool message::dequeue(std::string& value)
     return true;
 }
 
+bool message::dequeue(address& value)
+{
+    if (queue_.empty())
+        return false;
+
+    const auto& front = queue_.front();
+
+    if (front.size() == address_size)
+    {
+        std::copy(front.begin(), front.end(), value.begin());
+        queue_.pop();
+        return true;
+    }
+
+    queue_.pop();
+    return false;
+}
+
+// Used by ZAP for public/private key read/write.
 bool message::dequeue(hash_digest& value)
 {
     if (queue_.empty())
