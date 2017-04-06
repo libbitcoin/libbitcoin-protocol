@@ -47,8 +47,8 @@ static constexpr int32_t zmq_linger_milliseconds = 0;
 // outgoing pipes are full. On incoming pipes, SUB sockets will drop received
 // messages when they reach their RCVHWM. PULL and DEALER sockets will refuse
 // new messages and force messages to wait upstream due to TCP backpressure.
-static constexpr int32_t zmq_send_high_water = 1000;
-static constexpr int32_t zmq_receive_high_water = 1000;
+static constexpr int32_t zmq_send_high_water = 100;
+static constexpr int32_t zmq_receive_high_water = 100;
 
 int32_t socket::to_socket_type(role socket_role)
 {
