@@ -19,6 +19,7 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_MESSAGE_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_MESSAGE_HPP
 
+#include <cstddef>
 #include <string>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
@@ -31,6 +32,12 @@ namespace zmq {
 class BCP_API message
 {
 public:
+    /// A zeromq route identifier is always this size.
+    static const size_t address_size = 5;
+
+    /// An identifier for message routing.
+    typedef byte_array<address_size> address;
+
     /// Add an empty message part to the outgoing message.
     void enqueue();
 
@@ -43,6 +50,9 @@ public:
     /// Add a text message part to the outgoing message.
     void enqueue(const std::string& value);
 
+    /// Move an identifier message part to the outgoing message.
+    void enqueue(const address& value);
+
     /// Add an unsigned integer message part to the outgoing message.
     template <typename Unsigned>
     void enqueue_little_endian(Unsigned value)
@@ -54,12 +64,13 @@ public:
     data_chunk dequeue_data();
     std::string dequeue_text();
 
-    /// Remove a message part from the top of the queue, false if empty queue.
+    /// Remove a part from the queue top, false if empty queue or invalid.
     bool dequeue();
     bool dequeue(uint32_t& value);
     bool dequeue(data_chunk& value);
     bool dequeue(std::string& value);
     bool dequeue(hash_digest& value);
+    bool dequeue(address& value);
 
     /// Clear the queue of message parts.
     void clear();
