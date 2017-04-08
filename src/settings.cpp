@@ -30,8 +30,8 @@ settings::settings()
     handshake_seconds(30),
     heartbeat_seconds(0),
     inactivity_seconds(0),
-    send_milliseconds(0),
-    reconnect_seconds(1)
+    reconnect_seconds(1),
+    send_milliseconds(0)
 {
 }
 

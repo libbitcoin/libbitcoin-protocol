@@ -52,12 +52,12 @@ public:
     /// ZMQ_HEARTBEAT_TTL and ZMQ_HEARTBEAT_TIMEOUT (0 disabled)
     uint32_t inactivity_seconds;
 
-    // ZMQ_SNDTIMEO (0 unlimited)
-    uint32_t send_milliseconds;
-
     // Client (connector) setting.
     // ZMQ_RECONNECT_IVL and ZMQ_RECONNECT_IVL_MAX (0 disabled)
     uint32_t reconnect_seconds;
+
+    // ZMQ_SNDTIMEO (0 unlimited)
+    uint32_t send_milliseconds;
 };
 
 } // namespace blockchain
