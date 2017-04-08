@@ -23,6 +23,7 @@
 #include <memory>
 #include <string>
 #include <bitcoin/protocol/define.hpp>
+#include <bitcoin/protocol/settings.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
@@ -64,9 +65,13 @@ public:
     /// Construct a socket from an existing zeromq socket.
     socket(void* zmq_socket);
 
-    /// Construct a socket of the given context and role.
+    /// Construct a socket of the given context and role and default settings.
     /// Subscribers are automatically subscribed to all messages.
     socket(context& context, role socket_role);
+
+    /// Construct a socket of the given context and role.
+    /// Subscribers are automatically subscribed to all messages.
+    socket(context& context, role socket_role, const settings& settings);
 
     /// Close the socket.
     virtual ~socket();
@@ -122,12 +127,13 @@ public:
     /// Receive a message from this socket.
     code receive(message& packet);
 
-private:
+protected:
     static int to_socket_type(role socket_role);
 
     bool set(int32_t option, int32_t value);
     bool set(int32_t option, const std::string& value);
 
+private:
     void* self_;
     const identifier identifier_;
 };
