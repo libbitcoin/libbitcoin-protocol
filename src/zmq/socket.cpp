@@ -110,7 +110,9 @@ socket::socket(context& context, role socket_role, const settings& settings)
     if (self_ == nullptr)
         return;
 
-    if (!set(ZMQ_IPV6, zmq_true) ||
+    // TODO: update authenticator to normalize IP addresses for matching.
+    // Currently this is simplified to string matching and so limited to ipv4.
+    if (/*!set(ZMQ_IPV6, zmq_true) ||*/
         !set(ZMQ_LINGER, zmq_false) ||
         !set(ZMQ_IMMEDIATE, zmq_true) ||
         !set(ZMQ_SNDHWM, capped(settings.send_high_water)) ||
