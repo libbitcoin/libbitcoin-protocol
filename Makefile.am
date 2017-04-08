@@ -35,6 +35,7 @@ lib_LTLIBRARIES = src/libbitcoin-protocol.la
 src_libbitcoin_protocol_la_CPPFLAGS = -I${srcdir}/include ${zmq_CPPFLAGS} ${bitcoin_CPPFLAGS}
 src_libbitcoin_protocol_la_LIBADD = ${zmq_LIBS} ${bitcoin_LIBS}
 src_libbitcoin_protocol_la_SOURCES = \
+    src/settings.cpp \
     src/zmq/authenticator.cpp \
     src/zmq/certificate.cpp \
     src/zmq/context.cpp \
@@ -80,6 +81,7 @@ include_bitcoin_HEADERS = \
 include_bitcoin_protocoldir = ${includedir}/bitcoin/protocol
 include_bitcoin_protocol_HEADERS = \
     include/bitcoin/protocol/define.hpp \
+    include/bitcoin/protocol/settings.hpp \
     include/bitcoin/protocol/version.hpp
 
 include_bitcoin_protocol_zmqdir = ${includedir}/bitcoin/protocol/zmq

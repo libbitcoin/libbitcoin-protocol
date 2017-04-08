@@ -71,6 +71,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\settings.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\authenticator.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\certificate.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\context.cpp" />
@@ -85,6 +86,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\define.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\settings.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\version.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\authenticator.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\certificate.hpp" />
