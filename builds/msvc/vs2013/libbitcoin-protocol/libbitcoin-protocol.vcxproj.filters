@@ -24,12 +24,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\interface.pb.cc">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\converter.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\zmq\message.cpp">
       <Filter>src\zmq</Filter>
     </ClCompile>
@@ -48,15 +42,6 @@
     <ClCompile Include="..\..\..\..\src\zmq\context.cpp">
       <Filter>src\zmq</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\packet.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\request_packet.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\response_packet.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\zmq\frame.cpp">
       <Filter>src\zmq</Filter>
     </ClCompile>
@@ -69,21 +54,15 @@
     <ClCompile Include="..\..\..\..\src\zmq\zeromq.cpp">
       <Filter>src\zmq</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\settings.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol.hpp">
       <Filter>include\bitcoin</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\interface.pb.h">
-      <Filter>include\bitcoin\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\primitives.hpp">
-      <Filter>include\bitcoin\protocol</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\define.hpp">
-      <Filter>include\bitcoin\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\converter.hpp">
       <Filter>include\bitcoin\protocol</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\version.hpp">
@@ -107,15 +86,6 @@
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\message.hpp">
       <Filter>include\bitcoin\protocol\zmq</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\packet.hpp">
-      <Filter>include\bitcoin\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\response_packet.hpp">
-      <Filter>include\bitcoin\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\request_packet.hpp">
-      <Filter>include\bitcoin\protocol</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\frame.hpp">
       <Filter>include\bitcoin\protocol\zmq</Filter>
     </ClInclude>
@@ -127,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\zeromq.hpp">
       <Filter>include\bitcoin\protocol\zmq</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\settings.hpp">
+      <Filter>include\bitcoin\protocol</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

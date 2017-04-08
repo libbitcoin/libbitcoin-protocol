@@ -18,10 +18,12 @@
  */
 #include <bitcoin/protocol/zmq/socket.hpp>
 
+#include <algorithm>
 #include <cstdint>
 #include <string>
 #include <zmq.h>
 #include <bitcoin/bitcoin.hpp>
+#include <bitcoin/protocol/settings.hpp>
 #include <bitcoin/protocol/zmq/authenticator.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
@@ -31,24 +33,41 @@
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
-
+    
+static const auto subscribe_all = "";
 static constexpr int32_t zmq_true = 1;
+static constexpr int32_t zmq_false = 0;
 static constexpr int32_t zmq_fail = -1;
+static constexpr int32_t reconnect_interval = 100;
+static const bc::protocol::settings default_settings;
 
+// Linger
 // The default value of -1 specifies an infinite linger period. Pending 
 // messages shall not be discarded after a call to zmq_close(); attempting to
 // terminate the socket's context with zmq_term() shall block until all pending
 // messages have been sent to a peer. The value 0 specifies no linger period.
-static constexpr int32_t zmq_linger_milliseconds = 0;
 
+// High Water
 // api.zeromq.org/4-2:zmq-socket -and- zeromq.org/area:faq#toc6
 // On PUB and ROUTER sockets, when the SNDHWM is reached on outgoing pipes,
 // messages are dropped. DEALER and PUSH sockets will block when their
 // outgoing pipes are full. On incoming pipes, SUB sockets will drop received
 // messages when they reach their RCVHWM. PULL and DEALER sockets will refuse
 // new messages and force messages to wait upstream due to TCP backpressure.
-static constexpr int32_t zmq_send_high_water = 100;
-static constexpr int32_t zmq_receive_high_water = 100;
+
+inline int32_t capped(uint32_t value)
+{
+    static constexpr auto limit = static_cast<uint32_t>(max_int32);
+    return static_cast<int32_t>(std::min(value, limit));
+}
+
+inline int32_t seconds(uint32_t value)
+{
+    static constexpr uint32_t ms_to_seconds = 1000;
+    static constexpr auto milliseconds = static_cast<uint32_t>(max_int32);
+    static constexpr auto limit = milliseconds / ms_to_seconds;
+    return static_cast<int32_t>(std::min(value, limit) * ms_to_seconds);
+}
 
 int32_t socket::to_socket_type(role socket_role)
 {
@@ -77,23 +96,78 @@ socket::socket(void* zmq_socket)
   : self_(zmq_socket),
     identifier_(reinterpret_cast<identifier>(zmq_socket))
 {
-    if (self_ == nullptr)
-        return;
-
-    if (!set(ZMQ_SNDHWM, zmq_send_high_water) ||
-        !set(ZMQ_RCVHWM, zmq_receive_high_water) ||
-        !set(ZMQ_LINGER, zmq_linger_milliseconds))
-    {
-        stop();
-    }
 }
 
 socket::socket(context& context, role socket_role)
+    : socket(context, socket_role, default_settings)
+{
+}
+
+// This design presumes no setting value should be able to cause failure.
+socket::socket(context& context, role socket_role, const settings& settings)
   : socket(zmq_socket(context.self(), to_socket_type(socket_role)))
 {
-    // Configure subscribers to be unfiltered (receive all messages).
-    if (socket_role == role::subscriber && !set(ZMQ_SUBSCRIBE, ""))
+    if (self_ == nullptr)
+        return;
+
+    // TODO: update authenticator to normalize IP addresses for matching.
+    // Currently this is simplified to string matching and so limited to ipv4.
+    if (/*!set(ZMQ_IPV6, zmq_true) ||*/
+        !set(ZMQ_LINGER, zmq_false) ||
+        !set(ZMQ_IMMEDIATE, zmq_true) ||
+        !set(ZMQ_SNDHWM, capped(settings.send_high_water)) ||
+        !set(ZMQ_RCVHWM, capped(settings.receive_high_water)) ||
+        !set(ZMQ_HANDSHAKE_IVL, seconds(settings.handshake_seconds)) ||
+        !set(ZMQ_HEARTBEAT_IVL, seconds(settings.heartbeat_seconds)))
+    {
         stop();
+        return;
+    }
+
+    const auto inactivity = seconds(settings.inactivity_seconds);
+
+    if (!set(ZMQ_HEARTBEAT_TTL, inactivity) ||
+        !set(ZMQ_HEARTBEAT_TIMEOUT, inactivity))
+    {
+        stop();
+        return;
+    }
+
+    const auto send = settings.send_milliseconds;
+
+    // Zero sets infinite wait (default), no way to set zero/immediate.
+    if (!set(ZMQ_SNDTIMEO, send == 0 ? -1 : send))
+    {
+        stop();
+        return;
+    }
+
+    const auto reconnect = seconds(settings.reconnect_seconds);
+
+    // Zero disables, interval is hardwired to the default (100ms).
+    if (!set(ZMQ_RECONNECT_IVL, reconnect == 0 ? -1 : reconnect_interval) ||
+        !set(ZMQ_RECONNECT_IVL_MAX, reconnect))
+    {
+        stop();
+        return;
+    }
+
+    // We enforce an upper bound of max_int32 message size (vs. max_int64).
+    // Not supported on all socket types, do not set unless configured.
+    if (settings.message_size_limit != 0 &&
+        !set(ZMQ_MAXMSGSIZE, capped(settings.message_size_limit)))
+    {
+        stop();
+        return;
+    }
+
+    // Limited to subscriber sockets (not configured, always set by default).
+    if (socket_role == role::subscriber &&
+        !set(ZMQ_SUBSCRIBE, subscribe_all))
+    {
+        stop();
+        return;
+    }
 }
 
 socket::~socket()

@@ -71,11 +71,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\converter.cpp" />
-    <ClCompile Include="..\..\..\..\src\interface.pb.cc" />
-    <ClCompile Include="..\..\..\..\src\response_packet.cpp" />
-    <ClCompile Include="..\..\..\..\src\request_packet.cpp" />
-    <ClCompile Include="..\..\..\..\src\packet.cpp" />
+    <ClCompile Include="..\..\..\..\src\settings.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\authenticator.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\certificate.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\context.cpp" />
@@ -89,13 +85,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\converter.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\define.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\interface.pb.h" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\response_packet.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\request_packet.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\packet.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\primitives.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\settings.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\version.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\authenticator.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\certificate.hpp" />

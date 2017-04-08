@@ -15,9 +15,6 @@
     <ClCompile Include="..\..\..\..\test\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\test\converter.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\test\zmq\context.cpp">
       <Filter>src\zmq</Filter>
     </ClCompile>

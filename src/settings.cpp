@@ -16,41 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifdef LIBBITCOIN_VERSION4
+#include <bitcoin/protocol/settings.hpp>
 
-#ifndef LIBBITCOIN_PROTOCOL_REQUEST_PACKET
-#define LIBBITCOIN_PROTOCOL_REQUEST_PACKET
-
-#include <memory>
 #include <bitcoin/bitcoin.hpp>
-#include <bitcoin/protocol/define.hpp>
-#include <bitcoin/protocol/interface.pb.h>
-#include <bitcoin/protocol/packet.hpp>
-#include <bitcoin/protocol/zmq/message.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 
-class BCP_API request_packet
-  : public packet
+settings::settings()
+  : send_high_water(100),
+    receive_high_water(100),
+    message_size_limit(0), 
+    handshake_seconds(30),
+    heartbeat_seconds(0),
+    inactivity_seconds(0),
+    reconnect_seconds(1),
+    send_milliseconds(0)
 {
-public:
-    request_packet();
-
-    std::shared_ptr<request> get_request() const;
-    void set_request(std::shared_ptr<request> request);
-
-protected:
-    virtual bool encode_payload(zmq::message& message) const;
-    virtual bool decode_payload(const data_chunk& payload);
-
-private:
-    std::shared_ptr<request> request_;
-};
-
-}
 }
 
-#endif
-
-#endif
+} // namespace protocol
+} // namespace libbitcoin
