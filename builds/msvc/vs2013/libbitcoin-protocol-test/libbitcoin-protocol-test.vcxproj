@@ -65,7 +65,6 @@
     <Import Project="$(ProjectDir)$(ProjectName).props" />
   </ImportGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\test\converter.cpp" />
     <ClCompile Include="..\..\..\..\test\main.cpp" />
     <ClCompile Include="..\..\..\..\test\zmq\authenticator.cpp" />
     <ClCompile Include="..\..\..\..\test\zmq\certificate.cpp" />
