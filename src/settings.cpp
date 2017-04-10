@@ -18,6 +18,7 @@
  */
 #include <bitcoin/protocol/settings.hpp>
 
+#include <cstdint>
 #include <bitcoin/bitcoin.hpp>
 
 namespace libbitcoin {
@@ -26,6 +27,18 @@ namespace protocol {
 settings::settings()
   : send_high_water(100),
     receive_high_water(100),
+    message_size_limit(0), 
+    handshake_seconds(30),
+    heartbeat_seconds(0),
+    inactivity_seconds(0),
+    reconnect_seconds(1),
+    send_milliseconds(0)
+{
+}
+
+settings::settings(uint32_t send_high_water, uint32_t receive_high_water)
+  : send_high_water(send_high_water),
+    receive_high_water(receive_high_water),
     message_size_limit(0), 
     handshake_seconds(30),
     heartbeat_seconds(0),
