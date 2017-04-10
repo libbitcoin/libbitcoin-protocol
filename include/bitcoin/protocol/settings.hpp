@@ -42,7 +42,7 @@ public:
     uint32_t receive_high_water;
 
     /// ZMQ_MAXMSGSIZE (0 unlimited)
-    uint32_t message_size_limit;
+    uint64_t message_size_limit;
 
     /// ZMQ_HANDSHAKE_IVL (0 unlimited)
     uint32_t handshake_seconds;
