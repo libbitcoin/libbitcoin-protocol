@@ -48,9 +48,9 @@ public:
     uint32_t handshake_seconds;
 
     /// ZMQ_HEARTBEAT_IVL (0 disabled)
-    uint32_t heartbeat_seconds;
+    uint32_t ping_seconds;
 
-    /// ZMQ_HEARTBEAT_TTL and ZMQ_HEARTBEAT_TIMEOUT (0 disabled)
+    /// ZMQ_HEARTBEAT_TIMEOUT (0 disabled)
     uint32_t inactivity_seconds;
 
     // Client (connector) setting.

@@ -118,7 +118,7 @@ socket::socket(context& context, role socket_role, const settings& settings)
         !set(ZMQ_SNDHWM, capped(settings.send_high_water)) ||
         !set(ZMQ_RCVHWM, capped(settings.receive_high_water)) ||
         !set(ZMQ_HANDSHAKE_IVL, seconds(settings.handshake_seconds)) ||
-        !set(ZMQ_HEARTBEAT_IVL, seconds(settings.heartbeat_seconds)))
+        !set(ZMQ_HEARTBEAT_IVL, seconds(settings.ping_seconds)))
     {
         stop();
         return;
@@ -126,8 +126,8 @@ socket::socket(context& context, role socket_role, const settings& settings)
 
     const auto inactivity = seconds(settings.inactivity_seconds);
 
-    if (!set(ZMQ_HEARTBEAT_TTL, inactivity) ||
-        !set(ZMQ_HEARTBEAT_TIMEOUT, inactivity))
+    // There is also ZMQ_HEARTBEAT_TTL (not used currently).
+    if (!set(ZMQ_HEARTBEAT_TIMEOUT, inactivity))
     {
         stop();
         return;
