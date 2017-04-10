@@ -118,9 +118,10 @@ socket::socket(context& context, role socket_role, const settings& settings)
 
     // TODO: update authenticator to normalize IP addresses for matching.
     // Currently this is simplified to string matching and so limited to ipv4.
+    // Setting ZMQ_IMMEDIATE causes client to block if there is no connection.
     if (/*!set(ZMQ_IPV6, zmq_true) ||*/
         !set32(ZMQ_LINGER, zmq_false) ||
-        !set32(ZMQ_IMMEDIATE, zmq_true) ||
+        ////!set32(ZMQ_IMMEDIATE, zmq_true) ||
         !set32(ZMQ_SNDHWM, capped32(settings.send_high_water)) ||
         !set32(ZMQ_RCVHWM, capped32(settings.receive_high_water)) ||
         !set32(ZMQ_HANDSHAKE_IVL, seconds(settings.handshake_seconds)) ||
