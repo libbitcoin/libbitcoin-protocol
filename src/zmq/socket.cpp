@@ -55,10 +55,16 @@ static const bc::protocol::settings default_settings;
 // messages when they reach their RCVHWM. PULL and DEALER sockets will refuse
 // new messages and force messages to wait upstream due to TCP backpressure.
 
-inline int32_t capped(uint32_t value)
+inline int32_t capped32(uint32_t value)
 {
     static constexpr auto limit = static_cast<uint32_t>(max_int32);
     return static_cast<int32_t>(std::min(value, limit));
+}
+
+inline int64_t capped64(uint64_t value)
+{
+    static constexpr auto limit = static_cast<uint64_t>(max_int64);
+    return static_cast<int64_t>(std::min(value, limit));
 }
 
 inline int32_t seconds(uint32_t value)
@@ -112,13 +118,22 @@ socket::socket(context& context, role socket_role, const settings& settings)
 
     // TODO: update authenticator to normalize IP addresses for matching.
     // Currently this is simplified to string matching and so limited to ipv4.
+    // Setting ZMQ_IMMEDIATE causes client to block if there is no connection.
     if (/*!set(ZMQ_IPV6, zmq_true) ||*/
-        !set(ZMQ_LINGER, zmq_false) ||
-        !set(ZMQ_IMMEDIATE, zmq_true) ||
-        !set(ZMQ_SNDHWM, capped(settings.send_high_water)) ||
-        !set(ZMQ_RCVHWM, capped(settings.receive_high_water)) ||
-        !set(ZMQ_HANDSHAKE_IVL, seconds(settings.handshake_seconds)) ||
-        !set(ZMQ_HEARTBEAT_IVL, seconds(settings.heartbeat_seconds)))
+        !set32(ZMQ_LINGER, zmq_false) ||
+        ////!set32(ZMQ_IMMEDIATE, zmq_true) ||
+        !set32(ZMQ_SNDHWM, capped32(settings.send_high_water)) ||
+        !set32(ZMQ_RCVHWM, capped32(settings.receive_high_water)) ||
+        !set32(ZMQ_HANDSHAKE_IVL, seconds(settings.handshake_seconds)) ||
+        !set32(ZMQ_HEARTBEAT_IVL, seconds(settings.ping_seconds)))
+    {
+        stop();
+        return;
+    }
+
+    const auto size_limit = capped64(settings.message_size_limit);
+
+    if (!set64(ZMQ_MAXMSGSIZE, size_limit == 0 ? -1 : size_limit))
     {
         stop();
         return;
@@ -126,8 +141,8 @@ socket::socket(context& context, role socket_role, const settings& settings)
 
     const auto inactivity = seconds(settings.inactivity_seconds);
 
-    if (!set(ZMQ_HEARTBEAT_TTL, inactivity) ||
-        !set(ZMQ_HEARTBEAT_TIMEOUT, inactivity))
+    // There is also ZMQ_HEARTBEAT_TTL (not used currently).
+    if (!set32(ZMQ_HEARTBEAT_TIMEOUT, inactivity))
     {
         stop();
         return;
@@ -136,7 +151,7 @@ socket::socket(context& context, role socket_role, const settings& settings)
     const auto send = settings.send_milliseconds;
 
     // Zero sets infinite wait (default), no way to set zero/immediate.
-    if (!set(ZMQ_SNDTIMEO, send == 0 ? -1 : send))
+    if (!set32(ZMQ_SNDTIMEO, send == 0 ? -1 : send))
     {
         stop();
         return;
@@ -144,26 +159,16 @@ socket::socket(context& context, role socket_role, const settings& settings)
 
     const auto reconnect = seconds(settings.reconnect_seconds);
 
-    // Zero disables, interval is hardwired to the default (100ms).
-    if (!set(ZMQ_RECONNECT_IVL, reconnect == 0 ? -1 : reconnect_interval) ||
-        !set(ZMQ_RECONNECT_IVL_MAX, reconnect))
-    {
-        stop();
-        return;
-    }
-
-    // We enforce an upper bound of max_int32 message size (vs. max_int64).
-    // Not supported on all socket types, do not set unless configured.
-    if (settings.message_size_limit != 0 &&
-        !set(ZMQ_MAXMSGSIZE, capped(settings.message_size_limit)))
+    // Zero disables, reconnect_interval is hardwired to the default (100ms).
+    if (!set32(ZMQ_RECONNECT_IVL, reconnect == 0 ? -1 : reconnect_interval) ||
+        !set32(ZMQ_RECONNECT_IVL_MAX, reconnect))
     {
         stop();
         return;
     }
 
     // Limited to subscriber sockets (not configured, always set by default).
-    if (socket_role == role::subscriber &&
-        !set(ZMQ_SUBSCRIBE, subscribe_all))
+    if (socket_role == role::subscriber && !set(ZMQ_SUBSCRIBE, subscribe_all))
     {
         stop();
         return;
@@ -220,7 +225,13 @@ code socket::connect(const config::endpoint& address)
 }
 
 // private
-bool socket::set(int32_t option, int32_t value)
+bool socket::set32(int32_t option, int32_t value)
+{
+    return zmq_setsockopt(self_, option, &value, sizeof(value)) != zmq_fail;
+}
+
+// private
+bool socket::set64(int32_t option, int64_t value)
 {
     return zmq_setsockopt(self_, option, &value, sizeof(value)) != zmq_fail;
 }
@@ -242,7 +253,7 @@ bool socket::set_authentication_domain(const std::string& domain)
 // Defines whether the socket will act as server for CURVE security.
 bool socket::set_curve_server()
 {
-    return set(ZMQ_CURVE_SERVER, zmq_true);
+    return set32(ZMQ_CURVE_SERVER, zmq_true);
 }
 
 // Sets socket's long term server key, must set this on CURVE client sockets.

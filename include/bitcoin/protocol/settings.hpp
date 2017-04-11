@@ -33,6 +33,7 @@ class BCP_API settings
 {
 public:
     settings();
+    settings(uint32_t send_high_water, uint32_t receive_high_water);
 
     // ZMQ_SNDHWM (0 unlimited)
     uint32_t send_high_water;
@@ -41,15 +42,15 @@ public:
     uint32_t receive_high_water;
 
     /// ZMQ_MAXMSGSIZE (0 unlimited)
-    uint32_t message_size_limit;
+    uint64_t message_size_limit;
 
     /// ZMQ_HANDSHAKE_IVL (0 unlimited)
     uint32_t handshake_seconds;
 
     /// ZMQ_HEARTBEAT_IVL (0 disabled)
-    uint32_t heartbeat_seconds;
+    uint32_t ping_seconds;
 
-    /// ZMQ_HEARTBEAT_TTL and ZMQ_HEARTBEAT_TIMEOUT (0 disabled)
+    /// ZMQ_HEARTBEAT_TIMEOUT (0 disabled)
     uint32_t inactivity_seconds;
 
     // Client (connector) setting.
