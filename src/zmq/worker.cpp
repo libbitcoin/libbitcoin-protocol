@@ -31,9 +31,9 @@ namespace zmq {
 
 #define NAME "worker"
 
-// Derive from this abstract worker to implement real worker.
-worker::worker(threadpool& pool)
-  : dispatch_(pool, NAME),
+// Derive from this abstract worker to implement concrete worker.
+worker::worker(thread_priority priority)
+  : priority_(priority),
     stopped_(true)
 {
 }
@@ -54,11 +54,10 @@ bool worker::start()
     {
         stopped_ = false;
 
-        // Create the replier thread and socket and start polling.
-        dispatch_.concurrent(
-            std::bind(&worker::work, this));
+        // Create the worker thread and socket and start polling.
+        thread_ = std::make_shared<asio::thread>(&worker::work, this);
 
-        // Wait on replier start.
+        // Wait on worker start.
         const auto result = started_.get_future().get();
 
         // Reset for restartability.
@@ -70,6 +69,8 @@ bool worker::start()
     ///////////////////////////////////////////////////////////////////////////
 }
 
+// Promise is used (vs. join only) to capture stop result code.
+// BUGBUG: stop is insufficient to stop a worker that uses relay().
 bool worker::stop()
 {
     ///////////////////////////////////////////////////////////////////////////
@@ -80,8 +81,11 @@ bool worker::stop()
     {
         stopped_ = true;
 
-        // Wait on replier stop.
+        // Wait on worker stop.
         const auto result = finished_.get_future().get();
+
+        // Wait for thread to stop.
+        thread_->join();
 
         // Reset for restartability.
         finished_ = std::promise<bool>();
@@ -106,7 +110,9 @@ bool worker::started(bool result)
 {
     started_.set_value(result);
 
-    if (!result)
+    if (result)
+        set_priority(priority_);
+    else
         finished(true);
 
     return result;
@@ -119,6 +125,7 @@ bool worker::finished(bool result)
     return result;
 }
 
+// TODO: use non-copying private zmq implementation of forward.
 // Call from work to forward a message from one socket to another.
 bool worker::forward(socket& from, socket& to)
 {

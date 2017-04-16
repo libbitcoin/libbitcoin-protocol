@@ -19,6 +19,7 @@
 #include <bitcoin/protocol/zmq/message.hpp>
 
 #include <string>
+#include <utility>
 #include <bitcoin/bitcoin.hpp>
 #include <bitcoin/protocol/zmq/frame.hpp>
 
@@ -29,6 +30,26 @@ namespace zmq {
 void message::enqueue()
 {
     queue_.emplace(data_chunk{});
+}
+
+void message::enqueue(data_chunk&& value)
+{
+    queue_.emplace(std::move(value));
+}
+
+void message::enqueue(const data_chunk& value)
+{
+    queue_.emplace(value);
+}
+
+void message::enqueue(const std::string& value)
+{
+    queue_.emplace(to_chunk(value));
+}
+
+void message::enqueue(const address& value)
+{
+    queue_.emplace(to_chunk(value));
 }
 
 bool message::dequeue()
@@ -76,6 +97,25 @@ bool message::dequeue(std::string& value)
     return true;
 }
 
+bool message::dequeue(address& value)
+{
+    if (queue_.empty())
+        return false;
+
+    const auto& front = queue_.front();
+
+    if (front.size() == address_size)
+    {
+        std::copy(front.begin(), front.end(), value.begin());
+        queue_.pop();
+        return true;
+    }
+
+    queue_.pop();
+    return false;
+}
+
+// Used by ZAP for public/private key read/write.
 bool message::dequeue(hash_digest& value)
 {
     if (queue_.empty())
@@ -110,7 +150,8 @@ std::string message::dequeue_text()
         return{};
 
     const auto& front = queue_.front();
-    const auto text = std::string(front.begin(), front.end());
+    auto text = std::string(front.begin(), front.end());
+    text += "\0";
     queue_.pop();
     return text;
 }

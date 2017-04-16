@@ -18,10 +18,12 @@
  */
 #include <bitcoin/protocol/zmq/socket.hpp>
 
+#include <algorithm>
 #include <cstdint>
 #include <string>
 #include <zmq.h>
 #include <bitcoin/bitcoin.hpp>
+#include <bitcoin/protocol/settings.hpp>
 #include <bitcoin/protocol/zmq/authenticator.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
@@ -31,12 +33,47 @@
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
-
+    
+static const auto subscribe_all = "";
 static constexpr int32_t zmq_true = 1;
+static constexpr int32_t zmq_false = 0;
 static constexpr int32_t zmq_fail = -1;
-static constexpr int32_t zmq_send_buffer = 1000;
-static constexpr int32_t zmq_receive_buffer = 1000;
-static constexpr int32_t zmq_linger_milliseconds = 10;
+static constexpr int32_t reconnect_interval = 100;
+static const bc::protocol::settings default_settings;
+
+// Linger
+// The default value of -1 specifies an infinite linger period. Pending 
+// messages shall not be discarded after a call to zmq_close(); attempting to
+// terminate the socket's context with zmq_term() shall block until all pending
+// messages have been sent to a peer. The value 0 specifies no linger period.
+
+// High Water
+// api.zeromq.org/4-2:zmq-socket -and- zeromq.org/area:faq#toc6
+// On PUB and ROUTER sockets, when the SNDHWM is reached on outgoing pipes,
+// messages are dropped. DEALER and PUSH sockets will block when their
+// outgoing pipes are full. On incoming pipes, SUB sockets will drop received
+// messages when they reach their RCVHWM. PULL and DEALER sockets will refuse
+// new messages and force messages to wait upstream due to TCP backpressure.
+
+inline int32_t capped32(uint32_t value)
+{
+    static constexpr auto limit = static_cast<uint32_t>(max_int32);
+    return static_cast<int32_t>(std::min(value, limit));
+}
+
+inline int64_t capped64(uint64_t value)
+{
+    static constexpr auto limit = static_cast<uint64_t>(max_int64);
+    return static_cast<int64_t>(std::min(value, limit));
+}
+
+inline int32_t seconds(uint32_t value)
+{
+    static constexpr uint32_t ms_to_seconds = 1000;
+    static constexpr auto milliseconds = static_cast<uint32_t>(max_int32);
+    static constexpr auto limit = milliseconds / ms_to_seconds;
+    return static_cast<int32_t>(std::min(value, limit) * ms_to_seconds);
+}
 
 int32_t socket::to_socket_type(role socket_role)
 {
@@ -58,29 +95,82 @@ int32_t socket::to_socket_type(role socket_role)
     }
 }
 
+// Because self is only set on construct, sockets are not restartable.
 // zmq_term terminates blocking operations but blocks until each socket in the
 // context is explicitly closed. Socket close kills transfers after linger.
 socket::socket(void* zmq_socket)
   : self_(zmq_socket),
-    send_buffer_(zmq_send_buffer),
-    receive_buffer_(zmq_receive_buffer),
     identifier_(reinterpret_cast<identifier>(zmq_socket))
+{
+}
+
+socket::socket(context& context, role socket_role)
+    : socket(context, socket_role, default_settings)
+{
+}
+
+// This design presumes no setting value should be able to cause failure.
+socket::socket(context& context, role socket_role, const settings& settings)
+  : socket(zmq_socket(context.self(), to_socket_type(socket_role)))
 {
     if (self_ == nullptr)
         return;
 
-    // Because self is only set on construct, sockets are not restartable.
-    if (!set(ZMQ_SNDHWM, send_buffer_) ||
-        !set(ZMQ_RCVHWM, receive_buffer_) ||
-        !set(ZMQ_LINGER, zmq_linger_milliseconds))
+    // TODO: update authenticator to normalize IP addresses for matching.
+    // Currently this is simplified to string matching and so limited to ipv4.
+    if (/*!set(ZMQ_IPV6, zmq_true) ||*/
+        !set32(ZMQ_LINGER, zmq_false) ||
+        !set32(ZMQ_SNDHWM, capped32(settings.send_high_water)) ||
+        !set32(ZMQ_RCVHWM, capped32(settings.receive_high_water)) ||
+        !set32(ZMQ_HANDSHAKE_IVL, seconds(settings.handshake_seconds)) ||
+        !set32(ZMQ_HEARTBEAT_IVL, seconds(settings.ping_seconds)))
     {
         stop();
+        return;
     }
-}
 
-socket::socket(context& context, role socket_role)
-  : socket(zmq_socket(context.self(), to_socket_type(socket_role)))
-{
+    const auto size_limit = capped64(settings.message_size_limit);
+
+    if (!set64(ZMQ_MAXMSGSIZE, size_limit == 0 ? -1 : size_limit))
+    {
+        stop();
+        return;
+    }
+
+    const auto inactivity = seconds(settings.inactivity_seconds);
+
+    // There is also ZMQ_HEARTBEAT_TTL (not used currently).
+    if (!set32(ZMQ_HEARTBEAT_TIMEOUT, inactivity))
+    {
+        stop();
+        return;
+    }
+
+    const auto send = settings.send_milliseconds;
+
+    // Zero sets infinite wait (default), no way to set zero/immediate.
+    if (!set32(ZMQ_SNDTIMEO, send == 0 ? -1 : send))
+    {
+        stop();
+        return;
+    }
+
+    const auto reconnect = seconds(settings.reconnect_seconds);
+
+    // Zero disables, reconnect_interval is hardwired to the default (100ms).
+    if (!set32(ZMQ_RECONNECT_IVL, reconnect == 0 ? -1 : reconnect_interval) ||
+        !set32(ZMQ_RECONNECT_IVL_MAX, reconnect))
+    {
+        stop();
+        return;
+    }
+
+    // Limited to subscriber sockets (not configured, always set by default).
+    if (socket_role == role::subscriber && !set(ZMQ_SUBSCRIBE, subscribe_all))
+    {
+        stop();
+        return;
+    }
 }
 
 socket::~socket()
@@ -88,50 +178,34 @@ socket::~socket()
     stop();
 }
 
-// This must be called on the socket thread.
 bool socket::stop()
 {
-    ///////////////////////////////////////////////////////////////////////////
-    // Critical Section
-    unique_lock lock(mutex_);
-
     if (self_ == nullptr)
         return true;
 
-    auto self = self_;
+    if (zmq_close(self_) == zmq_fail)
+        return false;
+
     self_ = nullptr;
-    return zmq_close(self) != zmq_fail;
-    ///////////////////////////////////////////////////////////////////////////
+    return true;
 }
 
 socket::operator const bool() const
 {
-    ///////////////////////////////////////////////////////////////////////////
-    // Critical Section
-    shared_lock lock(mutex_);
-
     return self_ != nullptr;
-    ///////////////////////////////////////////////////////////////////////////
 }
 
 void* socket::self()
 {
-    ///////////////////////////////////////////////////////////////////////////
-    // Critical Section
-    shared_lock lock(mutex_);
-
-    // This may become invalid after return. The guard only ensures atomicity.
     return self_;
-    ///////////////////////////////////////////////////////////////////////////
 }
 
-// To preserve idetity the id survives after the socket is destroyed.
+// To preserve identity the id survives after the socket is destroyed.
 identifier socket::id() const
 {
     return identifier_;
 }
 
-// This must be called on the socket thread.
 code socket::bind(const config::endpoint& address)
 {
     if (zmq_bind(self_, address.to_string().c_str()) == zmq_fail)
@@ -140,7 +214,6 @@ code socket::bind(const config::endpoint& address)
     return error::success;
 }
 
-// This must be called on the socket thread.
 code socket::connect(const config::endpoint& address)
 {
     if (zmq_connect(self_, address.to_string().c_str()) == zmq_fail)
@@ -150,7 +223,13 @@ code socket::connect(const config::endpoint& address)
 }
 
 // private
-bool socket::set(int32_t option, int32_t value)
+bool socket::set32(int32_t option, int32_t value)
+{
+    return zmq_setsockopt(self_, option, &value, sizeof(value)) != zmq_fail;
+}
+
+// private
+bool socket::set64(int32_t option, int64_t value)
 {
     return zmq_setsockopt(self_, option, &value, sizeof(value)) != zmq_fail;
 }
@@ -158,44 +237,45 @@ bool socket::set(int32_t option, int32_t value)
 // private
 bool socket::set(int32_t option, const std::string& value)
 {
-    if (value.empty())
-        return true;
-
     const auto buffer = value.c_str();
     return zmq_setsockopt(self_, option, buffer, value.size()) != zmq_fail;
 }
 
-// This must be called on the socket thread.
+// For NULL security, ZAP calls are only made for non-empty domain.
+// For PLAIN/CURVE, calls are always made if ZAP handler is present.
 bool socket::set_authentication_domain(const std::string& domain)
 {
-    return set(ZMQ_ZAP_DOMAIN, domain);
+    return domain.empty() || set(ZMQ_ZAP_DOMAIN, domain);
 }
 
-// This must be called on the socket thread.
+// Defines whether the socket will act as server for CURVE security.
 bool socket::set_curve_server()
 {
-    return set(ZMQ_CURVE_SERVER, zmq_true);
+    return set32(ZMQ_CURVE_SERVER, zmq_true);
 }
 
-// This must be called on the socket thread.
+// Sets socket's long term server key, must set this on CURVE client sockets.
 bool socket::set_curve_client(const config::sodium& server_public_key)
 {
-    return set(ZMQ_CURVE_SERVERKEY, server_public_key.to_string());
+    return server_public_key &&
+        set(ZMQ_CURVE_SERVERKEY, server_public_key.to_string());
 }
 
-// This must be called on the socket thread.
+// Sets socket's long term public key, must set this on CURVE client sockets.
 bool socket::set_public_key(const config::sodium& key)
 {
-    return set(ZMQ_CURVE_PUBLICKEY, key.to_string());
+    return key && set(ZMQ_CURVE_PUBLICKEY, key.to_string());
 }
 
-// This must be called on the socket thread.
+// You must set this on both CURVE client and server sockets.
 bool socket::set_private_key(const config::sodium& key)
 {
-    return set(ZMQ_CURVE_SECRETKEY, key.to_string());
+    return key && set(ZMQ_CURVE_SECRETKEY, key.to_string());
 }
 
-// This must be called on the socket thread.
+// Use on client for both set_public_key and set_private_key from a cert.
+// If CURVE is not required by server, call set_certificate({ null_hash })
+// to generate an arbitrary client certificate for a secure socket.
 bool socket::set_certificate(const certificate& certificate)
 {
     return certificate &&
@@ -203,10 +283,9 @@ bool socket::set_certificate(const certificate& certificate)
         set_private_key(certificate.private_key().to_string());
 }
 
-// This must be called on the socket thread.
 bool socket::set_socks_proxy(const config::authority& socks_proxy)
 {
-    return !socks_proxy || set(ZMQ_SOCKS_PROXY, socks_proxy.to_string());
+    return socks_proxy && set(ZMQ_SOCKS_PROXY, socks_proxy.to_string());
 }
 
 code socket::send(message& packet)

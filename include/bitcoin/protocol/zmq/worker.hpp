@@ -39,7 +39,7 @@ public:
     typedef std::shared_ptr<worker> ptr;
 
     /// Construct a worker.
-    worker(threadpool& pool);
+    worker(thread_priority priority=thread_priority::normal);
 
     /// Stop the worker.
     virtual ~worker();
@@ -62,10 +62,11 @@ protected:
 private:
 
     // These are protected by mutex.
-    dispatcher dispatch_;
     std::atomic<bool> stopped_;
     std::promise<bool> started_;
     std::promise<bool> finished_;
+    std::shared_ptr<asio::thread> thread_;
+    const thread_priority priority_;
     mutable shared_mutex mutex_;
 };
 

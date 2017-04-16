@@ -32,17 +32,10 @@ BOOST_AUTO_TEST_SUITE(certificate_tests)
 #define PRIVATE_KEY "JTKVSB%%)wK0E.X)V>+}o?pNmC{O&4W4b!Ni{Lh6"
 #define PUBLIC_KEY "rq:rM>}U?@Lns47E1%kR.o@n%FcmmsL/@{H8]yf7"
 
-// Determine if the key is valid as indicated by the setting option.
-static inline bool is_valid(const config::sodium& key, bool setting)
+inline bool is_valid(const config::sodium& key, bool setting)
 {
-    if (!key)
-        return false;
-
-    for (const auto letter: key.to_string())
-        if (setting && letter == '#')
-            return false;
-
-    return true;
+    return key && (!setting || 
+        key.to_string().find_first_of("#") == std::string::npos);
 }
 
 // Access protected members.

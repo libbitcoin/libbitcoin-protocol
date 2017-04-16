@@ -50,7 +50,7 @@ bool context::start()
     if (self_ != nullptr)
         return false;
 
-    self_ = zmq_ctx_new();
+    self_.store(zmq_ctx_new());
     return self_ != nullptr;
     ///////////////////////////////////////////////////////////////////////////
 }
@@ -65,34 +65,24 @@ bool context::stop()
     if (self_ == nullptr)
         return true;
 
-    auto self = self_;
-    self_ = nullptr;
-
     // This aborts blocking operations but blocks here until either each socket
     // in the context is explicitly closed. This can fail by signal interrupt.
-    return zmq_ctx_term(self) != zmq_fail;
+    const auto result = zmq_ctx_term(self_) != zmq_fail;
+
+    self_.store(nullptr);
+    return result;
     ///////////////////////////////////////////////////////////////////////////
 }
 
 context::operator const bool() const
 {
-    ///////////////////////////////////////////////////////////////////////////
-    // Critical Section
-    shared_lock lock(mutex_);
-
     return self_ != nullptr;
-    ///////////////////////////////////////////////////////////////////////////
 }
 
+// This may become invalid after return. This call only ensures atomicity.
 void* context::self()
 {
-    ///////////////////////////////////////////////////////////////////////////
-    // Critical Section
-    shared_lock lock(mutex_);
-
-    // This may become invalid after return. The guard only ensures atomicity.
     return self_;
-    ///////////////////////////////////////////////////////////////////////////
 }
 
 } // namespace zmq

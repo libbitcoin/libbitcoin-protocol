@@ -20,10 +20,70 @@
 #include <boost/test/unit_test_suite.hpp>
 #include <bitcoin/protocol.hpp>
 
+using namespace bc;
+using namespace bc::protocol::zmq;
+
 BOOST_AUTO_TEST_SUITE(frame_tests)
 
-BOOST_AUTO_TEST_CASE(frame_test)
+// constuctor1
+
+BOOST_AUTO_TEST_CASE(frame__constuctor1__always__valid)
 {
+    const frame instance;
+    BOOST_REQUIRE(instance);
+}
+
+BOOST_AUTO_TEST_CASE(frame__constuctor1__always__no_more)
+{
+    const frame instance;
+    BOOST_REQUIRE(!instance.more());
+}
+
+BOOST_AUTO_TEST_CASE(frame__constuctor1__always__empty_payload)
+{
+    const frame instance;
+    BOOST_REQUIRE(instance.payload().empty());
+}
+
+// constuctor2
+
+BOOST_AUTO_TEST_CASE(frame__constuctor2__empty__valid)
+{
+    const frame instance{ data_chunk{} };
+    BOOST_REQUIRE(instance);
+}
+
+BOOST_AUTO_TEST_CASE(frame__constuctor2__empty__no_more)
+{
+    const frame instance{ data_chunk{} };
+    BOOST_REQUIRE(!instance.more());
+}
+
+BOOST_AUTO_TEST_CASE(frame__constuctor2__empty__empty_payload)
+{
+    const frame instance{ data_chunk{} };
+    BOOST_REQUIRE(instance.payload().empty());
+}
+
+BOOST_AUTO_TEST_CASE(frame__constuctor2__non_empty__valid)
+{
+    static const data_chunk expected{ 0xba, 0xad, 0xf0, 0x0d };
+    const frame instance{ expected };
+    BOOST_REQUIRE(instance);
+}
+
+BOOST_AUTO_TEST_CASE(frame__constuctor2__non_empty__no_more)
+{
+    static const data_chunk expected{ 0xba, 0xad, 0xf0, 0x0d };
+    const frame instance{ expected };
+    BOOST_REQUIRE(!instance.more());
+}
+
+BOOST_AUTO_TEST_CASE(frame__constuctor2__non_empty__expected_payload)
+{
+    static const data_chunk expected{ 0xba, 0xad, 0xf0, 0x0d };
+    const frame instance{ expected };
+    BOOST_REQUIRE(instance.payload() == expected);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

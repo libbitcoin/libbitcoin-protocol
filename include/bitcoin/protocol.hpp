@@ -15,13 +15,8 @@
  */
 
 #include <bitcoin/bitcoin.hpp>
-#include <bitcoin/protocol/converter.hpp>
 #include <bitcoin/protocol/define.hpp>
-#include <bitcoin/protocol/interface.pb.h>
-#include <bitcoin/protocol/packet.hpp>
-#include <bitcoin/protocol/primitives.hpp>
-#include <bitcoin/protocol/request_packet.hpp>
-#include <bitcoin/protocol/response_packet.hpp>
+#include <bitcoin/protocol/settings.hpp>
 #include <bitcoin/protocol/version.hpp>
 #include <bitcoin/protocol/zmq/authenticator.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>

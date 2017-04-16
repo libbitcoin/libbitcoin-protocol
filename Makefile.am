@@ -35,11 +35,7 @@ lib_LTLIBRARIES = src/libbitcoin-protocol.la
 src_libbitcoin_protocol_la_CPPFLAGS = -I${srcdir}/include ${zmq_CPPFLAGS} ${bitcoin_CPPFLAGS}
 src_libbitcoin_protocol_la_LIBADD = ${zmq_LIBS} ${bitcoin_LIBS}
 src_libbitcoin_protocol_la_SOURCES = \
-    src/converter.cpp \
-    src/interface.pb.cc \
-    src/packet.cpp \
-    src/request_packet.cpp \
-    src/response_packet.cpp \
+    src/settings.cpp \
     src/zmq/authenticator.cpp \
     src/zmq/certificate.cpp \
     src/zmq/context.cpp \
@@ -63,8 +59,7 @@ test_libbitcoin_protocol_test_LDADD = src/libbitcoin-protocol.la ${boost_unit_te
 test_libbitcoin_protocol_test_SOURCES = \
     test/converter.cpp \
     test/main.cpp \
-    test/examples/authenticator_example.cpp \
-    test/examples/poller_example.cpp \
+    test/utility.hpp \
     test/zmq/authenticator.cpp \
     test/zmq/certificate.cpp \
     test/zmq/context.cpp \
@@ -85,13 +80,8 @@ include_bitcoin_HEADERS = \
 
 include_bitcoin_protocoldir = ${includedir}/bitcoin/protocol
 include_bitcoin_protocol_HEADERS = \
-    include/bitcoin/protocol/converter.hpp \
     include/bitcoin/protocol/define.hpp \
-    include/bitcoin/protocol/interface.pb.h \
-    include/bitcoin/protocol/packet.hpp \
-    include/bitcoin/protocol/primitives.hpp \
-    include/bitcoin/protocol/request_packet.hpp \
-    include/bitcoin/protocol/response_packet.hpp \
+    include/bitcoin/protocol/settings.hpp \
     include/bitcoin/protocol/version.hpp
 
 include_bitcoin_protocol_zmqdir = ${includedir}/bitcoin/protocol/zmq

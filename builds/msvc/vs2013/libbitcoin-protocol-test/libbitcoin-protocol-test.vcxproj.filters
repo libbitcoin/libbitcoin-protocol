@@ -10,15 +10,9 @@
     <Filter Include="src\zmq">
       <UniqueIdentifier>{be07d12d-9dae-4731-8b0d-acdec8ab7968}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\examples">
-      <UniqueIdentifier>{cb493992-f913-4264-a0f1-33913ccc69e5}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\test\main.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\test\converter.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\test\zmq\context.cpp">
@@ -42,17 +36,16 @@
     <ClCompile Include="..\..\..\..\test\zmq\certificate.cpp">
       <Filter>src\zmq</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\test\examples\authenticator_example.cpp">
-      <Filter>src\examples</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\test\examples\poller_example.cpp">
-      <Filter>src\examples</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\test\zmq\identifiers.cpp">
       <Filter>src\zmq</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\test\zmq\worker.cpp">
       <Filter>src\zmq</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\test\utility.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

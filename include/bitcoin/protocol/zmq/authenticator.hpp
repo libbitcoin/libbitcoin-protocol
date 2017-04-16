@@ -47,7 +47,7 @@ public:
     static const config::endpoint endpoint;
 
     /// There may be only one authenticator per process.
-    authenticator(threadpool& threadpool);
+    authenticator(thread_priority priority=thread_priority::normal);
 
     /// Stop the router.
     virtual ~authenticator();
@@ -61,10 +61,11 @@ public:
     /// Stop the router (optional).
     virtual bool stop() override;
 
-    /// This must be called on the socket thread, empty domain allowed.
+    /// This must be called on the socket thread.
+    /// A nonempty domain is required for the NULL mechanism.
     /// Set secure false to enable NULL mechanism, otherwise curve is required.
-    /// By not applying this method authentication is bypassed altogether.
     /// Apply authentication to the socket for the given arbitrary domain.
+    /// Behavior is based on set_private_key and allow/deny configuration.
     virtual bool apply(socket& socket, const std::string& domain, bool secure);
 
     /// Set the server private key (required for curve security).
@@ -91,12 +92,13 @@ private:
     context context_;
 
     // These are protected by mutex.
-    bool require_address_;
+    bool require_allow_;
     config::sodium private_key_;
     std::unordered_set<hash_digest> keys_;
     std::unordered_set<std::string> weak_domains_;
     std::unordered_map<std::string, bool> adresses_;
-    mutable shared_mutex mutex_;
+    mutable shared_mutex property_mutex_;
+    mutable shared_mutex stop_mutex_;
 };
 
 } // namespace zmq
