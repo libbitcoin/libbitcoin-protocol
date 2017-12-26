@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_CASE(identifiers__contains__default__not_zero)
 
 BOOST_AUTO_TEST_CASE(identifiers__contains__one_value__expected)
 {
-    const auto expected = 42u;
+    const intptr_t expected = 42u;
     identifiers_fixture instance;
     instance.push(reinterpret_cast<void*>(expected));
     BOOST_REQUIRE(instance.contains(expected));
@@ -63,8 +63,8 @@ BOOST_AUTO_TEST_CASE(identifiers__contains__one_value__expected)
 
 BOOST_AUTO_TEST_CASE(identifiers__contains__two_values__expected)
 {
-    const auto expected1 = 99u;
-    const auto expected2 = 42u;
+    const intptr_t expected1 = 99u;
+    const intptr_t expected2 = 42u;
     identifiers_fixture instance;
     instance.push(reinterpret_cast<void*>(expected1));
     instance.push(reinterpret_cast<void*>(expected2));
