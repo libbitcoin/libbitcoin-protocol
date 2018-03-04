@@ -137,7 +137,7 @@ bool message::dequeue(hash_digest& value)
 data_chunk message::dequeue_data()
 {
     if (queue_.empty())
-        return{};
+        return {};
 
     const auto data = queue_.front();
     queue_.pop();
@@ -147,7 +147,7 @@ data_chunk message::dequeue_data()
 std::string message::dequeue_text()
 {
     if (queue_.empty())
-        return{};
+        return {};
 
     const auto& front = queue_.front();
     auto text = std::string(front.begin(), front.end());

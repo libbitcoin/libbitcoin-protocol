@@ -99,7 +99,7 @@ data_chunk frame::payload() const
     const auto data = zmq_msg_data(buffer);
 
     const auto begin = static_cast<uint8_t*>(data);
-    return{ begin, begin + size };
+    return { begin, begin + size };
 }
 
 // Must be called on the socket thread.

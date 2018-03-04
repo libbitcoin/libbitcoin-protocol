@@ -75,14 +75,14 @@ identifiers poller::wait(int32_t timeout_milliseconds)
     if (signaled < 0)
     {
         terminated_ = true;
-        return{};
+        return {};
     }
 
     // No events have been signaled and no failure, so the timer expired.
     if (signaled == 0)
     {
         expired_ = true;
-        return{};
+        return {};
     }
 
     // At least one event was signaled, but the poll-in set may be empty.
