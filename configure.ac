@@ -122,10 +122,10 @@ AS_CASE([${with_tests}], [yes],
      AC_MSG_NOTICE([boost_unit_test_framework_LIBS : ${boost_unit_test_framework_LIBS}])],
     [AC_SUBST([boost_unit_test_framework_LIBS], [])])
 
-# Require zmq of at least version 4.2.3 and output ${zmq_CPPFLAGS/LIBS/PKG}.
+# Require zmq of at least version 4.2.0 and output ${zmq_CPPFLAGS/LIBS/PKG}.
 #------------------------------------------------------------------------------
-PKG_CHECK_MODULES([zmq], [libzmq >= 4.2.3])
-AC_SUBST([zmq_PKG], ['libzmq >= 4.2.3'])
+PKG_CHECK_MODULES([zmq], [libzmq >= 4.2.0])
+AC_SUBST([zmq_PKG], ['libzmq >= 4.2.0'])
 AC_SUBST([zmq_CPPFLAGS], [${zmq_CFLAGS}])
 AC_MSG_NOTICE([zmq_CPPFLAGS : ${zmq_CPPFLAGS}])
 AC_MSG_NOTICE([zmq_LIBS : ${zmq_LIBS}])
