@@ -38,6 +38,33 @@ public:
     /// An identifier for message routing.
     typedef byte_array<address_size> address;
 
+    /// Add an unsigned integer message part to the outgoing message.
+    template <typename Unsigned>
+    void enqueue_little_endian(Unsigned value)
+    {
+        queue_.emplace(to_chunk(to_little_endian<Unsigned>(value)));
+    }
+
+    /// Remove an unsigned from the queue top, false if empty queue or invalid.
+    template <typename Unsigned>
+    bool dequeue(Unsigned& value)
+    {
+        if (queue_.empty())
+            return false;
+
+        const auto& front = queue_.front();
+
+        if (front.size() == sizeof(Unsigned))
+        {
+            value = from_little_endian_unsafe<Unsigned>(front.begin());
+            queue_.pop();
+            return true;
+        }
+
+        queue_.pop();
+        return false;
+    }
+
     /// Add an empty message part to the outgoing message.
     void enqueue();
 
@@ -53,20 +80,12 @@ public:
     /// Move an identifier message part to the outgoing message.
     void enqueue(const address& value);
 
-    /// Add an unsigned integer message part to the outgoing message.
-    template <typename Unsigned>
-    void enqueue_little_endian(Unsigned value)
-    {
-        queue_.emplace(to_chunk(to_little_endian<Unsigned>(value)));
-    }
-
     /// Remove a message part from the top of the queue, empty if empty queue.
     data_chunk dequeue_data();
     std::string dequeue_text();
 
     /// Remove a part from the queue top, false if empty queue or invalid.
     bool dequeue();
-    bool dequeue(uint32_t& value);
     bool dequeue(data_chunk& value);
     bool dequeue(std::string& value);
     bool dequeue(hash_digest& value);

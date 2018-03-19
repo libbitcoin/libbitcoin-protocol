@@ -61,24 +61,6 @@ bool message::dequeue()
     return true;
 }
 
-bool message::dequeue(uint32_t& value)
-{
-    if (queue_.empty())
-        return false;
-
-    const auto& front = queue_.front();
-
-    if (front.size() == sizeof(uint32_t))
-    {
-        value = from_little_endian_unsafe<uint32_t>(front.begin());
-        queue_.pop();
-        return true;
-    }
-
-    queue_.pop();
-    return false;
-}
-
 bool message::dequeue(data_chunk& value)
 {
     if (queue_.empty())
