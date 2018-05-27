@@ -406,6 +406,71 @@ BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_asynchronous_connect_first__rec
     SEND_MESSAGES_UNTIL(publisher, received);
 }
 
+// Default receive-all filter is removed. No message received.
+BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_asynchronous__no_subscription)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    std::promise<bool> received;
+
+    simple_thread publisher_thread([&]()
+    {
+        zmq::socket publisher(context, role::publisher);
+        BOOST_REQUIRE(publisher);
+        BC_REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
+        SEND_MESSAGES_UNTIL(publisher, received); //begin sending now, needs own thread.
+    });
+
+    simple_thread subscriber_thread([&]()
+    {
+        zmq::socket subscriber(context, role::subscriber);
+        BOOST_REQUIRE(subscriber);
+
+        data_chunk subscribe_all;
+        BOOST_REQUIRE(subscriber.set_unsubscription(subscribe_all));
+
+        BC_REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
+
+        RECEIVE_FAILURE(subscriber);
+        received.set_value(true);
+    });
+}
+
+// Default receive-all filter is removed. "hello" filter is added.
+BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_asynchronous__hello_subscription_only)
+{
+    zmq::context context;
+    BOOST_REQUIRE(context);
+
+    std::promise<bool> received;
+
+    simple_thread publisher_thread([&]()
+    {
+        zmq::socket publisher(context, role::publisher);
+        BOOST_REQUIRE(publisher);
+        BC_REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
+        SEND_MESSAGES_UNTIL(publisher, received);
+    });
+
+    simple_thread subscriber_thread([&]()
+    {
+        zmq::socket subscriber(context, role::subscriber);
+        BOOST_REQUIRE(subscriber);
+
+        data_chunk subscribe_all;
+        BOOST_REQUIRE(subscriber.set_unsubscription(subscribe_all));
+
+        std::string topic = TEST_TOPIC;
+        BOOST_REQUIRE(subscriber.set_subscription(to_chunk(topic)));
+
+        BC_REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
+
+        RECEIVE_MESSAGE(subscriber);
+        received.set_value(true);
+    });
+}
+
 BOOST_AUTO_TEST_CASE(socket__xpub_xsub__grasslands_two_threads__subscribed)
 {
     zmq::context context;
