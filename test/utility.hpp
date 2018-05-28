@@ -26,6 +26,7 @@
 
 #define TEST_DOMAIN "testing"
 #define TEST_MESSAGE "hello world!"
+#define TEST_TOPIC "hello"
 #define TEST_HOST "127.0.0.1"
 #define TEST_HOST_BAD "127.0.0.42"
 #define TEST_PUBLIC_ENDPOINT "tcp://" TEST_HOST ":9000"

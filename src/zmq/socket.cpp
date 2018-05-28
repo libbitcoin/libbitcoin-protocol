@@ -33,7 +33,7 @@
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
-    
+
 static const auto subscribe_all = "";
 static constexpr int32_t zmq_true = 1;
 static constexpr int32_t zmq_false = 0;
@@ -42,7 +42,7 @@ static constexpr int32_t reconnect_interval = 100;
 static const bc::protocol::settings default_settings;
 
 // Linger
-// The default value of -1 specifies an infinite linger period. Pending 
+// The default value of -1 specifies an infinite linger period. Pending
 // messages shall not be discarded after a call to zmq_close(); attempting to
 // terminate the socket's context with zmq_term() shall block until all pending
 // messages have been sent to a peer. The value 0 specifies no linger period.
@@ -241,6 +241,13 @@ bool socket::set(int32_t option, const std::string& value)
     return zmq_setsockopt(self_, option, buffer, value.size()) != zmq_fail;
 }
 
+// private
+bool socket::set(int32_t option, const data_chunk& value)
+{
+    return zmq_setsockopt(self_, option, value.data(), value.size())
+        != zmq_fail;
+}
+
 // For NULL security, ZAP calls are only made for non-empty domain.
 // For PLAIN/CURVE, calls are always made if ZAP handler is present.
 bool socket::set_authentication_domain(const std::string& domain)
@@ -286,6 +293,16 @@ bool socket::set_certificate(const certificate& certificate)
 bool socket::set_socks_proxy(const config::authority& socks_proxy)
 {
     return socks_proxy && set(ZMQ_SOCKS_PROXY, socks_proxy.to_string());
+}
+
+bool socket::set_subscription(const data_chunk& filter)
+{
+    return set(ZMQ_SUBSCRIBE, filter);
+}
+
+bool socket::set_unsubscription(const data_chunk& filter)
+{
+    return set(ZMQ_UNSUBSCRIBE, filter);
 }
 
 code socket::send(message& packet)

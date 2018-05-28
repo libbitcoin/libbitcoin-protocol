@@ -115,11 +115,11 @@ public:
     /// Configure the socket to connect through the specified socks5 proxy.
     bool set_socks_proxy(const config::authority& socks_proxy);
 
-    /////// Configure subscriber socket to apply the message filter.
-    ////bool set_subscription(const data_chunk& filter);
+    /// Configure subscriber socket to apply the message filter.
+    bool set_subscription(const data_chunk& filter);
 
-    /////// Configure subscriber socket to remove the message filter.
-    ////bool set_unsubscription(const data_chunk& filter);
+    /// Configure subscriber socket to remove the message filter.
+    bool set_unsubscription(const data_chunk& filter);
 
     /// Send a message on this socket.
     code send(message& packet);
@@ -133,6 +133,7 @@ protected:
     bool set32(int32_t option, int32_t value);
     bool set64(int32_t option, int64_t value);
     bool set(int32_t option, const std::string& value);
+    bool set(int32_t option, const data_chunk& value);
 
 private:
     void* self_;
