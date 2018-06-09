@@ -8,25 +8,34 @@
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="include">
-      <UniqueIdentifier>{6B94E2A5-C054-4790-0000-000000000002}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="include\bitcoin">
-      <UniqueIdentifier>{6B94E2A5-C054-4790-0000-000000000003}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="include\bitcoin\protocol">
-      <UniqueIdentifier>{6B94E2A5-C054-4790-0000-000000000004}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="include\bitcoin\protocol\zmq">
       <UniqueIdentifier>{6B94E2A5-C054-4790-0000-000000000005}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resource">
+    <Filter Include="include\bitcoin">
       <UniqueIdentifier>{6B94E2A5-C054-4790-0000-000000000006}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\bitcoin\protocol">
+      <UniqueIdentifier>{6B94E2A5-C054-4790-0000-000000000007}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\bitcoin\protocol\zmq">
+      <UniqueIdentifier>{6B94E2A5-C054-4790-0000-000000000008}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{6B94E2A5-C054-4790-0000-000000000009}</UniqueIdentifier>
     </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{6B94E2A5-C054-4790-0000-000000000000}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\zmq">
+    <Filter Include="src\.deps">
       <UniqueIdentifier>{6B94E2A5-C054-4790-0000-000000000001}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\.libs">
+      <UniqueIdentifier>{6B94E2A5-C054-4790-0000-000000000002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\zmq">
+      <UniqueIdentifier>{6B94E2A5-C054-4790-0000-000000000003}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\zmq\.deps">
+      <UniqueIdentifier>{6B94E2A5-C054-4790-0000-000000000004}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
