@@ -43,7 +43,7 @@ public:
     certificate(const config::sodium& private_key);
 
     /// True if the certificate is valid.
-    operator const bool() const;
+    operator bool() const;
 
     /// The public key base85 text.
     const config::sodium& public_key() const;
