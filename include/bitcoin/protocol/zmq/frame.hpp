@@ -47,7 +47,7 @@ public:
     virtual ~frame();
 
     /// True if the construction was successful.
-    operator const bool() const;
+    operator bool() const;
 
     /// True if there is more data to receive.
     bool more() const;
