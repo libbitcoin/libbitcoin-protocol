@@ -67,7 +67,7 @@ bool frame::initialize(const data_chunk& data)
     return true;
 }
 
-frame::operator const bool() const
+frame::operator bool() const
 {
     return valid_;
 }
