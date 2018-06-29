@@ -10,20 +10,8 @@
     <Filter Include="src">
       <UniqueIdentifier>{C42BE17B-063D-44F1-0000-000000000000}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\.deps">
-      <UniqueIdentifier>{C42BE17B-063D-44F1-0000-000000000001}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\examples">
-      <UniqueIdentifier>{C42BE17B-063D-44F1-0000-000000000002}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\examples\.deps">
-      <UniqueIdentifier>{C42BE17B-063D-44F1-0000-000000000004}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\zmq">
-      <UniqueIdentifier>{C42BE17B-063D-44F1-0000-000000000003}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\zmq\.deps">
-      <UniqueIdentifier>{C42BE17B-063D-44F1-0000-000000000005}</UniqueIdentifier>
+      <UniqueIdentifier>{C42BE17B-063D-44F1-0000-000000000001}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
