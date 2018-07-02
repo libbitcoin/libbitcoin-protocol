@@ -127,8 +127,10 @@ AC_MSG_RESULT([$enable_isystem])
 AS_CASE([${CC}], [*],
     [AX_BOOST_BASE([1.62.0],
         [AC_SUBST([boost_CPPFLAGS], [${BOOST_CPPFLAGS}])
+         AC_SUBST([boost_ISYS_CPPFLAGS], [`echo ${BOOST_CPPFLAGS} | $SED s/^-I/-isystem/g | $SED s/' -I'/' -isystem'/g`])
          AC_SUBST([boost_LDFLAGS], [${BOOST_LDFLAGS}])
          AC_MSG_NOTICE([boost_CPPFLAGS : ${boost_CPPFLAGS}])
+         AC_MSG_NOTICE([boost_ISYS_CPPFLAGS : ${boost_ISYS_CPPFLAGS}])
          AC_MSG_NOTICE([boost_LDFLAGS : ${boost_LDFLAGS}])],
         [AC_MSG_ERROR([Boost 1.62.0 or later is required but was not found.])])])
 
@@ -154,9 +156,12 @@ PKG_CHECK_MODULES([zmq], [libzmq >= 4.2.0],
 AC_SUBST([zmq_PKG], ['libzmq >= 4.2.0'])
 AC_SUBST([zmq_CPPFLAGS], [${zmq_CFLAGS}])
 AS_IF([test x${zmq_INCLUDEDIR} != "x"],
-    [AC_SUBST([zmq_ISYS_CPPFLAGS], [-isystem${zmq_INCLUDEDIR} ${zmq_OTHER_CFLAGS}])],
+    [AC_SUBST([zmq_ISYS_CPPFLAGS], ["-isystem${zmq_INCLUDEDIR} ${zmq_OTHER_CFLAGS}"])],
     [AC_SUBST([zmq_ISYS_CPPFLAGS], [${zmq_OTHER_CFLAGS}])])
 AC_MSG_NOTICE([zmq_CPPFLAGS : ${zmq_CPPFLAGS}])
+AC_MSG_NOTICE([zmq_ISYS_CPPFLAGS : ${zmq_ISYS_CPPFLAGS}])
+AC_MSG_NOTICE([zmq_OTHER_CFLAGS : ${zmq_OTHER_CFLAGS}])
+AC_MSG_NOTICE([zmq_INCLUDEDIR : ${zmq_INCLUDEDIR}])
 AC_MSG_NOTICE([zmq_LIBS : ${zmq_LIBS}])
 
 AS_CASE([${enable_isystem}],[yes],
@@ -175,9 +180,12 @@ PKG_CHECK_MODULES([bitcoin], [libbitcoin >= 4.0.0],
 AC_SUBST([bitcoin_PKG], ['libbitcoin >= 4.0.0'])
 AC_SUBST([bitcoin_CPPFLAGS], [${bitcoin_CFLAGS}])
 AS_IF([test x${bitcoin_INCLUDEDIR} != "x"],
-    [AC_SUBST([bitcoin_ISYS_CPPFLAGS], [-isystem${bitcoin_INCLUDEDIR} ${bitcoin_OTHER_CFLAGS}])],
+    [AC_SUBST([bitcoin_ISYS_CPPFLAGS], ["-isystem${bitcoin_INCLUDEDIR} ${bitcoin_OTHER_CFLAGS}"])],
     [AC_SUBST([bitcoin_ISYS_CPPFLAGS], [${bitcoin_OTHER_CFLAGS}])])
 AC_MSG_NOTICE([bitcoin_CPPFLAGS : ${bitcoin_CPPFLAGS}])
+AC_MSG_NOTICE([bitcoin_ISYS_CPPFLAGS : ${bitcoin_ISYS_CPPFLAGS}])
+AC_MSG_NOTICE([bitcoin_OTHER_CFLAGS : ${bitcoin_OTHER_CFLAGS}])
+AC_MSG_NOTICE([bitcoin_INCLUDEDIR : ${bitcoin_INCLUDEDIR}])
 AC_MSG_NOTICE([bitcoin_LIBS : ${bitcoin_LIBS}])
 
 AS_CASE([${enable_isystem}],[yes],
