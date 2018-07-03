@@ -74,7 +74,7 @@ bool context::stop()
     ///////////////////////////////////////////////////////////////////////////
 }
 
-context::operator const bool() const
+context::operator bool() const
 {
     return self_ != nullptr;
 }
