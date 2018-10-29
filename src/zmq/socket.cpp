@@ -105,7 +105,7 @@ socket::socket(void* zmq_socket)
 }
 
 socket::socket(context& context, role socket_role)
-    : socket(context, socket_role, default_settings)
+  : socket(context, socket_role, default_settings)
 {
 }
 
