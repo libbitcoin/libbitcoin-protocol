@@ -24,6 +24,8 @@
 namespace libbitcoin {
 namespace protocol {
 
+using namespace bc::system;
+
 settings::settings()
   : send_high_water(100),
     receive_high_water(100),
@@ -32,7 +34,14 @@ settings::settings()
     ping_seconds(0),
     inactivity_seconds(0),
     reconnect_seconds(1),
-    send_milliseconds(0)
+    send_milliseconds(0),
+    web_priority(false),
+    web_origins({}),
+    web_root("web"),
+    web_ca_certificate(""),
+    web_server_private_key("key.pem"),
+    web_server_certificate("server.pem"),
+    web_client_certificates("clients")
 {
 }
 
@@ -44,7 +53,14 @@ settings::settings(uint32_t send_high_water, uint32_t receive_high_water)
     ping_seconds(0),
     inactivity_seconds(0),
     reconnect_seconds(1),
-    send_milliseconds(0)
+    send_milliseconds(0),
+    web_priority(false),
+    web_origins({}),
+    web_root("web"),
+    web_ca_certificate(""),
+    web_server_private_key("key.pem"),
+    web_server_certificate("server.pem"),
+    web_client_certificates("clients")
 {
 }
 
