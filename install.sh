@@ -26,6 +26,8 @@
 # Depending on the caller's permission to the --prefix or --build-dir
 # directory, the script may need to be sudo'd.
 
+set -x
+
 # Define constants.
 #==============================================================================
 # The default build directory.
@@ -136,7 +138,8 @@ make_tests()
 
     # Build and run unit tests relative to the primary directory.
     # VERBOSE=1 ensures test runner output sent to console (gcc).
-    make_jobs $JOBS check "VERBOSE=1"
+    #make_jobs $JOBS check "VERBOSE=1"
+    make_jobs 1 -d test-suite.log "VERBOSE=1"
     local RESULT=$?
 
     # Test runners emit to the test.log file.

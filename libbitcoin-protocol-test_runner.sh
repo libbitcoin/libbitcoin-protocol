@@ -6,6 +6,9 @@
 #
 ###############################################################################
 
+set +e
+set -x
+
 # Define tests and options.
 #==============================================================================
 BOOST_UNIT_TEST_OPTIONS=\
@@ -13,8 +16,8 @@ BOOST_UNIT_TEST_OPTIONS=\
 "--show_progress=no "\
 "--detect_memory_leak=0 "\
 "--report_level=no "\
-"--build_info=yes"
-
+"--build_info=yes " \
+"--log_level=all"
 
 # Run tests.
 #==============================================================================
