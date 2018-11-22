@@ -20,21 +20,22 @@
 #include <boost/test/unit_test_suite.hpp>
 #include <bitcoin/protocol.hpp>
 
+using namespace bc;
 using namespace bc::protocol::zmq;
 
 BOOST_AUTO_TEST_SUITE(message_tests)
 
-static const bc::data_chunk chunk1{ 0xf0, 0x0d };
-static const bc::data_chunk chunk2{ 0xba, 0xad, 0xf0, 0x0d };
-static const auto number2 = bc::from_little_endian_unsafe<uint32_t>(chunk2.begin());
-static const auto hash1 = bc::hash_literal("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-static const auto hash2 = bc::hash_literal("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b");
+static const system::data_chunk chunk1{ 0xf0, 0x0d };
+static const system::data_chunk chunk2{ 0xba, 0xad, 0xf0, 0x0d };
+static const auto number2 = system::from_little_endian_unsafe<uint32_t>(chunk2.begin());
+static const auto hash1 = system::hash_literal("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+static const auto hash2 = system::hash_literal("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b");
 
 class message_fixture
   : public message
 {
 public:
-    bc::data_queue& queue()
+    system::data_queue& queue()
     {
         return queue_;
     };
@@ -99,7 +100,7 @@ BOOST_AUTO_TEST_CASE(message__enqueue2__nonempty__ordered)
 BOOST_AUTO_TEST_CASE(message__enqueue3__empty__size_1_expected)
 {
     message_fixture instance;
-    instance.enqueue(bc::to_chunk(chunk1));
+    instance.enqueue(system::to_chunk(chunk1));
     BOOST_REQUIRE_EQUAL(instance.size(), 1u);
     BOOST_REQUIRE(instance.queue().front() == chunk1);
 }
@@ -108,7 +109,7 @@ BOOST_AUTO_TEST_CASE(message__enqueue3__nonempty__ordered)
 {
     message_fixture instance;
     instance.queue().emplace(chunk1);
-    instance.enqueue(bc::to_chunk(chunk2));
+    instance.enqueue(system::to_chunk(chunk2));
     BOOST_REQUIRE_EQUAL(instance.size(), 2u);
     BOOST_REQUIRE(instance.queue().front() == chunk1);
     BOOST_REQUIRE(instance.queue().back() == chunk2);
@@ -151,7 +152,7 @@ BOOST_AUTO_TEST_CASE(message__enqueue_little_endian__empty__size_1_expected)
     instance.enqueue_little_endian<uint32_t>(number2);
     BOOST_REQUIRE_EQUAL(instance.size(), 1u);
     const auto bytes = instance.queue().front().begin();
-    BOOST_REQUIRE_EQUAL(bc::from_little_endian_unsafe<uint32_t>(bytes), number2);
+    BOOST_REQUIRE_EQUAL(system::from_little_endian_unsafe<uint32_t>(bytes), number2);
 }
 
 BOOST_AUTO_TEST_CASE(message__enqueue_little_endian__nonempty__ordered)
@@ -231,7 +232,7 @@ BOOST_AUTO_TEST_CASE(message__dequeue2__two__true_ordered_expected)
 BOOST_AUTO_TEST_CASE(message__dequeue3__empty__false)
 {
     message instance;
-    bc::data_chunk out;
+    system::data_chunk out;
     BOOST_REQUIRE(!instance.dequeue(out));
 }
 
@@ -240,7 +241,7 @@ BOOST_AUTO_TEST_CASE(message__dequeue3__two__true_ordered_expected)
     message_fixture instance;
     instance.queue().emplace(chunk2);
     instance.queue().emplace(chunk1);
-    bc::data_chunk out;
+    system::data_chunk out;
     BOOST_REQUIRE(instance.dequeue(out));
     BOOST_REQUIRE(out == chunk2);
     BOOST_REQUIRE(instance.dequeue(out));
@@ -263,9 +264,9 @@ BOOST_AUTO_TEST_CASE(message__dequeue4__two__true_ordered_expected)
     instance.queue().emplace(chunk1);
     std::string out;
     BOOST_REQUIRE(instance.dequeue(out));
-    BOOST_REQUIRE(bc::to_chunk(out) == chunk2);
+    BOOST_REQUIRE(system::to_chunk(out) == chunk2);
     BOOST_REQUIRE(instance.dequeue(out));
-    BOOST_REQUIRE(bc::to_chunk(out) == chunk1);
+    BOOST_REQUIRE(system::to_chunk(out) == chunk1);
 }
 
 // dequeue5
@@ -273,7 +274,7 @@ BOOST_AUTO_TEST_CASE(message__dequeue4__two__true_ordered_expected)
 BOOST_AUTO_TEST_CASE(message__dequeue5__empty__false)
 {
     message instance;
-    bc::hash_digest out;
+    system::hash_digest out;
     BOOST_REQUIRE(!instance.dequeue(out));
 }
 
@@ -281,7 +282,7 @@ BOOST_AUTO_TEST_CASE(message__dequeue5__mismatched__false_empty)
 {
     message_fixture instance;
     instance.queue().emplace(chunk1);
-    bc::hash_digest out;
+    system::hash_digest out;
     BOOST_REQUIRE(!instance.dequeue(out));
     BOOST_REQUIRE(instance.empty());
 }
@@ -289,9 +290,9 @@ BOOST_AUTO_TEST_CASE(message__dequeue5__mismatched__false_empty)
 BOOST_AUTO_TEST_CASE(message__dequeue5__two__true_ordered_expected)
 {
     message_fixture instance;
-    instance.queue().emplace(bc::to_chunk(hash1));
-    instance.queue().emplace(bc::to_chunk(hash2));
-    bc::hash_digest out;
+    instance.queue().emplace(system::to_chunk(hash1));
+    instance.queue().emplace(system::to_chunk(hash2));
+    system::hash_digest out;
     BOOST_REQUIRE(instance.dequeue(out));
     BOOST_REQUIRE(out == hash1);
     BOOST_REQUIRE(instance.dequeue(out));
@@ -328,8 +329,8 @@ BOOST_AUTO_TEST_CASE(message__dequeue_text__two__ordered_expected)
     message_fixture instance;
     instance.queue().emplace(chunk2);
     instance.queue().emplace(chunk1);
-    BOOST_REQUIRE(bc::to_chunk(instance.dequeue_text()) == chunk2);
-    BOOST_REQUIRE(bc::to_chunk(instance.dequeue_text()) == chunk1);
+    BOOST_REQUIRE(system::to_chunk(instance.dequeue_text()) == chunk2);
+    BOOST_REQUIRE(system::to_chunk(instance.dequeue_text()) == chunk1);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

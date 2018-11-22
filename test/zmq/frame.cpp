@@ -20,7 +20,7 @@
 #include <boost/test/unit_test_suite.hpp>
 #include <bitcoin/protocol.hpp>
 
-using namespace bc;
+using namespace bc::system;
 using namespace bc::protocol::zmq;
 
 BOOST_AUTO_TEST_SUITE(frame_tests)

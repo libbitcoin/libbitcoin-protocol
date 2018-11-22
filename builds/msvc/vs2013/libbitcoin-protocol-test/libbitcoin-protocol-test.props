@@ -21,9 +21,9 @@
   </ItemDefinitionGroup>
 
   <!-- Dependencies -->
-  
+
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)libbitcoin.import.props" />
+    <Import Project="$(SolutionDir)libbitcoin-system.import.props" />
     <Import Project="$(SolutionDir)libbitcoin-protocol.import.props" />
   </ImportGroup>
 
@@ -35,32 +35,32 @@
     <Linkage-secp256k1>dynamic</Linkage-secp256k1>
     <Linkage-libzmq>dynamic</Linkage-libzmq>
     <!--<Linkage-protobuf>dynamic</Linkage-protobuf>-->
-    <Linkage-libbitcoin>dynamic</Linkage-libbitcoin>
+    <Linkage-libbitcoin-system>dynamic</Linkage-libbitcoin-system>
     <Linkage-libbitcoin-protocol>dynamic</Linkage-libbitcoin-protocol>
   </PropertyGroup>
   <PropertyGroup Condition="'$(DefaultLinkage)' == 'ltcg'">
     <Linkage-secp256k1>ltcg</Linkage-secp256k1>
     <Linkage-libzmq>ltcg</Linkage-libzmq>
     <!--<Linkage-protobuf>ltcg</Linkage-protobuf>-->
-    <Linkage-libbitcoin>ltcg</Linkage-libbitcoin>
+    <Linkage-libbitcoin-system>ltcg</Linkage-libbitcoin-system>
     <Linkage-libbitcoin-protocol>ltcg</Linkage-libbitcoin-protocol>
   </PropertyGroup>
   <PropertyGroup Condition="'$(DefaultLinkage)' == 'static'">
     <Linkage-secp256k1>static</Linkage-secp256k1>
     <Linkage-libzmq>static</Linkage-libzmq>
     <!--<Linkage-protobuf>static</Linkage-protobuf>-->
-    <Linkage-libbitcoin>static</Linkage-libbitcoin>
+    <Linkage-libbitcoin-system>static</Linkage-libbitcoin-system>
     <Linkage-libbitcoin-protocol>static</Linkage-libbitcoin-protocol>
   </PropertyGroup>
 
   <!-- Messages -->
-  
+
   <Target Name="LinkageInfo" BeforeTargets="PrepareForBuild">
-    <Message Text="Linkage-secp256k1 : $(Linkage-secp256k1)" Importance="high"/>
-    <Message Text="Linkage-libzmq    : $(Linkage-libzmq)" Importance="high"/>
-    <Message Text="Linkage-libbitcoin: $(Linkage-libbitcoin)" Importance="high"/>
+    <Message Text="Linkage-secp256k1     : $(Linkage-secp256k1)" Importance="high"/>
+    <Message Text="Linkage-libzmq        : $(Linkage-libzmq)" Importance="high"/>
+    <Message Text="Linkage-_-system      : $(Linkage-libbitcoin-system)" Importance="high"/>
     <!--<Message Text="Linkage-protobuf  : $(Linkage-protobuf)" Importance="high"/>-->
-    <Message Text="Linkage-_protocol : $(Linkage-libbitcoin-protocol)" Importance="high"/>
+    <Message Text="Linkage-_protocol     : $(Linkage-libbitcoin-protocol)" Importance="high"/>
   </Target>
 
 </Project>

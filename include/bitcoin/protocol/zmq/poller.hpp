@@ -35,7 +35,7 @@ namespace zmq {
 /// This class is not thread safe.
 /// All calls must be made on the socket(s) thread.
 class BCP_API poller
-  : public enable_shared_from_base<poller>, noncopyable
+  : public system::enable_shared_from_base<poller>, system::noncopyable
 {
 public:
     /// A shared poller pointer.

@@ -22,7 +22,7 @@
 #include <cstdint>
 #include <string>
 #include <zmq.h>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/settings.hpp>
 #include <bitcoin/protocol/zmq/authenticator.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
@@ -39,7 +39,7 @@ static constexpr int32_t zmq_true = 1;
 static constexpr int32_t zmq_false = 0;
 static constexpr int32_t zmq_fail = -1;
 static constexpr int32_t reconnect_interval = 100;
-static const bc::protocol::settings default_settings;
+static const libbitcoin::protocol::settings default_settings;
 
 // Linger
 // The default value of -1 specifies an infinite linger period. Pending
@@ -206,20 +206,20 @@ identifier socket::id() const
     return identifier_;
 }
 
-code socket::bind(const config::endpoint& address)
+system::code socket::bind(const system::config::endpoint& address)
 {
     if (zmq_bind(self_, address.to_string().c_str()) == zmq_fail)
         return get_last_error();
 
-    return error::success;
+    return system::error::success;
 }
 
-code socket::connect(const config::endpoint& address)
+system::code socket::connect(const system::config::endpoint& address)
 {
     if (zmq_connect(self_, address.to_string().c_str()) == zmq_fail)
         return get_last_error();
 
-    return error::success;
+    return system::error::success;
 }
 
 // private
@@ -242,7 +242,7 @@ bool socket::set(int32_t option, const std::string& value)
 }
 
 // private
-bool socket::set(int32_t option, const data_chunk& value)
+bool socket::set(int32_t option, const system::data_chunk& value)
 {
     return zmq_setsockopt(self_, option, value.data(), value.size())
         != zmq_fail;
@@ -262,20 +262,21 @@ bool socket::set_curve_server()
 }
 
 // Sets socket's long term server key, must set this on CURVE client sockets.
-bool socket::set_curve_client(const config::sodium& server_public_key)
+bool socket::set_curve_client(
+    const system::config::sodium& server_public_key)
 {
     return server_public_key &&
         set(ZMQ_CURVE_SERVERKEY, server_public_key.to_string());
 }
 
 // Sets socket's long term public key, must set this on CURVE client sockets.
-bool socket::set_public_key(const config::sodium& key)
+bool socket::set_public_key(const system::config::sodium& key)
 {
     return key && set(ZMQ_CURVE_PUBLICKEY, key.to_string());
 }
 
 // You must set this on both CURVE client and server sockets.
-bool socket::set_private_key(const config::sodium& key)
+bool socket::set_private_key(const system::config::sodium& key)
 {
     return key && set(ZMQ_CURVE_SECRETKEY, key.to_string());
 }
@@ -290,27 +291,27 @@ bool socket::set_certificate(const certificate& certificate)
         set_private_key(certificate.private_key().to_string());
 }
 
-bool socket::set_socks_proxy(const config::authority& socks_proxy)
+bool socket::set_socks_proxy(const system::config::authority& socks_proxy)
 {
     return socks_proxy && set(ZMQ_SOCKS_PROXY, socks_proxy.to_string());
 }
 
-bool socket::set_subscription(const data_chunk& filter)
+bool socket::set_subscription(const system::data_chunk& filter)
 {
     return set(ZMQ_SUBSCRIBE, filter);
 }
 
-bool socket::set_unsubscription(const data_chunk& filter)
+bool socket::set_unsubscription(const system::data_chunk& filter)
 {
     return set(ZMQ_UNSUBSCRIBE, filter);
 }
 
-code socket::send(message& packet)
+system::code socket::send(message& packet)
 {
     return packet.send(*this);
 }
 
-code socket::receive(message& packet)
+system::code socket::receive(message& packet)
 {
     return packet.receive(*this);
 }

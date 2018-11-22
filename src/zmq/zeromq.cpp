@@ -19,33 +19,33 @@
 #include <bitcoin/protocol/zmq/zeromq.hpp>
 
 #include <zmq.h>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
 // See zmq::errno_to_string
-code get_last_error()
+system::code get_last_error()
 {
     const auto zeromq_code = zmq_errno();
-    const auto ec = error::posix_to_error_code(zeromq_code);
+    const auto ec = system::error::posix_to_error_code(zeromq_code);
 
-    if (ec != error::unknown)
+    if (ec != system::error::unknown)
         return ec;
 
     switch (zeromq_code)
     {
         // See zmq.h
         case EFSM:
-            return error::bad_stream;
+            return system::error::bad_stream;
         case ETERM:
-            return error::service_stopped;
+            return system::error::service_stopped;
         case EMTHREAD:
         case ENOCOMPATPROTO:
-            return error::operation_failed;
+            return system::error::operation_failed;
         default:
-            return error::unknown;
+            return system::error::unknown;
     }
 }
 

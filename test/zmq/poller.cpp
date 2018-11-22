@@ -23,7 +23,7 @@
 #include <bitcoin/protocol.hpp>
 #include "../utility.hpp"
 
-using namespace bc;
+using namespace bc::system;
 using namespace bc::protocol;
 using role = zmq::socket::role;
 

@@ -20,7 +20,7 @@
 
 #include <string>
 #include <zmq.h>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -36,7 +36,7 @@ certificate::certificate()
 }
 
 // Full key space.
-certificate::certificate(const config::sodium& private_key)
+certificate::certificate(const system::config::sodium& private_key)
 {
     if (!private_key)
     {
@@ -49,8 +49,8 @@ certificate::certificate(const config::sodium& private_key)
         private_ = private_key;
 }
 
-bool certificate::derive(config::sodium& out_public,
-    const config::sodium& private_key)
+bool certificate::derive(system::config::sodium& out_public,
+    const system::config::sodium& private_key)
 {
     if (!private_key)
         return false;
@@ -61,7 +61,7 @@ bool certificate::derive(config::sodium& out_public,
     if (zmq_curve_public(public_key, key.data()) == zmq_fail)
         return false;
 
-    out_public = config::sodium(public_key);
+    out_public = system::config::sodium(public_key);
     return out_public;
 }
 
@@ -72,8 +72,8 @@ static inline bool ok_setting(const std::string& key)
     return key.find_first_of('#') == std::string::npos;
 }
 
-bool certificate::create(config::sodium& out_public,
-    config::sodium& out_private, bool setting)
+bool certificate::create(system::config::sodium& out_public,
+    system::config::sodium& out_private, bool setting)
 {
     // Loop until neither key's base85 encoding includes the # character.
     // This ensures that the value can be used in libbitcoin settings files.
@@ -88,8 +88,8 @@ bool certificate::create(config::sodium& out_public,
 
         if (!setting || (ok_setting(public_key) && ok_setting(private_key)))
         {
-            out_public = config::sodium(public_key);
-            out_private = config::sodium(private_key);
+            out_public = system::config::sodium(public_key);
+            out_private = system::config::sodium(private_key);
             return out_public;
         }
     }
@@ -102,12 +102,12 @@ certificate::operator bool() const
     return public_;
 }
 
-const config::sodium& certificate::public_key() const
+const system::config::sodium& certificate::public_key() const
 {
     return public_;
 }
 
-const config::sodium& certificate::private_key() const
+const system::config::sodium& certificate::private_key() const
 {
     return private_;
 }

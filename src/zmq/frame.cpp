@@ -22,7 +22,7 @@
 #include <cstdint>
 #include <cstring>
 #include <zmq.h>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 #include <bitcoin/protocol/zmq/zeromq.hpp>
 
@@ -42,7 +42,7 @@ frame::frame()
 }
 
 // Use for sending.
-frame::frame(const data_chunk& data)
+frame::frame(const system::data_chunk& data)
   : more_(false), valid_(initialize(data))
 {
 }
@@ -53,7 +53,7 @@ frame::~frame()
 }
 
 // private
-bool frame::initialize(const data_chunk& data)
+bool frame::initialize(const system::data_chunk& data)
 {
     const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
 
@@ -90,7 +90,7 @@ bool frame::set_more(socket& socket)
     return true;
 }
 
-data_chunk frame::payload() const
+system::data_chunk frame::payload() const
 {
     const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
 
@@ -103,27 +103,27 @@ data_chunk frame::payload() const
 }
 
 // Must be called on the socket thread.
-code frame::receive(socket& socket)
+system::code frame::receive(socket& socket)
 {
     if (!valid_)
-        return error::operation_failed;
+        return system::error::operation_failed;
 
     const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
     const auto result = zmq_msg_recv(buffer, socket.self(), wait_flag)
         != zmq_fail && set_more(socket);
-    return result ? error::success : get_last_error();
+    return result ? system::error::success : get_last_error();
 }
 
 // Must be called on the socket thread.
-code frame::send(socket& socket, bool last)
+system::code frame::send(socket& socket, bool last)
 {
     if (!valid_)
-        return error::operation_failed;
+        return system::error::operation_failed;
 
     const int flags = (last ? 0 : ZMQ_SNDMORE) | wait_flag;
     const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
     const auto result = zmq_msg_send(buffer, socket.self(), flags) != zmq_fail;
-    return result ? error::success : get_last_error();
+    return result ? system::error::success : get_last_error();
 }
 
 // private

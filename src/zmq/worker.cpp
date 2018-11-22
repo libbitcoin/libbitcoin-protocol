@@ -21,7 +21,7 @@
 #include <zmq.h>
 #include <functional>
 #include <future>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/zmq/message.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
@@ -32,7 +32,7 @@ namespace zmq {
 #define NAME "worker"
 
 // Derive from this abstract worker to implement concrete worker.
-worker::worker(thread_priority priority)
+worker::worker(system::thread_priority priority)
   : priority_(priority),
     stopped_(true)
 {
@@ -48,14 +48,15 @@ bool worker::start()
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    unique_lock lock(mutex_);
+    system::unique_lock lock(mutex_);
 
     if (stopped_)
     {
         stopped_ = false;
 
         // Create the worker thread and socket and start polling.
-        thread_ = std::make_shared<asio::thread>(&worker::work, this);
+        thread_ = std::make_shared<system::asio::thread>(
+            &worker::work, this);
 
         // Wait on worker start.
         const auto result = started_.get_future().get();
@@ -75,7 +76,7 @@ bool worker::stop()
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    unique_lock lock(mutex_);
+    system::unique_lock lock(mutex_);
 
     if (!stopped_)
     {
