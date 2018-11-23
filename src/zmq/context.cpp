@@ -26,6 +26,8 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+using namespace bc::system;
+
 static constexpr int32_t zmq_fail = -1;
 
 context::context(bool started)
@@ -45,7 +47,7 @@ bool context::start()
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    system::unique_lock lock(mutex_);
+    unique_lock lock(mutex_);
 
     if (self_ != nullptr)
         return false;
@@ -60,7 +62,7 @@ bool context::stop()
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    system::unique_lock lock(mutex_);
+    unique_lock lock(mutex_);
 
     if (self_ == nullptr)
         return true;

@@ -30,6 +30,8 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+using namespace bc::system;
+
 // If ZMQ_DONTWAIT is set we fail on busy socket.
 // This would happen if a message is being read when we try to send.
 static auto constexpr wait_flag = 0;
@@ -42,7 +44,7 @@ frame::frame()
 }
 
 // Use for sending.
-frame::frame(const system::data_chunk& data)
+frame::frame(const data_chunk& data)
   : more_(false), valid_(initialize(data))
 {
 }
@@ -53,7 +55,7 @@ frame::~frame()
 }
 
 // private
-bool frame::initialize(const system::data_chunk& data)
+bool frame::initialize(const data_chunk& data)
 {
     const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
 
@@ -90,7 +92,7 @@ bool frame::set_more(socket& socket)
     return true;
 }
 
-system::data_chunk frame::payload() const
+data_chunk frame::payload() const
 {
     const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
 
@@ -103,27 +105,27 @@ system::data_chunk frame::payload() const
 }
 
 // Must be called on the socket thread.
-system::code frame::receive(socket& socket)
+code frame::receive(socket& socket)
 {
     if (!valid_)
-        return system::error::operation_failed;
+        return error::operation_failed;
 
     const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
     const auto result = zmq_msg_recv(buffer, socket.self(), wait_flag)
         != zmq_fail && set_more(socket);
-    return result ? system::error::success : get_last_error();
+    return result ? error::success : get_last_error();
 }
 
 // Must be called on the socket thread.
-system::code frame::send(socket& socket, bool last)
+code frame::send(socket& socket, bool last)
 {
     if (!valid_)
-        return system::error::operation_failed;
+        return error::operation_failed;
 
     const int flags = (last ? 0 : ZMQ_SNDMORE) | wait_flag;
     const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
     const auto result = zmq_msg_send(buffer, socket.self(), flags) != zmq_fail;
-    return result ? system::error::success : get_last_error();
+    return result ? error::success : get_last_error();
 }
 
 // private

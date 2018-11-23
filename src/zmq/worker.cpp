@@ -29,10 +29,12 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+using namespace bc::system;
+
 #define NAME "worker"
 
 // Derive from this abstract worker to implement concrete worker.
-worker::worker(system::thread_priority priority)
+worker::worker(thread_priority priority)
   : priority_(priority),
     stopped_(true)
 {
@@ -48,14 +50,14 @@ bool worker::start()
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    system::unique_lock lock(mutex_);
+    unique_lock lock(mutex_);
 
     if (stopped_)
     {
         stopped_ = false;
 
         // Create the worker thread and socket and start polling.
-        thread_ = std::make_shared<system::asio::thread>(
+        thread_ = std::make_shared<asio::thread>(
             &worker::work, this);
 
         // Wait on worker start.
@@ -76,7 +78,7 @@ bool worker::stop()
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    system::unique_lock lock(mutex_);
+    unique_lock lock(mutex_);
 
     if (!stopped_)
     {

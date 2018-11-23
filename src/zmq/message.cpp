@@ -27,29 +27,31 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+using namespace bc::system;
+
 void message::enqueue()
 {
-    queue_.emplace(system::data_chunk{});
+    queue_.emplace(data_chunk{});
 }
 
-void message::enqueue(system::data_chunk&& value)
+void message::enqueue(data_chunk&& value)
 {
     queue_.emplace(std::move(value));
 }
 
-void message::enqueue(const system::data_chunk& value)
+void message::enqueue(const data_chunk& value)
 {
     queue_.emplace(value);
 }
 
 void message::enqueue(const std::string& value)
 {
-    queue_.emplace(system::to_chunk(value));
+    queue_.emplace(to_chunk(value));
 }
 
 void message::enqueue(const address& value)
 {
-    queue_.emplace(system::to_chunk(value));
+    queue_.emplace(to_chunk(value));
 }
 
 bool message::dequeue()
@@ -61,7 +63,7 @@ bool message::dequeue()
     return true;
 }
 
-bool message::dequeue(system::data_chunk& value)
+bool message::dequeue(data_chunk& value)
 {
     if (queue_.empty())
         return false;
@@ -98,14 +100,14 @@ bool message::dequeue(address& value)
 }
 
 // Used by ZAP for public/private key read/write.
-bool message::dequeue(system::hash_digest& value)
+bool message::dequeue(hash_digest& value)
 {
     if (queue_.empty())
         return false;
 
     const auto& front = queue_.front();
 
-    if (front.size() == system::hash_size)
+    if (front.size() == hash_size)
     {
         std::copy(front.begin(), front.end(), value.begin());
         queue_.pop();
@@ -116,7 +118,7 @@ bool message::dequeue(system::hash_digest& value)
     return false;
 }
 
-system::data_chunk message::dequeue_data()
+data_chunk message::dequeue_data()
 {
     if (queue_.empty())
         return {};
@@ -155,7 +157,7 @@ size_t message::size() const
 }
 
 // Must be called on the socket thread.
-system::code message::send(socket& socket)
+code message::send(socket& socket)
 {
     auto count = queue_.size();
 
@@ -169,11 +171,11 @@ system::code message::send(socket& socket)
             return ec;
     }
 
-    return system::error::success;
+    return error::success;
 }
 
 // Must be called on the socket thread.
-system::code message::receive(socket& socket)
+code message::receive(socket& socket)
 {
     clear();
     auto done = false;
@@ -190,7 +192,7 @@ system::code message::receive(socket& socket)
         done = !frame.more();
     }
 
-    return system::error::success;
+    return error::success;
 }
 
 } // namespace zmq

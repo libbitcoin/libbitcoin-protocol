@@ -33,12 +33,14 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+using namespace bc::system;
+
 // ZAP endpoint, see: rfc.zeromq.org/spec:27/ZAP
-const system::config::endpoint authenticator::endpoint(
+const config::endpoint authenticator::endpoint(
     "inproc://zeromq.zap.01");
 
 // There may be only one authenticator per process.
-authenticator::authenticator(system::thread_priority priority)
+authenticator::authenticator(thread_priority priority)
   : worker(priority),
     context_(false),
     require_allow_(false)
@@ -61,7 +63,7 @@ bool authenticator::start()
     // Context is thread safe, this critical section is for start atomicity.
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    system::unique_lock lock(stop_mutex_);
+    unique_lock lock(stop_mutex_);
 
     return context_.start() && worker::start();
     ///////////////////////////////////////////////////////////////////////////
@@ -72,7 +74,7 @@ bool authenticator::stop()
     // Context is thread safe, this critical section is for stop atomicity.
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    system::unique_lock lock(stop_mutex_);
+    unique_lock lock(stop_mutex_);
 
     // Stop the context first in case a blocking proxy is in use.
     return context_.stop() && worker::stop();
@@ -85,7 +87,7 @@ void authenticator::work()
 {
     socket replier(context_, zmq::socket::role::replier);
 
-    if (!started(replier.bind(endpoint) == system::error::success))
+    if (!started(replier.bind(endpoint) == error::success))
         return;
 
     poller poller;
@@ -106,7 +108,7 @@ void authenticator::work()
         message request;
         auto ec = replier.receive(request);
 
-        if (ec != system::error::success || request.size() < 6)
+        if (ec != error::success || request.size() < 6)
         {
             status_code = "500";
             status_text = "Internal error.";
@@ -171,7 +173,7 @@ void authenticator::work()
                     }
                     else
                     {
-                        system::hash_digest public_key;
+                        hash_digest public_key;
 
                         if (!request.dequeue(public_key))
                         {
@@ -265,11 +267,11 @@ bool authenticator::apply(socket& socket, const std::string& domain,
 }
 
 void authenticator::set_private_key(
-    const system::config::sodium& private_key)
+    const config::sodium& private_key)
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    system::unique_lock lock(property_mutex_);
+    unique_lock lock(property_mutex_);
 
     private_key_ = private_key;
     ///////////////////////////////////////////////////////////////////////////
@@ -279,7 +281,7 @@ bool authenticator::allowed_address(const std::string& ip_address) const
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    system::shared_lock lock(property_mutex_);
+    shared_lock lock(property_mutex_);
 
     const auto entry = adresses_.find(ip_address);
     const auto found = entry != adresses_.end();
@@ -288,11 +290,11 @@ bool authenticator::allowed_address(const std::string& ip_address) const
     ///////////////////////////////////////////////////////////////////////////
 }
 
-bool authenticator::allowed_key(const system::hash_digest& public_key) const
+bool authenticator::allowed_key(const hash_digest& public_key) const
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    system::shared_lock lock(property_mutex_);
+    shared_lock lock(property_mutex_);
 
     return keys_.empty() || keys_.find(public_key) != keys_.end();
     ///////////////////////////////////////////////////////////////////////////
@@ -302,27 +304,27 @@ bool authenticator::allowed_weak(const std::string& domain) const
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    system::shared_lock lock(property_mutex_);
+    shared_lock lock(property_mutex_);
 
     return weak_domains_.find(domain) != weak_domains_.end();
     ///////////////////////////////////////////////////////////////////////////
 }
 
-void authenticator::allow(const system::hash_digest& public_key)
+void authenticator::allow(const hash_digest& public_key)
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    system::unique_lock lock(property_mutex_);
+    unique_lock lock(property_mutex_);
 
     keys_.emplace(public_key);
     ///////////////////////////////////////////////////////////////////////////
 }
 
-void authenticator::allow(const system::config::authority& address)
+void authenticator::allow(const config::authority& address)
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    system::unique_lock lock(property_mutex_);
+    unique_lock lock(property_mutex_);
 
     require_allow_ = true;
 
@@ -331,11 +333,11 @@ void authenticator::allow(const system::config::authority& address)
     ///////////////////////////////////////////////////////////////////////////
 }
 
-void authenticator::deny(const system::config::authority& address)
+void authenticator::deny(const config::authority& address)
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    system::unique_lock lock(property_mutex_);
+    unique_lock lock(property_mutex_);
 
     // Denial is effective independent of whitelisting.
     // Due to emplace behavior, first writer wins allow/deny conflict.

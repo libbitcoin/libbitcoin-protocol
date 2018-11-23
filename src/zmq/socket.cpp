@@ -34,6 +34,8 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+using namespace bc::system;
+
 static const auto subscribe_all = "";
 static constexpr int32_t zmq_true = 1;
 static constexpr int32_t zmq_false = 0;
@@ -206,20 +208,20 @@ identifier socket::id() const
     return identifier_;
 }
 
-system::code socket::bind(const system::config::endpoint& address)
+code socket::bind(const config::endpoint& address)
 {
     if (zmq_bind(self_, address.to_string().c_str()) == zmq_fail)
         return get_last_error();
 
-    return system::error::success;
+    return error::success;
 }
 
-system::code socket::connect(const system::config::endpoint& address)
+code socket::connect(const config::endpoint& address)
 {
     if (zmq_connect(self_, address.to_string().c_str()) == zmq_fail)
         return get_last_error();
 
-    return system::error::success;
+    return error::success;
 }
 
 // private
@@ -242,7 +244,7 @@ bool socket::set(int32_t option, const std::string& value)
 }
 
 // private
-bool socket::set(int32_t option, const system::data_chunk& value)
+bool socket::set(int32_t option, const data_chunk& value)
 {
     return zmq_setsockopt(self_, option, value.data(), value.size())
         != zmq_fail;
@@ -263,20 +265,20 @@ bool socket::set_curve_server()
 
 // Sets socket's long term server key, must set this on CURVE client sockets.
 bool socket::set_curve_client(
-    const system::config::sodium& server_public_key)
+    const config::sodium& server_public_key)
 {
     return server_public_key &&
         set(ZMQ_CURVE_SERVERKEY, server_public_key.to_string());
 }
 
 // Sets socket's long term public key, must set this on CURVE client sockets.
-bool socket::set_public_key(const system::config::sodium& key)
+bool socket::set_public_key(const config::sodium& key)
 {
     return key && set(ZMQ_CURVE_PUBLICKEY, key.to_string());
 }
 
 // You must set this on both CURVE client and server sockets.
-bool socket::set_private_key(const system::config::sodium& key)
+bool socket::set_private_key(const config::sodium& key)
 {
     return key && set(ZMQ_CURVE_SECRETKEY, key.to_string());
 }
@@ -291,27 +293,27 @@ bool socket::set_certificate(const certificate& certificate)
         set_private_key(certificate.private_key().to_string());
 }
 
-bool socket::set_socks_proxy(const system::config::authority& socks_proxy)
+bool socket::set_socks_proxy(const config::authority& socks_proxy)
 {
     return socks_proxy && set(ZMQ_SOCKS_PROXY, socks_proxy.to_string());
 }
 
-bool socket::set_subscription(const system::data_chunk& filter)
+bool socket::set_subscription(const data_chunk& filter)
 {
     return set(ZMQ_SUBSCRIBE, filter);
 }
 
-bool socket::set_unsubscription(const system::data_chunk& filter)
+bool socket::set_unsubscription(const data_chunk& filter)
 {
     return set(ZMQ_UNSUBSCRIBE, filter);
 }
 
-system::code socket::send(message& packet)
+code socket::send(message& packet)
 {
     return packet.send(*this);
 }
 
-system::code socket::receive(message& packet)
+code socket::receive(message& packet)
 {
     return packet.receive(*this);
 }

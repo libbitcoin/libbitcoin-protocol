@@ -25,27 +25,29 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+using namespace bc::system;
+
 // See zmq::errno_to_string
-system::code get_last_error()
+code get_last_error()
 {
     const auto zeromq_code = zmq_errno();
-    const auto ec = system::error::posix_to_error_code(zeromq_code);
+    const auto ec = error::posix_to_error_code(zeromq_code);
 
-    if (ec != system::error::unknown)
+    if (ec != error::unknown)
         return ec;
 
     switch (zeromq_code)
     {
         // See zmq.h
         case EFSM:
-            return system::error::bad_stream;
+            return error::bad_stream;
         case ETERM:
-            return system::error::service_stopped;
+            return error::service_stopped;
         case EMTHREAD:
         case ENOCOMPATPROTO:
-            return system::error::operation_failed;
+            return error::operation_failed;
         default:
-            return system::error::unknown;
+            return error::unknown;
     }
 }
 
