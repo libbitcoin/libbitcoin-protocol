@@ -39,7 +39,7 @@ class authenticator;
 /// All calls must be made on the socket thread.
 /// Because the socket is only set on construct, sockets are not restartable.
 class BCP_API socket
-  : public enable_shared_from_base<socket>, noncopyable
+  : public system::enable_shared_from_base<socket>, system::noncopyable
 {
 public:
     /// The full set of socket roles defined by zeromq.
@@ -89,10 +89,10 @@ public:
     identifier id() const;
 
     /// Bind the socket to the specified local address.
-    code bind(const config::endpoint& address);
+    system::code bind(const system::config::endpoint& address);
 
     /// Connect the socket to the specified remote address.
-    code connect(const config::endpoint& address);
+    system::code connect(const system::config::endpoint& address);
 
     /// Sets the domain for ZAP (ZMQ RFC 27) authentication.
     bool set_authentication_domain(const std::string& domain);
@@ -101,31 +101,31 @@ public:
     bool set_curve_server();
 
     /// Configure the socket as client to the curve server.
-    bool set_curve_client(const config::sodium& server_public_key);
+    bool set_curve_client(const system::config::sodium& server_public_key);
 
     /// Apply the specified public key to the socket.
-    bool set_public_key(const config::sodium& key);
+    bool set_public_key(const system::config::sodium& key);
 
     /// Apply the specified private key to the socket.
-    bool set_private_key(const config::sodium& key);
+    bool set_private_key(const system::config::sodium& key);
 
     /// Apply the keys of the specified certificate to the socket.
     bool set_certificate(const certificate& certificate);
 
     /// Configure the socket to connect through the specified socks5 proxy.
-    bool set_socks_proxy(const config::authority& socks_proxy);
+    bool set_socks_proxy(const system::config::authority& socks_proxy);
 
     /// Configure subscriber socket to apply the message filter.
-    bool set_subscription(const data_chunk& filter);
+    bool set_subscription(const system::data_chunk& filter);
 
     /// Configure subscriber socket to remove the message filter.
-    bool set_unsubscription(const data_chunk& filter);
+    bool set_unsubscription(const system::data_chunk& filter);
 
     /// Send a message on this socket.
-    code send(message& packet);
+    system::code send(message& packet);
 
     /// Receive a message from this socket.
-    code receive(message& packet);
+    system::code receive(message& packet);
 
 protected:
     static int to_socket_type(role socket_role);
@@ -133,7 +133,7 @@ protected:
     bool set32(int32_t option, int32_t value);
     bool set64(int32_t option, int64_t value);
     bool set(int32_t option, const std::string& value);
-    bool set(int32_t option, const data_chunk& value);
+    bool set(int32_t option, const system::data_chunk& value);
 
 private:
     void* self_;

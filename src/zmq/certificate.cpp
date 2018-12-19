@@ -20,11 +20,13 @@
 
 #include <string>
 #include <zmq.h>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
+
+using namespace bc::system;
 
 static constexpr int32_t zmq_fail = -1;
 static constexpr size_t zmq_encoded_key_size = 40;

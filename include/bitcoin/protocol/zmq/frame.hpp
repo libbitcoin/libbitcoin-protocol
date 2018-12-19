@@ -20,7 +20,7 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_FRAME_HPP
 
 #include <memory>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 #include <bitcoin/protocol/zmq/zeromq.hpp>
@@ -31,7 +31,7 @@ namespace zmq {
 
 /// This class is not thread safe.
 class BCP_API frame
-  : public enable_shared_from_base<frame>, noncopyable
+  : public system::enable_shared_from_base<frame>, system::noncopyable
 {
 public:
     /// A shared frame pointer.
@@ -41,7 +41,7 @@ public:
     frame();
 
     /// Construct a frame with the specified payload (for sending).
-    frame(const data_chunk& data);
+    frame(const system::data_chunk& data);
 
     /// Free the frame's allocated memory.
     virtual ~frame();
@@ -53,18 +53,18 @@ public:
     bool more() const;
 
     /// The initialized or received payload of the frame.
-    data_chunk payload() const;
+    system::data_chunk payload() const;
 
     /// Must be called on the socket thread.
     /// Receive a frame on the socket.
-    code receive(socket& socket);
+    system::code receive(socket& socket);
 
     /// Must be called on the socket thread.
     /// Send a frame on the socket.
-    code send(socket& socket, bool more);
+    system::code send(socket& socket, bool more);
 
 private:
-    bool initialize(const data_chunk& data);
+    bool initialize(const system::data_chunk& data);
     bool set_more(socket& socket);
     bool destroy();
 

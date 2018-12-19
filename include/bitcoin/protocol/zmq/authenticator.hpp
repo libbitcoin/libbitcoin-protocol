@@ -25,7 +25,7 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
@@ -44,10 +44,10 @@ public:
     typedef std::shared_ptr<authenticator> ptr;
 
     /// The fixed inprocess authentication endpoint.
-    static const config::endpoint endpoint;
+    static const system::config::endpoint endpoint;
 
     /// There may be only one authenticator per process.
-    authenticator(thread_priority priority=thread_priority::normal);
+    authenticator(system::thread_priority priority=system::thread_priority::normal);
 
     /// Stop the router.
     virtual ~authenticator();
@@ -69,23 +69,23 @@ public:
     virtual bool apply(socket& socket, const std::string& domain, bool secure);
 
     /// Set the server private key (required for curve security).
-    virtual void set_private_key(const config::sodium& private_key);
+    virtual void set_private_key(const system::config::sodium& private_key);
 
     /// Allow clients with the following public keys (whitelist).
-    virtual void allow(const hash_digest& public_key);
+    virtual void allow(const system::hash_digest& public_key);
 
     /// Allow clients with the following ip addresses (whitelist).
-    virtual void allow(const config::authority& address);
+    virtual void allow(const system::config::authority& address);
 
     /// Allow clients with the following ip addresses (blacklist).
-    virtual void deny(const config::authority& address);
+    virtual void deny(const system::config::authority& address);
 
 protected:
     void work() override;
 
 private:
     bool allowed_address(const std::string& address) const;
-    bool allowed_key(const hash_digest& public_key) const;
+    bool allowed_key(const system::hash_digest& public_key) const;
     bool allowed_weak(const std::string& domain) const;
 
     // This is thread safe.
@@ -93,12 +93,12 @@ private:
 
     // These are protected by mutex.
     bool require_allow_;
-    config::sodium private_key_;
-    std::unordered_set<hash_digest> keys_;
+    system::config::sodium private_key_;
+    std::unordered_set<system::hash_digest> keys_;
     std::unordered_set<std::string> weak_domains_;
     std::unordered_map<std::string, bool> adresses_;
-    mutable shared_mutex property_mutex_;
-    mutable shared_mutex stop_mutex_;
+    mutable system::shared_mutex property_mutex_;
+    mutable system::shared_mutex stop_mutex_;
 };
 
 } // namespace zmq

@@ -21,7 +21,7 @@
 
 #include <cstddef>
 #include <string>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
 namespace libbitcoin {
@@ -36,13 +36,14 @@ public:
     static const size_t address_size = 5;
 
     /// An identifier for message routing.
-    typedef byte_array<address_size> address;
+    typedef system::byte_array<address_size> address;
 
     /// Add an unsigned integer message part to the outgoing message.
     template <typename Unsigned>
     void enqueue_little_endian(Unsigned value)
     {
-        queue_.emplace(to_chunk(to_little_endian<Unsigned>(value)));
+        queue_.emplace(system::to_chunk(
+            system::to_little_endian<Unsigned>(value)));
     }
 
     /// Remove an unsigned from the queue top, false if empty queue or invalid.
@@ -56,7 +57,8 @@ public:
 
         if (front.size() == sizeof(Unsigned))
         {
-            value = from_little_endian_unsafe<Unsigned>(front.begin());
+            value = system::from_little_endian_unsafe<Unsigned>(
+                front.begin());
             queue_.pop();
             return true;
         }
@@ -69,10 +71,10 @@ public:
     void enqueue();
 
     /// Move a data message part to the outgoing message.
-    void enqueue(data_chunk&& value);
+    void enqueue(system::data_chunk&& value);
 
     /// Add a data message part to the outgoing message.
-    void enqueue(const data_chunk& value);
+    void enqueue(const system::data_chunk& value);
 
     /// Add a text message part to the outgoing message.
     void enqueue(const std::string& value);
@@ -81,14 +83,14 @@ public:
     void enqueue(const address& value);
 
     /// Remove a message part from the top of the queue, empty if empty queue.
-    data_chunk dequeue_data();
+    system::data_chunk dequeue_data();
     std::string dequeue_text();
 
     /// Remove a part from the queue top, false if empty queue or invalid.
     bool dequeue();
-    bool dequeue(data_chunk& value);
+    bool dequeue(system::data_chunk& value);
     bool dequeue(std::string& value);
-    bool dequeue(hash_digest& value);
+    bool dequeue(system::hash_digest& value);
     bool dequeue(address& value);
 
     /// Clear the queue of message parts.
@@ -102,14 +104,14 @@ public:
 
     /// Must be called on the socket thread.
     /// Send the message in parts. If a send fails the unsent parts remain.
-    code send(socket& socket);
+    system::code send(socket& socket);
 
     /// Must be called on the socket thread.
     /// Receve a message (clears the queue first).
-    code receive(socket& socket);
+    system::code receive(socket& socket);
 
 protected:
-    data_queue queue_;
+    system::data_queue queue_;
 };
 
 } // namespace zmq

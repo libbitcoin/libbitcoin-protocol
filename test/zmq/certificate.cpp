@@ -20,8 +20,8 @@
 #include <boost/test/unit_test_suite.hpp>
 #include <bitcoin/protocol.hpp>
 
-using namespace bc;
-using namespace bc::config;
+using namespace bc::system;
+using namespace bc::system::config;
 using namespace bc::protocol::zmq;
 
 // These tests don't validate calls to zmq_curve_keypair or zmq_curve_public.
@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_SUITE(certificate_tests)
 
 inline bool is_valid(const config::sodium& key, bool setting)
 {
-    return key && (!setting || 
+    return key && (!setting ||
         key.to_string().find_first_of("#") == std::string::npos);
 }
 

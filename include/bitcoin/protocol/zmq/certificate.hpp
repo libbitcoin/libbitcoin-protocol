@@ -20,7 +20,7 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_CERTIFICATE_HPP
 
 #include <string>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
 
 namespace libbitcoin {
@@ -40,26 +40,26 @@ public:
 
     /// Construct a certificate from private key (generates public key).
     /// This generates an arbitary key pair if the parameter is uninitialized.
-    certificate(const config::sodium& private_key);
+    certificate(const system::config::sodium& private_key);
 
     /// True if the certificate is valid.
     operator bool() const;
 
     /// The public key base85 text.
-    const config::sodium& public_key() const;
+    const system::config::sodium& public_key() const;
 
     /// The private key base85 text.
-    const config::sodium& private_key() const;
+    const system::config::sodium& private_key() const;
 
 protected:
-    static bool derive(config::sodium& out_public,
-        const config::sodium& private_key);
-    static bool create(config::sodium& out_public,
-        config::sodium& out_private, bool setting);
+    static bool derive(system::config::sodium& out_public,
+        const system::config::sodium& private_key);
+    static bool create(system::config::sodium& out_public,
+            system::config::sodium& out_private, bool setting);
 
 private:
-    config::sodium public_;
-    config::sodium private_;
+    system::config::sodium public_;
+    system::config::sodium private_;
 };
 
 } // namespace zmq

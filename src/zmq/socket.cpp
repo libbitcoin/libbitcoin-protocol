@@ -22,7 +22,7 @@
 #include <cstdint>
 #include <string>
 #include <zmq.h>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/settings.hpp>
 #include <bitcoin/protocol/zmq/authenticator.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
@@ -34,12 +34,14 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+using namespace bc::system;
+
 static const auto subscribe_all = "";
 static constexpr int32_t zmq_true = 1;
 static constexpr int32_t zmq_false = 0;
 static constexpr int32_t zmq_fail = -1;
 static constexpr int32_t reconnect_interval = 100;
-static const bc::protocol::settings default_settings;
+static const libbitcoin::protocol::settings default_settings;
 
 // Linger
 // The default value of -1 specifies an infinite linger period. Pending
@@ -262,7 +264,8 @@ bool socket::set_curve_server()
 }
 
 // Sets socket's long term server key, must set this on CURVE client sockets.
-bool socket::set_curve_client(const config::sodium& server_public_key)
+bool socket::set_curve_client(
+    const config::sodium& server_public_key)
 {
     return server_public_key &&
         set(ZMQ_CURVE_SERVERKEY, server_public_key.to_string());

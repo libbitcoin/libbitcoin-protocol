@@ -22,7 +22,7 @@
 #include <future>
 #include <string>
 #include <zmq.h>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/zmq/message.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
 #include <bitcoin/protocol/zmq/poller.hpp>
@@ -33,8 +33,11 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+using namespace bc::system;
+
 // ZAP endpoint, see: rfc.zeromq.org/spec:27/ZAP
-const config::endpoint authenticator::endpoint("inproc://zeromq.zap.01");
+const config::endpoint authenticator::endpoint(
+    "inproc://zeromq.zap.01");
 
 // There may be only one authenticator per process.
 authenticator::authenticator(thread_priority priority)
@@ -263,7 +266,8 @@ bool authenticator::apply(socket& socket, const std::string& domain,
         socket.set_authentication_domain(domain));
 }
 
-void authenticator::set_private_key(const config::sodium& private_key)
+void authenticator::set_private_key(
+    const config::sodium& private_key)
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
