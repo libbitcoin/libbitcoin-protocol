@@ -22,8 +22,11 @@
 // boost parsing helpers included from json_parser.hpp.
 // See: https://svn.boost.org/trac10/ticket/12621
 using namespace std::placeholders;
+
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
+
+// TODO: include other headers.
 
 namespace libbitcoin {
 namespace protocol {

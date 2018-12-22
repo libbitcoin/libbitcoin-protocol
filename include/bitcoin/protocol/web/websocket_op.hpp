@@ -25,14 +25,14 @@ namespace libbitcoin {
 namespace protocol {
 namespace http {
 
-enum class websocket_op : uint8_t
+enum class websocket_op: uint8_t
 {
     continuation = 0,
     text = 1,
     binary = 2,
     close = 8,
     ping = 9,
-    pong = 10,
+    pong = 10
 };
 
 } // namespace http

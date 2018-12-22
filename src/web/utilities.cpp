@@ -18,6 +18,9 @@
  */
 #include <bitcoin/protocol/web/utilities.hpp>
 
+ // TODO: include other headers.
+#include <boost/algorithm/string.hpp>
+
 namespace libbitcoin {
 namespace protocol {
 namespace http {
@@ -91,8 +94,7 @@ std::string websocket_key_response(const std::string& websocket_key)
 
     const auto input = websocket_key + rfc6455_guid;
     const data_chunk input_data(input.begin(), input.end());
-    const data_slice slice(system::sha1_hash(input_data));
-    return encode_base64(slice);
+    return encode_base64(system::sha1_hash(input_data));
 }
 
 bool is_json_request(const std::string& header_value)
@@ -115,7 +117,7 @@ bool parse_http(http_request& out, const std::string& request)
     if (position == std::string::npos)
         return false;
 
-    std::string method_line = request.substr(0, position);
+    const auto method_line = request.substr(0, position);
     string_list elements;
     boost::split(elements, method_line, boost::is_any_of(" "));
     if (elements.size() != 3)

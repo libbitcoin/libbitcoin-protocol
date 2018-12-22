@@ -18,6 +18,8 @@
  */
 #include <bitcoin/protocol/web/connection.hpp>
 
+ // TODO: include other headers.
+
 namespace libbitcoin {
 namespace protocol {
 namespace http {
@@ -28,7 +30,7 @@ static constexpr size_t maximum_read_length = 1024;
 static constexpr size_t high_water_mark = 2 * 1024 * 1024;
 
 connection::connection()
-  : connection(0, sockaddr_in{})
+  : connection(0, {})
 {
 }
 
@@ -105,7 +107,7 @@ int32_t connection::read()
 #ifdef WITH_MBEDTLS
     bytes_read_ = (ssl_context_.enabled ?
         mbedtls_ssl_read(&ssl_context_.context, data, maximum_read_length) :
-        recv(socket_, data, maximum_read_length, 0));
+            recv(socket_, data, maximum_read_length, 0));
 #else
     bytes_read_ = recv(socket_, data, maximum_read_length, 0);
 #endif

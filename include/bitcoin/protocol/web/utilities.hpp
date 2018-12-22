@@ -27,7 +27,6 @@
     #include <windows.h>
 #endif
 
-#include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/web/http.hpp>

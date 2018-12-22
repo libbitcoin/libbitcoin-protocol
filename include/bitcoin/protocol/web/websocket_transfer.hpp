@@ -20,7 +20,6 @@
 #define LIBBITCOIN_PROTOCOL_WEB_WEBSOCKET_TRANSFER_HPP
 
 #include <cstddef>
-#include <cstdint>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
 

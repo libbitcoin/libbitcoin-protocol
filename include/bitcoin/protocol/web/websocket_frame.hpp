@@ -33,9 +33,9 @@ namespace http {
 class BCP_API websocket_frame
 {
 public:
-    websocket_frame(const uint8_t* data, size_t size);
-
     static system::data_chunk to_header(size_t length, websocket_op code);
+
+    websocket_frame(const uint8_t* data, size_t size);
 
     operator bool() const;
     bool final() const;
@@ -50,7 +50,6 @@ public:
 private:
     void from_data(const uint8_t* data, size_t read_length);
 
-private:
     static const size_t mask_ = 4;
 
     bool valid_;
