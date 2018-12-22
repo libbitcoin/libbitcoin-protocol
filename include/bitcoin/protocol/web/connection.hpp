@@ -59,7 +59,7 @@ typedef std::function<bool(connection_ptr, event, void* data)> event_handler;
 class BCP_API connection
 {
 public:
-    typedef std::function<int32_t(const uint8_t*, uint32_t)> write_method;
+    typedef std::function<int32_t(const uint8_t*, size_t)> write_method;
 
     connection();
     connection(sock_t connection, const sockaddr_in& address);
