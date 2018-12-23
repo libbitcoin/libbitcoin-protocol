@@ -32,10 +32,16 @@ doc_DATA = \
 # src/libbitcoin-protocol.la => ${libdir}
 #------------------------------------------------------------------------------
 lib_LTLIBRARIES = src/libbitcoin-protocol.la
-src_libbitcoin_protocol_la_CPPFLAGS = -I${srcdir}/include ${zmq_BUILD_CPPFLAGS} ${bitcoin_system_BUILD_CPPFLAGS}
-src_libbitcoin_protocol_la_LIBADD = ${zmq_LIBS} ${bitcoin_system_LIBS}
+src_libbitcoin_protocol_la_CPPFLAGS = -I${srcdir}/include ${mbedtls} ${zmq_BUILD_CPPFLAGS} ${bitcoin_system_BUILD_CPPFLAGS} ${mbedtls_BUILD_CPPFLAGS}
+src_libbitcoin_protocol_la_LIBADD = ${zmq_LIBS} ${bitcoin_system_LIBS} ${mbedtls_LIBS}
 src_libbitcoin_protocol_la_SOURCES = \
     src/settings.cpp \
+    src/web/connection.cpp \
+    src/web/json_string.cpp \
+    src/web/manager.cpp \
+    src/web/socket.cpp \
+    src/web/utilities.cpp \
+    src/web/websocket_frame.cpp \
     src/zmq/authenticator.cpp \
     src/zmq/certificate.cpp \
     src/zmq/context.cpp \
@@ -54,8 +60,8 @@ if WITH_TESTS
 TESTS = libbitcoin-protocol-test_runner.sh
 
 check_PROGRAMS = test/libbitcoin-protocol-test
-test_libbitcoin_protocol_test_CPPFLAGS = -I${srcdir}/include ${zmq_BUILD_CPPFLAGS} ${bitcoin_system_BUILD_CPPFLAGS}
-test_libbitcoin_protocol_test_LDADD = src/libbitcoin-protocol.la ${boost_unit_test_framework_LIBS} ${zmq_LIBS} ${bitcoin_system_LIBS}
+test_libbitcoin_protocol_test_CPPFLAGS = -I${srcdir}/include ${mbedtls} ${zmq_BUILD_CPPFLAGS} ${bitcoin_system_BUILD_CPPFLAGS} ${mbedtls_BUILD_CPPFLAGS}
+test_libbitcoin_protocol_test_LDADD = src/libbitcoin-protocol.la ${boost_unit_test_framework_LIBS} ${zmq_LIBS} ${bitcoin_system_LIBS} ${mbedtls_LIBS}
 test_libbitcoin_protocol_test_SOURCES = \
     test/converter.cpp \
     test/main.cpp \
@@ -83,6 +89,27 @@ include_bitcoin_protocol_HEADERS = \
     include/bitcoin/protocol/define.hpp \
     include/bitcoin/protocol/settings.hpp \
     include/bitcoin/protocol/version.hpp
+
+include_bitcoin_protocol_webdir = ${includedir}/bitcoin/protocol/web
+include_bitcoin_protocol_web_HEADERS = \
+    include/bitcoin/protocol/web/bind_options.hpp \
+    include/bitcoin/protocol/web/connection.hpp \
+    include/bitcoin/protocol/web/connection_state.hpp \
+    include/bitcoin/protocol/web/event.hpp \
+    include/bitcoin/protocol/web/file_transfer.hpp \
+    include/bitcoin/protocol/web/http.hpp \
+    include/bitcoin/protocol/web/http_reply.hpp \
+    include/bitcoin/protocol/web/http_request.hpp \
+    include/bitcoin/protocol/web/json_string.hpp \
+    include/bitcoin/protocol/web/manager.hpp \
+    include/bitcoin/protocol/web/protocol_status.hpp \
+    include/bitcoin/protocol/web/socket.hpp \
+    include/bitcoin/protocol/web/ssl.hpp \
+    include/bitcoin/protocol/web/utilities.hpp \
+    include/bitcoin/protocol/web/websocket_frame.hpp \
+    include/bitcoin/protocol/web/websocket_message.hpp \
+    include/bitcoin/protocol/web/websocket_op.hpp \
+    include/bitcoin/protocol/web/websocket_transfer.hpp
 
 include_bitcoin_protocol_zmqdir = ${includedir}/bitcoin/protocol/zmq
 include_bitcoin_protocol_zmq_HEADERS = \

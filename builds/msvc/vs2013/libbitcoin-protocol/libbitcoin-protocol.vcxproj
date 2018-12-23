@@ -74,6 +74,14 @@
   </ImportGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\settings.cpp" />
+    <ClCompile Include="..\..\..\..\src\web\connection.cpp" />
+    <ClCompile Include="..\..\..\..\src\web\json_string.cpp" />
+    <ClCompile Include="..\..\..\..\src\web\manager.cpp" />
+    <ClCompile Include="..\..\..\..\src\web\socket.cpp">
+      <ObjectFileName>$(IntDir)src_web_socket.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\web\utilities.cpp" />
+    <ClCompile Include="..\..\..\..\src\web\websocket_frame.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\authenticator.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\certificate.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\context.cpp" />
@@ -81,7 +89,9 @@
     <ClCompile Include="..\..\..\..\src\zmq\identifiers.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\message.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\poller.cpp" />
-    <ClCompile Include="..\..\..\..\src\zmq\socket.cpp" />
+    <ClCompile Include="..\..\..\..\src\zmq\socket.cpp">
+      <ObjectFileName>$(IntDir)src_zmq_socket.obj</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\zmq\worker.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\zeromq.cpp" />
   </ItemGroup>
@@ -90,6 +100,24 @@
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\define.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\settings.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\version.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\bind_options.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\connection.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\connection_state.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\event.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\file_transfer.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\http.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\http_reply.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\http_request.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\json_string.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\manager.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\protocol_status.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\socket.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\ssl.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\utilities.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\websocket_frame.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\websocket_message.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\websocket_op.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\websocket_transfer.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\authenticator.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\certificate.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\context.hpp" />

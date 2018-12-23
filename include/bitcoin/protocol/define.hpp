@@ -37,6 +37,10 @@
     #define BCP_INTERNAL BC_HELPER_DLL_LOCAL
 #endif
 
+// Log name.
+#define LOG_PROTOCOL "protocol"
+#define LOG_PROTOCOL_HTTP "http"
+
 #if defined _WIN32
     #include <winsock.h>
     typedef SOCKET file_descriptor;
