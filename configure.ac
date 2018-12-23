@@ -185,6 +185,22 @@ AS_CASE([${enable_isystem}],[yes],
 
 AC_MSG_NOTICE([zmq_BUILD_CPPFLAGS : ${zmq_BUILD_CPPFLAGS}])
 
+# Require mbedtls of at least version 2.12.0 and output ${mbedtls_CPPFLAGS/LIBS/PKG}.
+#------------------------------------------------------------------------------
+AS_CASE([${with_mbedtls}], [yes],
+    [AC_SUBST([mbedtls_INCLUDEDIR], [])
+     AC_SUBST([mbedtls_OTHER_CPPFLAGS], [])
+     AC_SUBST([mbedtls_CPPFLAGS], [])
+     AC_SUBST([mbedtls_ISYS_CPPFLAGS], [])
+     AC_SUBST([mbedtls_LIBS], ["-lmbedtls -lmbedcrypto -lmbedx509"])
+     AC_MSG_NOTICE([mbedtls presumed, not detected - absence of -lmbedtls -lmbedcrypto -lmbedx509 may result in link error.])], [])
+
+AS_CASE([${enable_isystem}],[yes],
+    [AC_SUBST([mbedtls_BUILD_CPPFLAGS], [${mbedtls_ISYS_CPPFLAGS}])],
+    [AC_SUBST([mbedtls_BUILD_CPPFLAGS], [${mbedtls_CPPFLAGS}])])
+
+AC_MSG_NOTICE([mbedtls_BUILD_CPPFLAGS : ${mbedtls_BUILD_CPPFLAGS}])
+
 # Require bitcoin-system of at least version 4.0.0 and output ${bitcoin_system_CPPFLAGS/LIBS/PKG}.
 #------------------------------------------------------------------------------
 PKG_CHECK_MODULES([bitcoin_system], [libbitcoin-system >= 4.0.0],
@@ -208,22 +224,6 @@ AS_CASE([${enable_isystem}],[yes],
     [AC_SUBST([bitcoin_system_BUILD_CPPFLAGS], [${bitcoin_system_CPPFLAGS}])])
 
 AC_MSG_NOTICE([bitcoin_system_BUILD_CPPFLAGS : ${bitcoin_system_BUILD_CPPFLAGS}])
-
-# Require mbedtls of at least version 2.12.0 and output ${mbedtls_CPPFLAGS/LIBS/PKG}.
-#------------------------------------------------------------------------------
-AS_CASE([${with_mbedtls}], [yes],
-    [AC_SUBST([mbedtls_INCLUDEDIR], [])
-     AC_SUBST([mbedtls_OTHER_CPPFLAGS], [])
-     AC_SUBST([mbedtls_CPPFLAGS], [])
-     AC_SUBST([mbedtls_ISYS_CPPFLAGS], [])
-     AC_SUBST([mbedtls_LIBS], ["-lmbedtls -lmbedcrypto -lmbedx509"])
-     AC_MSG_NOTICE([mbedtls presumed, not detected - absence of -lmbedtls -lmbedcrypto -lmbedx509 may result in link error.])], [])
-
-AS_CASE([${enable_isystem}],[yes],
-    [AC_SUBST([mbedtls_BUILD_CPPFLAGS], [${mbedtls_ISYS_CPPFLAGS}])],
-    [AC_SUBST([mbedtls_BUILD_CPPFLAGS], [${mbedtls_CPPFLAGS}])])
-
-AC_MSG_NOTICE([mbedtls_BUILD_CPPFLAGS : ${mbedtls_BUILD_CPPFLAGS}])
 
 
 # Set flags.
