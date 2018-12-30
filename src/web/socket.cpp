@@ -150,7 +150,7 @@ public:
         const auto ec = source.read_error_code();
         if (ec)
         {
-            work.connection->write(to_json(ec, id));
+            work.connection->write(to_json(ec, id, connection->json_rpc()));
             return true;
         }
 
@@ -158,7 +158,7 @@ public:
         if (handler == handlers_.end())
         {
             static constexpr auto error = system::error::not_implemented;
-            work.connection->write(to_json(error, id));
+            work.connection->write(to_json(error, id, connection->json_rpc()));
             return true;
         }
 
@@ -543,7 +543,7 @@ void socket::notify_query_work(connection_ptr connection,
     const auto send_error_reply = [=](protocol_status status, const code& ec)
     {
         http_reply reply;
-        const auto error = to_json(ec, id);
+        const auto error = to_json(ec, id, connection->json_rpc());
         const auto response = reply.generate(status, {}, error.size(), false);
         LOG_VERBOSE(LOG_PROTOCOL) << response + error;
         connection->write(response + error);

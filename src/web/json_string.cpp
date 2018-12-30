@@ -47,7 +47,7 @@ std::string to_json(const ptree& tree)
     return json_stream.str();
 }
 
-std::string to_json(const ptree& tree, uint32_t id)
+std::string to_json(const ptree& tree, uint32_t id, bool /* rpc */)
 {
     ptree result_tree;
     result_tree.add_child("result", tree);
@@ -55,22 +55,22 @@ std::string to_json(const ptree& tree, uint32_t id)
     return to_json(result_tree);
 }
 
-std::string to_json(uint64_t height, uint32_t id)
+std::string to_json(uint64_t height, uint32_t id, bool rpc)
 {
+    if (!rpc)
+        return to_json(property_tree(height, id));
+
     ptree tree;
     tree.put("result", height);
     tree.put("id", id);
     return to_json(tree);
-
-    // TODO: The bc::property_tree call works fine, but the format is
-    // different than expected for json_rpc so eventually we need to
-    // separate out property_tree and json_rpc::property_tree, or
-    // something along the lines to make this a clear distinction.
-    //// return to_json(property_tree(height, id));
 }
 
-std::string to_json(const code& code, uint32_t id)
+std::string to_json(const code& code, uint32_t id, bool rpc)
 {
+    if (!rpc)
+        return to_json(property_tree(code, id));
+
     ptree tree;
     ptree error_tree;
     error_tree.put("code", code.value());
@@ -78,27 +78,57 @@ std::string to_json(const code& code, uint32_t id)
     tree.add_child("error", error_tree);
     tree.put("id", id);
     return to_json(tree);
-    //// return to_json(property_tree(code, id));
 }
 
-std::string to_json(const chain::header& header, uint32_t id)
+std::string to_json(const hash_digest& hash, uint32_t id, bool rpc)
 {
-    return to_json(property_tree(config::header(header)), id);
+    ptree tree;
+    if (rpc)
+        tree.put("result", encode_hash(hash));
+    else
+        tree = property_tree(hash);
+    tree.put("id", id);
+    return to_json(tree);
 }
 
-std::string to_json(const chain::block& block, uint32_t id)
+std::string to_json(const chain::header& header, uint32_t id, bool rpc)
 {
-    return to_json(property_tree(block, true), id);
+    if (!rpc)
+        return to_json(property_tree(config::header(header)), id, rpc);
+
+    auto hex = [](uint32_t value)
+    {
+        std::stringstream hex_value;
+        hex_value << std::setfill('0') << std::setw(sizeof(uint32_t) * 2);
+        hex_value << std::hex << value;
+        return hex_value.str();
+    };
+
+    ptree tree;
+    tree.put("hash", encode_hash(header.hash()));
+    tree.put("version", header.version());
+    tree.put("versionHex", hex(header.version()));
+    tree.put("merkleroot", encode_hash(header.merkle()));
+    tree.put("time", header.timestamp());
+    tree.put("nonce", header.nonce());
+    tree.put("bits", hex(header.bits()));
+    return to_json(tree, id, rpc);
 }
 
-std::string to_json(const chain::block& block, uint32_t, uint32_t id)
+std::string to_json(const chain::block& block, uint32_t id, bool rpc)
 {
-    return to_json(property_tree(config::header(block.header())), id);
+    return to_json(property_tree(block, true), id, rpc);
 }
 
-std::string to_json(const chain::transaction& transaction, uint32_t id)
+std::string to_json(const chain::block& block, uint32_t, uint32_t id, bool rpc)
 {
-    return to_json(property_tree(config::transaction(transaction), true), id);
+    return to_json(property_tree(config::header(block.header())), id, rpc);
+}
+
+std::string to_json(const chain::transaction& transaction, uint32_t id,
+    bool rpc)
+{
+    return to_json(property_tree(config::transaction(transaction), true), id, rpc);
 }
 
 } // namespace http
