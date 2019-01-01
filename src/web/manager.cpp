@@ -140,7 +140,7 @@ bool manager::bind(const config::endpoint& address, const bind_options& options)
 
         if (!options.ssl_ca_certificate.empty())
         {
-            // Specified and not found CA cert is a failure condition.
+            // Specified and not found CA certificate is a failure condition.
             if (!exists(options.ssl_ca_certificate))
             {
                 LOG_ERROR(LOG_PROTOCOL_HTTP)
@@ -1108,8 +1108,9 @@ bool manager::upgrade_connection(connection_ptr connection,
         return false;
     }
 
-    // Verify if origin is acceptable (contains either localhost, hostname,
-    // or ip address of current server)
+    // Verify if origin is acceptable (i.e. contains any of the
+    // configured acceptable origins, e.g. localhost, hostname, or ip
+    // address of current server)
     if (!validate_origin(request.header("origin")))
     {
         LOG_ERROR(LOG_PROTOCOL_HTTP)
@@ -1196,7 +1197,7 @@ bool manager::initialize_ssl(connection_ptr connection, bool listener)
             key_ = certificate_;
 
         LOG_VERBOSE(LOG_PROTOCOL_HTTP)
-            << "Using cert " << certificate_ << " and key " << key_;
+            << "Using certificate " << certificate_ << " and key " << key_;
 
         mbedtls_pk_init(&context.key);
         mbedtls_x509_crt_init(&context.certificate);

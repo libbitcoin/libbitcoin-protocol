@@ -63,7 +63,7 @@ public:
     // converting the result back to JSON for web clients.
     struct handlers
     {
-        typedef std::function<void(bc::protocol::zmq::message&,
+        typedef std::function<bool(bc::protocol::zmq::message&,
             const std::string&, const std::string&, uint32_t)> encode_handler;
         typedef std::function<void(const system::data_chunk&, uint32_t,
             connection_ptr)> decode_handler;
@@ -108,7 +108,8 @@ public:
     void add_connection(connection_ptr connection);
     void remove_connection(connection_ptr connection);
     void notify_query_work(connection_ptr connection,
-        const std::string& method, uint32_t id, const std::string& parameters);
+        const std::string& method, uint32_t id, const std::string& parameters,
+        bool rpc);
 
 protected:
     // Initialize the websocket event loop and start a thread to poll events.
@@ -135,8 +136,9 @@ protected:
     const std::string security_;
     const bc::protocol::settings& settings_;
 
-    // handlers_ is effectively const.
+    // Both handlers_ and rpc_handlers_ are effectively const.
     handler_map handlers_;
+    handler_map rpc_handlers_;
 
     // For query socket, service() is used to retrieve the zmq socket
     // connected to the query_socket service.  This socket operates on
