@@ -52,8 +52,8 @@ public:
         auto narrow = [](int32_t& out, size_t in)
         {
             out = static_cast<int32_t>(in);
-            return (in > std::numeric_limits<int32_t>::max() ||
-                (static_cast<size_t>(out) != in)) ? false : true;
+            return out >= 0 && out <= std::numeric_limits<int32_t>::max() &&
+                static_cast<size_t>(out) == in;
         };
 
         int32_t data_size;
@@ -163,33 +163,39 @@ public:
         BITCOIN_ASSERT(work.connection == connection);
         BITCOIN_ASSERT(work.correlation_id == sequence_);
 
+        auto write_error = [&work](system::code ec, uint32_t id, bool rpc)
+        {
+            const auto reply = rpc ? rpc::to_json(ec, id) : to_json(ec, id);
+            work.connection->write(reply);
+            return true;
+        };
+
         data_source istream(data_);
         istream_reader source(istream);
         const auto ec = source.read_error_code();
-        if (ec)
-        {
-            const auto reply = (connection->json_rpc() ? rpc::to_json(ec, id) :
-                to_json(ec, id));
-            work.connection->write(reply);
-            return true;
-        }
 
-        const auto handler = connection->json_rpc() ? rpc_handlers_.find(
-            work.command) : handlers_.find(work.command);
-        if (handler == handlers_.end() || handler == rpc_handlers_.end())
+        if (ec)
+            return write_error(ec, id, connection->json_rpc());
+
+        socket::handler_map::const_iterator handler;
+
+        if (connection->json_rpc())
         {
-            static constexpr auto ec = system::error::not_implemented;
-            const auto reply = (connection->json_rpc() ? rpc::to_json(ec, id) :
-                to_json(ec, id));
-            work.connection->write(reply);
-            return true;
+            handler = rpc_handlers_.find(work.command);
+            if (handler == rpc_handlers_.end())
+                return write_error(system::error::not_implemented, id, true);
+        }
+        else
+        {
+            handler = handlers_.find(work.command);
+            if (handler == handlers_.end())
+                return write_error(system::error::not_implemented, id, false);
         }
 
         // Decode response and send query output to websocket client.
         // The websocket write is performed directly (running on the
         // websocket thread).
-        const auto payload = source.read_bytes();
-        handler->second.decode(payload, id, work.connection);
+        handler->second.decode(source.read_bytes(), id, work.connection);
         return true;
     }
 
@@ -578,21 +584,32 @@ void socket::notify_query_work(connection_ptr connection,
     {
         LOG_VERBOSE(LOG_PROTOCOL)
             << "No handlers for methods. Likely incorrect endpoint addressed.";
-        send_error_reply(protocol_status::service_unavailable,
+        return send_error_reply(protocol_status::service_unavailable,
             system::error::http_invalid_request);
-        return;
     }
 
-    const auto handler = (rpc ? rpc_handlers_.find(method) :
-        handlers_.find(method));
-    if (handler == handlers_.end() || handler == rpc_handlers_.end())
+    handler_map::const_iterator handler;
+
+    auto handler_not_found = [=](const std::string& method, bool rpc)
     {
         LOG_VERBOSE(LOG_PROTOCOL)
-            << (rpc ? "JSON-RPC method" : "Websocket method ") << method
+            << (rpc ? "JSON-RPC" : "Websocket") << " method" << method
             << " not found";
-        send_error_reply(protocol_status::not_found,
+        return send_error_reply(protocol_status::not_found,
             system::error::http_method_not_found);
-        return;
+    };
+
+    if (rpc)
+    {
+        handler = rpc_handlers_.find(method);
+        if (handler == rpc_handlers_.end())
+            return handler_not_found(method, rpc);
+    }
+    else
+    {
+        handler = handlers_.find(method);
+        if (handler == handlers_.end())
+            return handler_not_found(method, rpc);
     }
 
     auto it = work_.find(connection);

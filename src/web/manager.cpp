@@ -878,9 +878,9 @@ bool manager::handle_websocket(connection_ptr connection)
     const auto header_length = frame.header_length();
 
     LOG_VERBOSE(LOG_PROTOCOL_HTTP)
-        << "Websocket data_frame flags: " << flags
-        << ", final_fragment: " << (final ? "true" : "false")
-        << ", read length: " << read_length;
+        << "Websocket data_frame flags: 0x" << std::hex
+        << static_cast<uint32_t>(flags) << std::dec << ", final_fragment: "
+        << (final ? "true" : "false") << ", read length: " << read_length;
 
     // If full frame payload isn't buffered, initiate state to track transfer.
     if (data_length > read_length && !transfer.in_progress)
