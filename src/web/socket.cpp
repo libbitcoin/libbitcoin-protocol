@@ -396,6 +396,16 @@ bool socket::start()
                 << settings_.web_server_private_key << "' does not exist.";
             return false;
         }
+
+        // If required secure parameters are empty, do not enable the service.
+        if (settings_.web_server_certificate.empty() &&
+            settings_.web_server_private_key.empty())
+        {
+            LOG_VERBOSE(LOG_PROTOCOL)
+                << "Skipping start of secure websocket service "
+                << "(no certificates configured)";
+            return true;
+        }
 #else
         LOG_VERBOSE(LOG_PROTOCOL)
             << "Skipping start of secure websocket service "
