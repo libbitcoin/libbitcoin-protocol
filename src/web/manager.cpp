@@ -61,7 +61,8 @@ manager::manager(bool ssl, event_handler handler, path document_root,
     ca_certificate_{},
     handler_(handler),
     document_root_(document_root),
-    origins_(origins)
+    origins_(origins),
+    page_data_{}
 {
 #ifndef WITH_MBEDTLS
     BITCOIN_ASSERT_MSG(!ssl, "Secure HTTP requires MBEDTLS library.");
@@ -74,6 +75,11 @@ manager::~manager()
     if (initialized_)
         ::WSACleanup();
 #endif
+}
+
+void manager::set_default_page_data(const std::string& data)
+{
+    page_data_ = data;
 }
 
 // Initialize is not thread safe.
@@ -1027,32 +1033,35 @@ bool manager::send_response(connection_ptr connection,
 {
     auto path = document_root_;
 
-    if (request.uri == "/")
+    if (!document_root_.empty())
     {
-        static const std::vector<boost::filesystem::path> index_files
+        if (request.uri == "/")
         {
-            { "index.html" },
-            { "index.htm" },
-            { "index.shtml" }
-        };
-
-        for (const auto& index: index_files)
-        {
-            const auto test_path = path / index;
-            if (boost::filesystem::exists(test_path))
+            static const std::vector<boost::filesystem::path> index_files
             {
-                path = test_path;
-                break;
-            }
-        }
+                { "index.html" },
+                { "index.htm" },
+                { "index.shtml" }
+            };
 
-        if (path == document_root_)
-            return false;
-    }
-    else
-    {
-        // BUGBUG: sanitize path to guard against information leak.
-        path /= request.uri;
+            for (const auto& index: index_files)
+            {
+                const auto test_path = path / index;
+                if (boost::filesystem::exists(test_path))
+                {
+                    path = test_path;
+                    break;
+                }
+            }
+
+            if (path == document_root_)
+                return false;
+        }
+        else
+        {
+            // BUGBUG: sanitize path to guard against information leak.
+            path /= request.uri;
+        }
     }
 
     if (!boost::filesystem::exists(path))
@@ -1069,15 +1078,29 @@ bool manager::send_response(connection_ptr connection,
         std::strftime(time_buffer.data(), time_buffer.size(),
             "%a, %d %b %Y %H:%M:%S GMT", std::gmtime(&current_time));
 
-        const auto response = std::string(
-            "HTTP/1.1 404 Not Found\r\n"
-            "Date: ") + time_buffer.data() + std::string("\r\n"
-            "Content-Type: text/html\r\n"
-            "Content-Length: 90\r\n\r\n"
-            "<html><head><title>Page not found</title></head>"
-            "<body>The page was not found.</body></html>\r\n\r\n");
+        std::stringstream response;
 
-        connection->write(response);
+        if (page_data_.empty())
+        {
+            response
+                << "HTTP/1.1 404 Not Found\r\n"
+                << "Date: " << time_buffer.data() << "\r\n"
+                << "Content-Type: text/html\r\n"
+                << "Content-Length: 90\r\n\r\n"
+                << "<html><head><title>Page not found</title></head>"
+                << "<body>The page was not found.</body></html>\r\n\r\n";
+        }
+        else
+        {
+            response
+                << "HTTP/1.0 200 OK\r\n"
+                << "Date: " << time_buffer.data() << "\r\n"
+                << "Content-Type: text/html\r\n"
+                << "Content-Length: " << page_data_.size() << "\r\n\r\n"
+                << page_data_ << "\r\n\r\n";
+        }
+
+        connection->write(response.str());
         return true;
     }
 

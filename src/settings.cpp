@@ -37,11 +37,10 @@ settings::settings()
     send_milliseconds(0),
     web_priority(false),
     web_origins({}),
-    web_root("web"),
+    web_root(""),
     web_ca_certificate(""),
-    web_server_private_key("key.pem"),
-    web_server_certificate("server.pem"),
-    web_client_certificates("clients")
+    web_server_private_key(""),
+    web_server_certificate("")
 {
 }
 
@@ -56,11 +55,10 @@ settings::settings(uint32_t send_high_water, uint32_t receive_high_water)
     send_milliseconds(0),
     web_priority(false),
     web_origins({}),
-    web_root("web"),
+    web_root(""),
     web_ca_certificate(""),
-    web_server_private_key("key.pem"),
-    web_server_certificate("server.pem"),
-    web_client_certificates("clients")
+    web_server_private_key(""),
+    web_server_certificate("")
 {
 }
 

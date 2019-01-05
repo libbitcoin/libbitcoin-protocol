@@ -359,7 +359,7 @@ socket::socket(zmq::context& context, const protocol::settings& settings,
 
 bool socket::start()
 {
-    if (!exists(settings_.web_root))
+    if (!settings_.web_root.empty() && !exists(settings_.web_root))
     {
         LOG_ERROR(LOG_PROTOCOL)
             << "Configured HTTP root path '" << settings_.web_root
@@ -370,31 +370,30 @@ bool socket::start()
     if (secure_)
     {
 #ifdef WITH_MBEDTLS
-        if (!settings_.web_ca_certificate.generic_string().empty() &&
+        if (!settings_.web_ca_certificate.empty() &&
             !exists(settings_.web_server_certificate))
         {
             LOG_ERROR(LOG_PROTOCOL)
-                << "Requested CA certificate '"
-                << settings_.web_ca_certificate
+                << "Configured CA certificate '" << settings_.web_ca_certificate
                 << "' does not exist.";
             return false;
         }
 
-        if (!exists(settings_.web_server_certificate))
+        if (!settings_.web_server_certificate.empty() &&
+            !exists(settings_.web_server_certificate))
         {
             LOG_ERROR(LOG_PROTOCOL)
-                << "Required server certificate '"
-                << settings_.web_server_certificate
-                << "' does not exist.";
+                << "Configured server certificate '"
+                << settings_.web_server_certificate << "' does not exist.";
             return false;
         }
 
-        if (!exists(settings_.web_server_private_key))
+        if (!settings_.web_server_private_key.empty() &&
+            !exists(settings_.web_server_private_key))
         {
             LOG_ERROR(LOG_PROTOCOL)
-                << "Required server private key '"
-                << settings_.web_server_private_key
-                << "' does not exist.";
+                << "Configured server private key '"
+                << settings_.web_server_private_key << "' does not exist.";
             return false;
         }
 #else
@@ -684,6 +683,11 @@ void socket::broadcast(const std::string& json)
     };
 
     std::for_each(work_.begin(), work_.end(), sender);
+}
+
+void socket::set_default_page_data(const std::string& data)
+{
+    manager_->set_default_page_data(data);
 }
 
 } // namespace http

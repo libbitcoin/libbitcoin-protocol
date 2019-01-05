@@ -129,6 +129,10 @@ protected:
     // Send a message to every connected websocket client.
     void broadcast(const std::string& json);
 
+    // Optionally set a fixed reply instead of returning a 404 not found if
+    // the web root cannot be found.
+    void set_default_page_data(const std::string& data);
+
     // The zmq socket operates on only this one thread.
     bc::protocol::zmq::context& context_;
     const bool secure_;
