@@ -272,7 +272,7 @@ bool socket::handle_event(connection_ptr connection, http_event event,
                 << "method " << method << ", parameters " << parameters
                 << ", id " << id;
 
-            instance->notify_query_work(connection, method, id, parameters, true);
+            instance->notify_query_work(connection, method, id, parameters);
             break;
         }
 
@@ -316,7 +316,7 @@ bool socket::handle_event(connection_ptr connection, http_event event,
                 << "method " << method << ", parameters " << parameters
                 << ", id " << id;
 
-            instance->notify_query_work(connection, method, id, parameters, false);
+            instance->notify_query_work(connection, method, id, parameters);
             break;
         }
 
@@ -565,14 +565,13 @@ void socket::remove_connection(connection_ptr connection)
 // Errors write directly on the connection since this is called from
 // the event_handler, which is called on the websocket thread.
 void socket::notify_query_work(connection_ptr connection,
-    const std::string& method, uint32_t id, const std::string& parameters,
-    bool rpc)
+    const std::string& method, uint32_t id, const std::string& parameters)
 {
+    const auto rpc = connection->json_rpc();
     const auto send_error_reply = [=](protocol_status status, const code& ec)
     {
         http_reply reply;
-        const auto error = (connection->json_rpc() ? rpc::to_json(ec, id) :
-            to_json(ec, id));
+        const auto error = (rpc ? rpc::to_json(ec, id) : to_json(ec, id));
         const auto response = reply.generate(status, {}, error.size(), false);
         LOG_VERBOSE(LOG_PROTOCOL) << response + error;
         connection->write(response + error);

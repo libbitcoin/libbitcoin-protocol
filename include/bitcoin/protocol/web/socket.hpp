@@ -108,8 +108,7 @@ public:
     void add_connection(connection_ptr connection);
     void remove_connection(connection_ptr connection);
     void notify_query_work(connection_ptr connection,
-        const std::string& method, uint32_t id, const std::string& parameters,
-        bool rpc);
+        const std::string& method, uint32_t id, const std::string& parameters);
 
 protected:
     // Initialize the websocket event loop and start a thread to poll events.

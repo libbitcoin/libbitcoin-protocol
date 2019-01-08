@@ -146,7 +146,7 @@ std::string to_json(const chain::header& header, uint32_t id)
     tree.put("hash", encode_hash(header.hash()));
     tree.put("version", header.version());
     tree.put("versionHex", hex(header.version()));
-    tree.put("merkleroot", encode_hash(header.merkle()));
+    tree.put("merkleroot", encode_hash(header.merkle_root()));
     tree.put("time", header.timestamp());
     tree.put("nonce", header.nonce());
     tree.put("bits", hex(header.bits()));
