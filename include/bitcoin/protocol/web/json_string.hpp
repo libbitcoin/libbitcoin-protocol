@@ -35,7 +35,10 @@ namespace http {
 //-----------------------------------------------------------------------------
 
 BCP_API std::string to_json(const boost::property_tree::ptree& tree);
+BCP_API std::string to_json(const boost::property_tree::ptree& tree,
+    uint32_t id);
 BCP_API std::string to_json(uint64_t height, uint32_t id);
+BCP_API std::string to_json(const system::hash_digest& hash, uint32_t id);
 BCP_API std::string to_json(const system::code& code, uint32_t id);
 BCP_API std::string to_json(const system::chain::header& header, uint32_t id);
 BCP_API std::string to_json(const system::chain::block& block, uint32_t id);
@@ -43,6 +46,27 @@ BCP_API std::string to_json(const system::chain::block& block, uint32_t height,
     uint32_t id);
 BCP_API std::string to_json(const system::chain::transaction& transaction,
     uint32_t id);
+
+// Object to JSON rpc converters.
+//-----------------------------------------------------------------------------
+
+// The rpc distinction is for formatting the json to conform to
+// libbitcoin json, or rpc json.
+namespace rpc {
+
+BCP_API std::string to_json(const boost::property_tree::ptree& tree,
+    uint32_t id);
+BCP_API std::string to_json(uint64_t height, uint32_t id);
+BCP_API std::string to_json(const system::hash_digest& hash, uint32_t id);
+BCP_API std::string to_json(const system::code& code, uint32_t id);
+BCP_API std::string to_json(const system::chain::header& header, uint32_t id);
+BCP_API std::string to_json(const system::chain::block& block, uint32_t id);
+BCP_API std::string to_json(const system::chain::block& block, uint32_t height,
+    uint32_t id);
+BCP_API std::string to_json(const system::chain::transaction& transaction,
+    uint32_t id);
+
+} // namespace rpc
 
 } // namespace http
 } // namespace protocol

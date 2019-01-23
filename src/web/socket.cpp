@@ -49,9 +49,23 @@ public:
         if (!connection_ || connection_->closed())
             return false;
 
+        auto narrow = [](int32_t& out, size_t in)
+        {
+            out = static_cast<int32_t>(in);
+            return out >= 0 && out <= std::numeric_limits<int32_t>::max() &&
+                static_cast<size_t>(out) == in;
+        };
+
+        int32_t data_size;
+        if (!narrow(data_size, data_.size()))
+            return false;
+
         if (!connection_->json_rpc())
-            // BUGBUG: unguarded narrowing cast.
-            return connection_->write(data_) == static_cast<int32_t>(data_.size());
+        {
+            LOG_VERBOSE(LOG_PROTOCOL_HTTP)
+                << "Writing Websocket response: " << data_;
+            return connection_->write(data_) == data_size;
+        }
 
         http_reply reply;
         const auto response = reply.generate(protocol_status::ok, {},
@@ -60,9 +74,11 @@ public:
         LOG_VERBOSE(LOG_PROTOCOL_HTTP)
             << "Writing JSON-RPC response: " << response;
 
-        // BUGBUG: unguarded narrowing cast.
-        return connection_->write(response) ==
-            static_cast<int32_t>(response.size());
+        int32_t response_size;
+        if (!narrow(response_size, response.size()))
+            return false;
+
+        return connection_->write(response) == response_size;
     }
 
     connection_ptr connection()
@@ -89,12 +105,14 @@ class query_response_task_sender
 public:
     query_response_task_sender(uint32_t sequence, const data_chunk& data,
         const std::string& command, const socket::handler_map& handlers,
+        const socket::handler_map& rpc_handlers,
         socket::connection_work_map& work,
         socket::query_correlation_map& correlations)
       : sequence_(sequence),
         data_(data),
         command_(command),
         handlers_(handlers),
+        rpc_handlers_(rpc_handlers),
         work_(work),
         correlations_(correlations)
     {
@@ -145,28 +163,39 @@ public:
         BITCOIN_ASSERT(work.connection == connection);
         BITCOIN_ASSERT(work.correlation_id == sequence_);
 
+        auto write_error = [&work](system::code ec, uint32_t id, bool rpc)
+        {
+            const auto reply = rpc ? rpc::to_json(ec, id) : to_json(ec, id);
+            work.connection->write(reply);
+            return true;
+        };
+
         data_source istream(data_);
         istream_reader source(istream);
         const auto ec = source.read_error_code();
-        if (ec)
-        {
-            work.connection->write(to_json(ec, id));
-            return true;
-        }
 
-        const auto handler = handlers_.find(work.command);
-        if (handler == handlers_.end())
+        if (ec)
+            return write_error(ec, id, connection->json_rpc());
+
+        socket::handler_map::const_iterator handler;
+
+        if (connection->json_rpc())
         {
-            static constexpr auto error = system::error::not_implemented;
-            work.connection->write(to_json(error, id));
-            return true;
+            handler = rpc_handlers_.find(work.command);
+            if (handler == rpc_handlers_.end())
+                return write_error(system::error::not_implemented, id, true);
+        }
+        else
+        {
+            handler = handlers_.find(work.command);
+            if (handler == handlers_.end())
+                return write_error(system::error::not_implemented, id, false);
         }
 
         // Decode response and send query output to websocket client.
         // The websocket write is performed directly (running on the
         // websocket thread).
-        const auto payload = source.read_bytes();
-        handler->second.decode(payload, id, work.connection);
+        handler->second.decode(source.read_bytes(), id, work.connection);
         return true;
     }
 
@@ -175,6 +204,7 @@ private:
     const data_chunk data_;
     const std::string command_;
     const socket::handler_map& handlers_;
+    const socket::handler_map& rpc_handlers_;
     socket::connection_work_map& work_;
     socket::query_correlation_map& correlations_;
 };
@@ -297,14 +327,10 @@ bool socket::handle_event(connection_ptr connection, http_event event,
             BITCOIN_ASSERT(instance != nullptr);
             instance->remove_connection(connection);
 
-            if (connection->websocket())
-            {
-                const auto type = connection->json_rpc() ? "JSON-RPC" : "Websocket";
-                LOG_DEBUG(LOG_PROTOCOL)
-                    << type << " client disconnected [" << connection << "] ("
-                    << instance->connection_count() << ")";
-            }
-
+            const auto type = connection->json_rpc() ? "JSON-RPC" : "Websocket";
+            LOG_DEBUG(LOG_PROTOCOL)
+                << type << " client disconnected [" << connection << "] ("
+                << instance->connection_count() << ")";
             break;
         }
 
@@ -386,7 +412,8 @@ void socket::queue_response(uint32_t sequence, const data_chunk& data,
     const std::string& command)
 {
     auto task = std::make_shared<query_response_task_sender>(
-        sequence, data, command, handlers_, work_, correlations_);
+        sequence, data, command, handlers_, rpc_handlers_, work_,
+        correlations_);
 
     // Critical Section.
     ///////////////////////////////////////////////////////////////////////////
@@ -540,28 +567,48 @@ void socket::remove_connection(connection_ptr connection)
 void socket::notify_query_work(connection_ptr connection,
     const std::string& method, uint32_t id, const std::string& parameters)
 {
+    const auto rpc = connection->json_rpc();
     const auto send_error_reply = [=](protocol_status status, const code& ec)
     {
         http_reply reply;
-        const auto error = to_json(ec, id);
+        const auto error = (rpc ? rpc::to_json(ec, id) : to_json(ec, id));
         const auto response = reply.generate(status, {}, error.size(), false);
         LOG_VERBOSE(LOG_PROTOCOL) << response + error;
         connection->write(response + error);
     };
 
-    if (handlers_.empty())
+    // This occurs when a websocket/rpc request is pointed at a web
+    // endpoint other than the query service.
+    if (handlers_.empty() || rpc_handlers_.empty())
     {
-        send_error_reply(protocol_status::service_unavailable,
+        LOG_VERBOSE(LOG_PROTOCOL)
+            << "No handlers for methods. Likely incorrect endpoint addressed.";
+        return send_error_reply(protocol_status::service_unavailable,
             system::error::http_invalid_request);
-        return;
     }
 
-    const auto handler = handlers_.find(method);
-    if (handler == handlers_.end())
+    handler_map::const_iterator handler;
+
+    auto handler_not_found = [=](const std::string& method, bool rpc)
     {
-        send_error_reply(protocol_status::not_found,
+        LOG_VERBOSE(LOG_PROTOCOL)
+            << (rpc ? "JSON-RPC" : "Websocket") << " method" << method
+            << " not found";
+        return send_error_reply(protocol_status::not_found,
             system::error::http_method_not_found);
-        return;
+    };
+
+    if (rpc)
+    {
+        handler = rpc_handlers_.find(method);
+        if (handler == rpc_handlers_.end())
+            return handler_not_found(method, rpc);
+    }
+    else
+    {
+        handler = handlers_.find(method);
+        if (handler == handlers_.end())
+            return handler_not_found(method, rpc);
     }
 
     auto it = work_.find(connection);
@@ -585,8 +632,16 @@ void socket::notify_query_work(connection_ptr connection,
 
     // Encode request based on query work and send to query_websocket.
     zmq::message request;
-    handler->second.encode(request, handler->second.command, parameters,
-        sequence_);
+    if (!handler->second.encode(request, handler->second.command, parameters,
+        sequence_))
+    {
+        LOG_WARNING(LOG_PROTOCOL)
+            << "Encoding command " << handler->second.command
+            << " with parameters " << parameters << " failed.";
+        send_error_reply(protocol_status::bad_request,
+            system::error::http_invalid_request);
+        return;
+    }
 
     // While each connection has its own id map (meaning correlation ids passed
     // from the web client are unique on a per connection basis, potentially
