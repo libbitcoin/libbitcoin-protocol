@@ -94,6 +94,7 @@ bool manager::initialize()
     initialized_ = true;
     return LOBYTE(wsa_data.wVersion) == 2 && HIBYTE(wsa_data.wVersion) == 2;
 #else
+    initialized_ = true;
     return true;
 #endif
 }
