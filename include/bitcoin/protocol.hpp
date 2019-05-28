@@ -21,6 +21,7 @@
 #include <bitcoin/protocol/web/bind_options.hpp>
 #include <bitcoin/protocol/web/connection.hpp>
 #include <bitcoin/protocol/web/connection_state.hpp>
+#include <bitcoin/protocol/web/default_page_data.hpp>
 #include <bitcoin/protocol/web/event.hpp>
 #include <bitcoin/protocol/web/file_transfer.hpp>
 #include <bitcoin/protocol/web/http.hpp>

@@ -72,6 +72,10 @@ public:
         const origin_list origins);
     ~manager();
 
+    // If the endpoint is reached and no default page can be found,
+    // send a response that includes this data.
+    void set_default_page_data(const std::string& data);
+
     bool initialize();
     bool bind(const system::config::endpoint& address,
         const bind_options& options);
@@ -141,6 +145,7 @@ private:
     system::shared_mutex task_mutex_;
 
     const origin_list origins_;
+    std::string page_data_;
 };
 
 } // namespace http

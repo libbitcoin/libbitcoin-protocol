@@ -37,6 +37,7 @@ src_libbitcoin_protocol_la_LIBADD = ${zmq_LIBS} ${mbedtls_LIBS} ${bitcoin_system
 src_libbitcoin_protocol_la_SOURCES = \
     src/settings.cpp \
     src/web/connection.cpp \
+    src/web/default_page_data.cpp \
     src/web/json_string.cpp \
     src/web/manager.cpp \
     src/web/socket.cpp \
@@ -95,6 +96,7 @@ include_bitcoin_protocol_web_HEADERS = \
     include/bitcoin/protocol/web/bind_options.hpp \
     include/bitcoin/protocol/web/connection.hpp \
     include/bitcoin/protocol/web/connection_state.hpp \
+    include/bitcoin/protocol/web/default_page_data.hpp \
     include/bitcoin/protocol/web/event.hpp \
     include/bitcoin/protocol/web/file_transfer.hpp \
     include/bitcoin/protocol/web/http.hpp \

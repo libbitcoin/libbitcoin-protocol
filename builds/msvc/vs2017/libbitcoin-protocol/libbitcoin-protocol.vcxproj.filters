@@ -42,6 +42,9 @@
     <ClCompile Include="..\..\..\..\src\web\connection.cpp">
       <Filter>src\web</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\web\default_page_data.cpp">
+      <Filter>src\web</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\web\json_string.cpp">
       <Filter>src\web</Filter>
     </ClCompile>
@@ -108,6 +111,9 @@
       <Filter>include\bitcoin\protocol\web</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\connection_state.hpp">
+      <Filter>include\bitcoin\protocol\web</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\default_page_data.hpp">
       <Filter>include\bitcoin\protocol\web</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\event.hpp">
