@@ -13,7 +13,7 @@
 AC_PREREQ([2.65])
 
 # Process command-line arguments and perform initialization and verification.
-AC_INIT([libbitcoin-protocol], [3.4.0], [eric@voskuil.org])
+AC_INIT([libbitcoin-protocol], [3.6.0], [eric@voskuil.org])
 
 # Do compilation tests.
 AC_LANG(C++)
@@ -146,14 +146,14 @@ AS_CASE([${with_tests}], [yes],
      AC_MSG_NOTICE([boost_unit_test_framework_LIBS : ${boost_unit_test_framework_LIBS}])],
     [AC_SUBST([boost_unit_test_framework_LIBS], [])])
 
-# Require zmq of at least version 4.2.5 and output ${zmq_CPPFLAGS/LIBS/PKG}.
+# Require zmq of at least version 4.3.2 and output ${zmq_CPPFLAGS/LIBS/PKG}.
 #------------------------------------------------------------------------------
-PKG_CHECK_MODULES([zmq], [libzmq >= 4.2.5],
-    [zmq_INCLUDEDIR="`$PKG_CONFIG --variable=includedir "libzmq >= 4.2.5" 2>/dev/null`"
-     zmq_OTHER_CFLAGS="`$PKG_CONFIG --cflags-only-other "libzmq >= 4.2.5" 2>/dev/null`"],
+PKG_CHECK_MODULES([zmq], [libzmq >= 4.3.2],
+    [zmq_INCLUDEDIR="`$PKG_CONFIG --variable=includedir "libzmq >= 4.3.2" 2>/dev/null`"
+     zmq_OTHER_CFLAGS="`$PKG_CONFIG --cflags-only-other "libzmq >= 4.3.2" 2>/dev/null`"],
     [zmq_INCLUDEDIR=""
      zmq_OTHER_CFLAGS=""])
-AC_SUBST([zmq_PKG], ['libzmq >= 4.2.5'])
+AC_SUBST([zmq_PKG], ['libzmq >= 4.3.2'])
 AC_SUBST([zmq_CPPFLAGS], [${zmq_CFLAGS}])
 AS_IF([test x${zmq_INCLUDEDIR} != "x"],
     [AC_SUBST([zmq_ISYS_CPPFLAGS], ["-isystem${zmq_INCLUDEDIR} ${zmq_OTHER_CFLAGS}"])],
@@ -170,14 +170,14 @@ AS_CASE([${enable_isystem}],[yes],
 
 AC_MSG_NOTICE([zmq_BUILD_CPPFLAGS : ${zmq_BUILD_CPPFLAGS}])
 
-# Require bitcoin of at least version 3.4.0 and output ${bitcoin_CPPFLAGS/LIBS/PKG}.
+# Require bitcoin of at least version 3.6.0 and output ${bitcoin_CPPFLAGS/LIBS/PKG}.
 #------------------------------------------------------------------------------
-PKG_CHECK_MODULES([bitcoin], [libbitcoin >= 3.4.0],
-    [bitcoin_INCLUDEDIR="`$PKG_CONFIG --variable=includedir "libbitcoin >= 3.4.0" 2>/dev/null`"
-     bitcoin_OTHER_CFLAGS="`$PKG_CONFIG --cflags-only-other "libbitcoin >= 3.4.0" 2>/dev/null`"],
+PKG_CHECK_MODULES([bitcoin], [libbitcoin >= 3.6.0],
+    [bitcoin_INCLUDEDIR="`$PKG_CONFIG --variable=includedir "libbitcoin >= 3.6.0" 2>/dev/null`"
+     bitcoin_OTHER_CFLAGS="`$PKG_CONFIG --cflags-only-other "libbitcoin >= 3.6.0" 2>/dev/null`"],
     [bitcoin_INCLUDEDIR=""
      bitcoin_OTHER_CFLAGS=""])
-AC_SUBST([bitcoin_PKG], ['libbitcoin >= 3.4.0'])
+AC_SUBST([bitcoin_PKG], ['libbitcoin >= 3.6.0'])
 AC_SUBST([bitcoin_CPPFLAGS], [${bitcoin_CFLAGS}])
 AS_IF([test x${bitcoin_INCLUDEDIR} != "x"],
     [AC_SUBST([bitcoin_ISYS_CPPFLAGS], ["-isystem${bitcoin_INCLUDEDIR} ${bitcoin_OTHER_CFLAGS}"])],
