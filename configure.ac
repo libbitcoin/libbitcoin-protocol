@@ -161,14 +161,14 @@ AS_CASE([${with_tests}], [yes],
      AC_MSG_NOTICE([boost_unit_test_framework_LIBS : ${boost_unit_test_framework_LIBS}])],
     [AC_SUBST([boost_unit_test_framework_LIBS], [])])
 
-# Require zmq of at least version 4.2.5 and output ${zmq_CPPFLAGS/LIBS/PKG}.
+# Require zmq of at least version 4.3.2 and output ${zmq_CPPFLAGS/LIBS/PKG}.
 #------------------------------------------------------------------------------
-PKG_CHECK_MODULES([zmq], [libzmq >= 4.2.5],
-    [zmq_INCLUDEDIR="`$PKG_CONFIG --variable=includedir "libzmq >= 4.2.5" 2>/dev/null`"
-     zmq_OTHER_CFLAGS="`$PKG_CONFIG --cflags-only-other "libzmq >= 4.2.5" 2>/dev/null`"],
+PKG_CHECK_MODULES([zmq], [libzmq >= 4.3.2],
+    [zmq_INCLUDEDIR="`$PKG_CONFIG --variable=includedir "libzmq >= 4.3.2" 2>/dev/null`"
+     zmq_OTHER_CFLAGS="`$PKG_CONFIG --cflags-only-other "libzmq >= 4.3.2" 2>/dev/null`"],
     [zmq_INCLUDEDIR=""
      zmq_OTHER_CFLAGS=""])
-AC_SUBST([zmq_PKG], ['libzmq >= 4.2.5'])
+AC_SUBST([zmq_PKG], ['libzmq >= 4.3.2'])
 AC_SUBST([zmq_CPPFLAGS], [${zmq_CFLAGS}])
 AS_IF([test x${zmq_INCLUDEDIR} != "x"],
     [AC_SUBST([zmq_ISYS_CPPFLAGS], ["-isystem${zmq_INCLUDEDIR} ${zmq_OTHER_CFLAGS}"])],

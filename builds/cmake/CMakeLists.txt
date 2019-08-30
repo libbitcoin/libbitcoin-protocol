@@ -113,7 +113,7 @@ set( boost_LDFLAGS "-L${Boost_LIBRARY_DIR}" )
 
 # Find zmq
 #------------------------------------------------------------------------------
-find_package( Zmq 4.2.5 REQUIRED )
+find_package( Zmq 4.3.2 REQUIRED )
 
 # Find mbedtls
 #------------------------------------------------------------------------------
