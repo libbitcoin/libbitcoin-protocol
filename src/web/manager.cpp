@@ -1195,9 +1195,9 @@ bool manager::validate_origin(const std::string& origin)
         origins_.end();
 }
 
+#ifdef WITH_MBEDTLS
 bool manager::initialize_ssl(connection_ptr connection, bool listener)
 {
-#ifdef WITH_MBEDTLS
     auto& context = connection->ssl_context();
     auto& configuration = context.configuration;
 
@@ -1295,10 +1295,13 @@ bool manager::initialize_ssl(connection_ptr connection, bool listener)
 
     context.enabled = true;
     return context.enabled;
-#else
-    return false;
-#endif
 }
+#else
+bool manager::initialize_ssl(connection_ptr, bool)
+{
+    return false;
+}
+#endif
 
 } // namespace http
 } // namespace protocol
