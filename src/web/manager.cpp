@@ -104,9 +104,8 @@ bool manager::bind(const config::endpoint& address, const bind_options& options)
 {
     if (address.host() != "*")
     {
-        LOG_INFO(LOG_PROTOCOL_HTTP)
-            << "Failed to bind to named host (unsupported): " << address;
-        return false;
+        LOG_WARNING(LOG_PROTOCOL_HTTP)
+            << "Detected named host, but binding to '*': " << address;
     }
 
     port_ = address.port();
