@@ -9,6 +9,7 @@
 Make sure you have installed [libbitcoin](https://github.com/libbitcoin/libbitcoin) beforehand according to its build instructions, as well as libzmq.
 
 ```sh
+$ export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 $ ./autogen.sh
 $ ./configure
 $ make
