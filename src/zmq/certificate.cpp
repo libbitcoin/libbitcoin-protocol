@@ -79,7 +79,7 @@ bool certificate::create(config::sodium& out_public,
 {
     // Loop until neither key's base85 encoding includes the # character.
     // This ensures that the value can be used in libbitcoin settings files.
-    for (uint8_t attempt = 0; attempt <= max_uint8; attempt++)
+    for (uint8_t attempt = 0; attempt < max_uint8; attempt++)
     {
         char public_key[zmq_encoded_key_size + 1] = { 0 };
         char private_key[zmq_encoded_key_size + 1] = { 0 };
