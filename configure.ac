@@ -1,5 +1,5 @@
 ###############################################################################
-#  Copyright (c) 2014-2019 libbitcoin-protocol developers (see COPYING).
+#  Copyright (c) 2014-2020 libbitcoin-protocol developers (see COPYING).
 #
 #         GENERATED SOURCE CODE, DO NOT EDIT EXCEPT EXPERIMENTALLY
 #
@@ -166,8 +166,7 @@ AS_CASE([${with_tests}], [yes],
 PKG_CHECK_MODULES([zmq], [libzmq >= 4.3.2],
     [zmq_INCLUDEDIR="`$PKG_CONFIG --variable=includedir "libzmq >= 4.3.2" 2>/dev/null`"
      zmq_OTHER_CFLAGS="`$PKG_CONFIG --cflags-only-other "libzmq >= 4.3.2" 2>/dev/null`"],
-    [zmq_INCLUDEDIR=""
-     zmq_OTHER_CFLAGS=""])
+    [AC_MSG_ERROR([libzmq >= 4.3.2 is required but was not found.])])
 AC_SUBST([zmq_PKG], ['libzmq >= 4.3.2'])
 AC_SUBST([zmq_CPPFLAGS], [${zmq_CFLAGS}])
 AS_IF([test x${zmq_INCLUDEDIR} != "x"],
@@ -206,8 +205,7 @@ AC_MSG_NOTICE([mbedtls_BUILD_CPPFLAGS : ${mbedtls_BUILD_CPPFLAGS}])
 PKG_CHECK_MODULES([bitcoin_system], [libbitcoin-system >= 4.0.0],
     [bitcoin_system_INCLUDEDIR="`$PKG_CONFIG --variable=includedir "libbitcoin-system >= 4.0.0" 2>/dev/null`"
      bitcoin_system_OTHER_CFLAGS="`$PKG_CONFIG --cflags-only-other "libbitcoin-system >= 4.0.0" 2>/dev/null`"],
-    [bitcoin_system_INCLUDEDIR=""
-     bitcoin_system_OTHER_CFLAGS=""])
+    [AC_MSG_ERROR([libbitcoin-system >= 4.0.0 is required but was not found.])])
 AC_SUBST([bitcoin_system_PKG], ['libbitcoin-system >= 4.0.0'])
 AC_SUBST([bitcoin_system_CPPFLAGS], [${bitcoin_system_CFLAGS}])
 AS_IF([test x${bitcoin_system_INCLUDEDIR} != "x"],
