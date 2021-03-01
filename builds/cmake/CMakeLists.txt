@@ -142,12 +142,12 @@ endif()
 # Define project common library directories
 #------------------------------------------------------------------------------
 if (BUILD_SHARED_LIBS)
-    link_directories( 
+    link_directories(
         ${zmq_LIBRARY_DIRS}
         ${mbedtls_LIBRARY_DIRS}
         ${bitcoin_system_LIBRARY_DIRS} )
 else()
-    link_directories( 
+    link_directories(
         ${zmq_STATIC_LIBRARY_DIRS}
         ${mbedtls_STATIC_LIBRARY_DIRS}
         ${bitcoin_system_STATIC_LIBRARY_DIRS} )
@@ -156,14 +156,14 @@ endif()
 # Define project common libraries/linker flags.
 #------------------------------------------------------------------------------
 if (BUILD_SHARED_LIBS)
-    link_libraries( 
+    link_libraries(
         "-fstack-protector"
         "-fstack-protector-all"
         ${zmq_LIBRARIES}
         ${mbedtls_LIBRARIES}
         ${bitcoin_system_LIBRARIES} )
 else()
-    link_libraries( 
+    link_libraries(
         "-fstack-protector"
         "-fstack-protector-all"
         ${zmq_STATIC_LIBRARIES}
@@ -171,7 +171,7 @@ else()
         ${bitcoin_system_STATIC_LIBRARIES} )
 endif()
 
-add_definitions( 
+add_definitions(
     ${mbedtls} )
 
 # Define ${CANONICAL_LIB_NAME} project.
