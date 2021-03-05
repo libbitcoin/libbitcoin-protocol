@@ -42,7 +42,7 @@
 #define LOG_PROTOCOL_HTTP "http"
 
 #if defined _WIN32
-    #include <winsock.h>
+    #include <winsock2.h>
     typedef SOCKET file_descriptor;
 #else
     typedef int file_descriptor;
