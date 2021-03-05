@@ -12,7 +12,6 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <EnablePREfast>false</EnablePREfast>
-      <PreprocessorDefinitions>_WIN32_WINNT=0x0600;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(DefaultLinkage)' == 'dynamic'">BOOST_TEST_DYN_LINK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <PostBuildEvent Condition="'$(DebugOrRelease)' == 'release'">
