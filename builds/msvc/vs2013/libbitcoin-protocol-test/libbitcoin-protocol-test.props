@@ -55,11 +55,11 @@
   <!-- Messages -->
 
   <Target Name="LinkageInfo" BeforeTargets="PrepareForBuild">
-    <Message Text="Linkage-secp256k1     : $(Linkage-secp256k1)" Importance="high"/>
-    <Message Text="Linkage-libzmq        : $(Linkage-libzmq)" Importance="high"/>
-    <Message Text="Linkage-_-system      : $(Linkage-libbitcoin-system)" Importance="high"/>
-    <!--<Message Text="Linkage-protobuf  : $(Linkage-protobuf)" Importance="high"/>-->
-    <Message Text="Linkage-_protocol     : $(Linkage-libbitcoin-protocol)" Importance="high"/>
+    <Message Text="Linkage-secp256k1 : $(Linkage-secp256k1)" Importance="high"/>
+    <Message Text="Linkage-libzmq    : $(Linkage-libzmq)" Importance="high"/>
+    <Message Text="Linkage-_-system  : $(Linkage-libbitcoin-system)" Importance="high"/>
+    <!--<Message Text="Linkage-protobuf: $(Linkage-protobuf)" Importance="high"/>-->
+    <Message Text="Linkage-_protocol : $(Linkage-libbitcoin-protocol)" Importance="high"/>
   </Target>
 
 </Project>
