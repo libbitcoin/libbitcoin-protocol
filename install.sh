@@ -37,8 +37,8 @@ BUILD_DIR="build-libbitcoin-protocol"
 
 # ZMQ archive.
 #------------------------------------------------------------------------------
-ZMQ_URL="https://github.com/zeromq/libzmq/releases/download/v4.3.2/zeromq-4.3.2.tar.gz"
-ZMQ_ARCHIVE="zeromq-4.3.2.tar.gz"
+ZMQ_URL="https://github.com/zeromq/libzmq/releases/download/v4.3.4/zeromq-4.3.4.tar.gz"
+ZMQ_ARCHIVE="zeromq-4.3.4.tar.gz"
 
 # MBEDTLS archive.
 #------------------------------------------------------------------------------
