@@ -18,9 +18,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(RepoRoot)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <EnablePREfast>false</EnablePREfast>
-      <PreprocessorDefinitions>_WIN32_WINNT=0x0600;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(ConfigurationType)' == 'DynamicLibrary'">BCP_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(ConfigurationType)' == 'StaticLibrary'">BCP_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -61,10 +59,10 @@
   <!-- Messages -->
 
   <Target Name="LinkageInfo" BeforeTargets="PrepareForBuild">
-    <Message Text="Linkage-secp256k1    : $(Linkage-secp256k1)" Importance="high"/>
-    <Message Text="Linkage-libzmq       : $(Linkage-libzmq)" Importance="high"/>
+    <Message Text="Linkage-secp256k1 : $(Linkage-secp256k1)" Importance="high"/>
+    <Message Text="Linkage-libzmq    : $(Linkage-libzmq)" Importance="high"/>
     <!--<Message Text="Linkage-protobuf : $(Linkage-protobuf)" Importance="high"/>-->
-    <Message Text="Linkage-_system      : $(Linkage-libbitcoin-system)" Importance="high"/>
+    <Message Text="Linkage-_system   : $(Linkage-libbitcoin-system)" Importance="high"/>
   </Target>
 
 </Project>

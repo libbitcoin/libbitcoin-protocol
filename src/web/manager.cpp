@@ -837,6 +837,7 @@ bool manager::send_http_file(connection_ptr connection, const path& path,
         // BUGBUG: UTF8 string passed to Windows ANSI parameter.
         const auto file = path.generic_string().c_str();
 
+        // TODO: C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead.
         file_transfer.descriptor = fopen(file, "r");
         if (file_transfer.descriptor == nullptr)
             return false;
@@ -1075,6 +1076,7 @@ bool manager::send_response(connection_ptr connection,
         const auto current_time = std::time(nullptr);
 
         // BUGBUG: std::gmtime may not be thread safe.
+        // TODO: C4996: 'gmtime': This function or variable may be unsafe. Consider using gmtime_s instead.
         std::strftime(time_buffer.data(), time_buffer.size(),
             "%a, %d %b %Y %H:%M:%S GMT", std::gmtime(&current_time));
 
@@ -1115,7 +1117,8 @@ bool manager::send_generated_reply(connection_ptr connection,
     protocol_status status)
 {
     http_reply reply;
-    return connection->write(reply.generate(status, {}, 0, false));
+    return connection->write(reply.generate(status, {}, size_t{ 0 }, false))
+        != 0;
 }
 
 bool manager::upgrade_connection(connection_ptr connection,

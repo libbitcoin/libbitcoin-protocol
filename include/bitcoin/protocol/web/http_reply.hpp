@@ -82,6 +82,7 @@ public:
         const auto current_time = std::time(nullptr);
 
         // BUGBUG: std::gmtime may not be thread safe.
+        // TODO: C4996: 'gmtime': This function or variable may be unsafe. Consider using gmtime_s instead.
         std::strftime(time_buffer.data(), time_buffer.size(),
             "%a, %d %b %Y %H:%M:%S GMT", std::gmtime(&current_time));
 

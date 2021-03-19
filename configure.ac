@@ -137,17 +137,17 @@ AC_MSG_RESULT([$enable_isystem])
 
 # Check dependencies.
 #==============================================================================
-# Require Boost of at least version 1.62.0 and output ${boost_CPPFLAGS/LDFLAGS}.
+# Require Boost of at least version 1.72.0 and output ${boost_CPPFLAGS/LDFLAGS}.
 #------------------------------------------------------------------------------
 AS_CASE([${CC}], [*],
-    [AX_BOOST_BASE([1.62.0],
+    [AX_BOOST_BASE([1.72.0],
         [AC_SUBST([boost_CPPFLAGS], [${BOOST_CPPFLAGS}])
          AC_SUBST([boost_ISYS_CPPFLAGS], [`echo ${BOOST_CPPFLAGS} | $SED s/^-I/-isystem/g | $SED s/' -I'/' -isystem'/g`])
          AC_SUBST([boost_LDFLAGS], [${BOOST_LDFLAGS}])
          AC_MSG_NOTICE([boost_CPPFLAGS : ${boost_CPPFLAGS}])
          AC_MSG_NOTICE([boost_ISYS_CPPFLAGS : ${boost_ISYS_CPPFLAGS}])
          AC_MSG_NOTICE([boost_LDFLAGS : ${boost_LDFLAGS}])],
-        [AC_MSG_ERROR([Boost 1.62.0 or later is required but was not found.])])])
+        [AC_MSG_ERROR([Boost 1.72.0 or later is required but was not found.])])])
 
 AS_CASE([${enable_isystem}],[yes],
     [AC_SUBST([boost_BUILD_CPPFLAGS], [${boost_ISYS_CPPFLAGS}])],
@@ -161,13 +161,13 @@ AS_CASE([${with_tests}], [yes],
      AC_MSG_NOTICE([boost_unit_test_framework_LIBS : ${boost_unit_test_framework_LIBS}])],
     [AC_SUBST([boost_unit_test_framework_LIBS], [])])
 
-# Require zmq of at least version 4.3.2 and output ${zmq_CPPFLAGS/LIBS/PKG}.
+# Require zmq of at least version 4.3.4 and output ${zmq_CPPFLAGS/LIBS/PKG}.
 #------------------------------------------------------------------------------
-PKG_CHECK_MODULES([zmq], [libzmq >= 4.3.2],
-    [zmq_INCLUDEDIR="`$PKG_CONFIG --variable=includedir "libzmq >= 4.3.2" 2>/dev/null`"
-     zmq_OTHER_CFLAGS="`$PKG_CONFIG --cflags-only-other "libzmq >= 4.3.2" 2>/dev/null`"],
-    [AC_MSG_ERROR([libzmq >= 4.3.2 is required but was not found.])])
-AC_SUBST([zmq_PKG], ['libzmq >= 4.3.2'])
+PKG_CHECK_MODULES([zmq], [libzmq >= 4.3.4],
+    [zmq_INCLUDEDIR="`$PKG_CONFIG --variable=includedir "libzmq >= 4.3.4" 2>/dev/null`"
+     zmq_OTHER_CFLAGS="`$PKG_CONFIG --cflags-only-other "libzmq >= 4.3.4" 2>/dev/null`"],
+    [AC_MSG_ERROR([libzmq >= 4.3.4 is required but was not found.])])
+AC_SUBST([zmq_PKG], ['libzmq >= 4.3.4'])
 AC_SUBST([zmq_CPPFLAGS], [${zmq_CFLAGS}])
 AS_IF([test x${zmq_INCLUDEDIR} != "x"],
     [AC_SUBST([zmq_ISYS_CPPFLAGS], ["-isystem${zmq_INCLUDEDIR} ${zmq_OTHER_CFLAGS}"])],
