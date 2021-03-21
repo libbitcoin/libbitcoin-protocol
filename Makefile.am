@@ -1,5 +1,5 @@
 ###############################################################################
-#  Copyright (c) 2014-2015 libbitcoin-protocol developers (see COPYING).
+#  Copyright (c) 2014-2020 libbitcoin-protocol developers (see COPYING).
 #
 #         GENERATED SOURCE CODE, DO NOT EDIT EXCEPT EXPERIMENTALLY
 #
@@ -32,8 +32,8 @@ doc_DATA = \
 # src/libbitcoin-protocol.la => ${libdir}
 #------------------------------------------------------------------------------
 lib_LTLIBRARIES = src/libbitcoin-protocol.la
-src_libbitcoin_protocol_la_CPPFLAGS = -I${srcdir}/include ${zmq_BUILD_CPPFLAGS} ${bitcoin_BUILD_CPPFLAGS}
-src_libbitcoin_protocol_la_LIBADD = ${zmq_LIBS} ${bitcoin_LIBS}
+src_libbitcoin_protocol_la_CPPFLAGS = -I${srcdir}/include ${zmq_BUILD_CPPFLAGS} ${bitcoin_system_BUILD_CPPFLAGS}
+src_libbitcoin_protocol_la_LIBADD = ${zmq_LIBS} ${bitcoin_system_LIBS}
 src_libbitcoin_protocol_la_SOURCES = \
     src/settings.cpp \
     src/zmq/authenticator.cpp \
@@ -54,8 +54,8 @@ if WITH_TESTS
 TESTS = libbitcoin-protocol-test_runner.sh
 
 check_PROGRAMS = test/libbitcoin-protocol-test
-test_libbitcoin_protocol_test_CPPFLAGS = -I${srcdir}/include ${zmq_BUILD_CPPFLAGS} ${bitcoin_BUILD_CPPFLAGS}
-test_libbitcoin_protocol_test_LDADD = src/libbitcoin-protocol.la ${boost_unit_test_framework_LIBS} ${zmq_LIBS} ${bitcoin_LIBS}
+test_libbitcoin_protocol_test_CPPFLAGS = -I${srcdir}/include ${zmq_BUILD_CPPFLAGS} ${bitcoin_system_BUILD_CPPFLAGS}
+test_libbitcoin_protocol_test_LDADD = src/libbitcoin-protocol.la ${boost_unit_test_framework_LIBS} ${zmq_LIBS} ${bitcoin_system_LIBS}
 test_libbitcoin_protocol_test_SOURCES = \
     test/converter.cpp \
     test/main.cpp \
