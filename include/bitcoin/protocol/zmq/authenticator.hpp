@@ -25,7 +25,7 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>

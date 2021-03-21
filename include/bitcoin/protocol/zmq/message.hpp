@@ -21,7 +21,7 @@
 
 #include <cstddef>
 #include <string>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
 namespace libbitcoin {

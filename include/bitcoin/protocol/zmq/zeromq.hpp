@@ -19,7 +19,7 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_ZEROMQ_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_ZEROMQ_HPP
 
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
 
 namespace libbitcoin {

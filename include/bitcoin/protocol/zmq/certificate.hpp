@@ -20,7 +20,7 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_CERTIFICATE_HPP
 
 #include <string>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
 
 namespace libbitcoin {
