@@ -21,52 +21,23 @@
 
 #include <cstddef>
 #include <string>
-#include <boost/algorithm/string.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/web/http.hpp>
-#include <bitcoin/protocol/web/protocol_status.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace http {
 
-// TODO: move implementation to cpp.
 class BCP_API http_request
 {
 public:
-    http_request()
-      : method({}),
-        uri({}),
-        protocol({}),
-        protocol_version(0.0f),
-        message_length(0),
-        content_length(0),
-        headers({}),
-        parameters({}),
-        upgrade_request(false),
-        json_rpc(false)
-    {
-    }
+    http_request();
 
     std::string find(const string_map& haystack,
-        const std::string& needle) const
-    {
-        const auto it = haystack.find(needle);
-        return it == haystack.end() ? std::string{} : it->second;
-    }
-
-    std::string header(std::string header) const
-    {
-        boost::algorithm::to_lower(header);
-        return find(headers, header);
-    }
-
-    std::string parameter(std::string parameter) const
-    {
-        boost::algorithm::to_lower(parameter);
-        return find(parameters, parameter);
-    }
+        const std::string& needle) const;
+    std::string header(const std::string&  header) const;
+    std::string parameter(const std::string&  parameter) const;
 
     std::string method;
     std::string uri;

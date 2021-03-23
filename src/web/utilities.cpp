@@ -18,14 +18,39 @@
  */
 #include <bitcoin/protocol/web/utilities.hpp>
 
- // TODO: include other headers.
+#include <cstddef>
+#include <ctime>
+#include <bitcoin/system.hpp>
 #include <boost/algorithm/string.hpp>
+
+// TODO: missing includes.
+
+#ifdef _MSC_VER
+    #include <Windows.h>
+#endif
 
 namespace libbitcoin {
 namespace protocol {
 namespace http {
 
 using namespace bc::system;
+
+std::string time_string()
+{
+    static const size_t buffer_size = 32;
+    static const auto format = "%a, %d %b %Y %H:%M:%S GMT";
+
+    char buffer[buffer_size];
+    const auto current_time = std::time(nullptr);
+
+    // TODO: C4996: 'gmtime':
+    // This function or variable may be unsafe (thread safety).
+    // Consider using gmtime_s instead.
+    const auto utc = std::gmtime(&current_time);
+
+    const auto size = std::strftime(buffer, buffer_size, format, utc);
+    return (size == 0) ? format : std::string(buffer, buffer + size);
+}
 
 // BUGBUG: std::strerror is not required to be thread safe.
 std::string error_string()

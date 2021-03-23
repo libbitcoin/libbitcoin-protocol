@@ -58,6 +58,8 @@ namespace http {
          value == MBEDTLS_ERR_SSL_WANT_WRITE)
 #endif
 
+// TODO: move to class namespace.
+BCP_API std::string time_string();
 BCP_API std::string error_string();
 BCP_API std::string op_to_string(websocket_op code);
 BCP_API std::string websocket_key_response(const std::string& websocket_key);

@@ -37,6 +37,8 @@ src_libbitcoin_protocol_la_LIBADD = ${zmq_LIBS} ${mbedtls_LIBS} ${bitcoin_system
 src_libbitcoin_protocol_la_SOURCES = \
     src/settings.cpp \
     src/web/connection.cpp \
+    src/web/http_reply.cpp \
+    src/web/http_request.cpp \
     src/web/json_string.cpp \
     src/web/manager.cpp \
     src/web/socket.cpp \
