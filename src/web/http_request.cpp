@@ -16,37 +16,40 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef LIBBITCOIN_PROTOCOL_WEB_REPLY_HPP
-#define LIBBITCOIN_PROTOCOL_WEB_REPLY_HPP
+#include <bitcoin/protocol/web/http_request.hpp>
 
 #include <string>
-#include <unordered_map>
-#include <bitcoin/protocol/define.hpp>
+#include <boost/algorithm/string.hpp>
 #include <bitcoin/protocol/web/http.hpp>
-#include <bitcoin/protocol/web/protocol_status.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace http {
 
-class BCP_API http_reply
+http_request::http_request()
+  : method({}), uri({}), protocol({}), protocol_version(0.0f),
+    message_length(0), content_length(0), headers({}), parameters({}),
+    upgrade_request(false), json_rpc(false)
 {
-public:
-    static std::string to_string(protocol_status status);
+}
 
-    static std::string generate(protocol_status status,
-        const std::string& mime_type, size_t content_length, bool keep_alive);
+std::string http_request::find(const string_map& haystack,
+    const std::string& needle) const
+{
+    const auto it = haystack.find(needle);
+    return it == haystack.end() ? std::string{} : it->second;
+}
 
-    static std::string generate_upgrade(const std::string& key_response,
-        const std::string& protocol);
+std::string http_request::header(const std::string& header) const
+{
+    return find(headers, boost::algorithm::to_lower_copy(header));
+}
 
-    protocol_status status;
-    string_map headers;
-    std::string content;
-};
+std::string http_request::parameter(const std::string& parameter) const
+{
+    return find(parameters, boost::algorithm::to_lower_copy(parameter));
+}
 
 } // namespace http
 } // namespace protocol
 } // namespace libbitcoin
-
-#endif

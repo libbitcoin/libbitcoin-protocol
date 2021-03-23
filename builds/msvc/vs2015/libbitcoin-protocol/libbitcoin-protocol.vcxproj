@@ -75,6 +75,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\settings.cpp" />
     <ClCompile Include="..\..\..\..\src\web\connection.cpp" />
+    <ClCompile Include="..\..\..\..\src\web\http_reply.cpp" />
+    <ClCompile Include="..\..\..\..\src\web\http_request.cpp" />
     <ClCompile Include="..\..\..\..\src\web\json_string.cpp" />
     <ClCompile Include="..\..\..\..\src\web\manager.cpp" />
     <ClCompile Include="..\..\..\..\src\web\socket.cpp">

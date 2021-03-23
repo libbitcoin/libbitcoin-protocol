@@ -179,6 +179,8 @@ add_definitions(
 add_library( ${CANONICAL_LIB_NAME}
     "../../src/settings.cpp"
     "../../src/web/connection.cpp"
+    "../../src/web/http_reply.cpp"
+    "../../src/web/http_request.cpp"
     "../../src/web/json_string.cpp"
     "../../src/web/manager.cpp"
     "../../src/web/socket.cpp"
