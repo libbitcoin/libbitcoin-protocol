@@ -22,7 +22,7 @@
 #include <atomic>
 #include <memory>
 #include <future>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 

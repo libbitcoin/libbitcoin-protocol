@@ -20,7 +20,7 @@
 
 #include <string>
 #include <utility>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/zmq/frame.hpp>
 
 namespace libbitcoin {

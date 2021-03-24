@@ -20,7 +20,7 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_FRAME_HPP
 
 #include <memory>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 #include <bitcoin/protocol/zmq/zeromq.hpp>

@@ -21,7 +21,7 @@
 #include <zmq.h>
 #include <functional>
 #include <future>
-#include <bitcoin/bitcoin.hpp>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/zmq/message.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
