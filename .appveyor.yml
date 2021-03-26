@@ -15,16 +15,16 @@ environment:
   matrix:
     - configuration: StaticDebug
       platform: x64
-      BOOST_UNIT_TEST_OPTIONS: "--run_test=* --show_progress=no --detect_memory_leak=0 --report_level=no --build_info=yes"
+      BOOST_UNIT_TEST_OPTIONS: "--run_test=authenticator_tests,certificate_tests,context_tests,frame_tests,identifiers_tests,message_tests,poller_tests,socket_tests,worker_tests --show_progress=no --detect_memory_leak=0 --report_level=no --build_info=yes"
     - configuration: StaticRelease
       platform: x64
-      BOOST_UNIT_TEST_OPTIONS: "--run_test=* --show_progress=no --detect_memory_leak=0 --report_level=no --build_info=yes"
+      BOOST_UNIT_TEST_OPTIONS: "--run_test=authenticator_tests,certificate_tests,context_tests,frame_tests,identifiers_tests,message_tests,poller_tests,socket_tests,worker_tests --show_progress=no --detect_memory_leak=0 --report_level=no --build_info=yes"
     - configuration: StaticDebug
       platform: Win32
-      BOOST_UNIT_TEST_OPTIONS: "--run_test=* --show_progress=no --detect_memory_leak=0 --report_level=no --build_info=yes"
+      BOOST_UNIT_TEST_OPTIONS: "--run_test=authenticator_tests,certificate_tests,context_tests,frame_tests,identifiers_tests,message_tests,poller_tests,socket_tests,worker_tests --show_progress=no --detect_memory_leak=0 --report_level=no --build_info=yes"
     - configuration: StaticRelease
       platform: Win32
-      BOOST_UNIT_TEST_OPTIONS: "--run_test=* --show_progress=no --detect_memory_leak=0 --report_level=no --build_info=yes"
+      BOOST_UNIT_TEST_OPTIONS: "--run_test=authenticator_tests,certificate_tests,context_tests,frame_tests,identifiers_tests,message_tests,poller_tests,socket_tests,worker_tests --show_progress=no --detect_memory_leak=0 --report_level=no --build_info=yes"
 
 matrix:
   fast_finish: true
