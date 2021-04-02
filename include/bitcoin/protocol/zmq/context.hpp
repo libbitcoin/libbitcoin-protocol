@@ -45,7 +45,7 @@ public:
     virtual ~context();
 
     /// True if the context is valid and started.
-    operator const bool() const;
+    operator bool() const;
 
     /// The underlying zeromq context.
     void* self();

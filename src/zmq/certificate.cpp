@@ -97,7 +97,7 @@ bool certificate::create(config::sodium& out_public,
     return false;
 }
 
-certificate::operator const bool() const
+certificate::operator bool() const
 {
     return public_;
 }
