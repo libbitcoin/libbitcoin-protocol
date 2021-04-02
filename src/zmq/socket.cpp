@@ -190,7 +190,7 @@ bool socket::stop()
     return true;
 }
 
-socket::operator const bool() const
+socket::operator bool() const
 {
     return self_ != nullptr;
 }

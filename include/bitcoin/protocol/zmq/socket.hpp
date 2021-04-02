@@ -80,7 +80,7 @@ public:
     virtual bool stop();
 
     /// True if the socket is valid.
-    operator const bool() const;
+    operator bool() const;
 
     /// The underlying zeromq socket.
     void* self();
