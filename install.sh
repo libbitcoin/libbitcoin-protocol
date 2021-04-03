@@ -421,6 +421,7 @@ BITCOIN_SYSTEM_OPTIONS=(
 # Define bitcoin-protocol options.
 #------------------------------------------------------------------------------
 BITCOIN_PROTOCOL_OPTIONS=(
+"--without-tests" \
 "${with_boost}" \
 "${with_pkgconfigdir}")
 
