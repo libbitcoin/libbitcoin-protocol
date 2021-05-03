@@ -20,8 +20,6 @@
 #include <boost/test/unit_test_suite.hpp>
 #include <bitcoin/protocol.hpp>
 
-using namespace bc::system;
-using namespace bc::system::config;
 using namespace bc::protocol::zmq;
 
 // These tests don't validate calls to zmq_curve_keypair or zmq_curve_public.
@@ -32,7 +30,7 @@ BOOST_AUTO_TEST_SUITE(certificate_tests)
 #define PRIVATE_KEY "JTKVSB%%)wK0E.X)V>+}o?pNmC{O&4W4b!Ni{Lh6"
 #define PUBLIC_KEY "rq:rM>}U?@Lns47E1%kR.o@n%FcmmsL/@{H8]yf7"
 
-inline bool is_valid(const config::sodium& key, bool setting)
+inline bool is_valid(const sodium& key, bool setting)
 {
     return key && (!setting ||
         key.to_string().find_first_of("#") == std::string::npos);
@@ -43,14 +41,12 @@ class certificate_fixture
    : public certificate
 {
 public:
-    static bool derive(config::sodium& out_public,
-        const config::sodium& private_key)
+    static bool derive(sodium& out_public, const sodium& private_key)
     {
         return certificate::derive(out_public, private_key);
     }
 
-    static bool create(config::sodium& out_public, config::sodium& out_private,
-        bool setting)
+    static bool create(sodium& out_public, sodium& out_private, bool setting)
     {
         return certificate::create(out_public, out_private, setting);
     }
@@ -66,7 +62,7 @@ BOOST_AUTO_TEST_CASE(certificate__construct1__default__creates_valid_keypair)
 
 BOOST_AUTO_TEST_CASE(certificate__construct2__null_hash_private_key__creates_valid_keypair)
 {
-    const sodium key(null_hash);
+    const sodium key(bc::system::null_hash);
     const certificate instance(key);
     BOOST_REQUIRE(instance);
     BOOST_REQUIRE(is_valid(instance.public_key(), false));
@@ -84,21 +80,21 @@ BOOST_AUTO_TEST_CASE(certificate__construct2__valid_private_key__derives_expecte
 
 BOOST_AUTO_TEST_CASE(certificate__derive__null_hash__false)
 {
-    config::sodium out_public;
+    sodium out_public;
     BOOST_REQUIRE(!certificate_fixture::derive(out_public, {}));
 }
 
 BOOST_AUTO_TEST_CASE(certificate__derive__valid__true_expected_public_key)
 {
-    config::sodium out_public;
+    sodium out_public;
     BOOST_REQUIRE(certificate_fixture::derive(out_public, { PRIVATE_KEY }));
     BOOST_REQUIRE_EQUAL(out_public.to_string(), PUBLIC_KEY);
 }
 
 BOOST_AUTO_TEST_CASE(certificate__create__default__valid_keypair)
 {
-    config::sodium out_public;
-    config::sodium out_private;
+    sodium out_public;
+    sodium out_private;
     BOOST_REQUIRE(certificate_fixture::create(out_public, out_private, false));
     BOOST_REQUIRE(is_valid(out_public, false));
     BOOST_REQUIRE(is_valid(out_private, false));
@@ -106,8 +102,8 @@ BOOST_AUTO_TEST_CASE(certificate__create__default__valid_keypair)
 
 BOOST_AUTO_TEST_CASE(certificate__create__setting__valid_keypair)
 {
-    config::sodium out_public;
-    config::sodium out_private;
+    sodium out_public;
+    sodium out_private;
     BOOST_REQUIRE(certificate_fixture::create(out_public, out_private, true));
     BOOST_REQUIRE(is_valid(out_public, true));
     BOOST_REQUIRE(is_valid(out_private, true));

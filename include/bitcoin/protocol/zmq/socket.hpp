@@ -27,6 +27,7 @@
 #include <bitcoin/protocol/zmq/certificate.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
+#include <bitcoin/protocol/zmq/sodium.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -101,13 +102,13 @@ public:
     bool set_curve_server();
 
     /// Configure the socket as client to the curve server.
-    bool set_curve_client(const system::config::sodium& server_public_key);
+    bool set_curve_client(const sodium& server_public_key);
 
     /// Apply the specified public key to the socket.
-    bool set_public_key(const system::config::sodium& key);
+    bool set_public_key(const sodium& key);
 
     /// Apply the specified private key to the socket.
-    bool set_private_key(const system::config::sodium& key);
+    bool set_private_key(const sodium& key);
 
     /// Apply the keys of the specified certificate to the socket.
     bool set_certificate(const certificate& certificate);

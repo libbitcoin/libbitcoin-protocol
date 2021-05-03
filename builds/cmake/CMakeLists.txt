@@ -194,6 +194,7 @@ add_library( ${CANONICAL_LIB_NAME}
     "../../src/zmq/message.cpp"
     "../../src/zmq/poller.cpp"
     "../../src/zmq/socket.cpp"
+    "../../src/zmq/sodium.cpp"
     "../../src/zmq/worker.cpp"
     "../../src/zmq/zeromq.cpp" )
 

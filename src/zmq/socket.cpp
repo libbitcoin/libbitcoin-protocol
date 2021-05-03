@@ -28,6 +28,7 @@
 #include <bitcoin/protocol/zmq/certificate.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
 #include <bitcoin/protocol/zmq/message.hpp>
+#include <bitcoin/protocol/zmq/sodium.hpp>
 #include <bitcoin/protocol/zmq/zeromq.hpp>
 
 namespace libbitcoin {
@@ -264,21 +265,20 @@ bool socket::set_curve_server()
 }
 
 // Sets socket's long term server key, must set this on CURVE client sockets.
-bool socket::set_curve_client(
-    const config::sodium& server_public_key)
+bool socket::set_curve_client(const sodium& server_public_key)
 {
     return server_public_key &&
         set(ZMQ_CURVE_SERVERKEY, server_public_key.to_string());
 }
 
 // Sets socket's long term public key, must set this on CURVE client sockets.
-bool socket::set_public_key(const config::sodium& key)
+bool socket::set_public_key(const sodium& key)
 {
     return key && set(ZMQ_CURVE_PUBLICKEY, key.to_string());
 }
 
 // You must set this on both CURVE client and server sockets.
-bool socket::set_private_key(const config::sodium& key)
+bool socket::set_private_key(const sodium& key)
 {
     return key && set(ZMQ_CURVE_SECRETKEY, key.to_string());
 }

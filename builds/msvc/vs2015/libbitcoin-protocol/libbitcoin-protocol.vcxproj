@@ -94,6 +94,7 @@
     <ClCompile Include="..\..\..\..\src\zmq\socket.cpp">
       <ObjectFileName>$(IntDir)src_zmq_socket.obj</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\zmq\sodium.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\worker.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\zeromq.cpp" />
   </ItemGroup>
@@ -128,6 +129,7 @@
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\message.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\poller.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\socket.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\sodium.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\worker.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\zeromq.hpp" />
   </ItemGroup>

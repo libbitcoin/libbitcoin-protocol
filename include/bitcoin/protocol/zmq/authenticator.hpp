@@ -29,6 +29,7 @@
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
+#include <bitcoin/protocol/zmq/sodium.hpp>
 #include <bitcoin/protocol/zmq/worker.hpp>
 
 namespace libbitcoin {
@@ -69,7 +70,7 @@ public:
     virtual bool apply(socket& socket, const std::string& domain, bool secure);
 
     /// Set the server private key (required for curve security).
-    virtual void set_private_key(const system::config::sodium& private_key);
+    virtual void set_private_key(const sodium& private_key);
 
     /// Allow clients with the following public keys (whitelist).
     virtual void allow(const system::hash_digest& public_key);
@@ -93,7 +94,7 @@ private:
 
     // These are protected by mutex.
     bool require_allow_;
-    system::config::sodium private_key_;
+    sodium private_key_;
     std::unordered_set<system::hash_digest> keys_;
     std::unordered_set<std::string> weak_domains_;
     std::unordered_map<std::string, bool> adresses_;
