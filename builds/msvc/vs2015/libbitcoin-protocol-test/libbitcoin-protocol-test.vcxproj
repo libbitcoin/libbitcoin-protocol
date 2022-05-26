@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- |  Copyright (c) 2014-2020 libbitcoin-protocol developers (see COPYING).
+ |  Copyright (c) 2014-2021 libbitcoin-protocol developers (see COPYING).
  |
  |         GENERATED SOURCE CODE, DO NOT EDIT EXCEPT EXPERIMENTALLY
  |
@@ -133,5 +133,8 @@
     <ProjectReference Include="..\libbitcoin-protocol\libbitcoin-protocol.vcxproj">
       <Project>{6B94E2A5-C054-4790-963D-A7BE493259B0}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\..\debug.natvis" />
   </ItemGroup>
 </Project>
