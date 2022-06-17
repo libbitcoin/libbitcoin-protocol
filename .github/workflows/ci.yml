@@ -17,8 +17,8 @@ jobs:
 
       matrix:
         include:
-          - os: ubuntu-latest
-            cxx: "clang++"
+          - os: ubuntu-22.04
+            cxx: "clang++-14"
             link: "dynamic"
             assert: "debug"
             coverage: "nocov"
@@ -26,13 +26,13 @@ jobs:
             icu: ""
             mbedtls: "--build-mbedtls"
             zmq: "--build-zmq"
-            cc: "clang"
+            cc: "clang-14"
             flags: "-Os -fPIE"
             packager: "apt"
-            packages: "clang"
+            packages: ""
 
-          - os: ubuntu-latest
-            cxx: "clang++"
+          - os: ubuntu-22.04
+            cxx: "clang++-14"
             link: "static"
             assert: "ndebug"
             coverage: "nocov"
@@ -40,13 +40,13 @@ jobs:
             icu: "--build-icu --with-icu"
             mbedtls: ""
             zmq: "--build-zmq"
-            cc: "clang"
+            cc: "clang-14"
             flags: "-Os -fPIE"
             packager: "apt"
-            packages: "clang"
+            packages: ""
 
-          - os: ubuntu-latest
-            cxx: "g++"
+          - os: ubuntu-22.04
+            cxx: "g++-11"
             link: "dynamic"
             assert: "ndebug"
             coverage: "nocov"
@@ -54,13 +54,13 @@ jobs:
             icu: ""
             mbedtls: ""
             zmq: "--build-zmq"
-            cc: "gcc"
+            cc: "gcc-11"
             flags: "-Os -fPIE"
             packager: "apt"
-            packages: "gcc"
+            packages: ""
 
-          - os: ubuntu-latest
-            cxx: "g++"
+          - os: ubuntu-22.04
+            cxx: "g++-11"
             link: "static"
             assert: "ndebug"
             coverage: "cov"
@@ -68,13 +68,13 @@ jobs:
             icu: "--build-icu --with-icu"
             mbedtls: "--build-mbedtls"
             zmq: "--build-zmq"
-            cc: "gcc"
+            cc: "gcc-11"
             flags: "-Og -g --coverage -fPIE"
             packager: "apt"
-            packages: "gcc lcov"
+            packages: "lcov"
 
           - os: macos-latest
-            cxx: "clang++"
+            cxx: "clang++-14"
             link: "dynamic"
             assert: "ndebug"
             coverage: "nocov"
@@ -82,13 +82,13 @@ jobs:
             icu: "--with-icu"
             mbedtls: "--build-mbedtls"
             zmq: "--build-zmq"
-            cc: "clang"
+            cc: "clang-14"
             flags: "-Os -fPIE"
             packager: "brew"
             packages: "boost icu4c"
 
           - os: macos-latest
-            cxx: "clang++"
+            cxx: "clang++-14"
             link: "static"
             assert: "ndebug"
             coverage: "nocov"
@@ -96,7 +96,7 @@ jobs:
             icu: "--build-icu --with-icu"
             mbedtls: ""
             zmq: "--build-zmq"
-            cc: "clang"
+            cc: "clang-14"
             flags: "-Os -fvisibility=hidden -fPIE"
             packager: "brew"
             packages: ""
@@ -166,6 +166,11 @@ jobs:
         with:
           path-to-lcov: "./coverage.info"
           github-token: ${{ secrets.github_token }}
+
+      - name: Failure display available binaries
+        if: ${{ failure() }}
+        run: |
+          ls -la /usr/bin
 
       - name: Failure display selected compiler version
         if: ${{ failure() }}
