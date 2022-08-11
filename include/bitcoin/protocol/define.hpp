@@ -19,6 +19,8 @@
 #ifndef LIBBITCOIN_PROTOCOL_DEFINE_HPP
 #define LIBBITCOIN_PROTOCOL_DEFINE_HPP
 
+#include <memory>
+#include <queue>
 #include <bitcoin/system.hpp>
 
 // We use the generic helper definitions in libbitcoin to define BCP_API
@@ -41,12 +43,30 @@
 #define LOG_PROTOCOL "protocol"
 #define LOG_PROTOCOL_HTTP "http"
 
-#if defined _WIN32
-    #include <winsock2.h>
-    typedef SOCKET file_descriptor;
-#else
-    typedef int file_descriptor;
-#endif
+// TODO: generalize logging.
+#define LOG_INFO(name) std::cout << name << " : "
+#define LOG_DEBUG(name) std::cout << name << " : "
+#define LOG_VERBOSE(name) std::cout << name << " : "
+#define LOG_ERROR(name) std::cerr << name << " : "
+#define LOG_WARNING(name) std::cerr << name << " : "
+
+namespace libbitcoin {
+namespace protocol {
+
+typedef std::queue<system::data_chunk> data_queue;
+
+} // namespace protocol
+} // namespace libbitcoin
 
 #endif
 
+// context       ->
+// sodium        ->
+// identifiers   ->
+// worker        -> socket
+// message       -> socket
+// certificate   -> sodium
+// socket        -> sodium, context, certificate, identifiers
+// authenticator -> sodium, context, socket, worker
+// poller        -> socket, zeromq
+// frame         -> socket, zeromq

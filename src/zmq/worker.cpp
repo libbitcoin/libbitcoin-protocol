@@ -18,12 +18,14 @@
  */
 #include <bitcoin/protocol/zmq/worker.hpp>
 
-#include <zmq.h>
 #include <functional>
 #include <future>
+#include <mutex>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/boost.hpp>
 #include <bitcoin/protocol/zmq/message.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
+#include <bitcoin/protocol/zmq/zeromq.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -50,15 +52,14 @@ bool worker::start()
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    unique_lock lock(mutex_);
+    std::unique_lock lock(mutex_);
 
     if (stopped_)
     {
         stopped_ = false;
 
         // Create the worker thread and socket and start polling.
-        thread_ = std::make_shared<asio::thread>(
-            &worker::work, this);
+        thread_ = std::make_shared<thread>(&worker::work, this);
 
         // Wait on worker start.
         const auto result = started_.get_future().get();
@@ -78,7 +79,7 @@ bool worker::stop()
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    unique_lock lock(mutex_);
+    std::unique_lock lock(mutex_);
 
     if (!stopped_)
     {

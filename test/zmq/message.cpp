@@ -16,9 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <boost/test/test_tools.hpp>
-#include <boost/test/unit_test_suite.hpp>
-#include <bitcoin/protocol.hpp>
+#include "../test.hpp"
 
 using namespace bc;
 using namespace bc::protocol::zmq;
@@ -28,9 +26,9 @@ BOOST_AUTO_TEST_SUITE(message_tests)
 
 static const data_chunk chunk1{ 0xf0, 0x0d };
 static const data_chunk chunk2{ 0xba, 0xad, 0xf0, 0x0d };
-static const auto number2 = from_little_endian_unsafe<uint32_t>(chunk2.begin());
-static const auto hash1 = hash_literal("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
-static const auto hash2 = hash_literal("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b");
+static const auto number2 = from_little_endian<uint32_t>(chunk2);
+static const auto hash1 = base16_hash("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+static const auto hash2 = base16_hash("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b");
 
 class message_fixture
   : public protocol::zmq::message
@@ -152,8 +150,8 @@ BOOST_AUTO_TEST_CASE(message__enqueue_little_endian__empty__size_1_expected)
     message_fixture instance;
     instance.enqueue_little_endian<uint32_t>(number2);
     BOOST_REQUIRE_EQUAL(instance.size(), 1u);
-    const auto bytes = instance.queue().front().begin();
-    BOOST_REQUIRE_EQUAL(from_little_endian_unsafe<uint32_t>(bytes), number2);
+    const auto& bytes = instance.queue().front();
+    BOOST_REQUIRE_EQUAL(from_little_endian<uint32_t>(bytes), number2);
 }
 
 BOOST_AUTO_TEST_CASE(message__enqueue_little_endian__nonempty__ordered)
@@ -205,7 +203,7 @@ BOOST_AUTO_TEST_CASE(message__dequeue1__nonempty__true_empty)
 BOOST_AUTO_TEST_CASE(message__dequeue2__empty__false)
 {
     message_fixture instance;
-    uint32_t out;
+    uint32_t out{};
     BOOST_REQUIRE(!instance.dequeue(out));
 }
 
@@ -213,7 +211,7 @@ BOOST_AUTO_TEST_CASE(message__dequeue2__mismatched__false_empty)
 {
     message_fixture instance;
     instance.queue().emplace(chunk1);
-    uint32_t out;
+    uint32_t out{};
     BOOST_REQUIRE(!instance.dequeue(out));
     BOOST_REQUIRE(instance.empty());
 }
@@ -223,7 +221,7 @@ BOOST_AUTO_TEST_CASE(message__dequeue2__two__true_ordered_expected)
     message_fixture instance;
     instance.queue().emplace(chunk2);
     instance.queue().emplace(chunk1);
-    uint32_t out;
+    uint32_t out{};
     BOOST_REQUIRE(instance.dequeue(out));
     BOOST_REQUIRE_EQUAL(out, number2);
 }
@@ -275,7 +273,7 @@ BOOST_AUTO_TEST_CASE(message__dequeue4__two__true_ordered_expected)
 BOOST_AUTO_TEST_CASE(message__dequeue5__empty__false)
 {
     protocol::zmq::message instance;
-    hash_digest out;
+    hash_digest out{};
     BOOST_REQUIRE(!instance.dequeue(out));
 }
 
@@ -283,7 +281,7 @@ BOOST_AUTO_TEST_CASE(message__dequeue5__mismatched__false_empty)
 {
     message_fixture instance;
     instance.queue().emplace(chunk1);
-    hash_digest out;
+    hash_digest out{};
     BOOST_REQUIRE(!instance.dequeue(out));
     BOOST_REQUIRE(instance.empty());
 }
@@ -293,7 +291,7 @@ BOOST_AUTO_TEST_CASE(message__dequeue5__two__true_ordered_expected)
     message_fixture instance;
     instance.queue().emplace(to_chunk(hash1));
     instance.queue().emplace(to_chunk(hash2));
-    hash_digest out;
+    hash_digest out{};
     BOOST_REQUIRE(instance.dequeue(out));
     BOOST_REQUIRE(out == hash1);
     BOOST_REQUIRE(instance.dequeue(out));

@@ -37,13 +37,13 @@ AM_PROG_AR
 
 # Initialize libtool.
 LT_PREREQ(2.4.2)
+
+# Enable shared libraries if available, and static if they don't conflict.
 LT_INIT
+AC_SUBST([LIBTOOL_DEPS])
 
 # Determine C++ compiler to use.
 AC_PROG_CXX
-
-# Enable shared libraries if available, and static if they don't conflict.
-AC_PROG_LIBTOOL
 
 # Enable sed for substitution.
 AC_PROG_SED
@@ -69,9 +69,9 @@ AC_ARG_VAR([CC], "C compiler to use, such as gcc or clang")
 AC_ARG_VAR([CXX], "C++ compiler to use, such as g++ or clang++")
 AC_ARG_VAR([PKG_CONFIG_PATH], "Additional directories for package discovery.")
 
-# Check for baseline language coverage in the compiler for the C++11 standard.
+# Check for baseline language coverage in the compiler for the C++20 standard.
 #------------------------------------------------------------------------------
-AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
+AX_CXX_COMPILE_STDCXX([20], [noext], [mandatory])
 
 
 # Process options.
@@ -97,17 +97,6 @@ AC_ARG_WITH([tests],
     [with_tests=yes])
 AC_MSG_RESULT([$with_tests])
 AM_CONDITIONAL([WITH_TESTS], [test x$with_tests != xno])
-
-# Implement --with-mbedtls and output ${mbedtls}.
-#------------------------------------------------------------------------------
-AC_MSG_CHECKING([--with-mbedtls option])
-AC_ARG_WITH([mbedtls],
-    AS_HELP_STRING([--with-mbedtls],
-        [Compile with MbedTLS. @<:@default=no@:>@]),
-    [with_mbedtls=$withval],
-    [with_mbedtls=no])
-AC_MSG_RESULT([$with_mbedtls])
-AS_CASE([${with_mbedtls}], [yes], AC_SUBST([mbedtls], [-DWITH_MBEDTLS]))
 
 # Implement --enable-ndebug and define NDEBUG.
 #------------------------------------------------------------------------------
@@ -184,22 +173,6 @@ AS_CASE([${enable_isystem}],[yes],
 
 AC_MSG_NOTICE([zmq_BUILD_CPPFLAGS : ${zmq_BUILD_CPPFLAGS}])
 
-# Require mbedtls of at least version 2.12.0 and output ${mbedtls_CPPFLAGS/LIBS/PKG}.
-#------------------------------------------------------------------------------
-AS_CASE([${with_mbedtls}], [yes],
-    [AC_SUBST([mbedtls_INCLUDEDIR], [])
-     AC_SUBST([mbedtls_OTHER_CPPFLAGS], [])
-     AC_SUBST([mbedtls_CPPFLAGS], [])
-     AC_SUBST([mbedtls_ISYS_CPPFLAGS], [])
-     AC_SUBST([mbedtls_LIBS], ["-lmbedtls -lmbedcrypto -lmbedx509"])
-     AC_MSG_NOTICE([mbedtls presumed, not detected - absence of -lmbedtls -lmbedcrypto -lmbedx509 may result in link error.])], [])
-
-AS_CASE([${enable_isystem}],[yes],
-    [AC_SUBST([mbedtls_BUILD_CPPFLAGS], [${mbedtls_ISYS_CPPFLAGS}])],
-    [AC_SUBST([mbedtls_BUILD_CPPFLAGS], [${mbedtls_CPPFLAGS}])])
-
-AC_MSG_NOTICE([mbedtls_BUILD_CPPFLAGS : ${mbedtls_BUILD_CPPFLAGS}])
-
 # Require bitcoin-system of at least version 4.0.0 and output ${bitcoin_system_CPPFLAGS/LIBS/PKG}.
 #------------------------------------------------------------------------------
 PKG_CHECK_MODULES([bitcoin_system], [libbitcoin-system >= 4.0.0],
@@ -226,11 +199,11 @@ AC_MSG_NOTICE([bitcoin_system_BUILD_CPPFLAGS : ${bitcoin_system_BUILD_CPPFLAGS}]
 
 # Set flags.
 #==============================================================================
-# Require c++11 for all c++ products.
+# Require c++20 for all c++ products.
 #------------------------------------------------------------------------------
 AS_CASE([${CC}], [*],
-    [AX_CHECK_COMPILE_FLAG([-std=c++11],
-        [CXXFLAGS="$CXXFLAGS -std=c++11"])])
+    [AX_CHECK_COMPILE_FLAG([-std=c++20],
+        [CXXFLAGS="$CXXFLAGS -std=c++20"])])
 
 # Warn on all stuff.
 #------------------------------------------------------------------------------
@@ -256,22 +229,6 @@ AS_CASE([${CC}], [*],
     [AX_CHECK_COMPILE_FLAG([-Wextra],
         [CXXFLAGS="$CXXFLAGS -Wextra"])])
 
-# Be really annoying.
-#------------------------------------------------------------------------------
-AS_CASE([${CC}], [*],
-    [AX_CHECK_COMPILE_FLAG([-Wpedantic],
-        [CFLAGS="$CFLAGS -Wpedantic"],
-        [AX_CHECK_COMPILE_FLAG([-pedantic],
-            [CFLAGS="$CFLAGS -pedantic"])])])
-
-# Be really annoying.
-#------------------------------------------------------------------------------
-AS_CASE([${CC}], [*],
-    [AX_CHECK_COMPILE_FLAG([-Wpedantic],
-        [CXXFLAGS="$CXXFLAGS -Wpedantic"],
-        [AX_CHECK_COMPILE_FLAG([-pedantic],
-            [CXXFLAGS="$CXXFLAGS -pedantic"])])])
-
 # Disallow warning on style order of declarations.
 #------------------------------------------------------------------------------
 AS_CASE([${CC}], [*],
@@ -295,6 +252,12 @@ AS_CASE([${CC}], [*],
 AS_CASE([${CC}], [*],
     [AX_CHECK_COMPILE_FLAG([-Wno-comment],
         [CXXFLAGS="$CXXFLAGS -Wno-comment"])])
+
+# Suppress warning for copy of implicitly generated copy constructor.
+#------------------------------------------------------------------------------
+AS_CASE([${CC}], [*],
+    [AX_CHECK_COMPILE_FLAG([-Wno-deprecated-copy],
+        [CXXFLAGS="$CXXFLAGS -Wno-deprecated-copy"])])
 
 # Conflict in stdlib under clang. Enabled in clang only.
 #------------------------------------------------------------------------------

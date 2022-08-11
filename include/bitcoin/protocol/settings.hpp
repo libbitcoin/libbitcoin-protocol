@@ -20,6 +20,7 @@
 #define LIBBITCOIN_PROTOCOL_SETTINGS_HPP
 
 #include <cstdint>
+#include <filesystem>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
 
@@ -58,15 +59,6 @@ public:
 
     // ZMQ_SNDTIMEO (0 unlimited)
     uint32_t send_milliseconds;
-
-    /// Websocket/HTTP(s)/JSON-RPC related settings
-    bool web_priority;
-    system::config::endpoint::list web_origins;
-    boost::filesystem::path web_root;
-    boost::filesystem::path web_ca_certificate;
-    boost::filesystem::path web_server_private_key;
-    boost::filesystem::path web_server_certificate;
-    boost::filesystem::path web_client_certificates;
 };
 
 } // namespace blockchain

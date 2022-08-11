@@ -21,6 +21,9 @@
     <ClCompile Include="..\..\..\..\test\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\test\test.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\test\zmq\authenticator.cpp">
       <Filter>src\zmq</Filter>
     </ClCompile>
@@ -28,6 +31,9 @@
       <Filter>src\zmq</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\test\zmq\context.cpp">
+      <Filter>src\zmq</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\test\zmq\error.cpp">
       <Filter>src\zmq</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\test\zmq\frame.cpp">
@@ -50,6 +56,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\test\test.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\test\utility.hpp">
       <Filter>src</Filter>
     </ClInclude>
