@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Copyright (c) 2014-2020 libbitcoin-protocol developers (see COPYING).
+// Copyright (c) 2014-2021 libbitcoin-protocol developers (see COPYING).
 //
 //        GENERATED SOURCE CODE, DO NOT EDIT EXCEPT EXPERIMENTALLY
 //
@@ -44,6 +44,7 @@
 #include <bitcoin/protocol/zmq/message.hpp>
 #include <bitcoin/protocol/zmq/poller.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
+#include <bitcoin/protocol/zmq/sodium.hpp>
 #include <bitcoin/protocol/zmq/worker.hpp>
 #include <bitcoin/protocol/zmq/zeromq.hpp>
 

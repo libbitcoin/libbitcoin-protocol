@@ -27,6 +27,7 @@
 #include <bitcoin/protocol/zmq/context.hpp>
 #include <bitcoin/protocol/zmq/poller.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
+#include <bitcoin/protocol/zmq/sodium.hpp>
 #include <bitcoin/protocol/zmq/worker.hpp>
 
 namespace libbitcoin {
@@ -266,8 +267,7 @@ bool authenticator::apply(socket& socket, const std::string& domain,
         socket.set_authentication_domain(domain));
 }
 
-void authenticator::set_private_key(
-    const config::sodium& private_key)
+void authenticator::set_private_key(const sodium& private_key)
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
