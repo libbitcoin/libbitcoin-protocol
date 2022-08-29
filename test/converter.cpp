@@ -16,13 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+// TODO: is this cruft?
 #ifdef LIBBITCOIN_VERSION4
 
-#include <memory>
-#include <string>
-#include <boost/test/test_tools.hpp>
-#include <boost/test/unit_test_suite.hpp>
-#include <bitcoin/protocol.hpp>
+#include "test.hpp"
 
 using namespace bc::system;
 using namespace bc::system::chain;

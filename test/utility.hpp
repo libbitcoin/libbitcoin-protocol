@@ -36,7 +36,7 @@
 #define MESSAGE_DELIMITER_SIZE size_t(0)
 
 #define BC_REQUIRE_SUCCESS(value__) \
-    BOOST_REQUIRE_EQUAL(value__, error::success)
+    BOOST_REQUIRE_EQUAL(value__, zmq::error::success)
 
 #define SEND_MESSAGE(socket__) \
     zmq::message out__; \
@@ -64,12 +64,12 @@ class simple_thread
 {
 public:
     template<class Handler>
-    simple_thread(Handler&& handler)
+    simple_thread(Handler&& handler) noexcept
       : std::thread(std::forward<Handler>(handler))
     {
     }
 
-    ~simple_thread()
+    virtual ~simple_thread() noexcept
     {
         if (joinable())
             join();

@@ -24,6 +24,7 @@
 #include <memory>
 #include <vector>
 #include <bitcoin/protocol/define.hpp>
+#include <bitcoin/protocol/network.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 #include <bitcoin/protocol/zmq/zeromq.hpp>
@@ -35,7 +36,7 @@ namespace zmq {
 /// This class is not thread safe.
 /// All calls must be made on the socket(s) thread.
 class BCP_API poller
-  : public system::enable_shared_from_base<poller>, system::noncopyable
+  : public enable_shared_from_base<poller>, private noncopyable<poller>
 {
 public:
     /// A shared poller pointer.

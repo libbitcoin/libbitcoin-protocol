@@ -19,6 +19,7 @@
 #include <bitcoin/protocol/zmq/socket.hpp>
 
 #include <algorithm>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
 
 namespace libbitcoin {
@@ -37,7 +38,7 @@ bool identifiers::contains(identifier value) const
 
 void identifiers::push(const void* socket)
 {
-    const auto value = reinterpret_cast<identifier>(socket);
+    const auto& value = reinterpret_cast<identifier>(socket);
     ids_.push_back(value);
 }
 

@@ -22,8 +22,10 @@
 #include <atomic>
 #include <cstdint>
 #include <memory>
+#include <shared_mutex>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
+#include <bitcoin/protocol/network.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -31,7 +33,7 @@ namespace zmq {
 
 /// This class is thread safe.
 class BCP_API context
-  : public system::enable_shared_from_base<context>, system::noncopyable
+  : public enable_shared_from_base<context>, private noncopyable<context>
 {
 public:
     /// A shared context pointer.
@@ -58,12 +60,11 @@ public:
     virtual bool stop();
 
 private:
-
     // This is thread safe
     std::atomic<void*> self_;
 
     // This guards against a start/stop race.
-    mutable system::shared_mutex mutex_;
+    mutable std::shared_mutex mutex_;
 };
 
 } // namespace zmq

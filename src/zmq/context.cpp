@@ -18,17 +18,15 @@
  */
 #include <bitcoin/protocol/zmq/context.hpp>
 
-#include <cstdint>
-#include <zmq.h>
+#include <mutex>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/zmq/zeromq.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
 using namespace bc::system;
-
-static constexpr int32_t zmq_fail = -1;
 
 context::context(bool started)
   : self_(nullptr)
@@ -47,7 +45,7 @@ bool context::start()
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    unique_lock lock(mutex_);
+    std::unique_lock lock(mutex_);
 
     if (self_ != nullptr)
         return false;
@@ -62,7 +60,7 @@ bool context::stop()
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    unique_lock lock(mutex_);
+    std::unique_lock lock(mutex_);
 
     if (self_ == nullptr)
         return true;

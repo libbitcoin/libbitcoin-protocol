@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- |  Copyright (c) 2014-2020 libbitcoin-protocol developers (see COPYING).
+ |  Copyright (c) 2014-2021 libbitcoin-protocol developers (see COPYING).
  |
  |         GENERATED SOURCE CODE, DO NOT EDIT EXCEPT EXPERIMENTALLY
  |
@@ -85,6 +85,9 @@
       <Filter>src\zmq</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\zmq\socket.cpp">
+      <Filter>src\zmq</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\zmq\sodium.cpp">
       <Filter>src\zmq</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\zmq\worker.cpp">
@@ -185,6 +188,9 @@
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\socket.hpp">
       <Filter>include\bitcoin\protocol\zmq</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\sodium.hpp">
+      <Filter>include\bitcoin\protocol\zmq</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\worker.hpp">
       <Filter>include\bitcoin\protocol\zmq</Filter>
     </ClInclude>
@@ -194,5 +200,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\..\debug.natvis" />
   </ItemGroup>
 </Project>

@@ -21,6 +21,7 @@
 
 #include <string>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/config/config.hpp>
 #include <bitcoin/protocol/define.hpp>
 
 namespace libbitcoin {
@@ -40,26 +41,24 @@ public:
 
     /// Construct a certificate from private key (generates public key).
     /// This generates an arbitary key pair if the parameter is uninitialized.
-    certificate(const system::config::sodium& private_key);
+    certificate(const sodium& private_key);
 
     /// True if the certificate is valid.
     operator bool() const;
 
     /// The public key base85 text.
-    const system::config::sodium& public_key() const;
+    const sodium& public_key() const;
 
     /// The private key base85 text.
-    const system::config::sodium& private_key() const;
+    const sodium& private_key() const;
 
 protected:
-    static bool derive(system::config::sodium& out_public,
-        const system::config::sodium& private_key);
-    static bool create(system::config::sodium& out_public,
-            system::config::sodium& out_private, bool setting);
+    static bool derive(sodium& out_public, const sodium& private_key);
+    static bool create(sodium& out_public, sodium& out_private, bool setting);
 
 private:
-    system::config::sodium public_;
-    system::config::sodium private_;
+    sodium public_;
+    sodium private_;
 };
 
 } // namespace zmq
