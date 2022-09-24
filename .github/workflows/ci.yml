@@ -25,7 +25,6 @@ jobs:
             coverage: "nocov"
             boost: "--build-boost"
             icu: ""
-            mbedtls: "--build-mbedtls"
             zmq: "--build-zmq"
             cc: "clang-14"
             flags: "-Os -fPIE"
@@ -40,7 +39,6 @@ jobs:
             coverage: "nocov"
             boost: "--build-boost"
             icu: "--build-icu --with-icu"
-            mbedtls: ""
             zmq: "--build-zmq"
             cc: "clang-14"
             flags: "-Os -fPIE"
@@ -55,7 +53,6 @@ jobs:
             coverage: "nocov"
             boost: "--build-boost"
             icu: ""
-            mbedtls: ""
             zmq: "--build-zmq"
             cc: "gcc-11"
             flags: "-Os -fPIE"
@@ -70,7 +67,6 @@ jobs:
             coverage: "cov"
             boost: "--build-boost"
             icu: "--build-icu --with-icu"
-            mbedtls: "--build-mbedtls"
             zmq: "--build-zmq"
             cc: "gcc-11"
             flags: "-Og -g --coverage -fPIE"
@@ -85,7 +81,6 @@ jobs:
             coverage: "nocov"
             boost: ""
             icu: "--with-icu"
-            mbedtls: "--build-mbedtls"
             zmq: "--build-zmq"
             cc: "clang-14"
             flags: "-Os -fPIE"
@@ -100,7 +95,6 @@ jobs:
             coverage: "nocov"
             boost: "--build-boost"
             icu: "--build-icu --with-icu"
-            mbedtls: ""
             zmq: "--build-zmq"
             cc: "clang-14"
             flags: "-Os -fvisibility=hidden -fPIE"
@@ -162,7 +156,6 @@ jobs:
           ${{ env.ASSERT_NDEBUG }}
           ${{ matrix.boost }}
           ${{ matrix.icu }}
-          ${{ matrix.mbedtls }}
           ${{ matrix.zmq }}
 
       - name: Coveralls Calculation
@@ -242,7 +235,6 @@ jobs:
             coverage: "nocov"
             boost: "--build-boost"
             icu: ""
-            mbedtls: "--build-mbedtls"
             zmq: "--build-zmq"
             cc: "clang-14"
             flags: "-Os -fPIE"
@@ -257,7 +249,6 @@ jobs:
             coverage: "nocov"
             boost: "--build-boost"
             icu: "--build-icu --with-icu"
-            mbedtls: ""
             zmq: "--build-zmq"
             cc: "clang-14"
             flags: "-Os -fPIE"
@@ -272,7 +263,6 @@ jobs:
             coverage: "nocov"
             boost: "--build-boost"
             icu: ""
-            mbedtls: ""
             zmq: "--build-zmq"
             cc: "gcc-11"
             flags: "-Os -fPIE"
@@ -287,7 +277,6 @@ jobs:
             coverage: "nocov"
             boost: "--build-boost"
             icu: "--build-icu --with-icu"
-            mbedtls: "--build-mbedtls"
             zmq: "--build-zmq"
             cc: "gcc-11"
             flags: "-Og -fPIE"
@@ -302,7 +291,6 @@ jobs:
             coverage: "nocov"
             boost: ""
             icu: "--with-icu"
-            mbedtls: "--build-mbedtls"
             zmq: "--build-zmq"
             cc: "clang-14"
             flags: "-Os -fPIE"
@@ -317,7 +305,6 @@ jobs:
             coverage: "nocov"
             boost: "--build-boost"
             icu: "--build-icu --with-icu"
-            mbedtls: ""
             zmq: "--build-zmq"
             cc: "clang-14"
             flags: "-Os -fvisibility=hidden -fPIE"
@@ -381,7 +368,6 @@ jobs:
           ${{ env.ASSERT_NDEBUG }}
           ${{ matrix.boost }}
           ${{ matrix.icu }}
-          ${{ matrix.mbedtls }}
           ${{ matrix.zmq }}
 
       - name: Coveralls Calculation
