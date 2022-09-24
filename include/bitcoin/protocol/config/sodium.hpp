@@ -16,49 +16,50 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef LIBBITCOIN_PROTOCOL_WEB_WEBSOCKET_FRAME_HPP
-#define LIBBITCOIN_PROTOCOL_WEB_WEBSOCKET_FRAME_HPP
+#ifndef LIBBITCOIN_PROTOCOL_CONFIG_SODIUM_HPP
+#define LIBBITCOIN_PROTOCOL_CONFIG_SODIUM_HPP
 
-#include <cstddef>
-#include <cstdint>
+#include <iostream>
+#include <string>
+#include <vector>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
-#include <bitcoin/protocol/web/event.hpp>
-#include <bitcoin/protocol/web/websocket_op.hpp>
 
 namespace libbitcoin {
 namespace protocol {
-namespace http {
 
-class BCP_API websocket_frame
+/// Serialization helper for base58 sodium keys.
+class BCP_API sodium
 {
 public:
-    static system::data_chunk to_header(size_t length, websocket_op code);
+    /// A list of base85 values.
+    /// This must provide operator<< for ostream in order to be used as a
+    /// boost::program_options default_value.
+    typedef std::vector<sodium> list;
 
-    websocket_frame(const uint8_t* data, size_t size);
+    sodium();
+    sodium(const std::string& base85);
+    sodium(const system::hash_digest& value);
+    sodium(const sodium& other);
 
+    /// True if the key is initialized.
     operator bool() const;
-    bool final() const;
-    bool fragment() const;
-    event event_type() const;
-    websocket_op op_code() const;
-    uint8_t flags() const;
-    size_t header_length() const;
-    size_t data_length() const;
-    size_t mask_length() const;
+
+    /// Overload cast to internal type.
+    operator const system::hash_digest&() const;
+
+    /// Get the key as a base85 encoded (z85) string.
+    std::string to_string() const;
+
+    friend std::istream& operator>>(std::istream& input,
+        sodium& argument);
+    friend std::ostream& operator<<(std::ostream& output,
+        const sodium& argument);
 
 private:
-    void from_data(const uint8_t* data, size_t read_length);
-
-    static const size_t mask_ = 4;
-
-    bool valid_;
-    uint8_t flags_;
-    size_t header_;
-    size_t data_;
+    system::hash_digest value_;
 };
 
-} // namespace http
 } // namespace protocol
 } // namespace libbitcoin
 

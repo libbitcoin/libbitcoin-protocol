@@ -16,7 +16,7 @@
     <Filter Include="include\bitcoin\protocol">
       <UniqueIdentifier>{6B94E2A5-C054-4790-0000-000000000005}</UniqueIdentifier>
     </Filter>
-    <Filter Include="include\bitcoin\protocol\web">
+    <Filter Include="include\bitcoin\protocol\config">
       <UniqueIdentifier>{6B94E2A5-C054-4790-0000-000000000006}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\bitcoin\protocol\zmq">
@@ -28,7 +28,7 @@
     <Filter Include="src">
       <UniqueIdentifier>{6B94E2A5-C054-4790-0000-000000000000}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\web">
+    <Filter Include="src\config">
       <UniqueIdentifier>{6B94E2A5-C054-4790-0000-000000000001}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\zmq">
@@ -36,32 +36,17 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\config\authority.cpp">
+      <Filter>src\config</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\config\endpoint.cpp">
+      <Filter>src\config</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\config\sodium.cpp">
+      <Filter>src\config</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\settings.cpp">
       <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\web\connection.cpp">
-      <Filter>src\web</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\web\http_reply.cpp">
-      <Filter>src\web</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\web\http_request.cpp">
-      <Filter>src\web</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\web\json_string.cpp">
-      <Filter>src\web</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\web\manager.cpp">
-      <Filter>src\web</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\web\socket.cpp">
-      <Filter>src\web</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\web\utilities.cpp">
-      <Filter>src\web</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\web\websocket_frame.cpp">
-      <Filter>src\web</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\zmq\authenticator.cpp">
       <Filter>src\zmq</Filter>
@@ -70,6 +55,9 @@
       <Filter>src\zmq</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\zmq\context.cpp">
+      <Filter>src\zmq</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\zmq\error.cpp">
       <Filter>src\zmq</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\zmq\frame.cpp">
@@ -87,19 +75,22 @@
     <ClCompile Include="..\..\..\..\src\zmq\socket.cpp">
       <Filter>src\zmq</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\zmq\sodium.cpp">
-      <Filter>src\zmq</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\zmq\worker.cpp">
-      <Filter>src\zmq</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\zmq\zeromq.cpp">
       <Filter>src\zmq</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol.hpp">
       <Filter>include\bitcoin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\authority.hpp">
+      <Filter>include\bitcoin\protocol\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\endpoint.hpp">
+      <Filter>include\bitcoin\protocol\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\sodium.hpp">
+      <Filter>include\bitcoin\protocol\config</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\define.hpp">
       <Filter>include\bitcoin\protocol</Filter>
@@ -110,60 +101,6 @@
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\version.hpp">
       <Filter>include\bitcoin\protocol</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\bind_options.hpp">
-      <Filter>include\bitcoin\protocol\web</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\connection.hpp">
-      <Filter>include\bitcoin\protocol\web</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\connection_state.hpp">
-      <Filter>include\bitcoin\protocol\web</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\event.hpp">
-      <Filter>include\bitcoin\protocol\web</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\file_transfer.hpp">
-      <Filter>include\bitcoin\protocol\web</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\http.hpp">
-      <Filter>include\bitcoin\protocol\web</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\http_reply.hpp">
-      <Filter>include\bitcoin\protocol\web</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\http_request.hpp">
-      <Filter>include\bitcoin\protocol\web</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\json_string.hpp">
-      <Filter>include\bitcoin\protocol\web</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\manager.hpp">
-      <Filter>include\bitcoin\protocol\web</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\protocol_status.hpp">
-      <Filter>include\bitcoin\protocol\web</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\socket.hpp">
-      <Filter>include\bitcoin\protocol\web</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\ssl.hpp">
-      <Filter>include\bitcoin\protocol\web</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\utilities.hpp">
-      <Filter>include\bitcoin\protocol\web</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\websocket_frame.hpp">
-      <Filter>include\bitcoin\protocol\web</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\websocket_message.hpp">
-      <Filter>include\bitcoin\protocol\web</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\websocket_op.hpp">
-      <Filter>include\bitcoin\protocol\web</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\websocket_transfer.hpp">
-      <Filter>include\bitcoin\protocol\web</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\authenticator.hpp">
       <Filter>include\bitcoin\protocol\zmq</Filter>
     </ClInclude>
@@ -171,6 +108,9 @@
       <Filter>include\bitcoin\protocol\zmq</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\context.hpp">
+      <Filter>include\bitcoin\protocol\zmq</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\error.hpp">
       <Filter>include\bitcoin\protocol\zmq</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\frame.hpp">
@@ -186,9 +126,6 @@
       <Filter>include\bitcoin\protocol\zmq</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\socket.hpp">
-      <Filter>include\bitcoin\protocol\zmq</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\sodium.hpp">
       <Filter>include\bitcoin\protocol\zmq</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\worker.hpp">

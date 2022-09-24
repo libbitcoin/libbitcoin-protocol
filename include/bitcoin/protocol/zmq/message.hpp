@@ -22,6 +22,8 @@
 #include <cstddef>
 #include <string>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/define.hpp>
+#include <bitcoin/protocol/zmq/error.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
 namespace libbitcoin {
@@ -36,7 +38,7 @@ public:
     static const size_t address_size = 5;
 
     /// An identifier for message routing.
-    typedef system::byte_array<address_size> address;
+    typedef system::data_array<address_size> address;
 
     /// Add an unsigned integer message part to the outgoing message.
     template <typename Unsigned>
@@ -57,8 +59,7 @@ public:
 
         if (front.size() == sizeof(Unsigned))
         {
-            value = system::from_little_endian_unsafe<Unsigned>(
-                front.begin());
+            value = system::from_little_endian<Unsigned>(front);
             queue_.pop();
             return true;
         }
@@ -104,14 +105,14 @@ public:
 
     /// Must be called on the socket thread.
     /// Send the message in parts. If a send fails the unsent parts remain.
-    system::code send(socket& socket);
+    error::code send(socket& socket);
 
     /// Must be called on the socket thread.
     /// Receve a message (clears the queue first).
-    system::code receive(socket& socket);
+    error::code receive(socket& socket);
 
 protected:
-    system::data_queue queue_;
+    data_queue queue_;
 };
 
 } // namespace zmq

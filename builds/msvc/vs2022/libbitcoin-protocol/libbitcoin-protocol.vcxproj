@@ -73,63 +73,38 @@
     <Import Project="$(ProjectDir)$(ProjectName).props" />
   </ImportGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\config\authority.cpp" />
+    <ClCompile Include="..\..\..\..\src\config\endpoint.cpp" />
+    <ClCompile Include="..\..\..\..\src\config\sodium.cpp" />
     <ClCompile Include="..\..\..\..\src\settings.cpp" />
-    <ClCompile Include="..\..\..\..\src\web\connection.cpp" />
-    <ClCompile Include="..\..\..\..\src\web\http_reply.cpp" />
-    <ClCompile Include="..\..\..\..\src\web\http_request.cpp" />
-    <ClCompile Include="..\..\..\..\src\web\json_string.cpp" />
-    <ClCompile Include="..\..\..\..\src\web\manager.cpp" />
-    <ClCompile Include="..\..\..\..\src\web\socket.cpp">
-      <ObjectFileName>$(IntDir)src_web_socket.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\web\utilities.cpp" />
-    <ClCompile Include="..\..\..\..\src\web\websocket_frame.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\authenticator.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\certificate.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\context.cpp" />
+    <ClCompile Include="..\..\..\..\src\zmq\error.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\frame.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\identifiers.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\message.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\poller.cpp" />
-    <ClCompile Include="..\..\..\..\src\zmq\socket.cpp">
-      <ObjectFileName>$(IntDir)src_zmq_socket.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\zmq\sodium.cpp" />
+    <ClCompile Include="..\..\..\..\src\zmq\socket.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\worker.cpp" />
-    <ClCompile Include="..\..\..\..\src\zmq\zeromq.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\authority.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\endpoint.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\sodium.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\define.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\settings.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\version.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\bind_options.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\connection.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\connection_state.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\event.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\file_transfer.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\http.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\http_reply.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\http_request.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\json_string.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\manager.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\protocol_status.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\socket.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\ssl.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\utilities.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\websocket_frame.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\websocket_message.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\websocket_op.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\web\websocket_transfer.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\authenticator.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\certificate.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\context.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\error.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\frame.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\identifiers.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\message.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\poller.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\socket.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\sodium.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\worker.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\zeromq.hpp" />
   </ItemGroup>
@@ -143,13 +118,10 @@
     <Import Project="$(NuGetPackageRoot)libzmq_vc143.4.3.2\build\native\libzmq_vc143.targets" Condition="Exists('$(NuGetPackageRoot)libzmq_vc143.4.3.2\build\native\libzmq_vc143.targets')" />
     <Import Project="$(NuGetPackageRoot)boost_chrono-vc143.1.78.0\build\boost_chrono-vc143.targets" Condition="Exists('$(NuGetPackageRoot)boost_chrono-vc143.1.78.0\build\boost_chrono-vc143.targets')" />
     <Import Project="$(NuGetPackageRoot)boost_container-vc143.1.78.0\build\boost_container-vc143.targets" Condition="Exists('$(NuGetPackageRoot)boost_container-vc143.1.78.0\build\boost_container-vc143.targets')" />
-    <Import Project="$(NuGetPackageRoot)boost_date_time-vc143.1.78.0\build\boost_date_time-vc143.targets" Condition="Exists('$(NuGetPackageRoot)boost_date_time-vc143.1.78.0\build\boost_date_time-vc143.targets')" />
-    <Import Project="$(NuGetPackageRoot)boost_filesystem-vc143.1.78.0\build\boost_filesystem-vc143.targets" Condition="Exists('$(NuGetPackageRoot)boost_filesystem-vc143.1.78.0\build\boost_filesystem-vc143.targets')" />
     <Import Project="$(NuGetPackageRoot)boost_iostreams-vc143.1.78.0\build\boost_iostreams-vc143.targets" Condition="Exists('$(NuGetPackageRoot)boost_iostreams-vc143.1.78.0\build\boost_iostreams-vc143.targets')" />
     <Import Project="$(NuGetPackageRoot)boost_json-vc143.1.78.0\build\boost_json-vc143.targets" Condition="Exists('$(NuGetPackageRoot)boost_json-vc143.1.78.0\build\boost_json-vc143.targets')" />
     <Import Project="$(NuGetPackageRoot)boost_locale-vc143.1.78.0\build\boost_locale-vc143.targets" Condition="Exists('$(NuGetPackageRoot)boost_locale-vc143.1.78.0\build\boost_locale-vc143.targets')" />
     <Import Project="$(NuGetPackageRoot)boost_program_options-vc143.1.78.0\build\boost_program_options-vc143.targets" Condition="Exists('$(NuGetPackageRoot)boost_program_options-vc143.1.78.0\build\boost_program_options-vc143.targets')" />
-    <Import Project="$(NuGetPackageRoot)boost_regex-vc143.1.78.0\build\boost_regex-vc143.targets" Condition="Exists('$(NuGetPackageRoot)boost_regex-vc143.1.78.0\build\boost_regex-vc143.targets')" />
     <Import Project="$(NuGetPackageRoot)boost_system-vc143.1.78.0\build\boost_system-vc143.targets" Condition="Exists('$(NuGetPackageRoot)boost_system-vc143.1.78.0\build\boost_system-vc143.targets')" />
     <Import Project="$(NuGetPackageRoot)boost_thread-vc143.1.78.0\build\boost_thread-vc143.targets" Condition="Exists('$(NuGetPackageRoot)boost_thread-vc143.1.78.0\build\boost_thread-vc143.targets')" />
     <Import Project="$(NuGetPackageRoot)secp256k1_vc143.0.1.0.20\build\native\secp256k1_vc143.targets" Condition="Exists('$(NuGetPackageRoot)secp256k1_vc143.0.1.0.20\build\native\secp256k1_vc143.targets')" />
@@ -162,13 +134,10 @@
     <Error Condition="!Exists('$(NuGetPackageRoot)libzmq_vc143.4.3.2\build\native\libzmq_vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)libzmq_vc143.4.3.2\build\native\libzmq_vc143.targets'))" />
     <Error Condition="!Exists('$(NuGetPackageRoot)boost_chrono-vc143.1.78.0\build\boost_chrono-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)boost_chrono-vc143.1.78.0\build\boost_chrono-vc143.targets'))" />
     <Error Condition="!Exists('$(NuGetPackageRoot)boost_container-vc143.1.78.0\build\boost_container-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)boost_container-vc143.1.78.0\build\boost_container-vc143.targets'))" />
-    <Error Condition="!Exists('$(NuGetPackageRoot)boost_date_time-vc143.1.78.0\build\boost_date_time-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)boost_date_time-vc143.1.78.0\build\boost_date_time-vc143.targets'))" />
-    <Error Condition="!Exists('$(NuGetPackageRoot)boost_filesystem-vc143.1.78.0\build\boost_filesystem-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)boost_filesystem-vc143.1.78.0\build\boost_filesystem-vc143.targets'))" />
     <Error Condition="!Exists('$(NuGetPackageRoot)boost_iostreams-vc143.1.78.0\build\boost_iostreams-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)boost_iostreams-vc143.1.78.0\build\boost_iostreams-vc143.targets'))" />
     <Error Condition="!Exists('$(NuGetPackageRoot)boost_json-vc143.1.78.0\build\boost_json-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)boost_json-vc143.1.78.0\build\boost_json-vc143.targets'))" />
     <Error Condition="!Exists('$(NuGetPackageRoot)boost_locale-vc143.1.78.0\build\boost_locale-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)boost_locale-vc143.1.78.0\build\boost_locale-vc143.targets'))" />
     <Error Condition="!Exists('$(NuGetPackageRoot)boost_program_options-vc143.1.78.0\build\boost_program_options-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)boost_program_options-vc143.1.78.0\build\boost_program_options-vc143.targets'))" />
-    <Error Condition="!Exists('$(NuGetPackageRoot)boost_regex-vc143.1.78.0\build\boost_regex-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)boost_regex-vc143.1.78.0\build\boost_regex-vc143.targets'))" />
     <Error Condition="!Exists('$(NuGetPackageRoot)boost_system-vc143.1.78.0\build\boost_system-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)boost_system-vc143.1.78.0\build\boost_system-vc143.targets'))" />
     <Error Condition="!Exists('$(NuGetPackageRoot)boost_thread-vc143.1.78.0\build\boost_thread-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)boost_thread-vc143.1.78.0\build\boost_thread-vc143.targets'))" />
     <Error Condition="!Exists('$(NuGetPackageRoot)secp256k1_vc143.0.1.0.20\build\native\secp256k1_vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(NuGetPackageRoot)secp256k1_vc143.0.1.0.20\build\native\secp256k1_vc143.targets'))" />

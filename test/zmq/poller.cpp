@@ -16,11 +16,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <boost/test/test_tools.hpp>
-#include <boost/test/unit_test_suite.hpp>
+#include "../test.hpp"
 
 #include <zmq.h>
-#include <bitcoin/protocol.hpp>
 #include "../utility.hpp"
 
 using namespace bc::system;

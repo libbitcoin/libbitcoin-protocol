@@ -16,11 +16,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <boost/test/test_tools.hpp>
-#include <boost/test/unit_test_suite.hpp>
+#include "../test.hpp"
 
 #include <zmq.h>
-#include <bitcoin/protocol.hpp>
 #include "../utility.hpp"
 
 using namespace bc::system;
@@ -231,7 +229,7 @@ BOOST_AUTO_TEST_CASE(socket__req_rep__grasslands_disordered__bad_stream)
     out.enqueue(TEST_MESSAGE);
     BC_REQUIRE_SUCCESS(requester.send(out));
     out.enqueue(TEST_MESSAGE);
-    BOOST_REQUIRE_EQUAL(requester.send(out), error::bad_stream);
+    BOOST_REQUIRE_EQUAL(requester.send(out), zmq::error::socket_state);
 }
 
 // REQ and ROUTER [asymetrical, synchronous, routed]
@@ -298,7 +296,7 @@ BOOST_AUTO_TEST_CASE(socket__req_router__grasslands_disordered__bad_stream)
     out.enqueue(TEST_MESSAGE);
     BC_REQUIRE_SUCCESS(requester.send(out));
     out.enqueue(TEST_MESSAGE);
-    BOOST_REQUIRE_EQUAL(requester.send(out), error::bad_stream);
+    BOOST_REQUIRE_EQUAL(requester.send(out), zmq::error::socket_state);
 }
 
 // REP and DEALER [asymetrical, synchronous, routed]
@@ -318,7 +316,7 @@ BOOST_AUTO_TEST_CASE(socket__req_dealer__grasslands__bad_stream)
     // The replier can only reply on an existing route.
     zmq::message out;
     out.enqueue(TEST_MESSAGE);
-    BOOST_REQUIRE_EQUAL(replier.send(out), error::bad_stream);
+    BOOST_REQUIRE_EQUAL(replier.send(out), zmq::error::socket_state);
 }
 
 // PUB and SUB [asymmtrical, asynchronous, routable (subscription)]

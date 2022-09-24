@@ -976,8 +976,6 @@ ICU_OPTIONS=(
 #------------------------------------------------------------------------------
 BOOST_OPTIONS=(
 "--with-chrono" \
-"--with-date_time" \
-"--with-filesystem" \
 "--with-iostreams" \
 "--with-json" \
 "--with-locale" \

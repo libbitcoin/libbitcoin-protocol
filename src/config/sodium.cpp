@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <bitcoin/protocol/zmq/sodium.hpp>
+#include <bitcoin/protocol/config/sodium.hpp>
 
 #include <iostream>
 #include <sstream>
@@ -26,7 +26,6 @@
 
 namespace libbitcoin {
 namespace protocol {
-namespace zmq {
 
 using namespace bc::system;
 
@@ -98,6 +97,5 @@ std::ostream& operator<<(std::ostream& output, const sodium& argument)
     return output;
 }
 
-} // namespace zmq
 } // namespace protocol
 } // namespace libbitcoin

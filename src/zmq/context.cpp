@@ -19,6 +19,7 @@
 #include <bitcoin/protocol/zmq/context.hpp>
 
 #include <cstdint>
+#include <mutex>
 #include <zmq.h>
 #include <bitcoin/system.hpp>
 
@@ -47,7 +48,7 @@ bool context::start()
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    unique_lock lock(mutex_);
+    std::unique_lock lock(mutex_);
 
     if (self_ != nullptr)
         return false;
@@ -62,7 +63,7 @@ bool context::stop()
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    unique_lock lock(mutex_);
+    std::unique_lock lock(mutex_);
 
     if (self_ == nullptr)
         return true;

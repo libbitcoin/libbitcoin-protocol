@@ -184,25 +184,19 @@ add_definitions(
 #------------------------------------------------------------------------------
 add_library( ${CANONICAL_LIB_NAME}
     "../../src/settings.cpp"
-    "../../src/web/connection.cpp"
-    "../../src/web/http_reply.cpp"
-    "../../src/web/http_request.cpp"
-    "../../src/web/json_string.cpp"
-    "../../src/web/manager.cpp"
-    "../../src/web/socket.cpp"
-    "../../src/web/utilities.cpp"
-    "../../src/web/websocket_frame.cpp"
+    "../../src/config/authority.cpp"
+    "../../src/config/endpoint.cpp"
+    "../../src/config/sodium.cpp"
     "../../src/zmq/authenticator.cpp"
     "../../src/zmq/certificate.cpp"
     "../../src/zmq/context.cpp"
+    "../../src/zmq/error.cpp"
     "../../src/zmq/frame.cpp"
     "../../src/zmq/identifiers.cpp"
     "../../src/zmq/message.cpp"
     "../../src/zmq/poller.cpp"
     "../../src/zmq/socket.cpp"
-    "../../src/zmq/sodium.cpp"
-    "../../src/zmq/worker.cpp"
-    "../../src/zmq/zeromq.cpp" )
+    "../../src/zmq/worker.cpp" )
 
 # ${CANONICAL_LIB_NAME} project specific include directories.
 #------------------------------------------------------------------------------
@@ -243,10 +237,13 @@ if (with-tests)
     add_executable( libbitcoin-protocol-test
         "../../test/converter.cpp"
         "../../test/main.cpp"
+        "../../test/test.cpp"
+        "../../test/test.hpp"
         "../../test/utility.hpp"
         "../../test/zmq/authenticator.cpp"
         "../../test/zmq/certificate.cpp"
         "../../test/zmq/context.cpp"
+        "../../test/zmq/error.cpp"
         "../../test/zmq/frame.cpp"
         "../../test/zmq/identifiers.cpp"
         "../../test/zmq/message.cpp"

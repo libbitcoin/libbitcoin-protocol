@@ -23,12 +23,16 @@
 #include <string>
 #include <zmq.h>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/config/authority.hpp>
+#include <bitcoin/protocol/config/sodium.hpp>
+#include <bitcoin/protocol/config/endpoint.hpp>
+#include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/settings.hpp>
 #include <bitcoin/protocol/zmq/authenticator.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
+#include <bitcoin/protocol/zmq/error.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
 #include <bitcoin/protocol/zmq/message.hpp>
-#include <bitcoin/protocol/zmq/sodium.hpp>
 #include <bitcoin/protocol/zmq/zeromq.hpp>
 
 namespace libbitcoin {
@@ -209,18 +213,18 @@ identifier socket::id() const
     return identifier_;
 }
 
-code socket::bind(const config::endpoint& address)
+error::code socket::bind(const endpoint& address)
 {
     if (zmq_bind(self_, address.to_string().c_str()) == zmq_fail)
-        return get_last_error();
+        return error::get_last_error();
 
     return error::success;
 }
 
-code socket::connect(const config::endpoint& address)
+error::code socket::connect(const endpoint& address)
 {
     if (zmq_connect(self_, address.to_string().c_str()) == zmq_fail)
-        return get_last_error();
+        return error::get_last_error();
 
     return error::success;
 }
@@ -293,7 +297,7 @@ bool socket::set_certificate(const certificate& certificate)
         set_private_key(certificate.private_key().to_string());
 }
 
-bool socket::set_socks_proxy(const config::authority& socks_proxy)
+bool socket::set_socks_proxy(const authority& socks_proxy)
 {
     return socks_proxy && set(ZMQ_SOCKS_PROXY, socks_proxy.to_string());
 }
@@ -308,12 +312,12 @@ bool socket::set_unsubscription(const data_chunk& filter)
     return set(ZMQ_UNSUBSCRIBE, filter);
 }
 
-code socket::send(message& packet)
+error::code socket::send(message& packet)
 {
     return packet.send(*this);
 }
 
-code socket::receive(message& packet)
+error::code socket::receive(message& packet)
 {
     return packet.receive(*this);
 }

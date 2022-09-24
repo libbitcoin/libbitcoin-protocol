@@ -55,8 +55,6 @@ typedef struct zmq_pollitem
     short revents;
 } zmq_pollitem;
 
-system::code BCP_API get_last_error();
-
 } // namespace zmq
 } // namespace protocol
 } // namespace libbitcoin

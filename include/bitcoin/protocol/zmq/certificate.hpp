@@ -21,8 +21,8 @@
 
 #include <string>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/config/sodium.hpp>
 #include <bitcoin/protocol/define.hpp>
-#include <bitcoin/protocol/zmq/sodium.hpp>
 
 namespace libbitcoin {
 namespace protocol {

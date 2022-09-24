@@ -36,25 +36,19 @@ src_libbitcoin_protocol_la_CPPFLAGS = -I${srcdir}/include ${mbedtls} ${zmq_BUILD
 src_libbitcoin_protocol_la_LIBADD = ${zmq_LIBS} ${mbedtls_LIBS} ${bitcoin_system_LIBS}
 src_libbitcoin_protocol_la_SOURCES = \
     src/settings.cpp \
-    src/web/connection.cpp \
-    src/web/http_reply.cpp \
-    src/web/http_request.cpp \
-    src/web/json_string.cpp \
-    src/web/manager.cpp \
-    src/web/socket.cpp \
-    src/web/utilities.cpp \
-    src/web/websocket_frame.cpp \
+    src/config/authority.cpp \
+    src/config/endpoint.cpp \
+    src/config/sodium.cpp \
     src/zmq/authenticator.cpp \
     src/zmq/certificate.cpp \
     src/zmq/context.cpp \
+    src/zmq/error.cpp \
     src/zmq/frame.cpp \
     src/zmq/identifiers.cpp \
     src/zmq/message.cpp \
     src/zmq/poller.cpp \
     src/zmq/socket.cpp \
-    src/zmq/sodium.cpp \
-    src/zmq/worker.cpp \
-    src/zmq/zeromq.cpp
+    src/zmq/worker.cpp
 
 # local: test/libbitcoin-protocol-test
 #------------------------------------------------------------------------------
@@ -68,10 +62,13 @@ test_libbitcoin_protocol_test_LDADD = src/libbitcoin-protocol.la ${boost_unit_te
 test_libbitcoin_protocol_test_SOURCES = \
     test/converter.cpp \
     test/main.cpp \
+    test/test.cpp \
+    test/test.hpp \
     test/utility.hpp \
     test/zmq/authenticator.cpp \
     test/zmq/certificate.cpp \
     test/zmq/context.cpp \
+    test/zmq/error.cpp \
     test/zmq/frame.cpp \
     test/zmq/identifiers.cpp \
     test/zmq/message.cpp \
@@ -93,38 +90,23 @@ include_bitcoin_protocol_HEADERS = \
     include/bitcoin/protocol/settings.hpp \
     include/bitcoin/protocol/version.hpp
 
-include_bitcoin_protocol_webdir = ${includedir}/bitcoin/protocol/web
-include_bitcoin_protocol_web_HEADERS = \
-    include/bitcoin/protocol/web/bind_options.hpp \
-    include/bitcoin/protocol/web/connection.hpp \
-    include/bitcoin/protocol/web/connection_state.hpp \
-    include/bitcoin/protocol/web/event.hpp \
-    include/bitcoin/protocol/web/file_transfer.hpp \
-    include/bitcoin/protocol/web/http.hpp \
-    include/bitcoin/protocol/web/http_reply.hpp \
-    include/bitcoin/protocol/web/http_request.hpp \
-    include/bitcoin/protocol/web/json_string.hpp \
-    include/bitcoin/protocol/web/manager.hpp \
-    include/bitcoin/protocol/web/protocol_status.hpp \
-    include/bitcoin/protocol/web/socket.hpp \
-    include/bitcoin/protocol/web/ssl.hpp \
-    include/bitcoin/protocol/web/utilities.hpp \
-    include/bitcoin/protocol/web/websocket_frame.hpp \
-    include/bitcoin/protocol/web/websocket_message.hpp \
-    include/bitcoin/protocol/web/websocket_op.hpp \
-    include/bitcoin/protocol/web/websocket_transfer.hpp
+include_bitcoin_protocol_configdir = ${includedir}/bitcoin/protocol/config
+include_bitcoin_protocol_config_HEADERS = \
+    include/bitcoin/protocol/config/authority.hpp \
+    include/bitcoin/protocol/config/endpoint.hpp \
+    include/bitcoin/protocol/config/sodium.hpp
 
 include_bitcoin_protocol_zmqdir = ${includedir}/bitcoin/protocol/zmq
 include_bitcoin_protocol_zmq_HEADERS = \
     include/bitcoin/protocol/zmq/authenticator.hpp \
     include/bitcoin/protocol/zmq/certificate.hpp \
     include/bitcoin/protocol/zmq/context.hpp \
+    include/bitcoin/protocol/zmq/error.hpp \
     include/bitcoin/protocol/zmq/frame.hpp \
     include/bitcoin/protocol/zmq/identifiers.hpp \
     include/bitcoin/protocol/zmq/message.hpp \
     include/bitcoin/protocol/zmq/poller.hpp \
     include/bitcoin/protocol/zmq/socket.hpp \
-    include/bitcoin/protocol/zmq/sodium.hpp \
     include/bitcoin/protocol/zmq/worker.hpp \
     include/bitcoin/protocol/zmq/zeromq.hpp
 

@@ -21,6 +21,8 @@
 #include <zmq.h>
 #include <functional>
 #include <future>
+#include <mutex>
+#include <boost/thread.hpp>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/zmq/message.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
@@ -50,14 +52,14 @@ bool worker::start()
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    unique_lock lock(mutex_);
+    std::unique_lock lock(mutex_);
 
     if (stopped_)
     {
         stopped_ = false;
 
         // Create the worker thread and socket and start polling.
-        thread_ = std::make_shared<asio::thread>(
+        thread_ = std::make_shared<boost::thread>(
             &worker::work, this);
 
         // Wait on worker start.
@@ -78,7 +80,7 @@ bool worker::stop()
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    unique_lock lock(mutex_);
+    std::unique_lock lock(mutex_);
 
     if (!stopped_)
     {

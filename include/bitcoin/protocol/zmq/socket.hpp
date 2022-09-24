@@ -22,12 +22,15 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <bitcoin/protocol/config/authority.hpp>
+#include <bitcoin/protocol/config/endpoint.hpp>
+#include <bitcoin/protocol/config/sodium.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/settings.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
+#include <bitcoin/protocol/zmq/error.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
-#include <bitcoin/protocol/zmq/sodium.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -40,7 +43,7 @@ class authenticator;
 /// All calls must be made on the socket thread.
 /// Because the socket is only set on construct, sockets are not restartable.
 class BCP_API socket
-  : public system::enable_shared_from_base<socket>, system::noncopyable
+  : public enable_shared_from_base<socket>, noncopyable
 {
 public:
     /// The full set of socket roles defined by zeromq.
@@ -86,14 +89,14 @@ public:
     /// The underlying zeromq socket.
     void* self();
 
-    /// An opaue locally unique idenfier, valid after stop.
+    /// An opaque locally unique idenfier, valid after stop.
     identifier id() const;
 
     /// Bind the socket to the specified local address.
-    system::code bind(const system::config::endpoint& address);
+    error::code bind(const endpoint& address);
 
     /// Connect the socket to the specified remote address.
-    system::code connect(const system::config::endpoint& address);
+    error::code connect(const endpoint& address);
 
     /// Sets the domain for ZAP (ZMQ RFC 27) authentication.
     bool set_authentication_domain(const std::string& domain);
@@ -114,7 +117,7 @@ public:
     bool set_certificate(const certificate& certificate);
 
     /// Configure the socket to connect through the specified socks5 proxy.
-    bool set_socks_proxy(const system::config::authority& socks_proxy);
+    bool set_socks_proxy(const authority& socks_proxy);
 
     /// Configure subscriber socket to apply the message filter.
     bool set_subscription(const system::data_chunk& filter);
@@ -123,10 +126,10 @@ public:
     bool set_unsubscription(const system::data_chunk& filter);
 
     /// Send a message on this socket.
-    system::code send(message& packet);
+    error::code send(message& packet);
 
     /// Receive a message from this socket.
-    system::code receive(message& packet);
+    error::code receive(message& packet);
 
 protected:
     static int to_socket_type(role socket_role);

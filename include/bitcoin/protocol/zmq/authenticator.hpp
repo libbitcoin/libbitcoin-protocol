@@ -22,14 +22,17 @@
 #include <memory>
 #include <functional>
 #include <future>
+#include <shared_mutex>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/config/authority.hpp>
+#include <bitcoin/protocol/config/endpoint.hpp>
+#include <bitcoin/protocol/config/sodium.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
-#include <bitcoin/protocol/zmq/sodium.hpp>
 #include <bitcoin/protocol/zmq/worker.hpp>
 
 namespace libbitcoin {
@@ -45,10 +48,10 @@ public:
     typedef std::shared_ptr<authenticator> ptr;
 
     /// The fixed inprocess authentication endpoint.
-    static const system::config::endpoint endpoint;
+    static const endpoint authentication_point;
 
     /// There may be only one authenticator per process.
-    authenticator(system::thread_priority priority=system::thread_priority::normal);
+    authenticator(thread_priority priority=thread_priority::normal);
 
     /// Stop the router.
     virtual ~authenticator();
@@ -76,10 +79,10 @@ public:
     virtual void allow(const system::hash_digest& public_key);
 
     /// Allow clients with the following ip addresses (whitelist).
-    virtual void allow(const system::config::authority& address);
+    virtual void allow(const authority& address);
 
     /// Allow clients with the following ip addresses (blacklist).
-    virtual void deny(const system::config::authority& address);
+    virtual void deny(const authority& address);
 
 protected:
     void work() override;
@@ -98,8 +101,8 @@ private:
     std::unordered_set<system::hash_digest> keys_;
     std::unordered_set<std::string> weak_domains_;
     std::unordered_map<std::string, bool> adresses_;
-    mutable system::shared_mutex property_mutex_;
-    mutable system::shared_mutex stop_mutex_;
+    mutable std::shared_mutex property_mutex_;
+    mutable std::shared_mutex stop_mutex_;
 };
 
 } // namespace zmq

@@ -21,6 +21,7 @@
 #include <string>
 #include <utility>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/zmq/error.hpp>
 #include <bitcoin/protocol/zmq/frame.hpp>
 
 namespace libbitcoin {
@@ -157,7 +158,7 @@ size_t message::size() const
 }
 
 // Must be called on the socket thread.
-code message::send(socket& socket)
+error::code message::send(socket& socket)
 {
     auto count = queue_.size();
 
@@ -175,7 +176,7 @@ code message::send(socket& socket)
 }
 
 // Must be called on the socket thread.
-code message::receive(socket& socket)
+error::code message::receive(socket& socket)
 {
     clear();
     auto done = false;

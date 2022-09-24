@@ -65,7 +65,7 @@ identifiers poller::wait()
 identifiers poller::wait(int32_t timeout_milliseconds)
 {
     const auto size = pollers_.size();
-    BITCOIN_ASSERT(size <= max_int32);
+    BC_ASSERT(size <= max_int32);
 
     const auto item_count = static_cast<int32_t>(size);
     const auto items = reinterpret_cast<zmq_pollitem_t*>(pollers_.data());
