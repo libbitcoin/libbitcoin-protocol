@@ -44,6 +44,9 @@ BOOST_AUTO_TEST_CASE(authenticator__started__after_socket__invalid_context)
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(authenticator.start());
     BOOST_REQUIRE(!pusher);
+
+    // Must explicitly stop because event is never fired.
+    authenticator.stop();
 }
 
 BOOST_AUTO_TEST_CASE(authenticator__started__before_socket__valid_context)
