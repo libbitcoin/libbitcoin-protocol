@@ -19,6 +19,12 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_ZEROMQ_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_ZEROMQ_HPP
 
+#include <cstddef>
+#include <cstdint>
+#if defined HAVE_MSC
+    #include <winsock2.h>
+#endif
+#include <zmq.h>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
 
@@ -26,31 +32,49 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-// zmq_msg_t alias, keeps zmq.h out of our headers.
+/// Define symbols not defined by zeromq.
+constexpr auto zmq_subscribe_all = "";
+constexpr int32_t zmq_true = 1;
+constexpr int32_t zmq_false = 0;
+constexpr int32_t zmq_fail = -1;
+constexpr int32_t zmq_reconnect_interval = 100;
+constexpr size_t zmq_encoded_key_size = 40;
+
+// This is the maximum safe value on all platforms, due to zeromq bug.
+constexpr int32_t zmq_maximum_safe_wait_milliseconds = 1000;
+
+// If ZMQ_DONTWAIT is set we fail on busy socket.
+// This would happen if a message is being read when we try to send.
+constexpr int32_t wait_flag = 0;
+
+/// zmq_msg_t alias, keeps zmq.h out of our headers.
+/// Conditions are based on zeromq declarations.
 typedef struct zmq_msg
 {
-#if defined(__GNUC__) || defined(__INTEL_COMPILER) || \
+#if defined(HAVE_GNUC) || defined(__INTEL_COMPILER) || \
     (defined(__SUNPRO_C) && __SUNPRO_C >= 0x590) || \
     (defined(__SUNPRO_CC) && __SUNPRO_CC >= 0x590)
     unsigned char _[64] __attribute__ ((aligned(sizeof(void*))));
-#elif defined(_MSC_VER) && (defined(_M_X64) || defined(_M_ARM64))
+#elif defined(HAVE_MSC) && (defined(_M_X64) || defined(_M_ARM64))
     __declspec (align(8)) unsigned char _[64];
-#elif defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_ARM_ARMV7VE))
+#elif defined(HAVE_MSC) && (defined(_M_IX86) || defined(_M_ARM_ARMV7VE))
     __declspec (align(4)) unsigned char _[64];
 #else
     unsigned char _[64];
 #endif
 } zmq_msg;
 
-// zmq_pollitem_t alias, keeps zmq.h out of our headers.
+#if defined(HAVE_MSC)
+    typedef SOCKET file_descriptor;
+#else
+    typedef int file_descriptor;
+#endif
+
+/// zmq_pollitem_t alias, keeps zmq.h out of our headers.
 typedef struct zmq_pollitem
 {
     void* socket;
-#if defined(_WIN32)
-    SOCKET fd;
-#else
-    int fd;
-#endif
+    file_descriptor fd;
     short events;
     short revents;
 } zmq_pollitem;

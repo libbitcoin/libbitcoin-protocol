@@ -20,8 +20,8 @@
 
 #include <cstdint>
 #include <string>
-#include <boost/regex.hpp>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/boost.hpp>
 #include <bitcoin/protocol/config/authority.hpp>
 
 namespace libbitcoin {

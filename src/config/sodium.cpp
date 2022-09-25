@@ -18,10 +18,10 @@
  */
 #include <bitcoin/protocol/config/sodium.hpp>
 
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <boost/program_options.hpp>
 #include <bitcoin/system.hpp>
 
 namespace libbitcoin {
@@ -74,8 +74,7 @@ std::istream& operator>>(std::istream& input, sodium& argument)
     data_chunk out_value;
     if (!decode_base85(out_value, base85) || out_value.size() != hash_size)
     {
-        using namespace boost::program_options;
-        BOOST_THROW_EXCEPTION(invalid_option_value(base85));
+        throw istream_exception(base85);
     }
 
     std::copy_n(out_value.begin(), hash_size, argument.value_.begin());
@@ -89,8 +88,7 @@ std::ostream& operator<<(std::ostream& output, const sodium& argument)
     // Base85 requires four byte alignment (hash_digest is 32).
     if (!encode_base85(decoded, argument.value_))
     {
-        using namespace boost::program_options;
-        BOOST_THROW_EXCEPTION(std::iostream::failure(decoded));
+        throw istream_exception(decoded);
     }
 
     output << decoded;

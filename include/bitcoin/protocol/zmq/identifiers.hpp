@@ -38,7 +38,6 @@ class BCP_API identifiers
     friend class poller;
 
 public:
-
     /// True if the result set contains no identifiers.
     bool empty() const;
 

@@ -18,10 +18,8 @@
  */
 #include <bitcoin/protocol/zmq/frame.hpp>
 
-#include <cstddef>
 #include <cstdint>
 #include <cstring>
-#include <zmq.h>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/error.hpp>
@@ -31,11 +29,6 @@
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
-
-// If ZMQ_DONTWAIT is set we fail on busy socket.
-// This would happen if a message is being read when we try to send.
-static auto constexpr wait_flag = 0;
-static constexpr auto zmq_fail = -1;
 
 // Use for receiving.
 frame::frame()
@@ -57,7 +50,7 @@ frame::~frame()
 // private
 bool frame::initialize(const system::data_chunk& data)
 {
-    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
+    const auto& buffer = reinterpret_cast<zmq_msg_t*>(&message_);
 
     if (data.empty())
         return (zmq_msg_init(buffer) != zmq_fail);
@@ -94,7 +87,7 @@ bool frame::set_more(socket& socket)
 
 system::data_chunk frame::payload() const
 {
-    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
+    const auto& buffer = reinterpret_cast<zmq_msg_t*>(&message_);
     const auto size = zmq_msg_size(buffer);
     const auto data = zmq_msg_data(buffer);
     const auto begin = static_cast<uint8_t*>(data);
@@ -107,7 +100,7 @@ error::code frame::receive(socket& socket)
     if (!valid_)
         return error::invalid_message;
 
-    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
+    const auto& buffer = reinterpret_cast<zmq_msg_t*>(&message_);
     const auto result = zmq_msg_recv(buffer, socket.self(), wait_flag)
         != zmq_fail && set_more(socket);
     return result ? error::success : error::get_last_error();
@@ -120,7 +113,7 @@ error::code frame::send(socket& socket, bool last)
         return error::invalid_message;
 
     const int flags = (last ? 0 : ZMQ_SNDMORE) | wait_flag;
-    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
+    const auto& buffer = reinterpret_cast<zmq_msg_t*>(&message_);
     const auto result = zmq_msg_send(buffer, socket.self(), flags) != zmq_fail;
     return result ? error::success : error::get_last_error();
 }
@@ -128,7 +121,7 @@ error::code frame::send(socket& socket, bool last)
 // private
 bool frame::destroy()
 {
-    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
+    const auto& buffer = reinterpret_cast<zmq_msg_t*>(&message_);
     return valid_ && (zmq_msg_close(buffer) != zmq_fail);
 }
 

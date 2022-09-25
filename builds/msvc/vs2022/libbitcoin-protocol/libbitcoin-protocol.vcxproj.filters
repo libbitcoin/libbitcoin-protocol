@@ -134,6 +134,15 @@
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\zeromq.hpp">
       <Filter>include\bitcoin\protocol\zmq</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\network.hpp">
+      <Filter>include\bitcoin\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\config.hpp">
+      <Filter>include\bitcoin\protocol\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\boost.hpp">
+      <Filter>include\bitcoin\protocol</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

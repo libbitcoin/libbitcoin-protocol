@@ -25,7 +25,7 @@
 #include <string>
 #include <vector>
 #include <bitcoin/system.hpp>
-#include <bitcoin/protocol/config/authority.hpp>
+#include <bitcoin/protocol/config/config.hpp>
 #include <bitcoin/protocol/define.hpp>
 
 namespace libbitcoin {
@@ -81,7 +81,6 @@ public:
 
 private:
     // These are not thread safe.
-
     std::string scheme_;
     std::string host_;
     uint16_t port_;

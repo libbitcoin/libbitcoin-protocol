@@ -18,18 +18,15 @@
  */
 #include <bitcoin/protocol/zmq/context.hpp>
 
-#include <cstdint>
 #include <mutex>
-#include <zmq.h>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/zmq/zeromq.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
 using namespace bc::system;
-
-static constexpr int32_t zmq_fail = -1;
 
 context::context(bool started)
   : self_(nullptr)

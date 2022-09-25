@@ -90,10 +90,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\boost.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\authority.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\config.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\endpoint.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\sodium.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\define.hpp" />
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\network.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\settings.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\version.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\authenticator.hpp" />

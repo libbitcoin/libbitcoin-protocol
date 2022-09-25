@@ -21,7 +21,7 @@
 
 #include <string>
 #include <bitcoin/system.hpp>
-#include <bitcoin/protocol/config/sodium.hpp>
+#include <bitcoin/protocol/config/config.hpp>
 #include <bitcoin/protocol/define.hpp>
 
 namespace libbitcoin {
@@ -53,10 +53,8 @@ public:
     const sodium& private_key() const;
 
 protected:
-    static bool derive(sodium& out_public,
-        const sodium& private_key);
-    static bool create(sodium& out_public,
-            sodium& out_private, bool setting);
+    static bool derive(sodium& out_public, const sodium& private_key);
+    static bool create(sodium& out_public, sodium& out_private, bool setting);
 
 private:
     sodium public_;

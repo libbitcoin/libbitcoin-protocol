@@ -18,6 +18,7 @@
  */
 #include <bitcoin/protocol/zmq/message.hpp>
 
+#include <algorithm>
 #include <string>
 #include <utility>
 #include <bitcoin/system.hpp>

@@ -18,18 +18,16 @@
  */
 #include <bitcoin/protocol/config/authority.hpp>
 
-////#include <format>
 #include <algorithm>
 #include <exception>
 #include <sstream>
-#include <boost/format.hpp>
-#include <boost/regex.hpp>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/boost.hpp>
+#include <bitcoin/protocol/network.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 
-typedef system::data_array<16> ip_address;
 static const ip_address null_ip_address
 {
     {

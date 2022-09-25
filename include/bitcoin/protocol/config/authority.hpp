@@ -25,14 +25,11 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <boost/asio.hpp>
+#include <bitcoin/protocol/boost.hpp>
 #include <bitcoin/protocol/define.hpp>
 
 namespace libbitcoin {
 namespace protocol {
-
-typedef boost::asio::ip::address_v4 ipv4;
-typedef boost::asio::ip::address_v6 ipv6;
 
 /// This is a container for a {ip address, port} tuple.
 class BCP_API authority

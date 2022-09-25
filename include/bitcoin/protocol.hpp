@@ -15,10 +15,13 @@
  */
 
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/boost.hpp>
 #include <bitcoin/protocol/define.hpp>
+#include <bitcoin/protocol/network.hpp>
 #include <bitcoin/protocol/settings.hpp>
 #include <bitcoin/protocol/version.hpp>
 #include <bitcoin/protocol/config/authority.hpp>
+#include <bitcoin/protocol/config/config.hpp>
 #include <bitcoin/protocol/config/endpoint.hpp>
 #include <bitcoin/protocol/config/sodium.hpp>
 #include <bitcoin/protocol/zmq/authenticator.hpp>

@@ -18,15 +18,10 @@
  */
 #include <bitcoin/protocol/zmq/authenticator.hpp>
 
-#include <functional>
-#include <future>
 #include <mutex>
 #include <string>
-#include <zmq.h>
 #include <bitcoin/system.hpp>
-#include <bitcoin/protocol/config/authority.hpp>
-#include <bitcoin/protocol/config/endpoint.hpp>
-#include <bitcoin/protocol/config/sodium.hpp>
+#include <bitcoin/protocol/config/config.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/message.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>

@@ -20,16 +20,12 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_AUTHENTICATOR_HPP
 
 #include <memory>
-#include <functional>
-#include <future>
 #include <shared_mutex>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <bitcoin/system.hpp>
-#include <bitcoin/protocol/config/authority.hpp>
-#include <bitcoin/protocol/config/endpoint.hpp>
-#include <bitcoin/protocol/config/sodium.hpp>
+#include <bitcoin/protocol/config/config.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>

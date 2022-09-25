@@ -23,8 +23,8 @@
 #include <memory>
 #include <future>
 #include <shared_mutex>
-#include <boost/thread.hpp>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/boost.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 
@@ -34,7 +34,7 @@ namespace zmq {
 
 /// This class is thread safe.
 class BCP_API worker
-  : noncopyable
+  : private noncopyable<worker>
 {
 public:
     /// A shared worker pointer.
@@ -62,12 +62,11 @@ protected:
     virtual void work() = 0;
 
 private:
-
     // These are protected by mutex.
     std::atomic<bool> stopped_;
     std::promise<bool> started_;
     std::promise<bool> finished_;
-    std::shared_ptr<boost::thread> thread_;
+    std::shared_ptr<thread> thread_;
     const thread_priority priority_;
     mutable std::shared_mutex mutex_;
 };

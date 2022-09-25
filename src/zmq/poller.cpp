@@ -19,10 +19,10 @@
 #include <bitcoin/protocol/zmq/poller.hpp>
 
 #include <cstdint>
-#include <zmq.h>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
+#include <bitcoin/protocol/zmq/zeromq.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -52,10 +52,7 @@ void poller::clear()
 
 identifiers poller::wait()
 {
-    // This is the maximum safe value on all platforms, due to zeromq bug.
-    static constexpr int32_t maximum_safe_wait_milliseconds = 1000;
-
-    return wait(maximum_safe_wait_milliseconds);
+    return wait(zmq_maximum_safe_wait_milliseconds);
 }
 
 // BUGBUG: zeromq 4.2 has an overflow bug in timer parameterization.
@@ -68,7 +65,7 @@ identifiers poller::wait(int32_t timeout_milliseconds)
     BC_ASSERT(size <= max_int32);
 
     const auto item_count = static_cast<int32_t>(size);
-    const auto items = reinterpret_cast<zmq_pollitem_t*>(pollers_.data());
+    const auto& items = reinterpret_cast<zmq_pollitem_t*>(pollers_.data());
     const auto signaled = zmq_poll(items, item_count, timeout_milliseconds);
 
     // Either one of the sockets was terminated or a signal intervened.

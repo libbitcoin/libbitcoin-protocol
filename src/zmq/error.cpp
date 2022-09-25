@@ -18,8 +18,8 @@
  */
 #include <bitcoin/protocol/zmq/error.hpp>
 
-#include <zmq.h>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/zmq/zeromq.hpp>
 
 namespace libbitcoin {
 namespace protocol {

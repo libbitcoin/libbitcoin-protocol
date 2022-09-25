@@ -21,11 +21,8 @@
 #include <algorithm>
 #include <cstdint>
 #include <string>
-#include <zmq.h>
 #include <bitcoin/system.hpp>
-#include <bitcoin/protocol/config/authority.hpp>
-#include <bitcoin/protocol/config/sodium.hpp>
-#include <bitcoin/protocol/config/endpoint.hpp>
+#include <bitcoin/protocol/config/config.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/settings.hpp>
 #include <bitcoin/protocol/zmq/authenticator.hpp>
@@ -40,12 +37,6 @@ namespace protocol {
 namespace zmq {
 
 using namespace bc::system;
-
-static const auto subscribe_all = "";
-static constexpr int32_t zmq_true = 1;
-static constexpr int32_t zmq_false = 0;
-static constexpr int32_t zmq_fail = -1;
-static constexpr int32_t reconnect_interval = 100;
 static const libbitcoin::protocol::settings default_settings;
 
 // Linger
@@ -165,7 +156,7 @@ socket::socket(context& context, role socket_role, const settings& settings)
     const auto reconnect = seconds(settings.reconnect_seconds);
 
     // Zero disables, reconnect_interval is hardwired to the default (100ms).
-    if (!set32(ZMQ_RECONNECT_IVL, reconnect == 0 ? -1 : reconnect_interval) ||
+    if (!set32(ZMQ_RECONNECT_IVL, reconnect == 0 ? -1 : zmq_reconnect_interval) ||
         !set32(ZMQ_RECONNECT_IVL_MAX, reconnect))
     {
         stop();
@@ -173,7 +164,7 @@ socket::socket(context& context, role socket_role, const settings& settings)
     }
 
     // Limited to subscriber sockets (not configured, always set by default).
-    if (socket_role == role::subscriber && !set(ZMQ_SUBSCRIBE, subscribe_all))
+    if (socket_role == role::subscriber && !set(ZMQ_SUBSCRIBE, zmq_subscribe_all))
     {
         stop();
         return;
