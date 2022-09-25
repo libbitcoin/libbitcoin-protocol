@@ -37,24 +37,24 @@ public:
     /// boost::program_options default_value.
     typedef std::vector<sodium> list;
 
-    sodium();
-    sodium(const std::string& base85);
-    sodium(const system::hash_digest& value);
-    sodium(const sodium& other);
+    sodium() NOEXCEPT;
+    sodium(const std::string& base85) NOEXCEPT(false);
+    sodium(const system::hash_digest& value) NOEXCEPT;
+    sodium(const sodium& other) NOEXCEPT;
 
     /// True if the key is initialized.
-    operator bool() const;
+    operator bool() const NOEXCEPT;
 
     /// Overload cast to internal type.
-    operator const system::hash_digest&() const;
+    operator const system::hash_digest&() const NOEXCEPT;
 
     /// Get the key as a base85 encoded (z85) string.
-    std::string to_string() const;
+    std::string to_string() const NOEXCEPT;
 
     friend std::istream& operator>>(std::istream& input,
-        sodium& argument);
+        sodium& argument) NOEXCEPT(false);
     friend std::ostream& operator<<(std::ostream& output,
-        const sodium& argument);
+        const sodium& argument) NOEXCEPT(false);
 
 private:
     system::hash_digest value_;

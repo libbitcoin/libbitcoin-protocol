@@ -47,46 +47,47 @@ public:
     static const endpoint authentication_point;
 
     /// There may be only one authenticator per process.
-    authenticator(thread_priority priority=thread_priority::normal);
+    authenticator(thread_priority priority=thread_priority::normal) NOEXCEPT;
 
     /// Stop the router.
-    virtual ~authenticator();
+    virtual ~authenticator() NOEXCEPT;
 
     /// Expose the authenticated context.
-    operator context&();
+    operator context&() NOEXCEPT;
 
     /// Start the ZAP router for the context.
-    virtual bool start() override;
+    virtual bool start() NOEXCEPT override;
 
     /// Stop the router (optional).
-    virtual bool stop() override;
+    virtual bool stop() NOEXCEPT override;
 
     /// This must be called on the socket thread.
     /// A nonempty domain is required for the NULL mechanism.
     /// Set secure false to enable NULL mechanism, otherwise curve is required.
     /// Apply authentication to the socket for the given arbitrary domain.
     /// Behavior is based on set_private_key and allow/deny configuration.
-    virtual bool apply(socket& socket, const std::string& domain, bool secure);
+    virtual bool apply(socket& socket, const std::string& domain,
+        bool secure) NOEXCEPT;
 
     /// Set the server private key (required for curve security).
-    virtual void set_private_key(const sodium& private_key);
+    virtual void set_private_key(const sodium& private_key) NOEXCEPT;
 
     /// Allow clients with the following public keys (whitelist).
-    virtual void allow(const system::hash_digest& public_key);
+    virtual void allow(const system::hash_digest& public_key) NOEXCEPT;
 
     /// Allow clients with the following ip addresses (whitelist).
-    virtual void allow(const authority& address);
+    virtual void allow(const authority& address) NOEXCEPT;
 
     /// Allow clients with the following ip addresses (blacklist).
-    virtual void deny(const authority& address);
+    virtual void deny(const authority& address) NOEXCEPT;
 
 protected:
-    void work() override;
+    void work() NOEXCEPT override;
 
 private:
-    bool allowed_address(const std::string& address) const;
-    bool allowed_key(const system::hash_digest& public_key) const;
-    bool allowed_weak(const std::string& domain) const;
+    bool allowed_address(const std::string& address) const NOEXCEPT;
+    bool allowed_key(const system::hash_digest& public_key) const NOEXCEPT;
+    bool allowed_weak(const std::string& domain) const NOEXCEPT;
 
     // This is thread safe.
     context context_;

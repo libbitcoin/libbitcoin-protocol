@@ -40,35 +40,35 @@ public:
     typedef std::shared_ptr<frame> ptr;
 
     /// Construct a frame with no payload (for receiving).
-    frame();
+    frame() NOEXCEPT;
 
     /// Construct a frame with the specified payload (for sending).
-    frame(const system::data_chunk& data);
+    frame(const system::data_chunk& data) NOEXCEPT;
 
     /// Free the frame's allocated memory.
-    virtual ~frame();
+    virtual ~frame() NOEXCEPT;
 
     /// True if the construction was successful.
-    operator bool() const;
+    operator bool() const NOEXCEPT;
 
     /// True if there is more data to receive.
-    bool more() const;
+    bool more() const NOEXCEPT;
 
     /// The initialized or received payload of the frame.
-    system::data_chunk payload() const;
+    system::data_chunk payload() const NOEXCEPT;
 
     /// Must be called on the socket thread.
     /// Receive a frame on the socket.
-    error::code receive(socket& socket);
+    error::code receive(socket& socket) NOEXCEPT;
 
     /// Must be called on the socket thread.
     /// Send a frame on the socket.
-    error::code send(socket& socket, bool more);
+    error::code send(socket& socket, bool more) NOEXCEPT;
 
 private:
-    bool initialize(const system::data_chunk& data);
-    bool set_more(socket& socket);
-    bool destroy();
+    bool initialize(const system::data_chunk& data) NOEXCEPT;
+    bool set_more(socket& socket) NOEXCEPT;
+    bool destroy() NOEXCEPT;
 
     bool more_;
     const bool valid_;

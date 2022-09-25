@@ -39,13 +39,13 @@ class BCP_API identifiers
 
 public:
     /// True if the result set contains no identifiers.
-    bool empty() const;
+    bool empty() const NOEXCEPT;
 
     /// True if the result set contains the identifier.
-    bool contains(identifier value) const;
+    bool contains(identifier value) const NOEXCEPT;
 
 protected:
-    virtual void push(const void* socket);
+    virtual void push(const void* socket) NOEXCEPT;
 
     std::vector<identifier> ids_;
 };

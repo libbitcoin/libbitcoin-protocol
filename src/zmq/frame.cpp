@@ -31,24 +31,24 @@ namespace protocol {
 namespace zmq {
 
 // Use for receiving.
-frame::frame()
+frame::frame() NOEXCEPT
   : more_(false), valid_(initialize({}))
 {
 }
 
 // Use for sending.
-frame::frame(const system::data_chunk& data)
+frame::frame(const system::data_chunk& data) NOEXCEPT
   : more_(false), valid_(initialize(data))
 {
 }
 
-frame::~frame()
+frame::~frame() NOEXCEPT
 {
     destroy();
 }
 
 // private
-bool frame::initialize(const system::data_chunk& data)
+bool frame::initialize(const system::data_chunk& data) NOEXCEPT
 {
     const auto& buffer = reinterpret_cast<zmq_msg_t*>(&message_);
 
@@ -62,18 +62,18 @@ bool frame::initialize(const system::data_chunk& data)
     return true;
 }
 
-frame::operator bool() const
+frame::operator bool() const NOEXCEPT
 {
     return valid_;
 }
 
-bool frame::more() const
+bool frame::more() const NOEXCEPT
 {
     return more_;
 }
 
 // private
-bool frame::set_more(socket& socket)
+bool frame::set_more(socket& socket) NOEXCEPT
 {
     int more;
     auto length = sizeof(int);
@@ -85,7 +85,7 @@ bool frame::set_more(socket& socket)
     return true;
 }
 
-system::data_chunk frame::payload() const
+system::data_chunk frame::payload() const NOEXCEPT
 {
     const auto& buffer = reinterpret_cast<zmq_msg_t*>(&message_);
     const auto size = zmq_msg_size(buffer);
@@ -95,7 +95,7 @@ system::data_chunk frame::payload() const
 }
 
 // Must be called on the socket thread.
-error::code frame::receive(socket& socket)
+error::code frame::receive(socket& socket) NOEXCEPT
 {
     if (!valid_)
         return error::invalid_message;
@@ -107,7 +107,7 @@ error::code frame::receive(socket& socket)
 }
 
 // Must be called on the socket thread.
-error::code frame::send(socket& socket, bool last)
+error::code frame::send(socket& socket, bool last) NOEXCEPT
 {
     if (!valid_)
         return error::invalid_message;
@@ -119,7 +119,7 @@ error::code frame::send(socket& socket, bool last)
 }
 
 // private
-bool frame::destroy()
+bool frame::destroy() NOEXCEPT
 {
     const auto& buffer = reinterpret_cast<zmq_msg_t*>(&message_);
     return valid_ && (zmq_msg_close(buffer) != zmq_fail);

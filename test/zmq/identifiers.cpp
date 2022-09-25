@@ -26,7 +26,7 @@ class identifiers_fixture
   : public identifiers
 {
 public:
-    void push(const void* socket) override
+    void push(const void* socket) NOEXCEPT override
     {
         identifiers::push(socket);
     }

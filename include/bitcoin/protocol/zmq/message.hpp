@@ -42,7 +42,7 @@ public:
 
     /// Add an unsigned integer message part to the outgoing message.
     template <typename Unsigned>
-    void enqueue_little_endian(Unsigned value)
+    void enqueue_little_endian(Unsigned value) NOEXCEPT
     {
         queue_.emplace(system::to_chunk(
             system::to_little_endian<Unsigned>(value)));
@@ -50,7 +50,7 @@ public:
 
     /// Remove an unsigned from the queue top, false if empty queue or invalid.
     template <typename Unsigned>
-    bool dequeue(Unsigned& value)
+    bool dequeue(Unsigned& value) NOEXCEPT
     {
         if (queue_.empty())
             return false;
@@ -69,47 +69,47 @@ public:
     }
 
     /// Add an empty message part to the outgoing message.
-    void enqueue();
+    void enqueue() NOEXCEPT;
 
     /// Move a data message part to the outgoing message.
-    void enqueue(system::data_chunk&& value);
+    void enqueue(system::data_chunk&& value) NOEXCEPT;
 
     /// Add a data message part to the outgoing message.
-    void enqueue(const system::data_chunk& value);
+    void enqueue(const system::data_chunk& value) NOEXCEPT;
 
     /// Add a text message part to the outgoing message.
-    void enqueue(const std::string& value);
+    void enqueue(const std::string& value) NOEXCEPT;
 
     /// Move an identifier message part to the outgoing message.
-    void enqueue(const address& value);
+    void enqueue(const address& value) NOEXCEPT;
 
     /// Remove a message part from the top of the queue, empty if empty queue.
-    system::data_chunk dequeue_data();
-    std::string dequeue_text();
+    system::data_chunk dequeue_data() NOEXCEPT;
+    std::string dequeue_text() NOEXCEPT;
 
     /// Remove a part from the queue top, false if empty queue or invalid.
-    bool dequeue();
-    bool dequeue(system::data_chunk& value);
-    bool dequeue(std::string& value);
-    bool dequeue(system::hash_digest& value);
-    bool dequeue(address& value);
+    bool dequeue() NOEXCEPT;
+    bool dequeue(system::data_chunk& value) NOEXCEPT;
+    bool dequeue(std::string& value) NOEXCEPT;
+    bool dequeue(system::hash_digest& value) NOEXCEPT;
+    bool dequeue(address& value) NOEXCEPT;
 
     /// Clear the queue of message parts.
-    void clear();
+    void clear() NOEXCEPT;
 
     /// True if the queue is empty.
-    bool empty() const;
+    bool empty() const NOEXCEPT;
 
     /// The number of items on the queue.
-    size_t size() const;
+    size_t size() const NOEXCEPT;
 
     /// Must be called on the socket thread.
     /// Send the message in parts. If a send fails the unsent parts remain.
-    error::code send(socket& socket);
+    error::code send(socket& socket) NOEXCEPT;
 
     /// Must be called on the socket thread.
     /// Receve a message (clears the queue first).
-    error::code receive(socket& socket);
+    error::code receive(socket& socket) NOEXCEPT;
 
 protected:
     data_queue queue_;

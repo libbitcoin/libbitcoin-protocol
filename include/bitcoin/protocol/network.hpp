@@ -67,15 +67,9 @@ template <class Base>
 class enable_shared_from_base
   : public std::enable_shared_from_this<Base>
 {
-public:
-    // non-virtual
-    ~enable_shared_from_base() noexcept
-    {
-    }
-
 protected:
     template <class Derived, bc::if_base_of<Base, Derived> = true>
-    std::shared_ptr<Derived> shared_from_base() noexcept
+    std::shared_ptr<Derived> shared_from_base() NOEXCEPT
     {
         return std::static_pointer_cast<Derived>(this->shared_from_this());
     }
@@ -90,7 +84,7 @@ enum class thread_priority
 };
 
 // Privately map the class enum thread priority value to an integer.
-inline int get_priority(thread_priority priority) noexcept
+inline int get_priority(thread_priority priority) NOEXCEPT
 {
     switch (priority)
     {
@@ -107,7 +101,7 @@ inline int get_priority(thread_priority priority) noexcept
 }
 
 // Set the thread priority (or process if thread priority is not available).
-inline void set_priority(thread_priority priority) noexcept
+inline void set_priority(thread_priority priority) NOEXCEPT
 {
     const auto prioritization = get_priority(priority);
 

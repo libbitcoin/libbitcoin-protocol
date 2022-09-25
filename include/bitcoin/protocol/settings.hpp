@@ -32,8 +32,8 @@ namespace protocol {
 class BCP_API settings
 {
 public:
-    settings();
-    settings(uint32_t send_high_water, uint32_t receive_high_water);
+    settings() NOEXCEPT;
+    settings(uint32_t send_high_water, uint32_t receive_high_water) NOEXCEPT;
 
     // ZMQ_SNDHWM (0 unlimited)
     uint32_t send_high_water;

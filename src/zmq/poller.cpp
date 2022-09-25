@@ -28,14 +28,14 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-poller::poller()
+poller::poller() NOEXCEPT
   : expired_(false),
     terminated_(false)
 {
 }
 
 // Parameter fd is non-zmq socket (unused when socket is set).
-void poller::add(socket& socket)
+void poller::add(socket& socket) NOEXCEPT
 {
     zmq_pollitem item;
     item.socket = socket.self();
@@ -45,12 +45,12 @@ void poller::add(socket& socket)
     pollers_.push_back(item);
 }
 
-void poller::clear()
+void poller::clear() NOEXCEPT
 {
     return pollers_.clear();
 }
 
-identifiers poller::wait()
+identifiers poller::wait() NOEXCEPT
 {
     return wait(zmq_maximum_safe_wait_milliseconds);
 }
@@ -59,7 +59,7 @@ identifiers poller::wait()
 // The timeout is typed as 'long' by zeromq. This is 32 bit on windows and
 // actually less (potentially 1000 or 1 second) on other platforms.
 // On non-windows platforms negative doesn't actually produce infinity.
-identifiers poller::wait(int32_t timeout_milliseconds)
+identifiers poller::wait(int32_t timeout_milliseconds) NOEXCEPT
 {
     const auto size = pollers_.size();
     BC_ASSERT(size <= max_int32);
@@ -91,12 +91,12 @@ identifiers poller::wait(int32_t timeout_milliseconds)
     return result;
 }
 
-bool poller::expired() const
+bool poller::expired() const NOEXCEPT
 {
     return expired_;
 }
 
-bool poller::terminated() const
+bool poller::terminated() const NOEXCEPT
 {
     return terminated_;
 }

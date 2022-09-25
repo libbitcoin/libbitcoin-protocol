@@ -28,20 +28,20 @@ namespace zmq {
 
 using namespace bc::system;
 
-context::context(bool started)
+context::context(bool started) NOEXCEPT
   : self_(nullptr)
 {
     if (started)
         start();
 }
 
-context::~context()
+context::~context() NOEXCEPT
 {
     stop();
 }
 
 // Restartable after stop and optionally started on construct.
-bool context::start()
+bool context::start() NOEXCEPT
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
@@ -56,7 +56,7 @@ bool context::start()
 }
 
 // Signal termination and block until all sockets closed.
-bool context::stop()
+bool context::stop() NOEXCEPT
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
@@ -74,13 +74,13 @@ bool context::stop()
     ///////////////////////////////////////////////////////////////////////////
 }
 
-context::operator bool() const
+context::operator bool() const NOEXCEPT
 {
     return self_ != nullptr;
 }
 
 // This may become invalid after return. This call only ensures atomicity.
-void* context::self()
+void* context::self() NOEXCEPT
 {
     return self_;
 }

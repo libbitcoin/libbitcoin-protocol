@@ -28,14 +28,14 @@ namespace zmq {
 
 using namespace bc::system;
 
-certificate::certificate()
+certificate::certificate() NOEXCEPT
 {
     // HACK: restricted key space for use with config files.
     create(public_, private_, true);
 }
 
 // Full key space.
-certificate::certificate(const sodium& private_key)
+certificate::certificate(const sodium& private_key) NOEXCEPT
 {
     if (!private_key)
     {
@@ -48,7 +48,7 @@ certificate::certificate(const sodium& private_key)
         private_ = private_key;
 }
 
-bool certificate::derive(sodium& out_public, const sodium& private_key)
+bool certificate::derive(sodium& out_public, const sodium& private_key) NOEXCEPT
 {
     if (!private_key)
         return false;
@@ -65,12 +65,13 @@ bool certificate::derive(sodium& out_public, const sodium& private_key)
 
 // TODO: update settings loader so this isn't necessary.
 // BUGBUG: this limitation weakens security by reducing key space.
-static inline bool ok_setting(const std::string& key)
+static inline bool ok_setting(const std::string& key) NOEXCEPT
 {
     return key.find_first_of('#') == std::string::npos;
 }
 
-bool certificate::create(sodium& out_public, sodium& out_private, bool setting)
+bool certificate::create(sodium& out_public, sodium& out_private,
+    bool setting) NOEXCEPT
 {
     // Loop until neither key's base85 encoding includes the # character.
     // This ensures that the value can be used in libbitcoin settings files.
@@ -94,17 +95,17 @@ bool certificate::create(sodium& out_public, sodium& out_private, bool setting)
     return false;
 }
 
-certificate::operator bool() const
+certificate::operator bool() const NOEXCEPT
 {
     return public_;
 }
 
-const sodium& certificate::public_key() const
+const sodium& certificate::public_key() const NOEXCEPT
 {
     return public_;
 }
 
-const sodium& certificate::private_key() const
+const sodium& certificate::private_key() const NOEXCEPT
 {
     return private_;
 }

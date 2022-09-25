@@ -31,32 +31,32 @@ namespace zmq {
 
 using namespace bc::system;
 
-void message::enqueue()
+void message::enqueue() NOEXCEPT
 {
     queue_.emplace(data_chunk{});
 }
 
-void message::enqueue(data_chunk&& value)
+void message::enqueue(data_chunk&& value) NOEXCEPT
 {
     queue_.emplace(std::move(value));
 }
 
-void message::enqueue(const data_chunk& value)
+void message::enqueue(const data_chunk& value) NOEXCEPT
 {
     queue_.emplace(value);
 }
 
-void message::enqueue(const std::string& value)
+void message::enqueue(const std::string& value) NOEXCEPT
 {
     queue_.emplace(to_chunk(value));
 }
 
-void message::enqueue(const address& value)
+void message::enqueue(const address& value) NOEXCEPT
 {
     queue_.emplace(to_chunk(value));
 }
 
-bool message::dequeue()
+bool message::dequeue() NOEXCEPT
 {
     if (queue_.empty())
         return false;
@@ -65,7 +65,7 @@ bool message::dequeue()
     return true;
 }
 
-bool message::dequeue(data_chunk& value)
+bool message::dequeue(data_chunk& value) NOEXCEPT
 {
     if (queue_.empty())
         return false;
@@ -74,7 +74,7 @@ bool message::dequeue(data_chunk& value)
     return true;
 }
 
-bool message::dequeue(std::string& value)
+bool message::dequeue(std::string& value) NOEXCEPT
 {
     if (queue_.empty())
         return false;
@@ -83,7 +83,7 @@ bool message::dequeue(std::string& value)
     return true;
 }
 
-bool message::dequeue(address& value)
+bool message::dequeue(address& value) NOEXCEPT
 {
     if (queue_.empty())
         return false;
@@ -102,7 +102,7 @@ bool message::dequeue(address& value)
 }
 
 // Used by ZAP for public/private key read/write.
-bool message::dequeue(hash_digest& value)
+bool message::dequeue(hash_digest& value) NOEXCEPT
 {
     if (queue_.empty())
         return false;
@@ -120,7 +120,7 @@ bool message::dequeue(hash_digest& value)
     return false;
 }
 
-data_chunk message::dequeue_data()
+data_chunk message::dequeue_data() NOEXCEPT
 {
     if (queue_.empty())
         return {};
@@ -130,7 +130,7 @@ data_chunk message::dequeue_data()
     return data;
 }
 
-std::string message::dequeue_text()
+std::string message::dequeue_text() NOEXCEPT
 {
     if (queue_.empty())
         return {};
@@ -142,24 +142,24 @@ std::string message::dequeue_text()
     return text;
 }
 
-void message::clear()
+void message::clear() NOEXCEPT
 {
     while (!queue_.empty())
         queue_.pop();
 }
 
-bool message::empty() const
+bool message::empty() const NOEXCEPT
 {
     return queue_.empty();
 }
 
-size_t message::size() const
+size_t message::size() const NOEXCEPT
 {
     return queue_.size();
 }
 
 // Must be called on the socket thread.
-error::code message::send(socket& socket)
+error::code message::send(socket& socket) NOEXCEPT
 {
     auto count = queue_.size();
 
@@ -177,7 +177,7 @@ error::code message::send(socket& socket)
 }
 
 // Must be called on the socket thread.
-error::code message::receive(socket& socket)
+error::code message::receive(socket& socket) NOEXCEPT
 {
     clear();
     auto done = false;

@@ -26,7 +26,7 @@ namespace protocol {
 
 using namespace bc::system;
 
-settings::settings()
+settings::settings() NOEXCEPT
   : send_high_water(100),
     receive_high_water(100),
     message_size_limit(0),
@@ -38,7 +38,8 @@ settings::settings()
 {
 }
 
-settings::settings(uint32_t send_high_water, uint32_t receive_high_water)
+settings::settings(uint32_t send_high_water,
+    uint32_t receive_high_water) NOEXCEPT
   : send_high_water(send_high_water),
     receive_high_water(receive_high_water),
     message_size_limit(0), 

@@ -19,7 +19,6 @@
 #ifndef LIBBITCOIN_PROTOCOL_DEFINE_HPP
 #define LIBBITCOIN_PROTOCOL_DEFINE_HPP
 
-#include <memory>
 #include <queue>
 #include <bitcoin/system.hpp>
 

@@ -29,44 +29,44 @@ namespace protocol {
 
 using namespace bc::system;
 
-sodium::sodium()
+sodium::sodium() NOEXCEPT
   : value_(null_hash)
 {
 }
 
-sodium::sodium(const std::string& base85)
+sodium::sodium(const std::string& base85) NOEXCEPT(false)
 {
     std::stringstream(base85) >> *this;
 }
 
-sodium::sodium(const hash_digest& value)
+sodium::sodium(const hash_digest& value) NOEXCEPT
   : value_(value)
 {
 }
 
-sodium::sodium(const sodium& other)
+sodium::sodium(const sodium& other) NOEXCEPT
   : sodium(other.value_)
 {
 }
 
-sodium::operator const hash_digest&() const
+sodium::operator const hash_digest&() const NOEXCEPT
 {
     return value_;
 }
 
-sodium::operator bool() const
+sodium::operator bool() const NOEXCEPT
 {
     return value_ != null_hash;
 }
 
-std::string sodium::to_string() const
+std::string sodium::to_string() const NOEXCEPT
 {
     std::stringstream value;
     value << *this;
     return value.str();
 }
 
-std::istream& operator>>(std::istream& input, sodium& argument)
+std::istream& operator>>(std::istream& input, sodium& argument) NOEXCEPT(false)
 {
     std::string base85;
     input >> base85;
@@ -81,7 +81,7 @@ std::istream& operator>>(std::istream& input, sodium& argument)
     return input;
 }
 
-std::ostream& operator<<(std::ostream& output, const sodium& argument)
+std::ostream& operator<<(std::ostream& output, const sodium& argument) NOEXCEPT(false)
 {
     std::string decoded;
 

@@ -41,23 +41,23 @@ public:
     typedef std::shared_ptr<worker> ptr;
 
     /// Construct a worker.
-    worker(thread_priority priority=thread_priority::normal);
+    worker(thread_priority priority=thread_priority::normal) NOEXCEPT;
 
     /// Stop the worker.
-    virtual ~worker();
+    virtual ~worker() NOEXCEPT;
 
     /// Start the worker.
-    virtual bool start();
+    virtual bool start() NOEXCEPT;
 
     /// Stop the worker (optional).
-    virtual bool stop();
+    virtual bool stop() NOEXCEPT;
 
 protected:
-    bool stopped();
-    bool started(bool result);
-    bool finished(bool result);
-    bool forward(socket& from, socket& to);
-    void relay(socket& left, socket& right);
+    bool stopped() NOEXCEPT;
+    bool started(bool result) NOEXCEPT;
+    bool finished(bool result) NOEXCEPT;
+    bool forward(socket& from, socket& to) NOEXCEPT;
+    void relay(socket& left, socket& right) NOEXCEPT;
 
     virtual void work() = 0;
 

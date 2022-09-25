@@ -39,25 +39,25 @@ using namespace bc::system;
 const endpoint authenticator::authentication_point("inproc://zeromq.zap.01");
 
 // There may be only one authenticator per process.
-authenticator::authenticator(thread_priority priority)
+authenticator::authenticator(thread_priority priority) NOEXCEPT
   : worker(priority),
     context_(false),
     require_allow_(false)
 {
 }
 
-authenticator::~authenticator()
+authenticator::~authenticator() NOEXCEPT
 {
     stop();
 }
 
-authenticator::operator context&()
+authenticator::operator context&() NOEXCEPT
 {
     return context_;
 }
 
 // Restartable after stop and not started on construct.
-bool authenticator::start()
+bool authenticator::start() NOEXCEPT
 {
     // Context is thread safe, this critical section is for start atomicity.
     ///////////////////////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ bool authenticator::start()
     ///////////////////////////////////////////////////////////////////////////
 }
 
-bool authenticator::stop()
+bool authenticator::stop() NOEXCEPT
 {
     // Context is thread safe, this critical section is for stop atomicity.
     ///////////////////////////////////////////////////////////////////////////
@@ -82,7 +82,7 @@ bool authenticator::stop()
 
 // The replier will never drop messages.
 // rfc.zeromq.org/spec:27/ZAP/
-void authenticator::work()
+void authenticator::work() NOEXCEPT
 {
     socket replier(context_, zmq::socket::role::replier);
 
@@ -235,7 +235,7 @@ void authenticator::work()
 // Addresses and client keys may be updated after this is applied.
 // The configuration at the time of this call determines the mode of security.
 bool authenticator::apply(socket& socket, const std::string& domain,
-    bool secure)
+    bool secure) NOEXCEPT
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
@@ -265,7 +265,7 @@ bool authenticator::apply(socket& socket, const std::string& domain,
         socket.set_authentication_domain(domain));
 }
 
-void authenticator::set_private_key(const sodium& private_key)
+void authenticator::set_private_key(const sodium& private_key) NOEXCEPT
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
@@ -275,7 +275,7 @@ void authenticator::set_private_key(const sodium& private_key)
     ///////////////////////////////////////////////////////////////////////////
 }
 
-bool authenticator::allowed_address(const std::string& ip_address) const
+bool authenticator::allowed_address(const std::string& ip_address) const NOEXCEPT
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
@@ -288,7 +288,7 @@ bool authenticator::allowed_address(const std::string& ip_address) const
     ///////////////////////////////////////////////////////////////////////////
 }
 
-bool authenticator::allowed_key(const hash_digest& public_key) const
+bool authenticator::allowed_key(const hash_digest& public_key) const NOEXCEPT
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
@@ -298,7 +298,7 @@ bool authenticator::allowed_key(const hash_digest& public_key) const
     ///////////////////////////////////////////////////////////////////////////
 }
 
-bool authenticator::allowed_weak(const std::string& domain) const
+bool authenticator::allowed_weak(const std::string& domain) const NOEXCEPT
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
@@ -308,7 +308,7 @@ bool authenticator::allowed_weak(const std::string& domain) const
     ///////////////////////////////////////////////////////////////////////////
 }
 
-void authenticator::allow(const hash_digest& public_key)
+void authenticator::allow(const hash_digest& public_key) NOEXCEPT
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
@@ -318,7 +318,7 @@ void authenticator::allow(const hash_digest& public_key)
     ///////////////////////////////////////////////////////////////////////////
 }
 
-void authenticator::allow(const authority& address)
+void authenticator::allow(const authority& address) NOEXCEPT
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
@@ -331,7 +331,7 @@ void authenticator::allow(const authority& address)
     ///////////////////////////////////////////////////////////////////////////
 }
 
-void authenticator::deny(const authority& address)
+void authenticator::deny(const authority& address) NOEXCEPT
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section

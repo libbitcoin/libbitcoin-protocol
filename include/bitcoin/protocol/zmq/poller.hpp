@@ -43,25 +43,25 @@ public:
     typedef std::shared_ptr<poller> ptr;
 
     /// Construct an empty poller (sockets must be added).
-    poller();
+    poller() NOEXCEPT;
 
     /// True if the timeout occurred.
-    bool expired() const;
+    bool expired() const NOEXCEPT;
 
     /// True if the connection is closed.
-    bool terminated() const;
+    bool terminated() const NOEXCEPT;
 
     /// Add a socket to be polled.
-    void add(socket& sock);
+    void add(socket& sock) NOEXCEPT;
 
     /// Remove all sockets from the poller.
-    void clear();
+    void clear() NOEXCEPT;
 
     /// Wait one second for any socket to receive.
-    identifiers wait();
+    identifiers wait() NOEXCEPT;
 
     /// Wait specified time for any socket to receive, -1 is forever.
-    identifiers wait(int32_t timeout_milliseconds);
+    identifiers wait(int32_t timeout_milliseconds) NOEXCEPT;
 
 private:
     typedef std::vector<zmq_pollitem> pollers;

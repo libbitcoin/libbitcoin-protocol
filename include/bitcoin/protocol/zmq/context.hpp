@@ -40,24 +40,24 @@ public:
     typedef std::shared_ptr<context> ptr;
 
     /// Construct a context.
-    context(bool started=true);
+    context(bool started=true) NOEXCEPT;
 
     /// Blocks until all child sockets are closed.
     /// Stops all child socket activity by closing the zeromq context.
-    virtual ~context();
+    virtual ~context() NOEXCEPT;
 
     /// True if the context is valid and started.
-    operator bool() const;
+    operator bool() const NOEXCEPT;
 
     /// The underlying zeromq context.
-    void* self();
+    void* self() NOEXCEPT;
 
     /// Create the zeromq context.
-    virtual bool start();
+    virtual bool start() NOEXCEPT;
 
     /// Blocks until all child sockets are closed.
     /// Stops all child socket activity by closing the zeromq context.
-    virtual bool stop();
+    virtual bool stop() NOEXCEPT;
 
 private:
     // This is thread safe
