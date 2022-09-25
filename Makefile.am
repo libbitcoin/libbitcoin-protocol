@@ -86,13 +86,16 @@ include_bitcoin_HEADERS = \
 
 include_bitcoin_protocoldir = ${includedir}/bitcoin/protocol
 include_bitcoin_protocol_HEADERS = \
+    include/bitcoin/protocol/boost.hpp \
     include/bitcoin/protocol/define.hpp \
+    include/bitcoin/protocol/network.hpp \
     include/bitcoin/protocol/settings.hpp \
     include/bitcoin/protocol/version.hpp
 
 include_bitcoin_protocol_configdir = ${includedir}/bitcoin/protocol/config
 include_bitcoin_protocol_config_HEADERS = \
     include/bitcoin/protocol/config/authority.hpp \
+    include/bitcoin/protocol/config/config.hpp \
     include/bitcoin/protocol/config/endpoint.hpp \
     include/bitcoin/protocol/config/sodium.hpp
 

@@ -903,10 +903,10 @@ build_all()
     build_from_tarball_boost "$BOOST_ARCHIVE" "$PARALLEL" "$BUILD_BOOST" "${BOOST_OPTIONS[@]}"
     create_from_github libbitcoin secp256k1 version8
     build_from_github secp256k1 "$PARALLEL" false "${SECP256K1_OPTIONS[@]}" $CUMULATIVE_FILTERED_ARGS
-    create_from_github libbitcoin libbitcoin-system master
+    create_from_github pmienk libbitcoin-system master
     build_from_github_cmake libbitcoin-system "$PARALLEL" false "${BITCOIN_SYSTEM_OPTIONS[@]}" $CUMULATIVE_FILTERED_ARGS_CMAKE "$@"
     if [[ ! ($CI == true) ]]; then
-        create_from_github libbitcoin libbitcoin-protocol master
+        create_from_github pmienk libbitcoin-protocol master
         build_from_github_cmake libbitcoin-protocol "$PARALLEL" true "${BITCOIN_PROTOCOL_OPTIONS[@]}" $CUMULATIVE_FILTERED_ARGS_CMAKE "$@"
     else
         push_directory "$PRESUMED_CI_PROJECT_PATH"
@@ -955,13 +955,10 @@ ICU_OPTIONS=(
 #------------------------------------------------------------------------------
 BOOST_OPTIONS=(
 "--with-chrono" \
-"--with-date_time" \
-"--with-filesystem" \
 "--with-iostreams" \
 "--with-json" \
 "--with-locale" \
 "--with-program_options" \
-"--with-regex" \
 "--with-system" \
 "--with-thread" \
 "--with-test")
