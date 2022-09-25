@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_SUITE(socket_tests)
 // There is no authenticator running, so this blocks despite configuration.
 BOOST_AUTO_TEST_CASE(socket__push_pull__brickhouse__blocked)
 {
-    zmq::certificate server_certificate;
+    const zmq::certificate server_certificate;
     BOOST_REQUIRE(server_certificate);
 
     zmq::context context;
@@ -41,13 +41,13 @@ BOOST_AUTO_TEST_CASE(socket__push_pull__brickhouse__blocked)
     BOOST_REQUIRE(pusher);
     BOOST_REQUIRE(pusher.set_private_key(server_certificate.private_key()));
     BOOST_REQUIRE(pusher.set_curve_server());
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(context, role::puller);
     BOOST_REQUIRE(puller);
     BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     BOOST_REQUIRE(puller.set_certificate({}));
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_FAILURE(puller);
@@ -61,11 +61,11 @@ BOOST_AUTO_TEST_CASE(socket__push_pull__grasslands__received)
 
     zmq::socket pusher(context, role::pusher);
     BOOST_REQUIRE(pusher);
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(context, role::puller);
     BOOST_REQUIRE(puller);
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
@@ -78,11 +78,11 @@ BOOST_AUTO_TEST_CASE(socket__push_pull__grasslands_connect_first__received)
 
     zmq::socket puller(context, role::puller);
     BOOST_REQUIRE(puller);
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket pusher(context, role::pusher);
     BOOST_REQUIRE(pusher);
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
     RECEIVE_MESSAGE(puller);
@@ -95,22 +95,22 @@ BOOST_AUTO_TEST_CASE(socket__push_pull__grasslands_disordered__received)
 
     zmq::socket pusher(context, role::pusher);
     BOOST_REQUIRE(pusher);
-    BC_REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(context, role::puller);
     BOOST_REQUIRE(puller);
-    BC_REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::message out;
     out.enqueue(TEST_MESSAGE "1");
-    BC_REQUIRE_SUCCESS(pusher.send(out));
+    REQUIRE_SUCCESS(pusher.send(out));
     out.enqueue(TEST_MESSAGE "2");
-    BC_REQUIRE_SUCCESS(pusher.send(out));
+    REQUIRE_SUCCESS(pusher.send(out));
 
     zmq::message in;
-    BC_REQUIRE_SUCCESS(puller.receive(in));
+    REQUIRE_SUCCESS(puller.receive(in));
     BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE "1");
-    BC_REQUIRE_SUCCESS(puller.receive(in));
+    REQUIRE_SUCCESS(puller.receive(in));
     BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE "2");
 }
 
@@ -122,11 +122,11 @@ BOOST_AUTO_TEST_CASE(socket__pair_pair__grasslands__received)
 
     zmq::socket server(context, role::pair);
     BOOST_REQUIRE(server);
-    BC_REQUIRE_SUCCESS(server.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(server.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket client(context, role::pair);
     BOOST_REQUIRE(client);
-    BC_REQUIRE_SUCCESS(client.connect({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(client.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(server);
     RECEIVE_MESSAGE(client);
@@ -139,11 +139,11 @@ BOOST_AUTO_TEST_CASE(socket__pair_pair__grasslands_connect_first__received)
 
     zmq::socket client(context, role::pair);
     BOOST_REQUIRE(client);
-    BC_REQUIRE_SUCCESS(client.connect({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(client.connect({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket server(context, role::pair);
     BOOST_REQUIRE(server);
-    BC_REQUIRE_SUCCESS(server.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(server.bind({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(server);
     RECEIVE_MESSAGE(client);
@@ -156,22 +156,22 @@ BOOST_AUTO_TEST_CASE(socket__pair_pair__grasslands_disordered__received)
 
     zmq::socket server(context, role::pair);
     BOOST_REQUIRE(server);
-    BC_REQUIRE_SUCCESS(server.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(server.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket client(context, role::pair);
     BOOST_REQUIRE(client);
-    BC_REQUIRE_SUCCESS(client.connect({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(client.connect({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::message out;
     out.enqueue(TEST_MESSAGE "1");
-    BC_REQUIRE_SUCCESS(client.send(out));
+    REQUIRE_SUCCESS(client.send(out));
     out.enqueue(TEST_MESSAGE "2");
-    BC_REQUIRE_SUCCESS(client.send(out));
+    REQUIRE_SUCCESS(client.send(out));
 
     zmq::message in;
-    BC_REQUIRE_SUCCESS(server.receive(in));
+    REQUIRE_SUCCESS(server.receive(in));
     BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE "1");
-    BC_REQUIRE_SUCCESS(server.receive(in));
+    REQUIRE_SUCCESS(server.receive(in));
     BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE "2");
 }
 
@@ -183,11 +183,11 @@ BOOST_AUTO_TEST_CASE(socket__req_rep__grasslands__received)
 
     zmq::socket replier(context, role::replier);
     BOOST_REQUIRE(replier);
-    BC_REQUIRE_SUCCESS(replier.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(replier.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket requester(context, role::requester);
     BOOST_REQUIRE(requester);
-    BC_REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(requester);
     RECEIVE_MESSAGE(replier);
@@ -200,11 +200,11 @@ BOOST_AUTO_TEST_CASE(socket__req_rep__grasslands_connect_first__received)
 
     zmq::socket requester(context, role::requester);
     BOOST_REQUIRE(requester);
-    BC_REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket replier(context, role::replier);
     BOOST_REQUIRE(replier);
-    BC_REQUIRE_SUCCESS(replier.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(replier.bind({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(requester);
     RECEIVE_MESSAGE(replier);
@@ -217,15 +217,15 @@ BOOST_AUTO_TEST_CASE(socket__req_rep__grasslands_disordered__bad_stream)
 
     zmq::socket replier(context, role::replier);
     BOOST_REQUIRE(replier);
-    BC_REQUIRE_SUCCESS(replier.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(replier.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket requester(context, role::requester);
     BOOST_REQUIRE(requester);
-    BC_REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::message out;
     out.enqueue(TEST_MESSAGE);
-    BC_REQUIRE_SUCCESS(requester.send(out));
+    REQUIRE_SUCCESS(requester.send(out));
     out.enqueue(TEST_MESSAGE);
     BOOST_REQUIRE_EQUAL(requester.send(out), zmq::error::socket_state);
 }
@@ -238,16 +238,16 @@ BOOST_AUTO_TEST_CASE(socket__req_router__grasslands__received)
 
     zmq::socket router(context, role::router);
     BOOST_REQUIRE(router);
-    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket requester(context, role::requester);
     BOOST_REQUIRE(requester);
-    BC_REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(requester);
 
     zmq::message in;
-    BC_REQUIRE_SUCCESS(router.receive(in));
+    REQUIRE_SUCCESS(router.receive(in));
     BOOST_REQUIRE_EQUAL(in.size(), 3u);
     BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_ROUTE_SIZE);
     BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
@@ -261,16 +261,16 @@ BOOST_AUTO_TEST_CASE(socket__req_router__grasslands_connect_first__received)
 
     zmq::socket requester(context, role::requester);
     BOOST_REQUIRE(requester);
-    BC_REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket router(context, role::router);
     BOOST_REQUIRE(router);
-    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(requester);
 
     zmq::message in;
-    BC_REQUIRE_SUCCESS(router.receive(in));
+    REQUIRE_SUCCESS(router.receive(in));
     BOOST_REQUIRE_EQUAL(in.size(), 3u);
     BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_ROUTE_SIZE);
     BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
@@ -284,15 +284,15 @@ BOOST_AUTO_TEST_CASE(socket__req_router__grasslands_disordered__bad_stream)
 
     zmq::socket router(context, role::router);
     BOOST_REQUIRE(router);
-    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket requester(context, role::requester);
     BOOST_REQUIRE(requester);
-    BC_REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::message out;
     out.enqueue(TEST_MESSAGE);
-    BC_REQUIRE_SUCCESS(requester.send(out));
+    REQUIRE_SUCCESS(requester.send(out));
     out.enqueue(TEST_MESSAGE);
     BOOST_REQUIRE_EQUAL(requester.send(out), zmq::error::socket_state);
 }
@@ -305,11 +305,11 @@ BOOST_AUTO_TEST_CASE(socket__req_dealer__grasslands__bad_stream)
 
     zmq::socket replier(context, role::replier);
     BOOST_REQUIRE(replier);
-    BC_REQUIRE_SUCCESS(replier.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(replier.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket dealer(context, role::dealer);
     BOOST_REQUIRE(dealer);
-    BC_REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
 
     // The replier can only reply on an existing route.
     zmq::message out;
@@ -325,11 +325,11 @@ BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_synchronous__missed)
 
     zmq::socket publisher(context, role::publisher);
     BOOST_REQUIRE(publisher);
-    BC_REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket subscriber(context, role::subscriber);
     BOOST_REQUIRE(subscriber);
-    BC_REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
 
     // Because pub-sub is asynchronous, the receive misses the send.
     SEND_MESSAGE(publisher);
@@ -343,11 +343,11 @@ BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_synchronous_connect_first__miss
 
     zmq::socket subscriber(context, role::subscriber);
     BOOST_REQUIRE(subscriber);
-    BC_REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket publisher(context, role::publisher);
     BOOST_REQUIRE(publisher);
-    BC_REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     // The receiver is expected to miss initial sends even if already connected.
     SEND_MESSAGE(publisher);
@@ -362,14 +362,14 @@ BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_asynchronous__received)
 
     zmq::socket publisher(context, role::publisher);
     BOOST_REQUIRE(publisher);
-    BC_REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     std::promise<bool> received;
     simple_thread subscriber_thread([&]()
     {
         zmq::socket subscriber(context, role::subscriber);
         BOOST_REQUIRE(subscriber);
-        BC_REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
 
         RECEIVE_MESSAGE(subscriber);
         received.set_value(true);
@@ -389,7 +389,7 @@ BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_asynchronous_connect_first__rec
     {
         zmq::socket subscriber(context, role::subscriber);
         BOOST_REQUIRE(subscriber);
-        BC_REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
 
         RECEIVE_MESSAGE(subscriber);
         received.set_value(true);
@@ -397,7 +397,7 @@ BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_asynchronous_connect_first__rec
 
     zmq::socket publisher(context, role::publisher);
     BOOST_REQUIRE(publisher);
-    BC_REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGES_UNTIL(publisher, received);
 }
@@ -414,7 +414,7 @@ BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_asynchronous__no_subscription)
     {
         zmq::socket publisher(context, role::publisher);
         BOOST_REQUIRE(publisher);
-        BC_REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
         SEND_MESSAGES_UNTIL(publisher, received); //begin sending now, needs own thread.
     });
 
@@ -426,7 +426,7 @@ BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_asynchronous__no_subscription)
         data_chunk subscribe_all;
         BOOST_REQUIRE(subscriber.set_unsubscription(subscribe_all));
 
-        BC_REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
 
         RECEIVE_FAILURE(subscriber);
         received.set_value(true);
@@ -445,7 +445,7 @@ BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_asynchronous__hello_subscriptio
     {
         zmq::socket publisher(context, role::publisher);
         BOOST_REQUIRE(publisher);
-        BC_REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
         SEND_MESSAGES_UNTIL(publisher, received);
     });
 
@@ -460,7 +460,7 @@ BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_asynchronous__hello_subscriptio
         std::string topic = TEST_TOPIC;
         BOOST_REQUIRE(subscriber.set_subscription(to_chunk(topic)));
 
-        BC_REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
 
         RECEIVE_MESSAGE(subscriber);
         received.set_value(true);
@@ -478,7 +478,7 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__grasslands_two_threads__subscribed)
     {
         zmq::socket publisher(context, role::publisher);
         BOOST_REQUIRE(publisher);
-        BC_REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
 
         SEND_MESSAGES_UNTIL(publisher, received);
     });
@@ -487,7 +487,7 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__grasslands_two_threads__subscribed)
     {
         zmq::socket subscriber(context, role::subscriber);
         BOOST_REQUIRE(subscriber);
-        BC_REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
 
         RECEIVE_MESSAGE(subscriber);
         received.set_value(true);
@@ -508,7 +508,7 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__decaf__subscribed)
     {
         zmq::socket publisher(context, role::publisher);
         BOOST_REQUIRE(publisher);
-        BC_REQUIRE_SUCCESS(publisher.bind({ TEST_INPROC_ENDPOINT }));
+        REQUIRE_SUCCESS(publisher.bind({ TEST_INPROC_ENDPOINT }));
 
         SEND_MESSAGES_UNTIL(publisher, received);
         publisher.stop();
@@ -519,7 +519,7 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__decaf__subscribed)
     {
         zmq::socket subscriber(context, role::subscriber);
         BOOST_REQUIRE(subscriber);
-        BC_REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
 
         RECEIVE_MESSAGE(subscriber);
         received.set_value(true);
@@ -530,11 +530,11 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__decaf__subscribed)
     // So this xsubscriber.connect must not precede spawn of publisher_thread.
     zmq::socket xsubscriber(context, role::extended_subscriber);
     BOOST_REQUIRE(xsubscriber);
-    BC_REQUIRE_SUCCESS(xsubscriber.connect({ TEST_INPROC_ENDPOINT }));
+    REQUIRE_SUCCESS(xsubscriber.connect({ TEST_INPROC_ENDPOINT }));
 
     zmq::socket xpublisher(context, role::extended_publisher);
     BOOST_REQUIRE(xpublisher);
-    BC_REQUIRE_SUCCESS(xpublisher.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(xpublisher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     // The proxy returns when the current context is closed.
     // There is no difference between frontend and backend (symmetrical).
@@ -561,7 +561,7 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__cappucino__subscribed)
     {
         zmq::socket publisher(context, role::publisher);
         BOOST_REQUIRE(publisher);
-        BC_REQUIRE_SUCCESS(publisher.connect({ TEST_INPROC_ENDPOINT }));
+        REQUIRE_SUCCESS(publisher.connect({ TEST_INPROC_ENDPOINT }));
 
         SEND_MESSAGES_UNTIL(publisher, received);
         publisher.stop();
@@ -572,7 +572,7 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__cappucino__subscribed)
     {
         zmq::socket subscriber(context, role::subscriber);
         BOOST_REQUIRE(subscriber);
-        BC_REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
 
         RECEIVE_MESSAGE(subscriber);
         received.set_value(true);
@@ -582,11 +582,11 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__cappucino__subscribed)
 
     zmq::socket xpublisher(context, role::extended_publisher);
     BOOST_REQUIRE(xpublisher);
-    BC_REQUIRE_SUCCESS(xpublisher.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(xpublisher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket xsubscriber(context, role::extended_subscriber);
     BOOST_REQUIRE(xsubscriber);
-    BC_REQUIRE_SUCCESS(xsubscriber.bind({ TEST_INPROC_ENDPOINT }));
+    REQUIRE_SUCCESS(xsubscriber.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(xsubscriber.self(), xpublisher.self(), nullptr);
     xsubscriber.stop();
@@ -603,7 +603,7 @@ BOOST_AUTO_TEST_CASE(socket__req_router_dealer_rep__synchronous_broker__replied)
     {
         zmq::socket replier(context, role::replier);
         BOOST_REQUIRE(replier);
-        BC_REQUIRE_SUCCESS(replier.connect({ TEST_INPROC_ENDPOINT }));
+        REQUIRE_SUCCESS(replier.connect({ TEST_INPROC_ENDPOINT }));
 
         // Because REP is ordered the message routes with no identity.
         RECEIVE_MESSAGE(replier);
@@ -614,7 +614,7 @@ BOOST_AUTO_TEST_CASE(socket__req_router_dealer_rep__synchronous_broker__replied)
     {
         zmq::socket requester(context, role::requester);
         BOOST_REQUIRE(requester);
-        BC_REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
 
         // Because REQ is ordered the message routes with no identity.
         SEND_MESSAGE(requester);
@@ -625,11 +625,11 @@ BOOST_AUTO_TEST_CASE(socket__req_router_dealer_rep__synchronous_broker__replied)
 
     zmq::socket router(context, role::router);
     BOOST_REQUIRE(router);
-    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket dealer(context, role::dealer);
     BOOST_REQUIRE(dealer);
-    BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
+    REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
     router.stop();
@@ -647,7 +647,7 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_rep__front_asynchronous_broker
     {
         zmq::socket replier(context, role::replier);
         BOOST_REQUIRE(replier);
-        BC_REQUIRE_SUCCESS(replier.connect({ TEST_INPROC_ENDPOINT }));
+        REQUIRE_SUCCESS(replier.connect({ TEST_INPROC_ENDPOINT }));
 
         RECEIVE_MESSAGE(replier);
         SEND_MESSAGE(replier);
@@ -657,15 +657,15 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_rep__front_asynchronous_broker
     {
         zmq::socket dealer(context, role::dealer);
         BOOST_REQUIRE(dealer);
-        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
 
         zmq::message out;
         out.enqueue();
         out.enqueue(TEST_MESSAGE);
-        BC_REQUIRE_SUCCESS(dealer.send(out));
+        REQUIRE_SUCCESS(dealer.send(out));
 
         zmq::message in;
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
 
@@ -675,11 +675,11 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_rep__front_asynchronous_broker
 
     zmq::socket router(context, role::router);
     BOOST_REQUIRE(router);
-    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket dealer(context, role::dealer);
     BOOST_REQUIRE(dealer);
-    BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
+    REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
     router.stop();
@@ -696,7 +696,7 @@ BOOST_AUTO_TEST_CASE(socket__req_router_dealer_router__synchronous_broker__route
     {
         zmq::socket router(context, role::router);
         BOOST_REQUIRE(router);
-        BC_REQUIRE_SUCCESS(router.connect({ TEST_INPROC_ENDPOINT }));
+        REQUIRE_SUCCESS(router.connect({ TEST_INPROC_ENDPOINT }));
 
         // Read the enveloped request.
         // [id-dealer] from router2 for response routing (to dealer)
@@ -704,7 +704,7 @@ BOOST_AUTO_TEST_CASE(socket__req_router_dealer_router__synchronous_broker__route
         // [delimiter] from req for data isolation
         // [data     ] from req
         zmq::message in;
-        BC_REQUIRE_SUCCESS(router.receive(in));
+        REQUIRE_SUCCESS(router.receive(in));
         const auto id1 = in.dequeue_data();
         const auto id2 = in.dequeue_data();
         BOOST_REQUIRE_EQUAL(id1.size(), MESSAGE_ROUTE_SIZE);
@@ -722,14 +722,14 @@ BOOST_AUTO_TEST_CASE(socket__req_router_dealer_router__synchronous_broker__route
         out.enqueue(id2);
         out.enqueue();
         out.enqueue(TEST_MESSAGE);
-        BC_REQUIRE_SUCCESS(router.send(out));
+        REQUIRE_SUCCESS(router.send(out));
     });
 
     simple_thread client_thread([&]()
     {
         zmq::socket requester(context, role::requester);
         BOOST_REQUIRE(requester);
-        BC_REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(requester.connect({ TEST_PUBLIC_ENDPOINT }));
 
         // The REQ always adds/removes delimiter (only).
         // [delimiter] from req for data isolation
@@ -742,11 +742,11 @@ BOOST_AUTO_TEST_CASE(socket__req_router_dealer_router__synchronous_broker__route
 
     zmq::socket router(context, role::router);
     BOOST_REQUIRE(router);
-    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket dealer(context, role::dealer);
     BOOST_REQUIRE(dealer);
-    BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
+    REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
     router.stop();
@@ -763,7 +763,7 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_router__front_asynchronous_bro
     {
         zmq::socket router(context, role::router);
         BOOST_REQUIRE(router);
-        BC_REQUIRE_SUCCESS(router.connect({ TEST_INPROC_ENDPOINT }));
+        REQUIRE_SUCCESS(router.connect({ TEST_INPROC_ENDPOINT }));
 
         // Read the enveloped request.
         // [id-dealer] from router2 for response routing (to dealer)
@@ -771,7 +771,7 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_router__front_asynchronous_bro
         // [delimiter] from req for data isolation
         // [data     ] passed to req
         zmq::message in;
-        BC_REQUIRE_SUCCESS(router.receive(in));
+        REQUIRE_SUCCESS(router.receive(in));
         const auto id1 = in.dequeue_data();
         const auto id2 = in.dequeue_data();
         BOOST_REQUIRE_EQUAL(id1.size(), MESSAGE_ROUTE_SIZE);
@@ -789,14 +789,14 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_router__front_asynchronous_bro
         out.enqueue(id2);
         out.enqueue();
         out.enqueue(TEST_MESSAGE);
-        BC_REQUIRE_SUCCESS(router.send(out));
+        REQUIRE_SUCCESS(router.send(out));
     });
 
     simple_thread client_thread([&]()
     {
         zmq::socket dealer(context, role::dealer);
         BOOST_REQUIRE(dealer);
-        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
 
         // Create the enveloped request (emulate REQ).
         // [delimiter] from req for data isolation
@@ -804,13 +804,13 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_router__front_asynchronous_bro
         zmq::message out;
         out.enqueue();
         out.enqueue(TEST_MESSAGE);
-        BC_REQUIRE_SUCCESS(dealer.send(out));
+        REQUIRE_SUCCESS(dealer.send(out));
 
         // Read the enveloped request (emulate REQ).
         // [delimiter] from req for data isolation
         // [data     ] from req
         zmq::message in;
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
 
@@ -820,11 +820,11 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_router__front_asynchronous_bro
 
     zmq::socket router(context, role::router);
     BOOST_REQUIRE(router);
-    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket dealer(context, role::dealer);
     BOOST_REQUIRE(dealer);
-    BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
+    REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
     router.stop();
@@ -843,10 +843,10 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_router__front_asynchronous_bro
     {
         zmq::socket router(context, role::router);
         BOOST_REQUIRE(router);
-        BC_REQUIRE_SUCCESS(router.connect({ TEST_INPROC_ENDPOINT }));
+        REQUIRE_SUCCESS(router.connect({ TEST_INPROC_ENDPOINT }));
 
         zmq::message in;
-        BC_REQUIRE_SUCCESS(router.receive(in));
+        REQUIRE_SUCCESS(router.receive(in));
         const auto id1 = in.dequeue_data();
         const auto id2 = in.dequeue_data();
         BOOST_REQUIRE_EQUAL(id1.size(), MESSAGE_ROUTE_SIZE);
@@ -859,22 +859,22 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_router__front_asynchronous_bro
         out.enqueue(id2);
         ////out.enqueue();
         out.enqueue(TEST_MESSAGE);
-        BC_REQUIRE_SUCCESS(router.send(out));
+        REQUIRE_SUCCESS(router.send(out));
     });
 
     simple_thread client_thread([&]()
     {
         zmq::socket dealer(context, role::dealer);
         BOOST_REQUIRE(dealer);
-        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
 
         zmq::message out;
         ////out.enqueue();
         out.enqueue(TEST_MESSAGE);
-        BC_REQUIRE_SUCCESS(dealer.send(out));
+        REQUIRE_SUCCESS(dealer.send(out));
 
         zmq::message in;
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         ////BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
 
@@ -884,11 +884,11 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_router__front_asynchronous_bro
 
     zmq::socket router(context, role::router);
     BOOST_REQUIRE(router);
-    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket dealer(context, role::dealer);
     BOOST_REQUIRE(dealer);
-    BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
+    REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
     router.stop();
@@ -905,14 +905,14 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer__asynchronous_broker__n
     {
         zmq::socket dealer(context, role::dealer);
         BOOST_REQUIRE(dealer);
-        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
+        REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
 
         // Read the enveloped request.
         // [id-req   ] from router for response routing (to req)
         // [delimiter] from req for data isolation
         // [data     ] passed to req
         zmq::message in;
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         const auto id = in.dequeue_data();
         BOOST_REQUIRE_EQUAL(id.size(), MESSAGE_ROUTE_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
@@ -926,14 +926,14 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer__asynchronous_broker__n
         out.enqueue(id);
         out.enqueue();
         out.enqueue(TEST_MESSAGE);
-        BC_REQUIRE_SUCCESS(dealer.send(out));
+        REQUIRE_SUCCESS(dealer.send(out));
     });
 
     simple_thread client_thread([&]()
     {
         zmq::socket dealer(context, role::dealer);
         BOOST_REQUIRE(dealer);
-        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
 
         // Create the enveloped request (emulate REQ).
         // [delimiter] from req for data isolation
@@ -941,13 +941,13 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer__asynchronous_broker__n
         zmq::message out;
         out.enqueue();
         out.enqueue(TEST_MESSAGE);
-        BC_REQUIRE_SUCCESS(dealer.send(out));
+        REQUIRE_SUCCESS(dealer.send(out));
 
         // Read the enveloped request (emulate REQ).
         // [delimiter] from req for data isolation
         // [data     ] from req
         zmq::message in;
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
 
@@ -957,11 +957,11 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer__asynchronous_broker__n
 
     zmq::socket router(context, role::router);
     BOOST_REQUIRE(router);
-    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket dealer(context, role::dealer);
     BOOST_REQUIRE(dealer);
-    BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
+    REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
     router.stop();
@@ -981,10 +981,10 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router__asynchronou
     {
         zmq::socket router(context, role::router);
         BOOST_REQUIRE(router);
-        BC_REQUIRE_SUCCESS(router.connect({ TEST_INPROC_ENDPOINT }));
+        REQUIRE_SUCCESS(router.connect({ TEST_INPROC_ENDPOINT }));
 
         zmq::message in;
-        BC_REQUIRE_SUCCESS(router.receive(in));
+        REQUIRE_SUCCESS(router.receive(in));
         const auto id1 = in.dequeue_data();
         const auto id2 = in.dequeue_data();
         BOOST_REQUIRE_EQUAL(id1.size(), MESSAGE_ROUTE_SIZE);
@@ -1005,27 +1005,27 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router__asynchronou
         subscription.set_value(notification);
 
         // Send the response (in a race with the two notifications).
-        BC_REQUIRE_SUCCESS(router.send(out));
+        REQUIRE_SUCCESS(router.send(out));
     });
 
     simple_thread notification_thread([&]()
     {
         zmq::socket dealer(context, role::dealer);
         BOOST_REQUIRE(dealer);
-        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
+        REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
 
         // Wait on subscription and then send the notification message twice.
         auto notification1 = subscription.get_future().get();
         auto notification2 = notification1;
-        BC_REQUIRE_SUCCESS(dealer.send(notification1));
-        BC_REQUIRE_SUCCESS(dealer.send(notification2));
+        REQUIRE_SUCCESS(dealer.send(notification1));
+        REQUIRE_SUCCESS(dealer.send(notification2));
     });
 
     simple_thread client_thread([&]()
     {
         zmq::socket dealer(context, role::dealer);
         BOOST_REQUIRE(dealer);
-        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
 
         // Send the initial request (simulating a subscription).
         // Create the enveloped request (emulate REQ).
@@ -1034,22 +1034,22 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router__asynchronou
         zmq::message out;
         out.enqueue();
         out.enqueue(TEST_MESSAGE);
-        BC_REQUIRE_SUCCESS(dealer.send(out));
+        REQUIRE_SUCCESS(dealer.send(out));
 
         // Three inbound messages, one subscription response, two notifications.
         // Read the enveloped request (emulate REQ).
         // [delimiter] from req for data isolation
         // [data     ] from req
         zmq::message in;
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
 
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
 
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
 
@@ -1059,11 +1059,11 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router__asynchronou
 
     zmq::socket router(context, role::router);
     BOOST_REQUIRE(router);
-    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket dealer(context, role::dealer);
     BOOST_REQUIRE(dealer);
-    BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
+    REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
     router.stop();
@@ -1084,10 +1084,10 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router_undelimited_
     {
         zmq::socket router(context, role::router);
         BOOST_REQUIRE(router);
-        BC_REQUIRE_SUCCESS(router.connect({ TEST_INPROC_ENDPOINT }));
+        REQUIRE_SUCCESS(router.connect({ TEST_INPROC_ENDPOINT }));
 
         zmq::message in;
-        BC_REQUIRE_SUCCESS(router.receive(in));
+        REQUIRE_SUCCESS(router.receive(in));
         const auto id1 = in.dequeue_data();
         const auto id2 = in.dequeue_data();
         BOOST_REQUIRE_EQUAL(id1.size(), MESSAGE_ROUTE_SIZE);
@@ -1107,43 +1107,43 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router_undelimited_
         notification.dequeue();
         subscription.set_value(notification);
 
-        BC_REQUIRE_SUCCESS(router.send(out));
+        REQUIRE_SUCCESS(router.send(out));
     });
 
     simple_thread notification_thread([&]()
     {
         zmq::socket dealer(context, role::dealer);
         BOOST_REQUIRE(dealer);
-        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
+        REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
 
         // Wait on subscription and then send the notification message twice.
         auto notification1 = subscription.get_future().get();
         auto notification2 = notification1;
-        BC_REQUIRE_SUCCESS(dealer.send(notification1));
-        BC_REQUIRE_SUCCESS(dealer.send(notification2));
+        REQUIRE_SUCCESS(dealer.send(notification1));
+        REQUIRE_SUCCESS(dealer.send(notification2));
     });
 
     simple_thread client_thread([&]()
     {
         zmq::socket dealer(context, role::dealer);
         BOOST_REQUIRE(dealer);
-        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
 
         zmq::message out;
         ////out.enqueue();
         out.enqueue(TEST_MESSAGE);
-        BC_REQUIRE_SUCCESS(dealer.send(out));
+        REQUIRE_SUCCESS(dealer.send(out));
 
         zmq::message in;
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         ////BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
 
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         ////BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
 
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         ////BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
 
@@ -1153,11 +1153,11 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router_undelimited_
 
     zmq::socket router(context, role::router);
     BOOST_REQUIRE(router);
-    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket dealer(context, role::dealer);
     BOOST_REQUIRE(dealer);
-    BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
+    REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
     router.stop();
@@ -1176,10 +1176,10 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_dealer__asynchronou
     {
         zmq::socket dealer(context, role::dealer);
         BOOST_REQUIRE(dealer);
-        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
+        REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
 
         zmq::message in;
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         const auto id = in.dequeue_data();
         BOOST_REQUIRE_EQUAL(id.size(), MESSAGE_ROUTE_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
@@ -1190,42 +1190,42 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_dealer__asynchronou
         out.enqueue();
         out.enqueue(TEST_MESSAGE);
         subscription.set_value(out);
-        BC_REQUIRE_SUCCESS(dealer.send(out));
+        REQUIRE_SUCCESS(dealer.send(out));
     });
 
     simple_thread notification_thread([&]()
     {
         zmq::socket dealer(context, role::dealer);
         BOOST_REQUIRE(dealer);
-        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
+        REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
 
         auto notification1 = subscription.get_future().get();
         auto notification2 = notification1;
-        BC_REQUIRE_SUCCESS(dealer.send(notification1));
-        BC_REQUIRE_SUCCESS(dealer.send(notification2));
+        REQUIRE_SUCCESS(dealer.send(notification1));
+        REQUIRE_SUCCESS(dealer.send(notification2));
     });
 
     simple_thread client_thread([&]()
     {
         zmq::socket dealer(context, role::dealer);
         BOOST_REQUIRE(dealer);
-        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
 
         zmq::message out;
         out.enqueue();
         out.enqueue(TEST_MESSAGE);
-        BC_REQUIRE_SUCCESS(dealer.send(out));
+        REQUIRE_SUCCESS(dealer.send(out));
 
         zmq::message in;
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
 
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
 
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
 
@@ -1235,11 +1235,11 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_dealer__asynchronou
 
     zmq::socket router(context, role::router);
     BOOST_REQUIRE(router);
-    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket dealer(context, role::dealer);
     BOOST_REQUIRE(dealer);
-    BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
+    REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
     router.stop();
@@ -1258,10 +1258,10 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_dealer_undelimited_
     {
         zmq::socket dealer(context, role::dealer);
         BOOST_REQUIRE(dealer);
-        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
+        REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
 
         zmq::message in;
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         const auto id = in.dequeue_data();
         BOOST_REQUIRE_EQUAL(id.size(), MESSAGE_ROUTE_SIZE);
         ////BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
@@ -1272,42 +1272,42 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_dealer_undelimited_
         ////out.enqueue();
         out.enqueue(TEST_MESSAGE);
         subscription.set_value(out);
-        BC_REQUIRE_SUCCESS(dealer.send(out));
+        REQUIRE_SUCCESS(dealer.send(out));
     });
 
     simple_thread notification_thread([&]()
     {
         zmq::socket dealer(context, role::dealer);
         BOOST_REQUIRE(dealer);
-        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
+        REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
 
         auto notification1 = subscription.get_future().get();
         auto notification2 = notification1;
-        BC_REQUIRE_SUCCESS(dealer.send(notification1));
-        BC_REQUIRE_SUCCESS(dealer.send(notification2));
+        REQUIRE_SUCCESS(dealer.send(notification1));
+        REQUIRE_SUCCESS(dealer.send(notification2));
     });
 
     simple_thread client_thread([&]()
     {
         zmq::socket dealer(context, role::dealer);
         BOOST_REQUIRE(dealer);
-        BC_REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
+        REQUIRE_SUCCESS(dealer.connect({ TEST_PUBLIC_ENDPOINT }));
 
         zmq::message out;
         ////out.enqueue();
         out.enqueue(TEST_MESSAGE);
-        BC_REQUIRE_SUCCESS(dealer.send(out));
+        REQUIRE_SUCCESS(dealer.send(out));
 
         zmq::message in;
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         ////BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
 
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         ////BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
 
-        BC_REQUIRE_SUCCESS(dealer.receive(in));
+        REQUIRE_SUCCESS(dealer.receive(in));
         ////BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
 
@@ -1317,11 +1317,11 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_dealer_undelimited_
 
     zmq::socket router(context, role::router);
     BOOST_REQUIRE(router);
-    BC_REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
+    REQUIRE_SUCCESS(router.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket dealer(context, role::dealer);
     BOOST_REQUIRE(dealer);
-    BC_REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
+    REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
     router.stop();

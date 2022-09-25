@@ -35,17 +35,17 @@
 #define MESSAGE_ROUTE_SIZE size_t(5)
 #define MESSAGE_DELIMITER_SIZE size_t(0)
 
-#define BC_REQUIRE_SUCCESS(value__) \
+#define REQUIRE_SUCCESS(value__) \
     BOOST_REQUIRE_EQUAL(value__, zmq::error::success)
 
 #define SEND_MESSAGE(socket__) \
     zmq::message out__; \
     out__.enqueue(TEST_MESSAGE); \
-    BC_REQUIRE_SUCCESS(socket__.send(out__))
+    REQUIRE_SUCCESS(socket__.send(out__))
 
 #define RECEIVE_MESSAGE(socket__) \
     zmq::message in__; \
-    BC_REQUIRE_SUCCESS(socket__.receive(in__)); \
+    REQUIRE_SUCCESS(socket__.receive(in__)); \
     BOOST_REQUIRE_EQUAL(in__.dequeue_text(), TEST_MESSAGE)
 
 #define RECEIVE_FAILURE(socket__) \
