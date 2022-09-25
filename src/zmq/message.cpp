@@ -33,27 +33,27 @@ using namespace bc::system;
 
 void message::enqueue() NOEXCEPT
 {
-    queue_.emplace(data_chunk{});
+    queue_.emplace();
 }
 
 void message::enqueue(data_chunk&& value) NOEXCEPT
 {
-    queue_.emplace(std::move(value));
+    queue_.push(std::move(value));
 }
 
 void message::enqueue(const data_chunk& value) NOEXCEPT
 {
-    queue_.emplace(value);
+    queue_.push(value);
 }
 
 void message::enqueue(const std::string& value) NOEXCEPT
 {
-    queue_.emplace(to_chunk(value));
+    queue_.push(to_chunk(value));
 }
 
 void message::enqueue(const address& value) NOEXCEPT
 {
-    queue_.emplace(to_chunk(value));
+    queue_.push(to_chunk(value));
 }
 
 bool message::dequeue() NOEXCEPT
@@ -135,17 +135,17 @@ std::string message::dequeue_text() NOEXCEPT
     if (queue_.empty())
         return {};
 
-    const auto& front = queue_.front();
-    auto text = std::string(front.begin(), front.end());
-    text += "\0";
+    auto text = to_string(queue_.front());
     queue_.pop();
     return text;
 }
 
 void message::clear() NOEXCEPT
 {
-    while (!queue_.empty())
-        queue_.pop();
+    queue_ = {};
+
+    ////while (!queue_.empty())
+    ////    queue_.pop();
 }
 
 bool message::empty() const NOEXCEPT
@@ -165,9 +165,8 @@ error::code message::send(socket& socket) NOEXCEPT
 
     while (!queue_.empty())
     {
-        frame frame(queue_.front());
+        const auto ec = frame(queue_.front()).send(socket, is_zero(--count));
         queue_.pop();
-        const auto ec = frame.send(socket, --count == 0);
 
         if (ec)
             return ec;
@@ -190,7 +189,7 @@ error::code message::receive(socket& socket) NOEXCEPT
         if (ec)
             return ec;
 
-        queue_.emplace(frame.payload());
+        queue_.push(frame.payload());
         done = !frame.more();
     }
 

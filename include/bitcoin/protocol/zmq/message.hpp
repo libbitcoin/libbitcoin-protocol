@@ -35,7 +35,7 @@ class BCP_API message
 {
 public:
     /// A zeromq route identifier is always this size.
-    static const size_t address_size = 5;
+    static constexpr size_t address_size = 5;
 
     /// An identifier for message routing.
     typedef system::data_array<address_size> address;

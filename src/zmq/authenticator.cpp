@@ -225,7 +225,7 @@ void authenticator::work() NOEXCEPT
 
         // This is returned to the zeromq ZAP dispatcher, not the caller.
         BC_DEBUG_ONLY(ec =) replier.send(response);
-        BC_ASSERT(ec == error::success || ec == error::socket_state);
+        BC_ASSERT(ec == error::success || ec == error::context_terminated);
     }
 
     finished(replier.stop());

@@ -28,7 +28,7 @@
 namespace libbitcoin {
 namespace protocol {
 
-static const ip_address null_ip_address
+constexpr ip_address null_ip_address
 {
     {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -40,14 +40,17 @@ static const ip_address null_ip_address
 // returns: [2001:db8::2] or [2001:db8::2] or 1.2.240.1
 static std::string to_host_name(const std::string& host) NOEXCEPT
 {
-    if (host.find(":") == std::string::npos || host.find("[") == 0)
+    if (host.find(":") == std::string::npos || is_zero(host.find("[")))
         return host;
 
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     return (boost::format("[%1%]") % host).str();
+    BC_POP_WARNING()
 }
 
 // host: [2001:db8::2] or 2001:db8::2 or 1.2.240.1
-static std::string to_text(const std::string& host, uint16_t port) NOEXCEPT
+static std::string to_text(const std::string& host,
+    uint16_t port) NOEXCEPT(false)
 {
     std::stringstream authority;
     authority << to_host_name(host);
@@ -67,24 +70,29 @@ static ipv6 to_ipv6(const ipv4& ipv4_address) NOEXCEPT
     boost::system::error_code ignore;
 
     // Create an IPv6 mapped IPv4 address via serialization.
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     const auto ipv6 = to_ipv6(ipv4_address.to_string());
     return ipv6::from_string(ipv6, ignore);
+    BC_POP_WARNING()
 }
 
-static ipv6 to_ipv6(const boost::asio::ip::address& ip_address) NOEXCEPT
+static ipv6 to_ipv6(const ip& ip_address) NOEXCEPT
 {
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
+
     if (ip_address.is_v6())
         return ip_address.to_v6();
 
-    BC_ASSERT_MSG(ip_address.is_v4(),
-        "The address must be either IPv4 or IPv6.");
-
+    BC_ASSERT_MSG(ip_address.is_v4(), "Address must be either IPv4 or IPv6.");
     return to_ipv6(ip_address.to_v4());
+
+    BC_POP_WARNING()
 }
 
-static std::string to_ipv4_hostname(
-    const boost::asio::ip::address& ip_address) NOEXCEPT
+static std::string to_ipv4_hostname(const ip& ip_address) NOEXCEPT
 {
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
+
     // C++11: use std::regex.
     // std::regex requires gcc 4.9, so we are using boost::regex for now.
     static const boost::regex regular("^::ffff:([0-9\\.]+)$");
@@ -92,39 +100,47 @@ static std::string to_ipv4_hostname(
     const auto address = ip_address.to_string();
     boost::sregex_iterator it(address.begin(), address.end(), regular), end;
     if (it == end)
-        return "";
+        return {};
 
     const auto& match = *it;
     return match[1];
+
+    BC_POP_WARNING()
 }
 
 static std::string to_ipv6_hostname(
     const boost::asio::ip::address& ip_address) NOEXCEPT
 {
     // IPv6 URLs use a bracketed IPv6 address, see rfc2732.
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     return (boost::format("[%1%]") % to_ipv6(ip_address)).str();
+    BC_POP_WARNING()
 }
 
+BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
 authority::authority() NOEXCEPT
   : ip_(null_ip_address), port_(0)
+BC_POP_WARNING()
 {
 }
 
 // authority: [2001:db8::2]:port or 1.2.240.1:port
 authority::authority(const std::string& authority) NOEXCEPT(false)
+  : authority()
 {
     std::stringstream(authority) >> *this;
 }
 
 // host: [2001:db8::2] or 2001:db8::2 or 1.2.240.1
-authority::authority(const std::string& host, uint16_t port) NOEXCEPT (false)
+authority::authority(const std::string& host, uint16_t port) NOEXCEPT(false)
+  : authority()
 {
     std::stringstream(to_text(host, port)) >> *this;
 }
 
 authority::operator bool() const NOEXCEPT
 {
-    return port_ != 0;
+    return !is_zero(port_);
 }
 
 const ipv6& authority::ip() const NOEXCEPT
@@ -147,7 +163,10 @@ std::string authority::to_string() const NOEXCEPT
 {
     std::stringstream value;
     value << *this;
+
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     return value.str();
+    BC_POP_WARNING()
 }
 
 std::istream& operator>>(std::istream& input,
@@ -187,7 +206,10 @@ std::istream& operator>>(std::istream& input,
 std::ostream& operator<<(std::ostream& output,
     const authority& argument) NOEXCEPT
 {
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     output << to_text(argument.to_hostname(), argument.port());
+    BC_POP_WARNING()
+
     return output;
 }
 

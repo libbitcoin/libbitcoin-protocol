@@ -36,7 +36,7 @@ inline bool is_valid(const sodium& key, bool setting)
 
 // Access protected members.
 class certificate_fixture
-   : public certificate
+  : public certificate
 {
 public:
     static bool derive(sodium& out_public, const sodium& private_key)

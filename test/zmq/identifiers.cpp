@@ -22,39 +22,29 @@ BOOST_AUTO_TEST_SUITE(identifiers_tests)
 
 using namespace bc::protocol::zmq;
 
-class identifiers_fixture
-  : public identifiers
-{
-public:
-    void push(const void* socket) NOEXCEPT override
-    {
-        identifiers::push(socket);
-    }
-};
-
 BOOST_AUTO_TEST_CASE(identifiers__empty__default__true)
 {
-    identifiers_fixture instance;
+    identifiers instance;
     BOOST_REQUIRE(instance.empty());
 }
 
 BOOST_AUTO_TEST_CASE(identifiers__empty__one_value__false)
 {
-    identifiers_fixture instance;
+    identifiers instance;
     instance.push(reinterpret_cast<void*>(42u));
     BOOST_REQUIRE(!instance.empty());
 }
 
 BOOST_AUTO_TEST_CASE(identifiers__contains__default__not_zero)
 {
-    identifiers_fixture instance;
+    identifiers instance;
     BOOST_REQUIRE(!instance.contains(0));
 }
 
 BOOST_AUTO_TEST_CASE(identifiers__contains__one_value__expected)
 {
     const intptr_t expected = 42u;
-    identifiers_fixture instance;
+    identifiers instance;
     instance.push(reinterpret_cast<void*>(expected));
     BOOST_REQUIRE(instance.contains(expected));
 }
@@ -63,7 +53,7 @@ BOOST_AUTO_TEST_CASE(identifiers__contains__two_values__expected)
 {
     const intptr_t expected1 = 99u;
     const intptr_t expected2 = 42u;
-    identifiers_fixture instance;
+    identifiers instance;
     instance.push(reinterpret_cast<void*>(expected1));
     instance.push(reinterpret_cast<void*>(expected2));
     BOOST_REQUIRE(instance.contains(expected1));

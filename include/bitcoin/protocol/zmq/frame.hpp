@@ -32,7 +32,7 @@ namespace protocol {
 namespace zmq {
 
 /// This class is not thread safe.
-class BCP_API frame
+class BCP_API frame final
   : public enable_shared_from_base<frame>, private noncopyable<frame>
 {
 public:
@@ -46,7 +46,7 @@ public:
     frame(const system::data_chunk& data) NOEXCEPT;
 
     /// Free the frame's allocated memory.
-    virtual ~frame() NOEXCEPT;
+    ~frame() NOEXCEPT;
 
     /// True if the construction was successful.
     operator bool() const NOEXCEPT;
@@ -63,7 +63,7 @@ public:
 
     /// Must be called on the socket thread.
     /// Send a frame on the socket.
-    error::code send(socket& socket, bool more) NOEXCEPT;
+    error::code send(socket& socket, bool last) NOEXCEPT;
 
 private:
     bool initialize(const system::data_chunk& data) NOEXCEPT;

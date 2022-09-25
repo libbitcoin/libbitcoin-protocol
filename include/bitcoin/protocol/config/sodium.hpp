@@ -32,6 +32,8 @@ namespace protocol {
 class BCP_API sodium
 {
 public:
+    DEFAULT5(sodium);
+
     /// A list of base85 values.
     /// This must provide operator<< for ostream in order to be used as a
     /// boost::program_options default_value.
@@ -40,7 +42,6 @@ public:
     sodium() NOEXCEPT;
     sodium(const std::string& base85) NOEXCEPT(false);
     sodium(const system::hash_digest& value) NOEXCEPT;
-    sodium(const sodium& other) NOEXCEPT;
 
     /// True if the key is initialized.
     operator bool() const NOEXCEPT;

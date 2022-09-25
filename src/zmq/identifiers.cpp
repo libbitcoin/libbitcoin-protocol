@@ -33,13 +33,12 @@ bool identifiers::empty() const NOEXCEPT
 
 bool identifiers::contains(identifier value) const NOEXCEPT
 {
-    return std::find(ids_.begin(), ids_.end(), value) != ids_.end();
+    return system::contains(ids_, value);
 }
 
 void identifiers::push(const void* socket) NOEXCEPT
 {
-    const auto& value = reinterpret_cast<identifier>(socket);
-    ids_.push_back(value);
+    ids_.push_back(reinterpret_cast<identifier>(socket));
 }
 
 } // namespace zmq

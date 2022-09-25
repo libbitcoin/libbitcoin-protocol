@@ -32,7 +32,7 @@ namespace protocol {
 namespace zmq {
 
 /// This class is thread safe.
-class BCP_API context
+class BCP_API context final
   : public enable_shared_from_base<context>, private noncopyable<context>
 {
 public:
@@ -44,7 +44,7 @@ public:
 
     /// Blocks until all child sockets are closed.
     /// Stops all child socket activity by closing the zeromq context.
-    virtual ~context() NOEXCEPT;
+    ~context() NOEXCEPT;
 
     /// True if the context is valid and started.
     operator bool() const NOEXCEPT;
@@ -53,11 +53,11 @@ public:
     void* self() NOEXCEPT;
 
     /// Create the zeromq context.
-    virtual bool start() NOEXCEPT;
+    bool start() NOEXCEPT;
 
     /// Blocks until all child sockets are closed.
     /// Stops all child socket activity by closing the zeromq context.
-    virtual bool stop() NOEXCEPT;
+    bool stop() NOEXCEPT;
 
 private:
     // This is thread safe

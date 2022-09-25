@@ -54,12 +54,14 @@ bool certificate::derive(sodium& out_public, const sodium& private_key) NOEXCEPT
         return false;
 
     const auto key = private_key.to_string();
-    char public_key[zmq_encoded_key_size + 1] = { 0 };
+    std::string public_key(zmq_encoded_key_size, 0);
 
-    if (zmq_curve_public(public_key, key.data()) == zmq_fail)
+    if (zmq_curve_public(public_key.data(), key.data()) == zmq_fail)
         return false;
 
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     out_public = sodium(public_key);
+    BC_POP_WARNING()
     return out_public;
 }
 
@@ -75,19 +77,22 @@ bool certificate::create(sodium& out_public, sodium& out_private,
 {
     // Loop until neither key's base85 encoding includes the # character.
     // This ensures that the value can be used in libbitcoin settings files.
-    for (uint8_t attempt = 0; attempt < max_uint8; attempt++)
+    for (auto attempt = zero; attempt < max_uint8; attempt++)
     {
-        char public_key[zmq_encoded_key_size + 1] = { 0 };
-        char private_key[zmq_encoded_key_size + 1] = { 0 };
+        std::string public_key(zmq_encoded_key_size, 0);
+        std::string private_key(zmq_encoded_key_size, 0);
 
         // SECURITY: this uses platform random number generation.
-        if (zmq_curve_keypair(public_key, private_key) == zmq_fail)
+        if (zmq_curve_keypair(public_key.data(), private_key.data()) == zmq_fail)
             return false;
 
-        if (!setting || (ok_setting(public_key) && ok_setting(private_key)))
+        if (!setting || (ok_setting(public_key.data()) &&
+            ok_setting(private_key.data())))
         {
+            BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
             out_public = sodium(public_key);
             out_private = sodium(private_key);
+            BC_POP_WARNING()
             return out_public;
         }
     }

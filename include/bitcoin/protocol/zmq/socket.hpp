@@ -41,7 +41,7 @@ class authenticator;
 /// This class is not thread safe.
 /// All calls must be made on the socket thread.
 /// Because the socket is only set on construct, sockets are not restartable.
-class BCP_API socket
+class BCP_API socket final
   : public enable_shared_from_base<socket>, private noncopyable<socket>
 {
 public:
@@ -77,10 +77,10 @@ public:
     socket(context& context, role socket_role, const settings& settings) NOEXCEPT;
 
     /// Close the socket.
-    virtual ~socket() NOEXCEPT;
+    ~socket() NOEXCEPT;
 
     /// Close the socket (optional, must close or destroy before context stop).
-    virtual bool stop() NOEXCEPT;
+    bool stop() NOEXCEPT;
 
     /// True if the socket is valid.
     operator bool() const NOEXCEPT;

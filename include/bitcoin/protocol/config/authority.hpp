@@ -25,6 +25,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <bitcoin/system.hpp>
 #include <bitcoin/protocol/boost.hpp>
 #include <bitcoin/protocol/define.hpp>
 
@@ -35,6 +36,8 @@ namespace protocol {
 class BCP_API authority
 {
 public:
+    DEFAULT5(authority);
+
     typedef std::shared_ptr<authority> ptr;
 
     authority() NOEXCEPT;
@@ -43,11 +46,11 @@ public:
     /// The port is optional and will be set to zero if not provided.
     /// The host can be in one of two forms:
     /// [2001:db8::2]:port or 1.2.240.1:port.
-    authority(const std::string& authority) NOEXCEPT (false);
+    authority(const std::string& authority) NOEXCEPT(false);
 
     /// The host can be in one of three forms:
     /// [2001:db8::2] or 2001:db8::2 or 1.2.240.1
-    authority(const std::string& host, uint16_t port) NOEXCEPT (false);
+    authority(const std::string& host, uint16_t port) NOEXCEPT(false);
 
     /// True if the port is non-zero.
     operator bool() const NOEXCEPT;

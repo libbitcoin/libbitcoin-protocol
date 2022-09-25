@@ -64,19 +64,19 @@ identifiers poller::wait(int32_t timeout_milliseconds) NOEXCEPT
     const auto size = pollers_.size();
     BC_ASSERT(size <= max_int32);
 
-    const auto item_count = static_cast<int32_t>(size);
-    const auto& items = reinterpret_cast<zmq_pollitem_t*>(pollers_.data());
-    const auto signaled = zmq_poll(items, item_count, timeout_milliseconds);
+    const auto count = system::possible_narrow_sign_cast<int32_t>(size);
+    const auto& items = system::pointer_cast<zmq_pollitem_t>(pollers_.data());
+    const auto signaled = zmq_poll(items, count, timeout_milliseconds);
 
     // Either one of the sockets was terminated or a signal intervened.
-    if (signaled < 0)
+    if (system::is_negative(signaled))
     {
         terminated_ = true;
         return {};
     }
 
     // No events have been signaled and no failure, so the timer expired.
-    if (signaled == 0)
+    if (is_zero(signaled))
     {
         expired_ = true;
         return {};
@@ -85,7 +85,7 @@ identifiers poller::wait(int32_t timeout_milliseconds) NOEXCEPT
     // At least one event was signaled, but the poll-in set may be empty.
     identifiers result;
     for (const auto& poller: pollers_)
-        if ((poller.revents & ZMQ_POLLIN) != 0)
+        if (!is_zero(poller.revents & ZMQ_POLLIN))
             result.push(poller.socket);
 
     return result;

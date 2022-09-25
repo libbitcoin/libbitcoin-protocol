@@ -29,28 +29,28 @@ namespace protocol {
 
 using namespace bc::system;
 
+BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
 endpoint::endpoint() NOEXCEPT
-  : endpoint("localhost")
-{
-}
-
-endpoint::endpoint(const endpoint& other) NOEXCEPT
-  : scheme_(other.scheme()), host_(other.host()), port_(other.port())
+  : scheme_(), host_("localhost"), port_(0)
+BC_POP_WARNING()
 {
 }
 
 endpoint::endpoint(const std::string& uri) NOEXCEPT(false)
+  : scheme_(), host_(), port_(0)
 {
     std::stringstream(uri) >> *this;
 }
 
+BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
 endpoint::endpoint(const authority& authority) NOEXCEPT
   : endpoint(authority.to_string())
+BC_POP_WARNING()
 {
 }
 
 endpoint::endpoint(const std::string& host, uint16_t port) NOEXCEPT
-  : host_(host), port_(port)
+  : scheme_(), host_(host), port_(port)
 {
 }
 
@@ -79,12 +79,15 @@ std::string endpoint::to_string() const NOEXCEPT
 {
     std::stringstream value;
     value << *this;
+
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     return value.str();
+    BC_POP_WARNING()
 }
 
 endpoint endpoint::to_local() const NOEXCEPT
 {
-    const auto host = host_ == "*" ? "localhost" : host_;
+    const auto host = (host_ == "*" ? "localhost" : host_);
     return endpoint(scheme_, host, port_);
 }
 
@@ -115,7 +118,7 @@ std::istream& operator>>(std::istream& input,
 
     try
     {
-        argument.port_ = port.empty() ? 0u : boost::lexical_cast<uint16_t>(port);
+        argument.port_ = port.empty() ? 0 : boost::lexical_cast<uint16_t>(port);
     }
     catch (const std::exception&)
     {
@@ -128,13 +131,15 @@ std::istream& operator>>(std::istream& input,
 std::ostream& operator<<(std::ostream& output,
     const endpoint& argument) NOEXCEPT
 {
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     if (!argument.scheme().empty())
         output << argument.scheme() << "://";
 
     output << argument.host();
 
-    if (argument.port() != 0u)
+    if (!is_zero(argument.port()))
         output << ":" << argument.port();
+    BC_POP_WARNING()
 
     return output;
 }

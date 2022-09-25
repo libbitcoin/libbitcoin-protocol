@@ -23,6 +23,7 @@
 #include <sstream>
 #include <string>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/define.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -35,17 +36,13 @@ sodium::sodium() NOEXCEPT
 }
 
 sodium::sodium(const std::string& base85) NOEXCEPT(false)
+  : sodium()
 {
     std::stringstream(base85) >> *this;
 }
 
 sodium::sodium(const hash_digest& value) NOEXCEPT
   : value_(value)
-{
-}
-
-sodium::sodium(const sodium& other) NOEXCEPT
-  : sodium(other.value_)
 {
 }
 
@@ -62,8 +59,11 @@ sodium::operator bool() const NOEXCEPT
 std::string sodium::to_string() const NOEXCEPT
 {
     std::stringstream value;
+
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     value << *this;
     return value.str();
+    BC_POP_WARNING()
 }
 
 std::istream& operator>>(std::istream& input, sodium& argument) NOEXCEPT(false)
@@ -81,7 +81,8 @@ std::istream& operator>>(std::istream& input, sodium& argument) NOEXCEPT(false)
     return input;
 }
 
-std::ostream& operator<<(std::ostream& output, const sodium& argument) NOEXCEPT(false)
+std::ostream& operator<<(std::ostream& output,
+    const sodium& argument) NOEXCEPT(false)
 {
     std::string decoded;
 
