@@ -83,7 +83,13 @@
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol.hpp">
       <Filter>include\bitcoin</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\boost.hpp">
+      <Filter>include\bitcoin\protocol</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\authority.hpp">
+      <Filter>include\bitcoin\protocol\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\config.hpp">
       <Filter>include\bitcoin\protocol\config</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\endpoint.hpp">
@@ -93,6 +99,9 @@
       <Filter>include\bitcoin\protocol\config</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\define.hpp">
+      <Filter>include\bitcoin\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\network.hpp">
       <Filter>include\bitcoin\protocol</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\settings.hpp">
@@ -133,15 +142,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\zmq\zeromq.hpp">
       <Filter>include\bitcoin\protocol\zmq</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\network.hpp">
-      <Filter>include\bitcoin\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\config.hpp">
-      <Filter>include\bitcoin\protocol\config</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\boost.hpp">
-      <Filter>include\bitcoin\protocol</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

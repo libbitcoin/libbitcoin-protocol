@@ -73,14 +73,6 @@ set( pkgconfigdir "${libdir}/pkgconfig" CACHE PATH "Path to pkgconfig directory.
 #------------------------------------------------------------------------------
 set( with-tests "yes" CACHE BOOL "Compile with unit tests." )
 
-# Implement -Dwith-mbedtls and output ${mbedtls}.
-#------------------------------------------------------------------------------
-set( with-mbedtls "no" CACHE BOOL "Compile with MbedTLS." )
-
-if (with-mbedtls)
-    set( mbedtls "-DWITH_MBEDTLS" )
-endif()
-
 # Implement -Denable-ndebug and define NDEBUG.
 #------------------------------------------------------------------------------
 set( enable-ndebug "yes" CACHE BOOL "Compile without debug assertions." )
@@ -121,12 +113,6 @@ set( boost_LDFLAGS "-L${Boost_LIBRARY_DIR}" )
 #------------------------------------------------------------------------------
 find_package( Zmq 4.3.4 REQUIRED )
 
-# Find mbedtls
-#------------------------------------------------------------------------------
-if (with-mbedtls)
-    find_package( Mbedtls REQUIRED )
-endif()
-
 # Find bitcoin-system
 #------------------------------------------------------------------------------
 find_package( Bitcoin-System 4.0.0 REQUIRED )
@@ -136,12 +122,10 @@ find_package( Bitcoin-System 4.0.0 REQUIRED )
 if (BUILD_SHARED_LIBS)
     include_directories( SYSTEM
         ${zmq_INCLUDE_DIRS}
-        ${mbedtls_INCLUDE_DIRS}
         ${bitcoin_system_INCLUDE_DIRS} )
 else()
     include_directories( SYSTEM
         ${zmq_STATIC_INCLUDE_DIRS}
-        ${mbedtls_STATIC_INCLUDE_DIRS}
         ${bitcoin_system_STATIC_INCLUDE_DIRS} )
 endif()
 
@@ -150,12 +134,10 @@ endif()
 if (BUILD_SHARED_LIBS)
     link_directories(
         ${zmq_LIBRARY_DIRS}
-        ${mbedtls_LIBRARY_DIRS}
         ${bitcoin_system_LIBRARY_DIRS} )
 else()
     link_directories(
         ${zmq_STATIC_LIBRARY_DIRS}
-        ${mbedtls_STATIC_LIBRARY_DIRS}
         ${bitcoin_system_STATIC_LIBRARY_DIRS} )
 endif()
 
@@ -166,19 +148,14 @@ if (BUILD_SHARED_LIBS)
         "-fstack-protector"
         "-fstack-protector-all"
         ${zmq_LIBRARIES}
-        ${mbedtls_LIBRARIES}
         ${bitcoin_system_LIBRARIES} )
 else()
     link_libraries(
         "-fstack-protector"
         "-fstack-protector-all"
         ${zmq_STATIC_LIBRARIES}
-        ${mbedtls_STATIC_LIBRARIES}
         ${bitcoin_system_STATIC_LIBRARIES} )
 endif()
-
-add_definitions(
-    ${mbedtls} )
 
 # Define ${CANONICAL_LIB_NAME} project.
 #------------------------------------------------------------------------------
@@ -204,13 +181,11 @@ if (BUILD_SHARED_LIBS)
     target_include_directories( ${CANONICAL_LIB_NAME} PRIVATE
         "../../include"
         ${zmq_INCLUDE_DIRS}
-        ${mbedtls_INCLUDE_DIRS}
         ${bitcoin_system_INCLUDE_DIRS} )
 else()
     target_include_directories( ${CANONICAL_LIB_NAME} PRIVATE
         "../../include"
         ${zmq_STATIC_INCLUDE_DIRS}
-        ${mbedtls_STATIC_INCLUDE_DIRS}
         ${bitcoin_system_STATIC_INCLUDE_DIRS} )
 endif()
 
@@ -222,12 +197,10 @@ target_include_directories( ${CANONICAL_LIB_NAME} PUBLIC
 if (BUILD_SHARED_LIBS)
     target_link_libraries( ${CANONICAL_LIB_NAME}
         ${zmq_LIBRARIES}
-        ${mbedtls_LIBRARIES}
         ${bitcoin_system_LIBRARIES} )
 else()
     target_link_libraries( ${CANONICAL_LIB_NAME}
         ${zmq_STATIC_LIBRARIES}
-        ${mbedtls_STATIC_LIBRARIES}
         ${bitcoin_system_STATIC_LIBRARIES} )
 endif()
 
