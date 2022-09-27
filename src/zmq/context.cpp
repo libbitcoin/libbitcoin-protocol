@@ -65,8 +65,8 @@ bool context::stop() NOEXCEPT
     if (self_ == nullptr)
         return true;
 
-    // This aborts blocking operations but blocks here until either each socket
-    // in the context is explicitly closed. This can fail by signal interrupt.
+    // This aborts blocking operations but blocks here until all sockets in the
+    // context have been closed with zmq_close. Can fail by signal interrupt.
     const auto result = zmq_ctx_term(self_) != zmq_fail;
 
     self_.store(nullptr);
