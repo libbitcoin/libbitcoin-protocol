@@ -125,10 +125,10 @@ BC_POP_WARNING()
 }
 
 // authority: [2001:db8::2]:port or 1.2.240.1:port
-authority::authority(const std::string& authority) NOEXCEPT(false)
+authority::authority(const std::string& value) NOEXCEPT(false)
   : authority()
 {
-    std::stringstream(authority) >> *this;
+    std::stringstream(value) >> *this;
 }
 
 // host: [2001:db8::2] or 2001:db8::2 or 1.2.240.1
