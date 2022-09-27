@@ -18,9 +18,9 @@
  */
 #include <bitcoin/protocol/zmq/context.hpp>
 
-#include <cstdint>
-#include <zmq.h>
+#include <mutex>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/zmq/zeromq.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -28,26 +28,24 @@ namespace zmq {
 
 using namespace bc::system;
 
-static constexpr int32_t zmq_fail = -1;
-
-context::context(bool started)
+context::context(bool started) NOEXCEPT
   : self_(nullptr)
 {
     if (started)
         start();
 }
 
-context::~context()
+context::~context() NOEXCEPT
 {
     stop();
 }
 
 // Restartable after stop and optionally started on construct.
-bool context::start()
+bool context::start() NOEXCEPT
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    unique_lock lock(mutex_);
+    std::unique_lock lock(mutex_);
 
     if (self_ != nullptr)
         return false;
@@ -58,17 +56,17 @@ bool context::start()
 }
 
 // Signal termination and block until all sockets closed.
-bool context::stop()
+bool context::stop() NOEXCEPT
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    unique_lock lock(mutex_);
+    std::unique_lock lock(mutex_);
 
     if (self_ == nullptr)
         return true;
 
-    // This aborts blocking operations but blocks here until either each socket
-    // in the context is explicitly closed. This can fail by signal interrupt.
+    // This aborts blocking operations but blocks here until all sockets in the
+    // context have been closed with zmq_close. Can fail by signal interrupt.
     const auto result = zmq_ctx_term(self_) != zmq_fail;
 
     self_.store(nullptr);
@@ -76,13 +74,13 @@ bool context::stop()
     ///////////////////////////////////////////////////////////////////////////
 }
 
-context::operator bool() const
+context::operator bool() const NOEXCEPT
 {
     return self_ != nullptr;
 }
 
 // This may become invalid after return. This call only ensures atomicity.
-void* context::self()
+void* context::self() NOEXCEPT
 {
     return self_;
 }

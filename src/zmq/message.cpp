@@ -18,9 +18,11 @@
  */
 #include <bitcoin/protocol/zmq/message.hpp>
 
+#include <algorithm>
 #include <string>
 #include <utility>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/zmq/error.hpp>
 #include <bitcoin/protocol/zmq/frame.hpp>
 
 namespace libbitcoin {
@@ -29,32 +31,32 @@ namespace zmq {
 
 using namespace bc::system;
 
-void message::enqueue()
+void message::enqueue() NOEXCEPT
 {
-    queue_.emplace(data_chunk{});
+    queue_.emplace();
 }
 
-void message::enqueue(data_chunk&& value)
+void message::enqueue(data_chunk&& value) NOEXCEPT
 {
-    queue_.emplace(std::move(value));
+    queue_.push(std::move(value));
 }
 
-void message::enqueue(const data_chunk& value)
+void message::enqueue(const data_chunk& value) NOEXCEPT
 {
-    queue_.emplace(value);
+    queue_.push(value);
 }
 
-void message::enqueue(const std::string& value)
+void message::enqueue(const std::string& value) NOEXCEPT
 {
-    queue_.emplace(to_chunk(value));
+    queue_.push(to_chunk(value));
 }
 
-void message::enqueue(const address& value)
+void message::enqueue(const address& value) NOEXCEPT
 {
-    queue_.emplace(to_chunk(value));
+    queue_.push(to_chunk(value));
 }
 
-bool message::dequeue()
+bool message::dequeue() NOEXCEPT
 {
     if (queue_.empty())
         return false;
@@ -63,7 +65,7 @@ bool message::dequeue()
     return true;
 }
 
-bool message::dequeue(data_chunk& value)
+bool message::dequeue(data_chunk& value) NOEXCEPT
 {
     if (queue_.empty())
         return false;
@@ -72,7 +74,7 @@ bool message::dequeue(data_chunk& value)
     return true;
 }
 
-bool message::dequeue(std::string& value)
+bool message::dequeue(std::string& value) NOEXCEPT
 {
     if (queue_.empty())
         return false;
@@ -81,7 +83,7 @@ bool message::dequeue(std::string& value)
     return true;
 }
 
-bool message::dequeue(address& value)
+bool message::dequeue(address& value) NOEXCEPT
 {
     if (queue_.empty())
         return false;
@@ -100,7 +102,7 @@ bool message::dequeue(address& value)
 }
 
 // Used by ZAP for public/private key read/write.
-bool message::dequeue(hash_digest& value)
+bool message::dequeue(hash_digest& value) NOEXCEPT
 {
     if (queue_.empty())
         return false;
@@ -118,7 +120,7 @@ bool message::dequeue(hash_digest& value)
     return false;
 }
 
-data_chunk message::dequeue_data()
+data_chunk message::dequeue_data() NOEXCEPT
 {
     if (queue_.empty())
         return {};
@@ -128,44 +130,43 @@ data_chunk message::dequeue_data()
     return data;
 }
 
-std::string message::dequeue_text()
+std::string message::dequeue_text() NOEXCEPT
 {
     if (queue_.empty())
         return {};
 
-    const auto& front = queue_.front();
-    auto text = std::string(front.begin(), front.end());
-    text += "\0";
+    auto text = to_string(queue_.front());
     queue_.pop();
     return text;
 }
 
-void message::clear()
+void message::clear() NOEXCEPT
 {
-    while (!queue_.empty())
-        queue_.pop();
+    queue_ = {};
+
+    ////while (!queue_.empty())
+    ////    queue_.pop();
 }
 
-bool message::empty() const
+bool message::empty() const NOEXCEPT
 {
     return queue_.empty();
 }
 
-size_t message::size() const
+size_t message::size() const NOEXCEPT
 {
     return queue_.size();
 }
 
 // Must be called on the socket thread.
-code message::send(socket& socket)
+error::code message::send(socket& socket) NOEXCEPT
 {
     auto count = queue_.size();
 
     while (!queue_.empty())
     {
-        frame frame(queue_.front());
+        const auto ec = frame(queue_.front()).send(socket, is_zero(--count));
         queue_.pop();
-        const auto ec = frame.send(socket, --count == 0);
 
         if (ec)
             return ec;
@@ -175,7 +176,7 @@ code message::send(socket& socket)
 }
 
 // Must be called on the socket thread.
-code message::receive(socket& socket)
+error::code message::receive(socket& socket) NOEXCEPT
 {
     clear();
     auto done = false;
@@ -188,7 +189,7 @@ code message::receive(socket& socket)
         if (ec)
             return ec;
 
-        queue_.emplace(frame.payload());
+        queue_.push(frame.payload());
         done = !frame.more();
     }
 

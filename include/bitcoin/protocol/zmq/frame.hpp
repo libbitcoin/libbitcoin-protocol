@@ -22,6 +22,8 @@
 #include <memory>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
+#include <bitcoin/protocol/network.hpp>
+#include <bitcoin/protocol/zmq/error.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 #include <bitcoin/protocol/zmq/zeromq.hpp>
 
@@ -30,43 +32,43 @@ namespace protocol {
 namespace zmq {
 
 /// This class is not thread safe.
-class BCP_API frame
-  : public system::enable_shared_from_base<frame>, system::noncopyable
+class BCP_API frame final
+  : public enable_shared_from_base<frame>, private noncopyable<frame>
 {
 public:
     /// A shared frame pointer.
     typedef std::shared_ptr<frame> ptr;
 
     /// Construct a frame with no payload (for receiving).
-    frame();
+    frame() NOEXCEPT;
 
     /// Construct a frame with the specified payload (for sending).
-    frame(const system::data_chunk& data);
+    frame(const system::data_chunk& data) NOEXCEPT;
 
     /// Free the frame's allocated memory.
-    virtual ~frame();
+    ~frame() NOEXCEPT;
 
     /// True if the construction was successful.
-    operator bool() const;
+    operator bool() const NOEXCEPT;
 
     /// True if there is more data to receive.
-    bool more() const;
+    bool more() const NOEXCEPT;
 
     /// The initialized or received payload of the frame.
-    system::data_chunk payload() const;
+    system::data_chunk payload() const NOEXCEPT;
 
     /// Must be called on the socket thread.
     /// Receive a frame on the socket.
-    system::code receive(socket& socket);
+    error::code receive(socket& socket) NOEXCEPT;
 
     /// Must be called on the socket thread.
     /// Send a frame on the socket.
-    system::code send(socket& socket, bool more);
+    error::code send(socket& socket, bool last) NOEXCEPT;
 
 private:
-    bool initialize(const system::data_chunk& data);
-    bool set_more(socket& socket);
-    bool destroy();
+    bool initialize(const system::data_chunk& data) NOEXCEPT;
+    bool set_more(socket& socket) NOEXCEPT;
+    bool destroy() NOEXCEPT;
 
     bool more_;
     const bool valid_;

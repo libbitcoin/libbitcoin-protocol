@@ -21,8 +21,8 @@
 
 #include <string>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/config/config.hpp>
 #include <bitcoin/protocol/define.hpp>
-#include <bitcoin/protocol/zmq/sodium.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -37,26 +37,25 @@ public:
     /// Construct an arbitary keypair as a new certificate.
     /// This always reduces keyspace, disallowing '#' in text encoding.
     /// Use certificate({ null_hash }) to allow full key space.
-    certificate();
+    certificate() NOEXCEPT;
 
     /// Construct a certificate from private key (generates public key).
     /// This generates an arbitary key pair if the parameter is uninitialized.
-    certificate(const sodium& private_key);
+    certificate(const sodium& private_key) NOEXCEPT;
 
     /// True if the certificate is valid.
-    operator bool() const;
+    operator bool() const NOEXCEPT;
 
     /// The public key base85 text.
-    const sodium& public_key() const;
+    const sodium& public_key() const NOEXCEPT;
 
     /// The private key base85 text.
-    const sodium& private_key() const;
+    const sodium& private_key() const NOEXCEPT;
 
 protected:
-    static bool derive(sodium& out_public,
-        const sodium& private_key);
-    static bool create(sodium& out_public,
-            sodium& out_private, bool setting);
+    static bool derive(sodium& out_public, const sodium& private_key) NOEXCEPT;
+    static bool create(sodium& out_public, sodium& out_private,
+        bool setting) NOEXCEPT;
 
 private:
     sodium public_;

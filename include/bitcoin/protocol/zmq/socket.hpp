@@ -22,12 +22,14 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <bitcoin/protocol/config/config.hpp>
 #include <bitcoin/protocol/define.hpp>
+#include <bitcoin/protocol/network.hpp>
 #include <bitcoin/protocol/settings.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
+#include <bitcoin/protocol/zmq/error.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
-#include <bitcoin/protocol/zmq/sodium.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -39,8 +41,8 @@ class authenticator;
 /// This class is not thread safe.
 /// All calls must be made on the socket thread.
 /// Because the socket is only set on construct, sockets are not restartable.
-class BCP_API socket
-  : public system::enable_shared_from_base<socket>, system::noncopyable
+class BCP_API socket final
+  : public enable_shared_from_base<socket>, private noncopyable<socket>
 {
 public:
     /// The full set of socket roles defined by zeromq.
@@ -64,77 +66,77 @@ public:
     typedef std::shared_ptr<socket> ptr;
 
     /// Construct a socket from an existing zeromq socket.
-    socket(void* zmq_socket);
+    socket(void* zmq_socket) NOEXCEPT;
 
     /// Construct a socket of the given context and role and default settings.
     /// Subscribers are automatically subscribed to all messages.
-    socket(context& context, role socket_role);
+    socket(context& context, role socket_role) NOEXCEPT;
 
     /// Construct a socket of the given context and role.
     /// Subscribers are automatically subscribed to all messages.
-    socket(context& context, role socket_role, const settings& settings);
+    socket(context& context, role socket_role, const settings& settings) NOEXCEPT;
 
     /// Close the socket.
-    virtual ~socket();
+    ~socket() NOEXCEPT;
 
     /// Close the socket (optional, must close or destroy before context stop).
-    virtual bool stop();
+    bool stop() NOEXCEPT;
 
     /// True if the socket is valid.
-    operator bool() const;
+    operator bool() const NOEXCEPT;
 
     /// The underlying zeromq socket.
-    void* self();
+    void* self() NOEXCEPT;
 
-    /// An opaue locally unique idenfier, valid after stop.
-    identifier id() const;
+    /// An opaque locally unique idenfier, valid after stop.
+    identifier id() const NOEXCEPT;
 
     /// Bind the socket to the specified local address.
-    system::code bind(const system::config::endpoint& address);
+    error::code bind(const endpoint& address) NOEXCEPT;
 
     /// Connect the socket to the specified remote address.
-    system::code connect(const system::config::endpoint& address);
+    error::code connect(const endpoint& address) NOEXCEPT;
 
     /// Sets the domain for ZAP (ZMQ RFC 27) authentication.
-    bool set_authentication_domain(const std::string& domain);
+    bool set_authentication_domain(const std::string& domain) NOEXCEPT;
 
     /// Configure the socket as a curve server (also set the secrety key).
-    bool set_curve_server();
+    bool set_curve_server() NOEXCEPT;
 
     /// Configure the socket as client to the curve server.
-    bool set_curve_client(const sodium& server_public_key);
+    bool set_curve_client(const sodium& server_public_key) NOEXCEPT;
 
     /// Apply the specified public key to the socket.
-    bool set_public_key(const sodium& key);
+    bool set_public_key(const sodium& key) NOEXCEPT;
 
     /// Apply the specified private key to the socket.
-    bool set_private_key(const sodium& key);
+    bool set_private_key(const sodium& key) NOEXCEPT;
 
     /// Apply the keys of the specified certificate to the socket.
-    bool set_certificate(const certificate& certificate);
+    bool set_certificate(const certificate& certificate) NOEXCEPT;
 
     /// Configure the socket to connect through the specified socks5 proxy.
-    bool set_socks_proxy(const system::config::authority& socks_proxy);
+    bool set_socks_proxy(const authority& socks_proxy) NOEXCEPT;
 
     /// Configure subscriber socket to apply the message filter.
-    bool set_subscription(const system::data_chunk& filter);
+    bool set_subscription(const system::data_chunk& filter) NOEXCEPT;
 
     /// Configure subscriber socket to remove the message filter.
-    bool set_unsubscription(const system::data_chunk& filter);
+    bool set_unsubscription(const system::data_chunk& filter) NOEXCEPT;
 
     /// Send a message on this socket.
-    system::code send(message& packet);
+    error::code send(message& packet) NOEXCEPT;
 
     /// Receive a message from this socket.
-    system::code receive(message& packet);
+    error::code receive(message& packet) NOEXCEPT;
 
 protected:
-    static int to_socket_type(role socket_role);
+    static int to_socket_type(role socket_role) NOEXCEPT;
 
-    bool set32(int32_t option, int32_t value);
-    bool set64(int32_t option, int64_t value);
-    bool set(int32_t option, const std::string& value);
-    bool set(int32_t option, const system::data_chunk& value);
+    bool set32(int32_t option, int32_t value) NOEXCEPT;
+    bool set64(int32_t option, int64_t value) NOEXCEPT;
+    bool set(int32_t option, const std::string& value) NOEXCEPT;
+    bool set(int32_t option, const system::data_chunk& value) NOEXCEPT;
 
 private:
     void* self_;

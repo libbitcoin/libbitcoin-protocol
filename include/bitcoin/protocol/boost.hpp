@@ -16,41 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <bitcoin/protocol/zmq/zeromq.hpp>
+#ifndef LIBBITCOIN_PROTOCOL_BOOST_HPP
+#define LIBBITCOIN_PROTOCOL_BOOST_HPP
 
-#include <zmq.h>
-#include <bitcoin/system.hpp>
+#include <boost/asio.hpp>
+#include <boost/format.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/regex.hpp>
+#include <boost/thread.hpp>
 
 namespace libbitcoin {
 namespace protocol {
-namespace zmq {
+    
+typedef boost::thread thread;
+typedef boost::asio::ip::address ip;
+typedef boost::asio::ip::address_v4 ipv4;
+typedef boost::asio::ip::address_v6 ipv6;
 
-using namespace bc::system;
-
-// See zmq::errno_to_string
-code get_last_error()
-{
-    const auto zeromq_code = zmq_errno();
-    const auto ec = error::posix_to_error_code(zeromq_code);
-
-    if (ec != error::unknown)
-        return ec;
-
-    switch (zeromq_code)
-    {
-        // See zmq.h
-        case EFSM:
-            return error::bad_stream;
-        case ETERM:
-            return error::service_stopped;
-        case EMTHREAD:
-        case ENOCOMPATPROTO:
-            return error::operation_failed;
-        default:
-            return error::unknown;
-    }
-}
-
-} // namespace zmq
 } // namespace protocol
 } // namespace libbitcoin
+
+#endif

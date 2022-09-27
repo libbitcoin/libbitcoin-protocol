@@ -18,11 +18,12 @@
  */
 #include <bitcoin/protocol/zmq/frame.hpp>
 
-#include <cstddef>
 #include <cstdint>
 #include <cstring>
-#include <zmq.h>
+#include <iterator>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/define.hpp>
+#include <bitcoin/protocol/zmq/error.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 #include <bitcoin/protocol/zmq/zeromq.hpp>
 
@@ -30,34 +31,27 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-using namespace bc::system;
-
-// If ZMQ_DONTWAIT is set we fail on busy socket.
-// This would happen if a message is being read when we try to send.
-static auto constexpr wait_flag = 0;
-static constexpr auto zmq_fail = -1;
-
 // Use for receiving.
-frame::frame()
+frame::frame() NOEXCEPT
   : more_(false), valid_(initialize({}))
 {
 }
 
 // Use for sending.
-frame::frame(const data_chunk& data)
+frame::frame(const system::data_chunk& data) NOEXCEPT
   : more_(false), valid_(initialize(data))
 {
 }
 
-frame::~frame()
+frame::~frame() NOEXCEPT
 {
     destroy();
 }
 
 // private
-bool frame::initialize(const data_chunk& data)
+bool frame::initialize(const system::data_chunk& data) NOEXCEPT
 {
-    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
+    const auto& buffer = system::pointer_cast<zmq_msg_t>(&message_);
 
     if (data.empty())
         return (zmq_msg_init(buffer) != zmq_fail);
@@ -69,69 +63,66 @@ bool frame::initialize(const data_chunk& data)
     return true;
 }
 
-frame::operator bool() const
+frame::operator bool() const NOEXCEPT
 {
     return valid_;
 }
 
-bool frame::more() const
+bool frame::more() const NOEXCEPT
 {
     return more_;
 }
 
 // private
-bool frame::set_more(socket& socket)
+bool frame::set_more(socket& socket) NOEXCEPT
 {
     int more;
-    auto length = static_cast<size_t>(sizeof(int));
+    auto length = sizeof(int);
 
     if (zmq_getsockopt(socket.self(), ZMQ_RCVMORE, &more, &length) == zmq_fail)
         return false;
 
-    more_ = (more != 0);
+    more_ = !is_zero(more);
     return true;
 }
 
-data_chunk frame::payload() const
+system::data_chunk frame::payload() const NOEXCEPT
 {
-    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
-
-    // These calls do not actually modify the buffer but are non-const.
+    const auto& buffer = system::pointer_cast<zmq_msg_t>(&message_);
     const auto size = zmq_msg_size(buffer);
     const auto data = zmq_msg_data(buffer);
-
-    const auto begin = static_cast<uint8_t*>(data);
-    return { begin, begin + size };
+    const auto begin = system::pointer_cast<uint8_t>(data);
+    return { begin, std::next(begin, size) };
 }
 
 // Must be called on the socket thread.
-code frame::receive(socket& socket)
+error::code frame::receive(socket& socket) NOEXCEPT
 {
     if (!valid_)
-        return error::operation_failed;
+        return error::invalid_message;
 
-    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
+    const auto& buffer = system::pointer_cast<zmq_msg_t>(&message_);
     const auto result = zmq_msg_recv(buffer, socket.self(), wait_flag)
         != zmq_fail && set_more(socket);
-    return result ? error::success : get_last_error();
+    return result ? error::success : error::get_last_error();
 }
 
 // Must be called on the socket thread.
-code frame::send(socket& socket, bool last)
+error::code frame::send(socket& socket, bool last) NOEXCEPT
 {
     if (!valid_)
-        return error::operation_failed;
+        return error::invalid_message;
 
     const int flags = (last ? 0 : ZMQ_SNDMORE) | wait_flag;
-    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
+    const auto& buffer = system::pointer_cast<zmq_msg_t>(&message_);
     const auto result = zmq_msg_send(buffer, socket.self(), flags) != zmq_fail;
-    return result ? error::success : get_last_error();
+    return result ? error::success : error::get_last_error();
 }
 
 // private
-bool frame::destroy()
+bool frame::destroy() NOEXCEPT
 {
-    const auto buffer = reinterpret_cast<zmq_msg_t*>(&message_);
+    const auto& buffer = system::pointer_cast<zmq_msg_t>(&message_);
     return valid_ && (zmq_msg_close(buffer) != zmq_fail);
 }
 

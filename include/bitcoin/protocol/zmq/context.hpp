@@ -22,48 +22,49 @@
 #include <atomic>
 #include <cstdint>
 #include <memory>
+#include <shared_mutex>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
+#include <bitcoin/protocol/network.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
 /// This class is thread safe.
-class BCP_API context
-  : public system::enable_shared_from_base<context>, system::noncopyable
+class BCP_API context final
+  : public enable_shared_from_base<context>, private noncopyable<context>
 {
 public:
     /// A shared context pointer.
     typedef std::shared_ptr<context> ptr;
 
     /// Construct a context.
-    context(bool started=true);
+    context(bool started=true) NOEXCEPT;
 
     /// Blocks until all child sockets are closed.
     /// Stops all child socket activity by closing the zeromq context.
-    virtual ~context();
+    ~context() NOEXCEPT;
 
     /// True if the context is valid and started.
-    operator bool() const;
+    operator bool() const NOEXCEPT;
 
     /// The underlying zeromq context.
-    void* self();
+    void* self() NOEXCEPT;
 
     /// Create the zeromq context.
-    virtual bool start();
+    bool start() NOEXCEPT;
 
     /// Blocks until all child sockets are closed.
     /// Stops all child socket activity by closing the zeromq context.
-    virtual bool stop();
+    bool stop() NOEXCEPT;
 
 private:
-
     // This is thread safe
     std::atomic<void*> self_;
 
     // This guards against a start/stop race.
-    mutable system::shared_mutex mutex_;
+    mutable std::shared_mutex mutex_;
 };
 
 } // namespace zmq

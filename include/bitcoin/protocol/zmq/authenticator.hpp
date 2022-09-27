@@ -20,16 +20,15 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_AUTHENTICATOR_HPP
 
 #include <memory>
-#include <functional>
-#include <future>
+#include <shared_mutex>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/config/config.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
-#include <bitcoin/protocol/zmq/sodium.hpp>
 #include <bitcoin/protocol/zmq/worker.hpp>
 
 namespace libbitcoin {
@@ -45,49 +44,50 @@ public:
     typedef std::shared_ptr<authenticator> ptr;
 
     /// The fixed inprocess authentication endpoint.
-    static const system::config::endpoint endpoint;
+    static const endpoint authentication_point;
 
     /// There may be only one authenticator per process.
-    authenticator(system::thread_priority priority=system::thread_priority::normal);
+    authenticator(thread_priority priority=thread_priority::normal) NOEXCEPT;
 
     /// Stop the router.
-    virtual ~authenticator();
+    virtual ~authenticator() NOEXCEPT;
 
     /// Expose the authenticated context.
-    operator context&();
+    operator context&() NOEXCEPT;
 
     /// Start the ZAP router for the context.
-    virtual bool start() override;
+    virtual bool start() NOEXCEPT override;
 
     /// Stop the router (optional).
-    virtual bool stop() override;
+    virtual bool stop() NOEXCEPT override;
 
     /// This must be called on the socket thread.
     /// A nonempty domain is required for the NULL mechanism.
     /// Set secure false to enable NULL mechanism, otherwise curve is required.
     /// Apply authentication to the socket for the given arbitrary domain.
     /// Behavior is based on set_private_key and allow/deny configuration.
-    virtual bool apply(socket& socket, const std::string& domain, bool secure);
+    virtual bool apply(socket& socket, const std::string& domain,
+        bool secure) NOEXCEPT;
 
     /// Set the server private key (required for curve security).
-    virtual void set_private_key(const sodium& private_key);
+    virtual void set_private_key(const sodium& private_key) NOEXCEPT;
 
     /// Allow clients with the following public keys (whitelist).
-    virtual void allow(const system::hash_digest& public_key);
+    virtual void allow(const system::hash_digest& public_key) NOEXCEPT;
 
     /// Allow clients with the following ip addresses (whitelist).
-    virtual void allow(const system::config::authority& address);
+    virtual void allow(const authority& address) NOEXCEPT;
 
     /// Allow clients with the following ip addresses (blacklist).
-    virtual void deny(const system::config::authority& address);
+    virtual void deny(const authority& address) NOEXCEPT;
 
 protected:
-    void work() override;
+    void work() NOEXCEPT override;
 
 private:
-    bool allowed_address(const std::string& address) const;
-    bool allowed_key(const system::hash_digest& public_key) const;
-    bool allowed_weak(const std::string& domain) const;
+    bool allowed_address(const std::string& address) const NOEXCEPT;
+    bool allowed_key(const system::hash_digest& public_key) const NOEXCEPT;
+    bool allowed_weak(const std::string& domain) const NOEXCEPT;
 
     // This is thread safe.
     context context_;
@@ -98,8 +98,8 @@ private:
     std::unordered_set<system::hash_digest> keys_;
     std::unordered_set<std::string> weak_domains_;
     std::unordered_map<std::string, bool> adresses_;
-    mutable system::shared_mutex property_mutex_;
-    mutable system::shared_mutex stop_mutex_;
+    mutable std::shared_mutex property_mutex_;
+    mutable std::shared_mutex stop_mutex_;
 };
 
 } // namespace zmq

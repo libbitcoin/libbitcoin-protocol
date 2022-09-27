@@ -19,23 +19,23 @@
 #include <bitcoin/protocol/zmq/poller.hpp>
 
 #include <cstdint>
-#include <zmq.h>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
+#include <bitcoin/protocol/zmq/zeromq.hpp>
 
 namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
-poller::poller()
+poller::poller() NOEXCEPT
   : expired_(false),
     terminated_(false)
 {
 }
 
 // Parameter fd is non-zmq socket (unused when socket is set).
-void poller::add(socket& socket)
+void poller::add(socket& socket) NOEXCEPT
 {
     zmq_pollitem item;
     item.socket = socket.self();
@@ -45,41 +45,38 @@ void poller::add(socket& socket)
     pollers_.push_back(item);
 }
 
-void poller::clear()
+void poller::clear() NOEXCEPT
 {
     return pollers_.clear();
 }
 
-identifiers poller::wait()
+identifiers poller::wait() NOEXCEPT
 {
-    // This is the maximum safe value on all platforms, due to zeromq bug.
-    static constexpr int32_t maximum_safe_wait_milliseconds = 1000;
-
-    return wait(maximum_safe_wait_milliseconds);
+    return wait(zmq_maximum_safe_wait_milliseconds);
 }
 
 // BUGBUG: zeromq 4.2 has an overflow bug in timer parameterization.
 // The timeout is typed as 'long' by zeromq. This is 32 bit on windows and
 // actually less (potentially 1000 or 1 second) on other platforms.
 // On non-windows platforms negative doesn't actually produce infinity.
-identifiers poller::wait(int32_t timeout_milliseconds)
+identifiers poller::wait(int32_t timeout_milliseconds) NOEXCEPT
 {
     const auto size = pollers_.size();
-    BITCOIN_ASSERT(size <= max_int32);
+    BC_ASSERT(size <= max_int32);
 
-    const auto item_count = static_cast<int32_t>(size);
-    const auto items = reinterpret_cast<zmq_pollitem_t*>(pollers_.data());
-    const auto signaled = zmq_poll(items, item_count, timeout_milliseconds);
+    const auto count = system::possible_narrow_sign_cast<int32_t>(size);
+    const auto& items = system::pointer_cast<zmq_pollitem_t>(pollers_.data());
+    const auto signaled = zmq_poll(items, count, timeout_milliseconds);
 
     // Either one of the sockets was terminated or a signal intervened.
-    if (signaled < 0)
+    if (system::is_negative(signaled))
     {
         terminated_ = true;
         return {};
     }
 
     // No events have been signaled and no failure, so the timer expired.
-    if (signaled == 0)
+    if (is_zero(signaled))
     {
         expired_ = true;
         return {};
@@ -88,18 +85,18 @@ identifiers poller::wait(int32_t timeout_milliseconds)
     // At least one event was signaled, but the poll-in set may be empty.
     identifiers result;
     for (const auto& poller: pollers_)
-        if ((poller.revents & ZMQ_POLLIN) != 0)
+        if (!is_zero(poller.revents & ZMQ_POLLIN))
             result.push(poller.socket);
 
     return result;
 }
 
-bool poller::expired() const
+bool poller::expired() const NOEXCEPT
 {
     return expired_;
 }
 
-bool poller::terminated() const
+bool poller::terminated() const NOEXCEPT
 {
     return terminated_;
 }

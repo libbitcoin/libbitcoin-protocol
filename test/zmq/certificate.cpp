@@ -16,9 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <boost/test/test_tools.hpp>
-#include <boost/test/unit_test_suite.hpp>
-#include <bitcoin/protocol.hpp>
+#include "../test.hpp"
 
 using namespace bc::protocol::zmq;
 
@@ -38,7 +36,7 @@ inline bool is_valid(const sodium& key, bool setting)
 
 // Access protected members.
 class certificate_fixture
-   : public certificate
+  : public certificate
 {
 public:
     static bool derive(sodium& out_public, const sodium& private_key)

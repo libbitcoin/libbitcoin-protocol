@@ -16,32 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef LIBBITCOIN_PROTOCOL_WEB_SSL_HPP
-#define LIBBITCOIN_PROTOCOL_WEB_SSL_HPP
+#ifndef LIBBITCOIN_PROTOCOL_CONFIG_HPP
+#define LIBBITCOIN_PROTOCOL_CONFIG_HPP
 
-#include <string>
-#include <bitcoin/protocol/define.hpp>
-#include <bitcoin/protocol/web/http.hpp>
-
-namespace libbitcoin {
-namespace protocol {
-namespace http {
-
-struct ssl
-{
-    bool enabled;
-    std::string hostname;
-#ifdef WITH_MBEDTLS
-    mbedtls_ssl_context context;
-    mbedtls_ssl_config configuration;
-    mbedtls_pk_context key;
-    mbedtls_x509_crt certificate;
-    mbedtls_x509_crt ca_certificate;
-#endif
-};
-
-} // namespace http
-} // namespace protocol
-} // namespace libbitcoin
+#include <bitcoin/protocol/config/authority.hpp>
+#include <bitcoin/protocol/config/endpoint.hpp>
+#include <bitcoin/protocol/config/sodium.hpp>
 
 #endif

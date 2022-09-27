@@ -18,12 +18,14 @@
  */
 #include <bitcoin/protocol/zmq/worker.hpp>
 
-#include <zmq.h>
 #include <functional>
 #include <future>
+#include <mutex>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/boost.hpp>
 #include <bitcoin/protocol/zmq/message.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
+#include <bitcoin/protocol/zmq/zeromq.hpp>
 
 namespace libbitcoin {
 namespace protocol {
@@ -34,31 +36,30 @@ using namespace bc::system;
 #define NAME "worker"
 
 // Derive from this abstract worker to implement concrete worker.
-worker::worker(thread_priority priority)
+worker::worker(thread_priority priority) NOEXCEPT
   : priority_(priority),
     stopped_(true)
 {
 }
 
-worker::~worker()
+worker::~worker() NOEXCEPT
 {
     stop();
 }
 
 // Restartable after stop and not started on construct.
-bool worker::start()
+bool worker::start() NOEXCEPT
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    unique_lock lock(mutex_);
+    std::unique_lock lock(mutex_);
 
     if (stopped_)
     {
         stopped_ = false;
 
         // Create the worker thread and socket and start polling.
-        thread_ = std::make_shared<asio::thread>(
-            &worker::work, this);
+        thread_ = std::make_shared<thread>(&worker::work, this);
 
         // Wait on worker start.
         const auto result = started_.get_future().get();
@@ -74,11 +75,11 @@ bool worker::start()
 
 // Promise is used (vs. join only) to capture stop result code.
 // BUGBUG: stop is insufficient to stop a worker that uses relay().
-bool worker::stop()
+bool worker::stop() NOEXCEPT
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    unique_lock lock(mutex_);
+    std::unique_lock lock(mutex_);
 
     if (!stopped_)
     {
@@ -103,13 +104,13 @@ bool worker::stop()
 //-----------------------------------------------------------------------------
 
 // Call from work to detect an explicit stop.
-bool worker::stopped()
+bool worker::stopped() NOEXCEPT
 {
     return stopped_;
 }
 
 // Call from work when started (connected/bound) or failed to do so.
-bool worker::started(bool result)
+bool worker::started(bool result) NOEXCEPT
 {
     started_.set_value(result);
 
@@ -122,7 +123,7 @@ bool worker::started(bool result)
 }
 
 // Call from work when finished working, do not call if started was called.
-bool worker::finished(bool result)
+bool worker::finished(bool result) NOEXCEPT
 {
     finished_.set_value(result);
     return result;
@@ -130,14 +131,14 @@ bool worker::finished(bool result)
 
 // TODO: use non-copying private zmq implementation of forward.
 // Call from work to forward a message from one socket to another.
-bool worker::forward(socket& from, socket& to)
+bool worker::forward(socket& from, socket& to) NOEXCEPT
 {
     message packet;
     return !from.receive(packet) && !to.send(packet);
 }
 
 // Call from work to establish a proxy between two sockets.
-void worker::relay(socket& left, socket& right)
+void worker::relay(socket& left, socket& right) NOEXCEPT
 {
     // Blocks until the context is terminated, always returns -1.
     zmq_proxy_steerable(left.self(), right.self(), nullptr, nullptr);

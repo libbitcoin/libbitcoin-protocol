@@ -21,14 +21,15 @@
 #include <algorithm>
 #include <cstdint>
 #include <string>
-#include <zmq.h>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/config/config.hpp>
+#include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/settings.hpp>
 #include <bitcoin/protocol/zmq/authenticator.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
+#include <bitcoin/protocol/zmq/error.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
 #include <bitcoin/protocol/zmq/message.hpp>
-#include <bitcoin/protocol/zmq/sodium.hpp>
 #include <bitcoin/protocol/zmq/zeromq.hpp>
 
 namespace libbitcoin {
@@ -36,12 +37,6 @@ namespace protocol {
 namespace zmq {
 
 using namespace bc::system;
-
-static const auto subscribe_all = "";
-static constexpr int32_t zmq_true = 1;
-static constexpr int32_t zmq_false = 0;
-static constexpr int32_t zmq_fail = -1;
-static constexpr int32_t reconnect_interval = 100;
 static const libbitcoin::protocol::settings default_settings;
 
 // Linger
@@ -58,19 +53,19 @@ static const libbitcoin::protocol::settings default_settings;
 // messages when they reach their RCVHWM. PULL and DEALER sockets will refuse
 // new messages and force messages to wait upstream due to TCP backpressure.
 
-inline int32_t capped32(uint32_t value)
+inline int32_t capped32(uint32_t value) NOEXCEPT
 {
     static constexpr auto limit = static_cast<uint32_t>(max_int32);
     return static_cast<int32_t>(std::min(value, limit));
 }
 
-inline int64_t capped64(uint64_t value)
+inline int64_t capped64(uint64_t value) NOEXCEPT
 {
     static constexpr auto limit = static_cast<uint64_t>(max_int64);
     return static_cast<int64_t>(std::min(value, limit));
 }
 
-inline int32_t seconds(uint32_t value)
+inline int32_t seconds(uint32_t value) NOEXCEPT
 {
     static constexpr uint32_t ms_to_seconds = 1000;
     static constexpr auto milliseconds = static_cast<uint32_t>(max_int32);
@@ -78,7 +73,7 @@ inline int32_t seconds(uint32_t value)
     return static_cast<int32_t>(std::min(value, limit) * ms_to_seconds);
 }
 
-int32_t socket::to_socket_type(role socket_role)
+int32_t socket::to_socket_type(role socket_role) NOEXCEPT
 {
     switch (socket_role)
     {
@@ -101,19 +96,20 @@ int32_t socket::to_socket_type(role socket_role)
 // Because self is only set on construct, sockets are not restartable.
 // zmq_term terminates blocking operations but blocks until each socket in the
 // context is explicitly closed. Socket close kills transfers after linger.
-socket::socket(void* zmq_socket)
+socket::socket(void* zmq_socket) NOEXCEPT
   : self_(zmq_socket),
     identifier_(reinterpret_cast<identifier>(zmq_socket))
 {
 }
 
-socket::socket(context& context, role socket_role)
+socket::socket(context& context, role socket_role) NOEXCEPT
   : socket(context, socket_role, default_settings)
 {
 }
 
 // This design presumes no setting value should be able to cause failure.
-socket::socket(context& context, role socket_role, const settings& settings)
+socket::socket(context& context, role socket_role,
+    const settings& settings) NOEXCEPT
   : socket(zmq_socket(context.self(), to_socket_type(socket_role)))
 {
     if (self_ == nullptr)
@@ -161,7 +157,7 @@ socket::socket(context& context, role socket_role, const settings& settings)
     const auto reconnect = seconds(settings.reconnect_seconds);
 
     // Zero disables, reconnect_interval is hardwired to the default (100ms).
-    if (!set32(ZMQ_RECONNECT_IVL, reconnect == 0 ? -1 : reconnect_interval) ||
+    if (!set32(ZMQ_RECONNECT_IVL, reconnect == 0 ? -1 : zmq_reconnect_interval) ||
         !set32(ZMQ_RECONNECT_IVL_MAX, reconnect))
     {
         stop();
@@ -169,19 +165,19 @@ socket::socket(context& context, role socket_role, const settings& settings)
     }
 
     // Limited to subscriber sockets (not configured, always set by default).
-    if (socket_role == role::subscriber && !set(ZMQ_SUBSCRIBE, subscribe_all))
+    if (socket_role == role::subscriber && !set(ZMQ_SUBSCRIBE, zmq_subscribe_all))
     {
         stop();
         return;
     }
 }
 
-socket::~socket()
+socket::~socket() NOEXCEPT
 {
     stop();
 }
 
-bool socket::stop()
+bool socket::stop() NOEXCEPT
 {
     if (self_ == nullptr)
         return true;
@@ -193,59 +189,59 @@ bool socket::stop()
     return true;
 }
 
-socket::operator bool() const
+socket::operator bool() const NOEXCEPT
 {
     return self_ != nullptr;
 }
 
-void* socket::self()
+void* socket::self() NOEXCEPT
 {
     return self_;
 }
 
 // To preserve identity the id survives after the socket is destroyed.
-identifier socket::id() const
+identifier socket::id() const NOEXCEPT
 {
     return identifier_;
 }
 
-code socket::bind(const config::endpoint& address)
+error::code socket::bind(const endpoint& address) NOEXCEPT
 {
     if (zmq_bind(self_, address.to_string().c_str()) == zmq_fail)
-        return get_last_error();
+        return error::get_last_error();
 
     return error::success;
 }
 
-code socket::connect(const config::endpoint& address)
+error::code socket::connect(const endpoint& address) NOEXCEPT
 {
     if (zmq_connect(self_, address.to_string().c_str()) == zmq_fail)
-        return get_last_error();
+        return error::get_last_error();
 
     return error::success;
 }
 
 // private
-bool socket::set32(int32_t option, int32_t value)
+bool socket::set32(int32_t option, int32_t value) NOEXCEPT
 {
     return zmq_setsockopt(self_, option, &value, sizeof(value)) != zmq_fail;
 }
 
 // private
-bool socket::set64(int32_t option, int64_t value)
+bool socket::set64(int32_t option, int64_t value) NOEXCEPT
 {
     return zmq_setsockopt(self_, option, &value, sizeof(value)) != zmq_fail;
 }
 
 // private
-bool socket::set(int32_t option, const std::string& value)
+bool socket::set(int32_t option, const std::string& value) NOEXCEPT
 {
     const auto buffer = value.c_str();
     return zmq_setsockopt(self_, option, buffer, value.size()) != zmq_fail;
 }
 
 // private
-bool socket::set(int32_t option, const data_chunk& value)
+bool socket::set(int32_t option, const data_chunk& value) NOEXCEPT
 {
     return zmq_setsockopt(self_, option, value.data(), value.size())
         != zmq_fail;
@@ -253,32 +249,32 @@ bool socket::set(int32_t option, const data_chunk& value)
 
 // For NULL security, ZAP calls are only made for non-empty domain.
 // For PLAIN/CURVE, calls are always made if ZAP handler is present.
-bool socket::set_authentication_domain(const std::string& domain)
+bool socket::set_authentication_domain(const std::string& domain) NOEXCEPT
 {
     return domain.empty() || set(ZMQ_ZAP_DOMAIN, domain);
 }
 
 // Defines whether the socket will act as server for CURVE security.
-bool socket::set_curve_server()
+bool socket::set_curve_server() NOEXCEPT
 {
     return set32(ZMQ_CURVE_SERVER, zmq_true);
 }
 
 // Sets socket's long term server key, must set this on CURVE client sockets.
-bool socket::set_curve_client(const sodium& server_public_key)
+bool socket::set_curve_client(const sodium& server_public_key) NOEXCEPT
 {
     return server_public_key &&
         set(ZMQ_CURVE_SERVERKEY, server_public_key.to_string());
 }
 
 // Sets socket's long term public key, must set this on CURVE client sockets.
-bool socket::set_public_key(const sodium& key)
+bool socket::set_public_key(const sodium& key) NOEXCEPT
 {
     return key && set(ZMQ_CURVE_PUBLICKEY, key.to_string());
 }
 
 // You must set this on both CURVE client and server sockets.
-bool socket::set_private_key(const sodium& key)
+bool socket::set_private_key(const sodium& key) NOEXCEPT
 {
     return key && set(ZMQ_CURVE_SECRETKEY, key.to_string());
 }
@@ -286,34 +282,34 @@ bool socket::set_private_key(const sodium& key)
 // Use on client for both set_public_key and set_private_key from a cert.
 // If CURVE is not required by server, call set_certificate({ null_hash })
 // to generate an arbitrary client certificate for a secure socket.
-bool socket::set_certificate(const certificate& certificate)
+bool socket::set_certificate(const certificate& certificate) NOEXCEPT
 {
     return certificate &&
         set_public_key(certificate.public_key().to_string()) &&
         set_private_key(certificate.private_key().to_string());
 }
 
-bool socket::set_socks_proxy(const config::authority& socks_proxy)
+bool socket::set_socks_proxy(const authority& socks_proxy) NOEXCEPT
 {
     return socks_proxy && set(ZMQ_SOCKS_PROXY, socks_proxy.to_string());
 }
 
-bool socket::set_subscription(const data_chunk& filter)
+bool socket::set_subscription(const data_chunk& filter) NOEXCEPT
 {
     return set(ZMQ_SUBSCRIBE, filter);
 }
 
-bool socket::set_unsubscription(const data_chunk& filter)
+bool socket::set_unsubscription(const data_chunk& filter) NOEXCEPT
 {
     return set(ZMQ_UNSUBSCRIBE, filter);
 }
 
-code socket::send(message& packet)
+error::code socket::send(message& packet) NOEXCEPT
 {
     return packet.send(*this);
 }
 
-code socket::receive(message& packet)
+error::code socket::receive(message& packet) NOEXCEPT
 {
     return packet.receive(*this);
 }

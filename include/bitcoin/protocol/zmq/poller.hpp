@@ -24,6 +24,7 @@
 #include <memory>
 #include <vector>
 #include <bitcoin/protocol/define.hpp>
+#include <bitcoin/protocol/network.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 #include <bitcoin/protocol/zmq/zeromq.hpp>
@@ -35,32 +36,32 @@ namespace zmq {
 /// This class is not thread safe.
 /// All calls must be made on the socket(s) thread.
 class BCP_API poller
-  : public system::enable_shared_from_base<poller>, system::noncopyable
+  : public enable_shared_from_base<poller>, private noncopyable<poller>
 {
 public:
     /// A shared poller pointer.
     typedef std::shared_ptr<poller> ptr;
 
     /// Construct an empty poller (sockets must be added).
-    poller();
+    poller() NOEXCEPT;
 
     /// True if the timeout occurred.
-    bool expired() const;
+    bool expired() const NOEXCEPT;
 
     /// True if the connection is closed.
-    bool terminated() const;
+    bool terminated() const NOEXCEPT;
 
     /// Add a socket to be polled.
-    void add(socket& sock);
+    void add(socket& sock) NOEXCEPT;
 
     /// Remove all sockets from the poller.
-    void clear();
+    void clear() NOEXCEPT;
 
     /// Wait one second for any socket to receive.
-    identifiers wait();
+    identifiers wait() NOEXCEPT;
 
     /// Wait specified time for any socket to receive, -1 is forever.
-    identifiers wait(int32_t timeout_milliseconds);
+    identifiers wait(int32_t timeout_milliseconds) NOEXCEPT;
 
 private:
     typedef std::vector<zmq_pollitem> pollers;

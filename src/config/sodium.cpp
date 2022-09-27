@@ -16,58 +16,57 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <bitcoin/protocol/zmq/sodium.hpp>
+#include <bitcoin/protocol/config/sodium.hpp>
 
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <boost/program_options.hpp>
 #include <bitcoin/system.hpp>
+#include <bitcoin/protocol/define.hpp>
 
 namespace libbitcoin {
 namespace protocol {
-namespace zmq {
 
 using namespace bc::system;
 
-sodium::sodium()
+sodium::sodium() NOEXCEPT
   : value_(null_hash)
 {
 }
 
-sodium::sodium(const std::string& base85)
+sodium::sodium(const std::string& base85) NOEXCEPT(false)
+  : sodium()
 {
     std::stringstream(base85) >> *this;
 }
 
-sodium::sodium(const hash_digest& value)
+sodium::sodium(const hash_digest& value) NOEXCEPT
   : value_(value)
 {
 }
 
-sodium::sodium(const sodium& other)
-  : sodium(other.value_)
-{
-}
-
-sodium::operator const hash_digest&() const
+sodium::operator const hash_digest&() const NOEXCEPT
 {
     return value_;
 }
 
-sodium::operator bool() const
+sodium::operator bool() const NOEXCEPT
 {
     return value_ != null_hash;
 }
 
-std::string sodium::to_string() const
+std::string sodium::to_string() const NOEXCEPT
 {
     std::stringstream value;
+
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     value << *this;
     return value.str();
+    BC_POP_WARNING()
 }
 
-std::istream& operator>>(std::istream& input, sodium& argument)
+std::istream& operator>>(std::istream& input, sodium& argument) NOEXCEPT(false)
 {
     std::string base85;
     input >> base85;
@@ -75,29 +74,27 @@ std::istream& operator>>(std::istream& input, sodium& argument)
     data_chunk out_value;
     if (!decode_base85(out_value, base85) || out_value.size() != hash_size)
     {
-        using namespace boost::program_options;
-        BOOST_THROW_EXCEPTION(invalid_option_value(base85));
+        throw istream_exception(base85);
     }
 
     std::copy_n(out_value.begin(), hash_size, argument.value_.begin());
     return input;
 }
 
-std::ostream& operator<<(std::ostream& output, const sodium& argument)
+std::ostream& operator<<(std::ostream& output,
+    const sodium& argument) NOEXCEPT(false)
 {
     std::string decoded;
 
     // Base85 requires four byte alignment (hash_digest is 32).
     if (!encode_base85(decoded, argument.value_))
     {
-        using namespace boost::program_options;
-        BOOST_THROW_EXCEPTION(std::iostream::failure(decoded));
+        throw istream_exception(decoded);
     }
 
     output << decoded;
     return output;
 }
 
-} // namespace zmq
 } // namespace protocol
 } // namespace libbitcoin
