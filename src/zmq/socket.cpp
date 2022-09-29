@@ -37,7 +37,7 @@ namespace protocol {
 namespace zmq {
 
 using namespace bc::system;
-static const libbitcoin::protocol::settings default_settings;
+static const bc::protocol::settings default_settings;
 
 // Linger
 // The default value of -1 specifies an infinite linger period. Pending

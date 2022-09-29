@@ -28,6 +28,8 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+using namespace bc::system;
+
 poller::poller() NOEXCEPT
   : expired_(false),
     terminated_(false)
@@ -64,12 +66,12 @@ identifiers poller::wait(int32_t timeout_milliseconds) NOEXCEPT
     const auto size = pollers_.size();
     BC_ASSERT(size <= max_int32);
 
-    const auto count = system::possible_narrow_sign_cast<int32_t>(size);
-    const auto& items = system::pointer_cast<zmq_pollitem_t>(pollers_.data());
+    const auto count = possible_narrow_sign_cast<int32_t>(size);
+    const auto& items = pointer_cast<zmq_pollitem_t>(pollers_.data());
     const auto signaled = zmq_poll(items, count, timeout_milliseconds);
 
     // Either one of the sockets was terminated or a signal intervened.
-    if (system::is_negative(signaled))
+    if (is_negative(signaled))
     {
         terminated_ = true;
         return {};

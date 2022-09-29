@@ -19,6 +19,7 @@
 #include <bitcoin/protocol/config/endpoint.hpp>
 
 #include <cstdint>
+#include <sstream>
 #include <string>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/boost.hpp>
@@ -116,14 +117,10 @@ std::istream& operator>>(std::istream& input,
     argument.host_ = match[3];
     std::string port(match[7]);
 
-    try
-    {
-        argument.port_ = port.empty() ? 0 : boost::lexical_cast<uint16_t>(port);
-    }
-    catch (const std::exception&)
-    {
+    if (port.empty())
+        argument.port_ = 0;
+    else if (!system::deserialize(argument.port_, port))
         throw istream_exception(value);
-    }
 
     return input;
 }

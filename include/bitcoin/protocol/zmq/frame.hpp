@@ -22,7 +22,6 @@
 #include <memory>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
-#include <bitcoin/protocol/network.hpp>
 #include <bitcoin/protocol/zmq/error.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
 #include <bitcoin/protocol/zmq/zeromq.hpp>
@@ -33,7 +32,7 @@ namespace zmq {
 
 /// This class is not thread safe.
 class BCP_API frame final
-  : public enable_shared_from_base<frame>, private noncopyable<frame>
+  : public enable_shared_from_base<frame>
 {
 public:
     /// A shared frame pointer.
@@ -41,6 +40,10 @@ public:
 
     /// Construct a frame with no payload (for receiving).
     frame() NOEXCEPT;
+    frame(frame&&) = default;
+    frame(const frame&) = default;
+    frame& operator=(frame&&) = default;
+    frame& operator=(const frame&) = default;
 
     /// Construct a frame with the specified payload (for sending).
     frame(const system::data_chunk& data) NOEXCEPT;

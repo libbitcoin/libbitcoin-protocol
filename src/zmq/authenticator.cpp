@@ -51,7 +51,7 @@ authenticator::~authenticator() NOEXCEPT
     stop();
 }
 
-authenticator::operator context&() NOEXCEPT
+authenticator::operator context& () NOEXCEPT
 {
     return context_;
 }
@@ -62,7 +62,9 @@ bool authenticator::start() NOEXCEPT
     // Context is thread safe, this critical section is for start atomicity.
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     std::unique_lock lock(stop_mutex_);
+    BC_POP_WARNING()
 
     return context_.start() && worker::start();
     ///////////////////////////////////////////////////////////////////////////
@@ -73,7 +75,9 @@ bool authenticator::stop() NOEXCEPT
     // Context is thread safe, this critical section is for stop atomicity.
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     std::unique_lock lock(stop_mutex_);
+    BC_POP_WARNING()
 
     // Stop the context first in case a blocking proxy is in use.
     return context_.stop() && worker::stop();
@@ -105,7 +109,7 @@ void authenticator::work() NOEXCEPT
         std::string metadata;
 
         message request;
-        auto ec = replier.receive(request);
+        const auto ec = replier.receive(request);
 
         if (ec != error::success || request.size() < 6)
         {
@@ -224,8 +228,8 @@ void authenticator::work() NOEXCEPT
         response.enqueue(metadata);
 
         // This is returned to the zeromq ZAP dispatcher, not the caller.
-        BC_DEBUG_ONLY(ec =) replier.send(response);
-        BC_ASSERT(ec == error::success || ec == error::context_terminated);
+        BC_DEBUG_ONLY(const code ec_ =) replier.send(response);
+        BC_ASSERT(ec_ == error::success || ec_ == error::context_terminated);
     }
 
     finished(replier.stop());
@@ -254,7 +258,9 @@ bool authenticator::apply(socket& socket, const std::string& domain,
     // Weak domain list persists after socket close so don't reuse domains.
     if (require_domain)
     {
+        BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
         weak_domains_.emplace(domain);
+        BC_POP_WARNING()
         return socket.set_authentication_domain(domain);
     }
 
@@ -269,7 +275,9 @@ void authenticator::set_private_key(const sodium& private_key) NOEXCEPT
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     std::unique_lock lock(property_mutex_);
+    BC_POP_WARNING()
 
     private_key_ = private_key;
     ///////////////////////////////////////////////////////////////////////////
@@ -277,6 +285,7 @@ void authenticator::set_private_key(const sodium& private_key) NOEXCEPT
 
 bool authenticator::allowed_address(const std::string& ip_address) const NOEXCEPT
 {
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
     std::shared_lock lock(property_mutex_);
@@ -286,40 +295,48 @@ bool authenticator::allowed_address(const std::string& ip_address) const NOEXCEP
     return (require_allow_ && found && entry->second) ||
         (!require_allow_ && (!found || entry->second));
     ///////////////////////////////////////////////////////////////////////////
+    BC_POP_WARNING()
 }
 
 bool authenticator::allowed_key(const hash_digest& public_key) const NOEXCEPT
 {
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
     std::shared_lock lock(property_mutex_);
 
     return keys_.empty() || keys_.find(public_key) != keys_.end();
     ///////////////////////////////////////////////////////////////////////////
+    BC_POP_WARNING()
 }
 
 bool authenticator::allowed_weak(const std::string& domain) const NOEXCEPT
 {
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
-    std::shared_lock lock(property_mutex_);
+        std::shared_lock lock(property_mutex_);
 
     return weak_domains_.find(domain) != weak_domains_.end();
     ///////////////////////////////////////////////////////////////////////////
+    BC_POP_WARNING()
 }
 
 void authenticator::allow(const hash_digest& public_key) NOEXCEPT
 {
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
     std::unique_lock lock(property_mutex_);
 
     keys_.emplace(public_key);
     ///////////////////////////////////////////////////////////////////////////
+    BC_POP_WARNING()
 }
 
 void authenticator::allow(const authority& address) NOEXCEPT
 {
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
     std::unique_lock lock(property_mutex_);
@@ -329,10 +346,12 @@ void authenticator::allow(const authority& address) NOEXCEPT
     // Due to emplace behavior, first writer wins allow/deny conflict.
     adresses_.emplace(address.to_hostname(), true);
     ///////////////////////////////////////////////////////////////////////////
+    BC_POP_WARNING()
 }
 
 void authenticator::deny(const authority& address) NOEXCEPT
 {
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
     std::unique_lock lock(property_mutex_);
@@ -341,6 +360,7 @@ void authenticator::deny(const authority& address) NOEXCEPT
     // Due to emplace behavior, first writer wins allow/deny conflict.
     adresses_.emplace(address.to_hostname(), false);
     ///////////////////////////////////////////////////////////////////////////
+    BC_POP_WARNING()
 }
 
 } // namespace zmq
