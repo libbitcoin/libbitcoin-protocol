@@ -28,11 +28,16 @@ BOOST_AUTO_TEST_SUITE(socket_tests)
 // See for zeromq curve pattern: hintjens.com/blog:49
 // brickhouse = stonehouse - strawhouse (private and anonymous)
 
+// TODO: verify that missing authenticator should succeed/fail here.
 // There is no authenticator running, so this blocks despite configuration.
-BOOST_AUTO_TEST_CASE(socket__push_pull__brickhouse__blocked)
+BOOST_AUTO_TEST_CASE(socket__push_pull__brickhouse__received)
 {
     const zmq::certificate server_certificate;
     BOOST_REQUIRE(server_certificate);
+
+    zmq::authenticator authenticator;
+    authenticator.set_private_key(server_certificate.private_key());
+    BOOST_REQUIRE(authenticator.start());
 
     zmq::context context;
     BOOST_REQUIRE(context);
@@ -49,8 +54,13 @@ BOOST_AUTO_TEST_CASE(socket__push_pull__brickhouse__blocked)
     BOOST_REQUIRE(puller.set_certificate({}));
     REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
+    zmq::message out;
+    out.enqueue(TEST_MESSAGE);
     SEND_MESSAGE(pusher);
-    RECEIVE_FAILURE(puller);
+
+    zmq::poller poller;
+    poller.add(puller);
+    RECEIVE_MESSAGE(puller);
 }
 
 // PUSH and PULL [asymmetrical, synchronous, unroutable]
@@ -370,7 +380,6 @@ BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_asynchronous__received)
         zmq::socket subscriber(context, role::subscriber);
         BOOST_REQUIRE(subscriber);
         REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
-
         RECEIVE_MESSAGE(subscriber);
         received.set_value(true);
     });
@@ -398,7 +407,6 @@ BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_asynchronous_connect_first__rec
     zmq::socket publisher(context, role::publisher);
     BOOST_REQUIRE(publisher);
     REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
-
     SEND_MESSAGES_UNTIL(publisher, received);
 }
 
@@ -425,9 +433,7 @@ BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_asynchronous__no_subscription)
 
         data_chunk subscribe_all;
         BOOST_REQUIRE(subscriber.set_unsubscription(subscribe_all));
-
         REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
-
         RECEIVE_FAILURE(subscriber);
         received.set_value(true);
     });
@@ -456,12 +462,8 @@ BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_asynchronous__hello_subscriptio
 
         data_chunk subscribe_all;
         BOOST_REQUIRE(subscriber.set_unsubscription(subscribe_all));
-
-        std::string topic = TEST_TOPIC;
-        BOOST_REQUIRE(subscriber.set_subscription(to_chunk(topic)));
-
+        BOOST_REQUIRE(subscriber.set_subscription(to_chunk(TEST_TOPIC)));
         REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
-
         RECEIVE_MESSAGE(subscriber);
         received.set_value(true);
     });
@@ -479,7 +481,6 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__grasslands_two_threads__subscribed)
         zmq::socket publisher(context, role::publisher);
         BOOST_REQUIRE(publisher);
         REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
-
         SEND_MESSAGES_UNTIL(publisher, received);
     });
 
@@ -488,7 +489,6 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__grasslands_two_threads__subscribed)
         zmq::socket subscriber(context, role::subscriber);
         BOOST_REQUIRE(subscriber);
         REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
-
         RECEIVE_MESSAGE(subscriber);
         received.set_value(true);
     });
@@ -509,7 +509,6 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__decaf__subscribed)
         zmq::socket publisher(context, role::publisher);
         BOOST_REQUIRE(publisher);
         REQUIRE_SUCCESS(publisher.bind({ TEST_INPROC_ENDPOINT }));
-
         SEND_MESSAGES_UNTIL(publisher, received);
         publisher.stop();
         context.stop();
@@ -520,13 +519,12 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__decaf__subscribed)
         zmq::socket subscriber(context, role::subscriber);
         BOOST_REQUIRE(subscriber);
         REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
-
         RECEIVE_MESSAGE(subscriber);
         received.set_value(true);
     });
 
     // extended_subscriber connect blocks until the endpoint is bound.
-    // inproc binding connect calls also blocks until the endpoint is bound.
+    // inproc binding connect calls also block until the endpoint is bound.
     // So this xsubscriber.connect must not precede spawn of publisher_thread.
     zmq::socket xsubscriber(context, role::extended_subscriber);
     BOOST_REQUIRE(xsubscriber);
@@ -539,8 +537,8 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__decaf__subscribed)
     // The proxy returns when the current context is closed.
     // There is no difference between frontend and backend (symmetrical).
     zmq_proxy(xsubscriber.self(), xpublisher.self(), nullptr);
-    xsubscriber.stop();
-    xpublisher.stop();
+    ////xsubscriber.stop();
+    ////xpublisher.stop();
 }
 
 // This is server v3 tx/block service behavior.
@@ -562,7 +560,6 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__cappucino__subscribed)
         zmq::socket publisher(context, role::publisher);
         BOOST_REQUIRE(publisher);
         REQUIRE_SUCCESS(publisher.connect({ TEST_INPROC_ENDPOINT }));
-
         SEND_MESSAGES_UNTIL(publisher, received);
         publisher.stop();
         context.stop();
@@ -573,7 +570,6 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__cappucino__subscribed)
         zmq::socket subscriber(context, role::subscriber);
         BOOST_REQUIRE(subscriber);
         REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
-
         RECEIVE_MESSAGE(subscriber);
         received.set_value(true);
     });
@@ -589,8 +585,8 @@ BOOST_AUTO_TEST_CASE(socket__xpub_xsub__cappucino__subscribed)
     REQUIRE_SUCCESS(xsubscriber.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(xsubscriber.self(), xpublisher.self(), nullptr);
-    xsubscriber.stop();
-    xpublisher.stop();
+    ////xsubscriber.stop();
+    ////xpublisher.stop();
 }
 
 // ROUTER and DEALER [request-response routing]
@@ -632,8 +628,8 @@ BOOST_AUTO_TEST_CASE(socket__req_router_dealer_rep__synchronous_broker__replied)
     REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
-    router.stop();
-    dealer.stop();
+    ////router.stop();
+    ////dealer.stop();
 }
 
 // We do not use this in server even though the query worker is synchronous
@@ -648,7 +644,6 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_rep__front_asynchronous_broker
         zmq::socket replier(context, role::replier);
         BOOST_REQUIRE(replier);
         REQUIRE_SUCCESS(replier.connect({ TEST_INPROC_ENDPOINT }));
-
         RECEIVE_MESSAGE(replier);
         SEND_MESSAGE(replier);
     });
@@ -668,7 +663,6 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_rep__front_asynchronous_broker
         REQUIRE_SUCCESS(dealer.receive(in));
         BOOST_REQUIRE_EQUAL(in.dequeue_data().size(), MESSAGE_DELIMITER_SIZE);
         BOOST_REQUIRE_EQUAL(in.dequeue_text(), TEST_MESSAGE);
-
         dealer.stop();
         context.stop();
     });
@@ -682,8 +676,8 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_rep__front_asynchronous_broker
     REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
-    router.stop();
-    dealer.stop();
+    ////router.stop();
+    ////dealer.stop();
 }
 
 // This is server v3 query req/service/worker behavior.
@@ -749,8 +743,8 @@ BOOST_AUTO_TEST_CASE(socket__req_router_dealer_router__synchronous_broker__route
     REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
-    router.stop();
-    dealer.stop();
+    ////router.stop();
+    ////dealer.stop();
 }
 
 // This is server v3 query client/service/worker behavior.
@@ -827,8 +821,8 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_router__front_asynchronous_bro
     REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
-    router.stop();
-    dealer.stop();
+    ////router.stop();
+    ////dealer.stop();
 }
 
 // This is server v2 query client/service/worker behavior (supported by v3).
@@ -891,8 +885,8 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_router__front_asynchronous_bro
     REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
-    router.stop();
-    dealer.stop();
+    ////router.stop();
+    ////dealer.stop();
 }
 
 // This is server v3 query client/service/notifier behavior.
@@ -964,8 +958,8 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer__asynchronous_broker__n
     REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
-    router.stop();
-    dealer.stop();
+    ////router.stop();
+    ////dealer.stop();
 }
 
 // The client must be a dealer for full async.
@@ -974,8 +968,6 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router__asynchronou
 {
     zmq::context context;
     BOOST_REQUIRE(context);
-
-    std::promise<zmq::message> subscription;
 
     simple_thread response_thread([&]()
     {
@@ -1002,23 +994,23 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router__asynchronou
         // Remove router2's envelope since it will be bypassed upon return.
         auto notification = out;
         notification.dequeue();
-        subscription.set_value(notification);
+
+        // Use thread to create router-dealer race.
+        simple_thread notification_thread([&context, notification]()
+        {
+            zmq::socket dealer(context, role::dealer);
+            BOOST_REQUIRE(dealer);
+            REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
+
+            // Send the notification message twice.
+            auto notification1 = notification;
+            auto notification2 = notification;
+            REQUIRE_SUCCESS(dealer.send(notification1));
+            REQUIRE_SUCCESS(dealer.send(notification2));
+        });
 
         // Send the response (in a race with the two notifications).
         REQUIRE_SUCCESS(router.send(out));
-    });
-
-    simple_thread notification_thread([&]()
-    {
-        zmq::socket dealer(context, role::dealer);
-        BOOST_REQUIRE(dealer);
-        REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
-
-        // Wait on subscription and then send the notification message twice.
-        auto notification1 = subscription.get_future().get();
-        auto notification2 = notification1;
-        REQUIRE_SUCCESS(dealer.send(notification1));
-        REQUIRE_SUCCESS(dealer.send(notification2));
     });
 
     simple_thread client_thread([&]()
@@ -1066,8 +1058,8 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router__asynchronou
     REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
-    router.stop();
-    dealer.stop();
+    ////router.stop();
+    ////dealer.stop();
 }
 
 // This is server v2 query dealer/service/worker+notifier behavior (supported by v3).
@@ -1077,8 +1069,6 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router_undelimited_
 {
     zmq::context context;
     BOOST_REQUIRE(context);
-
-    std::promise<zmq::message> subscription;
 
     simple_thread response_thread([&]()
     {
@@ -1105,22 +1095,21 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router_undelimited_
         // Remove router2's envelope since it will be bypassed upon return.
         auto notification = out;
         notification.dequeue();
-        subscription.set_value(notification);
+
+        simple_thread notification_thread([&context, notification]()
+        {
+            zmq::socket dealer(context, role::dealer);
+            BOOST_REQUIRE(dealer);
+            REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
+
+            // Send the notification message twice.
+            auto notification1 = notification;
+            auto notification2 = notification;
+            REQUIRE_SUCCESS(dealer.send(notification1));
+            REQUIRE_SUCCESS(dealer.send(notification2));
+        });
 
         REQUIRE_SUCCESS(router.send(out));
-    });
-
-    simple_thread notification_thread([&]()
-    {
-        zmq::socket dealer(context, role::dealer);
-        BOOST_REQUIRE(dealer);
-        REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
-
-        // Wait on subscription and then send the notification message twice.
-        auto notification1 = subscription.get_future().get();
-        auto notification2 = notification1;
-        REQUIRE_SUCCESS(dealer.send(notification1));
-        REQUIRE_SUCCESS(dealer.send(notification2));
     });
 
     simple_thread client_thread([&]()
@@ -1160,8 +1149,8 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_router_undelimited_
     REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
-    router.stop();
-    dealer.stop();
+    ////router.stop();
+    ////dealer.stop();
 }
 
 // This is server v3.1 query dealer/service/worker+notifier behavior.
@@ -1170,8 +1159,6 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_dealer__asynchronou
     zmq::context context;
     BOOST_REQUIRE(context);
 
-    std::promise<zmq::message> subscription;
-
     simple_thread response_thread([&]()
     {
         zmq::socket dealer(context, role::dealer);
@@ -1189,20 +1176,20 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_dealer__asynchronou
         out.enqueue(id);
         out.enqueue();
         out.enqueue(TEST_MESSAGE);
-        subscription.set_value(out);
+
+        simple_thread notification_thread([&context, out]()
+        {
+            zmq::socket dealer(context, role::dealer);
+            BOOST_REQUIRE(dealer);
+            REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
+
+            auto notification1 = out;
+            auto notification2 = out;
+            REQUIRE_SUCCESS(dealer.send(notification1));
+            REQUIRE_SUCCESS(dealer.send(notification2));
+        });
+
         REQUIRE_SUCCESS(dealer.send(out));
-    });
-
-    simple_thread notification_thread([&]()
-    {
-        zmq::socket dealer(context, role::dealer);
-        BOOST_REQUIRE(dealer);
-        REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
-
-        auto notification1 = subscription.get_future().get();
-        auto notification2 = notification1;
-        REQUIRE_SUCCESS(dealer.send(notification1));
-        REQUIRE_SUCCESS(dealer.send(notification2));
     });
 
     simple_thread client_thread([&]()
@@ -1242,8 +1229,8 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_dealer__asynchronou
     REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
-    router.stop();
-    dealer.stop();
+    ////router.stop();
+    ////dealer.stop();
 }
 
 // This is server v3.1 query dealer/service/worker+notifier (v2 compatibility).
@@ -1252,8 +1239,6 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_dealer_undelimited_
     zmq::context context;
     BOOST_REQUIRE(context);
 
-    std::promise<zmq::message> subscription;
-
     simple_thread response_thread([&]()
     {
         zmq::socket dealer(context, role::dealer);
@@ -1271,20 +1256,20 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_dealer_undelimited_
         out.enqueue(id);
         ////out.enqueue();
         out.enqueue(TEST_MESSAGE);
-        subscription.set_value(out);
+
+        simple_thread notification_thread([&context, out]()
+        {
+            zmq::socket dealer(context, role::dealer);
+            BOOST_REQUIRE(dealer);
+            REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
+
+            auto notification1 = out;
+            auto notification2 = out;
+            REQUIRE_SUCCESS(dealer.send(notification1));
+            REQUIRE_SUCCESS(dealer.send(notification2));
+        });
+
         REQUIRE_SUCCESS(dealer.send(out));
-    });
-
-    simple_thread notification_thread([&]()
-    {
-        zmq::socket dealer(context, role::dealer);
-        BOOST_REQUIRE(dealer);
-        REQUIRE_SUCCESS(dealer.connect({ TEST_INPROC_ENDPOINT }));
-
-        auto notification1 = subscription.get_future().get();
-        auto notification2 = notification1;
-        REQUIRE_SUCCESS(dealer.send(notification1));
-        REQUIRE_SUCCESS(dealer.send(notification2));
     });
 
     simple_thread client_thread([&]()
@@ -1324,8 +1309,8 @@ BOOST_AUTO_TEST_CASE(socket__dealer_router_dealer_dealer_and_dealer_undelimited_
     REQUIRE_SUCCESS(dealer.bind({ TEST_INPROC_ENDPOINT }));
 
     zmq_proxy(router.self(), dealer.self(), nullptr);
-    router.stop();
-    dealer.stop();
+    ////router.stop();
+    ////dealer.stop();
 }
 
 BOOST_AUTO_TEST_SUITE_END()
