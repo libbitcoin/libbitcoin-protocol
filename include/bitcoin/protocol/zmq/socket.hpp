@@ -24,7 +24,6 @@
 #include <string>
 #include <bitcoin/protocol/config/config.hpp>
 #include <bitcoin/protocol/define.hpp>
-#include <bitcoin/protocol/network.hpp>
 #include <bitcoin/protocol/settings.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
@@ -42,7 +41,7 @@ class authenticator;
 /// All calls must be made on the socket thread.
 /// Because the socket is only set on construct, sockets are not restartable.
 class BCP_API socket final
-  : public enable_shared_from_base<socket>, private noncopyable<socket>
+  : public enable_shared_from_base<socket>
 {
 public:
     /// The full set of socket roles defined by zeromq.

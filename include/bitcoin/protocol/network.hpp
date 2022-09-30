@@ -48,21 +48,6 @@ namespace protocol {
 typedef system::data_array<16> ip_address;
 
 // Empty base optimization using CRTP.
-template <class Type>
-class noncopyable
-{
-public:
-    noncopyable(const noncopyable&) = delete;
-    Type& operator = (const Type&) = delete;
-
-protected:
-    noncopyable() = default;
-    
-    // non-virtual
-    ~noncopyable() = default;
-};
-
-// Empty base optimization using CRTP.
 template <class Base>
 class enable_shared_from_base
   : public std::enable_shared_from_this<Base>
@@ -105,6 +90,7 @@ inline void set_priority(thread_priority priority) NOEXCEPT
 {
     const auto prioritization = get_priority(priority);
 
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
 #if defined(HAVE_MSC)
     SetThreadPriority(GetCurrentThread(), prioritization);
 #elif defined(PRIO_THREAD)
@@ -112,6 +98,7 @@ inline void set_priority(thread_priority priority) NOEXCEPT
 #else
     setpriority(PRIO_PROCESS, getpid(), prioritization);
 #endif
+    BC_POP_WARNING()
 }
 
 } // namespace protocol

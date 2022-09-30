@@ -48,6 +48,10 @@ public:
 
     /// There may be only one authenticator per process.
     authenticator(thread_priority priority=thread_priority::normal) NOEXCEPT;
+    authenticator(authenticator&&) = delete;
+    authenticator(const authenticator&) = delete;
+    authenticator& operator=(authenticator&&) = delete;
+    authenticator& operator=(const authenticator&) = delete;
 
     /// Stop the router.
     virtual ~authenticator() NOEXCEPT;

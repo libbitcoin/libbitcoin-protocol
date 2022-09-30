@@ -33,7 +33,7 @@ namespace zmq {
 
 /// This class is thread safe.
 class BCP_API context final
-  : public enable_shared_from_base<context>, private noncopyable<context>
+  : public enable_shared_from_base<context>
 {
 public:
     /// A shared context pointer.
@@ -41,6 +41,10 @@ public:
 
     /// Construct a context.
     context(bool started=true) NOEXCEPT;
+    context(context&&) = delete;
+    context(const context&) = delete;
+    context& operator=(context&&) = delete;
+    context& operator=(const context&) = delete;
 
     /// Blocks until all child sockets are closed.
     /// Stops all child socket activity by closing the zeromq context.

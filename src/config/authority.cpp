@@ -18,9 +18,8 @@
  */
 #include <bitcoin/protocol/config/authority.hpp>
 
-#include <algorithm>
-#include <exception>
 #include <sstream>
+#include <string>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/boost.hpp>
 #include <bitcoin/protocol/network.hpp>
@@ -108,8 +107,7 @@ static std::string to_ipv4_hostname(const ip& ip_address) NOEXCEPT
     BC_POP_WARNING()
 }
 
-static std::string to_ipv6_hostname(
-    const boost::asio::ip::address& ip_address) NOEXCEPT
+static std::string to_ipv6_hostname(const ip& ip_address) NOEXCEPT
 {
     // IPv6 URLs use a bracketed IPv6 address, see rfc2732.
     BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
@@ -193,12 +191,16 @@ std::istream& operator>>(std::istream& input,
     try
     {
         argument.ip_ = ipv6::from_string(ip_address);
-        argument.port_ = port.empty() ? 0 : boost::lexical_cast<uint16_t>(port);
     }
     catch (const std::exception&)
     {
         throw istream_exception(value);
     }
+
+    if (port.empty())
+        argument.port_ = 0;
+    else if (!system::deserialize(argument.port_, port))
+        throw istream_exception(value);
 
     return input;
 }

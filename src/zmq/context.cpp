@@ -45,7 +45,9 @@ bool context::start() NOEXCEPT
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     std::unique_lock lock(mutex_);
+    BC_POP_WARNING()
 
     if (self_ != nullptr)
         return false;
@@ -60,7 +62,9 @@ bool context::stop() NOEXCEPT
 {
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     std::unique_lock lock(mutex_);
+    BC_POP_WARNING()
 
     if (self_ == nullptr)
         return true;

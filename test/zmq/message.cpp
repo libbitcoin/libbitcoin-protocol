@@ -34,7 +34,7 @@ class message_fixture
   : public protocol::zmq::message
 {
 public:
-    data_queue& queue()
+    auto& queue() NOEXCEPT
     {
         return queue_;
     };

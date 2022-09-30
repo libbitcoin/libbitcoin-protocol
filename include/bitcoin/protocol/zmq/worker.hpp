@@ -34,7 +34,6 @@ namespace zmq {
 
 /// This class is thread safe.
 class BCP_API worker
-  : private noncopyable<worker>
 {
 public:
     /// A shared worker pointer.
@@ -42,6 +41,10 @@ public:
 
     /// Construct a worker.
     worker(thread_priority priority=thread_priority::normal) NOEXCEPT;
+    worker(worker&&) = delete;
+    worker(const worker&) = delete;
+    worker& operator=(worker&&) = delete;
+    worker& operator=(const worker&) = delete;
 
     /// Stop the worker.
     virtual ~worker() NOEXCEPT;

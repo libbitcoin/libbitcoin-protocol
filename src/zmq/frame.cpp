@@ -31,6 +31,8 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+using namespace bc::system;
+
 // Use for receiving.
 frame::frame() NOEXCEPT
   : more_(false), valid_(initialize({}))
@@ -49,9 +51,9 @@ frame::~frame() NOEXCEPT
 }
 
 // private
-bool frame::initialize(const system::data_chunk& data) NOEXCEPT
+bool frame::initialize(const data_chunk& data) NOEXCEPT
 {
-    const auto& buffer = system::pointer_cast<zmq_msg_t>(&message_);
+    const auto& buffer = pointer_cast<zmq_msg_t>(&message_);
 
     if (data.empty())
         return (zmq_msg_init(buffer) != zmq_fail);
@@ -61,6 +63,13 @@ bool frame::initialize(const system::data_chunk& data) NOEXCEPT
 
     std::memcpy(zmq_msg_data(buffer), data.data(), data.size());
     return true;
+}
+
+// private
+bool frame::destroy() NOEXCEPT
+{
+    const auto& buffer = pointer_cast<zmq_msg_t>(&message_);
+    return valid_ && (zmq_msg_close(buffer) != zmq_fail);
 }
 
 frame::operator bool() const NOEXCEPT
@@ -86,12 +95,12 @@ bool frame::set_more(socket& socket) NOEXCEPT
     return true;
 }
 
-system::data_chunk frame::payload() const NOEXCEPT
+data_chunk frame::payload() const NOEXCEPT
 {
-    const auto& buffer = system::pointer_cast<zmq_msg_t>(&message_);
+    const auto& buffer = pointer_cast<zmq_msg_t>(&message_);
     const auto size = zmq_msg_size(buffer);
     const auto data = zmq_msg_data(buffer);
-    const auto begin = system::pointer_cast<uint8_t>(data);
+    const auto begin = pointer_cast<uint8_t>(data);
     return { begin, std::next(begin, size) };
 }
 
@@ -101,7 +110,7 @@ error::code frame::receive(socket& socket) NOEXCEPT
     if (!valid_)
         return error::invalid_message;
 
-    const auto& buffer = system::pointer_cast<zmq_msg_t>(&message_);
+    const auto& buffer = pointer_cast<zmq_msg_t>(&message_);
     const auto result = zmq_msg_recv(buffer, socket.self(), wait_flag)
         != zmq_fail && set_more(socket);
     return result ? error::success : error::get_last_error();
@@ -114,16 +123,9 @@ error::code frame::send(socket& socket, bool last) NOEXCEPT
         return error::invalid_message;
 
     const int flags = (last ? 0 : ZMQ_SNDMORE) | wait_flag;
-    const auto& buffer = system::pointer_cast<zmq_msg_t>(&message_);
+    const auto& buffer = pointer_cast<zmq_msg_t>(&message_);
     const auto result = zmq_msg_send(buffer, socket.self(), flags) != zmq_fail;
     return result ? error::success : error::get_last_error();
-}
-
-// private
-bool frame::destroy() NOEXCEPT
-{
-    const auto& buffer = system::pointer_cast<zmq_msg_t>(&message_);
-    return valid_ && (zmq_msg_close(buffer) != zmq_fail);
 }
 
 } // namespace zmq

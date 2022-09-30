@@ -37,7 +37,7 @@ namespace protocol {
 namespace zmq {
 
 using namespace bc::system;
-static const libbitcoin::protocol::settings default_settings;
+static const bc::protocol::settings default_settings;
 
 // Linger
 // The default value of -1 specifies an infinite linger period. Pending
@@ -53,24 +53,14 @@ static const libbitcoin::protocol::settings default_settings;
 // messages when they reach their RCVHWM. PULL and DEALER sockets will refuse
 // new messages and force messages to wait upstream due to TCP backpressure.
 
-inline int32_t capped32(uint32_t value) NOEXCEPT
+constexpr int32_t seconds(uint32_t value) NOEXCEPT
 {
-    static constexpr auto limit = static_cast<uint32_t>(max_int32);
-    return static_cast<int32_t>(std::min(value, limit));
-}
-
-inline int64_t capped64(uint64_t value) NOEXCEPT
-{
-    static constexpr auto limit = static_cast<uint64_t>(max_int64);
-    return static_cast<int64_t>(std::min(value, limit));
-}
-
-inline int32_t seconds(uint32_t value) NOEXCEPT
-{
-    static constexpr uint32_t ms_to_seconds = 1000;
-    static constexpr auto milliseconds = static_cast<uint32_t>(max_int32);
-    static constexpr auto limit = milliseconds / ms_to_seconds;
-    return static_cast<int32_t>(std::min(value, limit) * ms_to_seconds);
+    // TODO: use std::chrono.
+    constexpr uint32_t ms_to_seconds = 1000;
+    constexpr auto milliseconds = sign_cast<uint32_t>(max_int32);
+    constexpr auto limit = milliseconds / ms_to_seconds;
+    return possible_narrow_sign_cast<int32_t>(
+        std::min(value, limit) * ms_to_seconds);
 }
 
 int32_t socket::to_socket_type(role socket_role) NOEXCEPT
@@ -119,8 +109,8 @@ socket::socket(context& context, role socket_role,
     // Currently this is simplified to string matching and so limited to ipv4.
     if (/*!set(ZMQ_IPV6, zmq_true) ||*/
         !set32(ZMQ_LINGER, zmq_false) ||
-        !set32(ZMQ_SNDHWM, capped32(settings.send_high_water)) ||
-        !set32(ZMQ_RCVHWM, capped32(settings.receive_high_water)) ||
+        !set32(ZMQ_SNDHWM, limit<int32_t>(settings.send_high_water)) ||
+        !set32(ZMQ_RCVHWM, limit<int32_t>(settings.receive_high_water)) ||
         !set32(ZMQ_HANDSHAKE_IVL, seconds(settings.handshake_seconds)) ||
         !set32(ZMQ_HEARTBEAT_IVL, seconds(settings.ping_seconds)))
     {
@@ -128,7 +118,7 @@ socket::socket(context& context, role socket_role,
         return;
     }
 
-    const auto size_limit = capped64(settings.message_size_limit);
+    const auto size_limit = limit<int64_t>(settings.message_size_limit);
 
     if (!set64(ZMQ_MAXMSGSIZE, size_limit == 0 ? -1 : size_limit))
     {
