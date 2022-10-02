@@ -327,24 +327,25 @@ BOOST_AUTO_TEST_CASE(socket__req_dealer__grasslands__bad_stream)
     BOOST_REQUIRE_EQUAL(replier.send(out), zmq::error::socket_state);
 }
 
+// Disabled due to result race (unpredictability).
 // PUB and SUB [asymmtrical, asynchronous, routable (subscription)]
-BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_synchronous__missed)
-{
-    zmq::context context;
-    BOOST_REQUIRE(context);
-
-    zmq::socket publisher(context, role::publisher);
-    BOOST_REQUIRE(publisher);
-    REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
-
-    zmq::socket subscriber(context, role::subscriber);
-    BOOST_REQUIRE(subscriber);
-    REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
-
-    // Because pub-sub is asynchronous, the receive misses the send.
-    SEND_MESSAGE(publisher);
-    RECEIVE_FAILURE(subscriber);
-}
+////BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_synchronous__missed)
+////{
+////    zmq::context context;
+////    BOOST_REQUIRE(context);
+////
+////    zmq::socket publisher(context, role::publisher);
+////    BOOST_REQUIRE(publisher);
+////    REQUIRE_SUCCESS(publisher.bind({ TEST_PUBLIC_ENDPOINT }));
+////
+////    zmq::socket subscriber(context, role::subscriber);
+////    BOOST_REQUIRE(subscriber);
+////    REQUIRE_SUCCESS(subscriber.connect({ TEST_PUBLIC_ENDPOINT }));
+////
+////    // Because pub-sub is asynchronous, the receive usually misses the send.
+////    SEND_MESSAGE(publisher);
+////    RECEIVE_FAILURE(subscriber);
+////}
 
 BOOST_AUTO_TEST_CASE(socket__pub_sub__grasslands_synchronous_connect_first__missed)
 {

@@ -142,10 +142,8 @@ std::string message::dequeue_text() NOEXCEPT
 
 void message::clear() NOEXCEPT
 {
-    queue_ = {};
-
-    ////while (!queue_.empty())
-    ////    queue_.pop();
+    while (!queue_.empty())
+        queue_.pop();
 }
 
 bool message::empty() const NOEXCEPT
@@ -161,12 +159,11 @@ size_t message::size() const NOEXCEPT
 // Must be called on the socket thread.
 error::code message::send(socket& socket) NOEXCEPT
 {
-    auto count = queue_.size();
-
     while (!queue_.empty())
     {
-        const auto ec = frame(queue_.front()).send(socket, is_zero(--count));
+        frame part{ queue_.front() };
         queue_.pop();
+        const auto ec = part.send(socket, queue_.empty());
 
         if (ec)
             return ec;
@@ -183,7 +180,7 @@ error::code message::receive(socket& socket) NOEXCEPT
 
     while (!done)
     {
-        frame frame;
+        frame frame{};
         const auto ec = frame.receive(socket);
 
         if (ec)

@@ -113,7 +113,7 @@ BOOST_AUTO_TEST_CASE(authenticator__apply__secure_without_server_private_key__fa
 
 BOOST_AUTO_TEST_CASE(authenticator__apply__secure_with_server_private_key__true)
 {
-    zmq::certificate server_certificate;
+    const zmq::certificate server_certificate;
     BOOST_REQUIRE(server_certificate);
 
     zmq::authenticator authenticator;
@@ -127,7 +127,7 @@ BOOST_AUTO_TEST_CASE(authenticator__apply__secure_with_server_private_key__true)
 
 BOOST_AUTO_TEST_CASE(authenticator__apply__secure_with_empty_domain__true)
 {
-    zmq::certificate server_certificate;
+    const zmq::certificate server_certificate;
     BOOST_REQUIRE(server_certificate);
 
     zmq::authenticator authenticator;
@@ -142,121 +142,9 @@ BOOST_AUTO_TEST_CASE(authenticator__apply__secure_with_empty_domain__true)
 // push/pull clent-server tests
 // See for zeromq curve pattern: hintjens.com/blog:49
 
-// grasslands (public and anonymous)
-// The grasslands pattern does not require the authenticator.
-// The authenticator is used for client indentity validation (i.e. IP address/cert/password).
-// These other grasslands tests just ensure the pattern works alongside the authenticator.
-// This is also useful to show that the grasslands pattern does not relay to the authenticator.
-
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands__unauthenticated__received)
-{
-    zmq::authenticator authenticator;
-    BOOST_REQUIRE(authenticator.start());
-
-    zmq::socket pusher(authenticator, role::pusher);
-    BOOST_REQUIRE(pusher);
-    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
-
-    zmq::socket puller(authenticator, role::puller);
-    BOOST_REQUIRE(puller);
-    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
-
-    SEND_MESSAGE(pusher);
-    RECEIVE_MESSAGE(puller);
-}
-
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_secure_certified__blocked)
-{
-    zmq::certificate server_certificate;
-    BOOST_REQUIRE(server_certificate);
-
-    zmq::authenticator authenticator;
-    BOOST_REQUIRE(authenticator.start());
-
-    zmq::socket pusher(authenticator, role::pusher);
-    BOOST_REQUIRE(pusher);
-    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
-
-    zmq::socket puller(authenticator, role::puller);
-    BOOST_REQUIRE(puller);
-    BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
-    BOOST_REQUIRE(puller.set_certificate({}));
-    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
-
-    SEND_MESSAGE(pusher);
-    RECEIVE_FAILURE(puller);
-}
-
-// When misconfigured PUSH-PULL blocks on send when authenticator is REQ (vs. ROUTER).
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_secure__blocked)
-{
-    zmq::certificate server_certificate;
-    BOOST_REQUIRE(server_certificate);
-
-    zmq::authenticator authenticator;
-    BOOST_REQUIRE(authenticator.start());
-
-    zmq::socket pusher(authenticator, role::pusher);
-    BOOST_REQUIRE(pusher);
-    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
-
-    zmq::socket puller(authenticator, role::puller);
-    BOOST_REQUIRE(puller);
-    BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
-    ////BOOST_REQUIRE(puller.set_certificate({}));
-    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
-
-    SEND_MESSAGE(pusher);
-    RECEIVE_FAILURE(puller);
-}
-
-// When misconfigured PUSH-PULL blocks on send when authenticator is REQ (vs. ROUTER).
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_certified__blocked)
-{
-    zmq::authenticator authenticator;
-    BOOST_REQUIRE(authenticator.start());
-
-    zmq::socket pusher(authenticator, role::pusher);
-    BOOST_REQUIRE(pusher);
-    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
-
-    zmq::socket puller(authenticator, role::puller);
-    BOOST_REQUIRE(puller);
-    ////BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
-    BOOST_REQUIRE(puller.set_certificate({}));
-    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
-
-    SEND_MESSAGE(pusher);
-    RECEIVE_FAILURE(puller);
-}
-
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_unsecure_uncertified__received)
-{
-    zmq::authenticator authenticator;
-    BOOST_REQUIRE(authenticator.start());
-
-    zmq::socket pusher(authenticator, role::pusher);
-    BOOST_REQUIRE(pusher);
-    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
-    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
-
-    zmq::socket puller(authenticator, role::puller);
-    BOOST_REQUIRE(puller);
-    ////BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
-    ////BOOST_REQUIRE(puller.set_certificate({}));
-    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
-
-    SEND_MESSAGE(pusher);
-    RECEIVE_MESSAGE(puller);
-}
-
 // strawhouse (public and anonymous with IP restrictions)
 
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_bad_allow__blocked)
+BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_bad_allow__failed)
 {
     zmq::authenticator authenticator;
     authenticator.allow(authority{ TEST_HOST_BAD });
@@ -333,7 +221,7 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_client_bad_deny__recei
     RECEIVE_MESSAGE(puller);
 }
 
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_bad_and_good_deny__blocked)
+BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_bad_and_good_deny__failed)
 {
     zmq::authenticator authenticator;
     authenticator.deny(authority{ TEST_HOST_BAD });
@@ -353,7 +241,7 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_bad_and_good_deny__blo
     RECEIVE_FAILURE(puller);
 }
 
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_client_good_deny__blocked)
+BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_client_good_deny__failed)
 {
     zmq::authenticator authenticator;
     authenticator.deny(authority{ TEST_HOST });
@@ -372,7 +260,7 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_client_good_deny__bloc
     RECEIVE_FAILURE(puller);
 }
 
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_good_deny_before_same_allow__blocked)
+BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_good_deny_before_same_allow__failed)
 {
     zmq::authenticator authenticator;
     authenticator.deny(authority{ TEST_HOST });
@@ -412,26 +300,46 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__strawhouse_good_deny_after_same_a
     RECEIVE_MESSAGE(puller);
 }
 
-// brickhouse = stonehouse - strawhouse (private and anonymous)
-// Despite client anonymity the authenitcator is required to validate the client certificate.
+// grasslands (public and anonymous)
+// The grasslands pattern does not require the authenticator.
+// The authenticator is used for client indentity validation (i.e. IP address/cert/password).
+// These other grasslands tests just ensure the pattern works alongside the authenticator.
+// This is also useful to show that the grasslands pattern does not relay to the authenticator.
 
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_unsecure__blocked)
+BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_unsecure_uncertified__received)
 {
-    zmq::certificate server_certificate;
-    BOOST_REQUIRE(server_certificate);
-
     zmq::authenticator authenticator;
-    authenticator.set_private_key(server_certificate.private_key());
     BOOST_REQUIRE(authenticator.start());
 
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
-    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
+    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
     REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
     BOOST_REQUIRE(puller);
-    ////BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
+    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
+
+    SEND_MESSAGE(pusher);
+    RECEIVE_MESSAGE(puller);
+}
+
+BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_secure_certified__failed)
+{
+    const zmq::certificate server_certificate;
+    BOOST_REQUIRE(server_certificate);
+
+    zmq::authenticator authenticator;
+    BOOST_REQUIRE(authenticator.start());
+
+    zmq::socket pusher(authenticator, role::pusher);
+    BOOST_REQUIRE(pusher);
+    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
+    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::socket puller(authenticator, role::puller);
+    BOOST_REQUIRE(puller);
+    BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
     BOOST_REQUIRE(puller.set_certificate({}));
     REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
@@ -439,56 +347,57 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_unsecure__blocked)
     RECEIVE_FAILURE(puller);
 }
 
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_uncertified__blocked)
-{
-    zmq::certificate server_certificate;
-    BOOST_REQUIRE(server_certificate);
+// When misconfigured PUSH-PULL may block on send when authenticator is REP (vs. ROUTER).
+////BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_secure__blocked)
+////{
+////    const zmq::certificate server_certificate;
+////    BOOST_REQUIRE(server_certificate);
+////
+////    zmq::authenticator authenticator;
+////    BOOST_REQUIRE(authenticator.start());
+////
+////    zmq::socket pusher(authenticator, role::pusher);
+////    BOOST_REQUIRE(pusher);
+////    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
+////    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
+////
+////    zmq::socket puller(authenticator, role::puller);
+////    BOOST_REQUIRE(puller);
+////    BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
+////    ////BOOST_REQUIRE(puller.set_certificate({}));
+////    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
+////
+////    SEND_MESSAGE(pusher);
+////    RECEIVE_FAILURE(puller);
+////}
 
-    zmq::authenticator authenticator;
-    authenticator.set_private_key(server_certificate.private_key());
-    BOOST_REQUIRE(authenticator.start());
+// When misconfigured PUSH-PULL may block on send when authenticator is REP (vs. ROUTER).
+////BOOST_AUTO_TEST_CASE(authenticator__push_pull__grasslands_certified__blocked)
+////{
+////    zmq::authenticator authenticator;
+////    BOOST_REQUIRE(authenticator.start());
+////
+////    zmq::socket pusher(authenticator, role::pusher);
+////    BOOST_REQUIRE(pusher);
+////    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
+////    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
+////
+////    zmq::socket puller(authenticator, role::puller);
+////    BOOST_REQUIRE(puller);
+////    ////BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
+////    BOOST_REQUIRE(puller.set_certificate({}));
+////    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
+////
+////    SEND_MESSAGE(pusher);
+////    RECEIVE_FAILURE(puller);
+////}
 
-    zmq::socket pusher(authenticator, role::pusher);
-    BOOST_REQUIRE(pusher);
-    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
-
-    zmq::socket puller(authenticator, role::puller);
-    BOOST_REQUIRE(puller);
-    BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
-    ////BOOST_REQUIRE(puller.set_certificate({}));
-    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
-
-    SEND_MESSAGE(pusher);
-    RECEIVE_FAILURE(puller);
-}
-
-// When misconfigured PUSH-PULL blocks on send when authenticator is REQ (vs. ROUTER).
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_unsecure_uncertified__blocked)
-{
-    zmq::certificate server_certificate;
-    BOOST_REQUIRE(server_certificate);
-
-    zmq::authenticator authenticator;
-    authenticator.set_private_key(server_certificate.private_key());
-    BOOST_REQUIRE(authenticator.start());
-
-    zmq::socket pusher(authenticator, role::pusher);
-    BOOST_REQUIRE(pusher);
-    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
-
-    zmq::socket puller(authenticator, role::puller);
-    BOOST_REQUIRE(puller);
-    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
-
-    SEND_MESSAGE(pusher);
-    RECEIVE_FAILURE(puller);
-}
+// brickhouse = stonehouse - strawhouse (private and anonymous)
+// Despite client anonymity the authenticator is required to validate the client certificate.
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_secure_certified__received)
 {
-    zmq::certificate server_certificate;
+    const zmq::certificate server_certificate;
     BOOST_REQUIRE(server_certificate);
 
     zmq::authenticator authenticator;
@@ -510,15 +419,85 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_secure_certified__rece
     RECEIVE_MESSAGE(puller);
 }
 
-// ironhouse (private with mututal authentication)
-
-// When misconfigured PUSH-PULL blocks on send when authenticator is REQ (vs. ROUTER).
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unapplied__blocked)
+BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_unsecure__failed)
 {
-    zmq::certificate server_certificate;
+    const zmq::certificate server_certificate;
     BOOST_REQUIRE(server_certificate);
 
-    zmq::certificate client_certificate;
+    zmq::authenticator authenticator;
+    authenticator.set_private_key(server_certificate.private_key());
+    BOOST_REQUIRE(authenticator.start());
+
+    zmq::socket pusher(authenticator, role::pusher);
+    BOOST_REQUIRE(pusher);
+    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
+    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::socket puller(authenticator, role::puller);
+    BOOST_REQUIRE(puller);
+    ////BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
+    BOOST_REQUIRE(puller.set_certificate({}));
+    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
+
+    SEND_MESSAGE(pusher);
+    RECEIVE_FAILURE(puller);
+}
+
+BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_uncertified__failed)
+{
+    const zmq::certificate server_certificate;
+    BOOST_REQUIRE(server_certificate);
+
+    zmq::authenticator authenticator;
+    authenticator.set_private_key(server_certificate.private_key());
+    BOOST_REQUIRE(authenticator.start());
+
+    zmq::socket pusher(authenticator, role::pusher);
+    BOOST_REQUIRE(pusher);
+    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
+    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
+
+    zmq::socket puller(authenticator, role::puller);
+    BOOST_REQUIRE(puller);
+    BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
+    ////BOOST_REQUIRE(puller.set_certificate({}));
+    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
+
+    SEND_MESSAGE(pusher);
+    RECEIVE_FAILURE(puller);
+}
+
+// When misconfigured PUSH-PULL may block on send when authenticator is REP (vs. ROUTER).
+////BOOST_AUTO_TEST_CASE(authenticator__push_pull__brickhouse_unsecure_uncertified__blocked)
+////{
+////    const zmq::certificate server_certificate;
+////    BOOST_REQUIRE(server_certificate);
+////
+////    zmq::authenticator authenticator;
+////    authenticator.set_private_key(server_certificate.private_key());
+////    BOOST_REQUIRE(authenticator.start());
+////
+////    zmq::socket pusher(authenticator, role::pusher);
+////    BOOST_REQUIRE(pusher);
+////    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
+////    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
+////
+////    zmq::socket puller(authenticator, role::puller);
+////    BOOST_REQUIRE(puller);
+////    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
+////
+////    SEND_MESSAGE(pusher);
+////    RECEIVE_FAILURE(puller);
+////}
+
+// ironhouse (private with mututal authentication)
+
+BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_authorized__received)
+{
+    const zmq::certificate server_certificate;
+    BOOST_REQUIRE(server_certificate);
+
+    const zmq::certificate client_certificate;
     BOOST_REQUIRE(client_certificate);
 
     zmq::authenticator authenticator;
@@ -528,7 +507,7 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unapplied__blocked)
 
     zmq::socket pusher(authenticator, role::pusher);
     BOOST_REQUIRE(pusher);
-    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
+    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
     REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
 
     zmq::socket puller(authenticator, role::puller);
@@ -538,15 +517,44 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unapplied__blocked)
     REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
 
     SEND_MESSAGE(pusher);
-    RECEIVE_FAILURE(puller);
+    RECEIVE_MESSAGE(puller);
 }
 
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unsecure__blocked)
+// When misconfigured PUSH-PULL may block on send when authenticator is REP (vs. ROUTER).
+////BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unapplied__blocked)
+////{
+////    const zmq::certificate server_certificate;
+////    BOOST_REQUIRE(server_certificate);
+////
+////    const zmq::certificate client_certificate;
+////    BOOST_REQUIRE(client_certificate);
+////
+////    zmq::authenticator authenticator;
+////    authenticator.set_private_key(server_certificate.private_key());
+////    authenticator.allow(client_certificate.public_key());
+////    BOOST_REQUIRE(authenticator.start());
+////
+////    zmq::socket pusher(authenticator, role::pusher);
+////    BOOST_REQUIRE(pusher);
+////    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, false));
+////    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
+////
+////    zmq::socket puller(authenticator, role::puller);
+////    BOOST_REQUIRE(puller);
+////    BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
+////    BOOST_REQUIRE(puller.set_certificate(client_certificate));
+////    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
+////
+////    SEND_MESSAGE(pusher);
+////    RECEIVE_FAILURE(puller);
+////}
+
+BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unsecure__failed)
 {
-    zmq::certificate server_certificate;
+    const zmq::certificate server_certificate;
     BOOST_REQUIRE(server_certificate);
 
-    zmq::certificate client_certificate;
+    const zmq::certificate client_certificate;
     BOOST_REQUIRE(client_certificate);
 
     zmq::authenticator authenticator;
@@ -569,12 +577,12 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unsecure__blocked)
     RECEIVE_FAILURE(puller);
 }
 
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_uncertified__blocked)
+BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_uncertified__failed)
 {
-    zmq::certificate server_certificate;
+    const zmq::certificate server_certificate;
     BOOST_REQUIRE(server_certificate);
 
-    zmq::certificate client_certificate;
+    const zmq::certificate client_certificate;
     BOOST_REQUIRE(client_certificate);
 
     zmq::authenticator authenticator;
@@ -597,41 +605,41 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_uncertified__blocked)
     RECEIVE_FAILURE(puller);
 }
 
-// When misconfigured PUSH-PULL blocks on send when authenticator is REQ (vs. ROUTER).
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unsecure_uncertified__blocked)
+// When misconfigured PUSH-PULL may block on send when authenticator is REP (vs. ROUTER).
+////BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unsecure_uncertified__blocked)
+////{
+////    const zmq::certificate server_certificate;
+////    BOOST_REQUIRE(server_certificate);
+////
+////    const zmq::certificate client_certificate;
+////    BOOST_REQUIRE(client_certificate);
+////
+////    zmq::authenticator authenticator;
+////    authenticator.set_private_key(server_certificate.private_key());
+////    authenticator.allow(client_certificate.public_key());
+////    BOOST_REQUIRE(authenticator.start());
+////
+////    zmq::socket pusher(authenticator, role::pusher);
+////    BOOST_REQUIRE(pusher);
+////    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
+////    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
+////
+////    zmq::socket puller(authenticator, role::puller);
+////    BOOST_REQUIRE(puller);
+////    ////BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
+////    ////BOOST_REQUIRE(puller.set_certificate({}));
+////    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
+////
+////    SEND_MESSAGE(pusher);
+////    RECEIVE_FAILURE(puller);
+////}
+
+BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unauthorized__failed)
 {
-    zmq::certificate server_certificate;
+    const zmq::certificate server_certificate;
     BOOST_REQUIRE(server_certificate);
 
-    zmq::certificate client_certificate;
-    BOOST_REQUIRE(client_certificate);
-
-    zmq::authenticator authenticator;
-    authenticator.set_private_key(server_certificate.private_key());
-    authenticator.allow(client_certificate.public_key());
-    BOOST_REQUIRE(authenticator.start());
-
-    zmq::socket pusher(authenticator, role::pusher);
-    BOOST_REQUIRE(pusher);
-    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
-
-    zmq::socket puller(authenticator, role::puller);
-    BOOST_REQUIRE(puller);
-    ////BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
-    ////BOOST_REQUIRE(puller.set_certificate({}));
-    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
-
-    SEND_MESSAGE(pusher);
-    RECEIVE_FAILURE(puller);
-}
-
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unauthorized__blocked)
-{
-    zmq::certificate server_certificate;
-    BOOST_REQUIRE(server_certificate);
-
-    zmq::certificate client_certificate;
+    const zmq::certificate client_certificate;
     BOOST_REQUIRE(client_certificate);
 
     zmq::authenticator authenticator;
@@ -654,40 +662,12 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_unauthorized__blocked)
     RECEIVE_FAILURE(puller);
 }
 
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_authorized__received)
+BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_bad_allow__failed)
 {
-    zmq::certificate server_certificate;
+    const zmq::certificate server_certificate;
     BOOST_REQUIRE(server_certificate);
 
-    zmq::certificate client_certificate;
-    BOOST_REQUIRE(client_certificate);
-
-    zmq::authenticator authenticator;
-    authenticator.set_private_key(server_certificate.private_key());
-    authenticator.allow(client_certificate.public_key());
-    BOOST_REQUIRE(authenticator.start());
-
-    zmq::socket pusher(authenticator, role::pusher);
-    BOOST_REQUIRE(pusher);
-    BOOST_REQUIRE(authenticator.apply(pusher, TEST_DOMAIN, true));
-    REQUIRE_SUCCESS(pusher.bind({ TEST_PUBLIC_ENDPOINT }));
-
-    zmq::socket puller(authenticator, role::puller);
-    BOOST_REQUIRE(puller);
-    BOOST_REQUIRE(puller.set_curve_client(server_certificate.public_key()));
-    BOOST_REQUIRE(puller.set_certificate(client_certificate));
-    REQUIRE_SUCCESS(puller.connect({ TEST_PUBLIC_ENDPOINT }));
-
-    SEND_MESSAGE(pusher);
-    RECEIVE_MESSAGE(puller);
-}
-
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_bad_allow__blocked)
-{
-    zmq::certificate server_certificate;
-    BOOST_REQUIRE(server_certificate);
-
-    zmq::certificate client_certificate;
+    const zmq::certificate client_certificate;
     BOOST_REQUIRE(client_certificate);
 
     zmq::authenticator authenticator;
@@ -715,10 +695,10 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__ironhouse_bad_allow__blocked)
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_bad_deny__received)
 {
-    zmq::certificate server_certificate;
+    const zmq::certificate server_certificate;
     BOOST_REQUIRE(server_certificate);
 
-    zmq::certificate client_certificate;
+    const zmq::certificate client_certificate;
     BOOST_REQUIRE(client_certificate);
 
     zmq::authenticator authenticator;
@@ -742,12 +722,12 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_bad_deny__received)
     RECEIVE_MESSAGE(puller);
 }
 
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_bad_and_good_deny__blocked)
+BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_bad_and_good_deny__failed)
 {
-    zmq::certificate server_certificate;
+    const zmq::certificate server_certificate;
     BOOST_REQUIRE(server_certificate);
 
-    zmq::certificate client_certificate;
+    const zmq::certificate client_certificate;
     BOOST_REQUIRE(client_certificate);
 
     zmq::authenticator authenticator;
@@ -774,10 +754,10 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_bad_and_good_deny__bloc
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_allow__received)
 {
-    zmq::certificate server_certificate;
+    const zmq::certificate server_certificate;
     BOOST_REQUIRE(server_certificate);
 
-    zmq::certificate client_certificate;
+    const zmq::certificate client_certificate;
     BOOST_REQUIRE(client_certificate);
 
     zmq::authenticator authenticator;
@@ -803,10 +783,10 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_allow__received)
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_and_bad_allow__received)
 {
-    zmq::certificate server_certificate;
+    const zmq::certificate server_certificate;
     BOOST_REQUIRE(server_certificate);
 
-    zmq::certificate client_certificate;
+    const zmq::certificate client_certificate;
     BOOST_REQUIRE(client_certificate);
 
     zmq::authenticator authenticator;
@@ -831,12 +811,12 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_and_bad_allow__rec
     RECEIVE_MESSAGE(puller);
 }
 
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_deny__blocked)
+BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_deny__failed)
 {
-    zmq::certificate server_certificate;
+    const zmq::certificate server_certificate;
     BOOST_REQUIRE(server_certificate);
 
-    zmq::certificate client_certificate;
+    const zmq::certificate client_certificate;
     BOOST_REQUIRE(client_certificate);
 
     zmq::authenticator authenticator;
@@ -860,12 +840,12 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_deny__blocked)
     RECEIVE_FAILURE(puller);
 }
 
-BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_deny_before_same_allow__blocked)
+BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_deny_before_same_allow__failed)
 {
-    zmq::certificate server_certificate;
+    const zmq::certificate server_certificate;
     BOOST_REQUIRE(server_certificate);
 
-    zmq::certificate client_certificate;
+    const zmq::certificate client_certificate;
     BOOST_REQUIRE(client_certificate);
 
     zmq::authenticator authenticator;
@@ -892,10 +872,10 @@ BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_deny_before_same_a
 
 BOOST_AUTO_TEST_CASE(authenticator__push_pull__safehouse_good_deny_after_same_allow__received)
 {
-    zmq::certificate server_certificate;
+    const zmq::certificate server_certificate;
     BOOST_REQUIRE(server_certificate);
 
-    zmq::certificate client_certificate;
+    const zmq::certificate client_certificate;
     BOOST_REQUIRE(client_certificate);
 
     zmq::authenticator authenticator;
