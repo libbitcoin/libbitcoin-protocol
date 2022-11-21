@@ -113,7 +113,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare toolchain [generic]
         run: |
@@ -167,7 +167,7 @@ jobs:
 
       - name: Coveralls.io Upload
         if: ${{ matrix.coverage == 'cov' }}
-        uses: coverallsapp/github-action@master
+        uses: pmienk/coveralls-github-action@master
         with:
           path-to-lcov: "./coverage.info"
           github-token: ${{ secrets.github_token }}
@@ -323,7 +323,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepare toolchain [generic]
         run: |
@@ -379,7 +379,7 @@ jobs:
 
       - name: Coveralls.io Upload
         if: ${{ matrix.coverage == 'cov' }}
-        uses: coverallsapp/github-action@master
+        uses: pmienk/coveralls-github-action@master
         with:
           path-to-lcov: "./coverage.info"
           github-token: ${{ secrets.github_token }}
@@ -479,7 +479,7 @@ jobs:
         uses: microsoft/setup-msbuild@v1.1
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Initialize SDK
         shell: powershell
