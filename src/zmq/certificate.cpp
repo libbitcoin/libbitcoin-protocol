@@ -70,7 +70,7 @@ bool certificate::derive(config::sodium& out_public,
 static inline bool ok_setting(const std::string& key)
 {
     return key.find_first_of('#') == std::string::npos;
-};
+}
 
 bool certificate::create(config::sodium& out_public,
     config::sodium& out_private, bool setting)
