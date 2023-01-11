@@ -31,19 +31,17 @@ namespace protocol {
 namespace zmq {
 
 /// This class is not thread safe.
-class BCP_API frame final
+class BCP_API frame
   : public enable_shared_from_base<frame>
 {
 public:
+    DEFAULT4(frame);
+
     /// A shared frame pointer.
     typedef std::shared_ptr<frame> ptr;
 
     /// Construct a frame with no payload (for receiving).
     frame() NOEXCEPT;
-    frame(frame&&) = default;
-    frame(const frame&) = default;
-    frame& operator=(frame&&) = default;
-    frame& operator=(const frame&) = default;
 
     /// Construct a frame with the specified payload (for sending).
     frame(const system::data_chunk& data) NOEXCEPT;

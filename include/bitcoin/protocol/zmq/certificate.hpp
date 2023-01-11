@@ -34,6 +34,8 @@ namespace zmq {
 class BCP_API certificate
 {
 public:
+    DEFAULT5(certificate);
+
     /// Construct an arbitary keypair as a new certificate.
     /// This always reduces keyspace, disallowing '#' in text encoding.
     /// Use certificate({ null_hash }) to allow full key space.

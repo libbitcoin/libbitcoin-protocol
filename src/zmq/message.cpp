@@ -31,6 +31,11 @@ namespace zmq {
 
 using namespace bc::system;
 
+message::message() NOEXCEPT
+  : queue_{}
+{
+}
+
 void message::enqueue() NOEXCEPT
 {
     queue_.emplace();
