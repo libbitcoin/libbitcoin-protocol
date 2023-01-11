@@ -35,6 +35,8 @@ namespace zmq {
 class BCP_API message
 {
 public:
+    DEFAULT5(message);
+
     /// A zeromq route identifier is always this size.
     static constexpr size_t address_size = 5;
 
@@ -68,6 +70,9 @@ public:
         queue_.pop();
         return false;
     }
+
+    /// Construct.
+    message() NOEXCEPT;
 
     /// Add an empty message part to the outgoing message.
     void enqueue() NOEXCEPT;

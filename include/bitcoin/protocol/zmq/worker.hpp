@@ -36,15 +36,13 @@ namespace zmq {
 class BCP_API worker
 {
 public:
+    DELETE4(worker);
+
     /// A shared worker pointer.
     typedef std::shared_ptr<worker> ptr;
 
     /// Construct a worker.
     worker(thread_priority priority=thread_priority::normal) NOEXCEPT;
-    worker(worker&&) = delete;
-    worker(const worker&) = delete;
-    worker& operator=(worker&&) = delete;
-    worker& operator=(const worker&) = delete;
 
     /// Stop the worker.
     virtual ~worker() NOEXCEPT;

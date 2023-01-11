@@ -40,10 +40,12 @@ class authenticator;
 /// This class is not thread safe.
 /// All calls must be made on the socket thread.
 /// Because the socket is only set on construct, sockets are not restartable.
-class BCP_API socket final
+class BCP_API socket
   : public enable_shared_from_base<socket>
 {
 public:
+    DELETE4(socket);
+
     /// The full set of socket roles defined by zeromq.
     enum class role
     {
@@ -76,7 +78,7 @@ public:
     socket(context& context, role socket_role, const settings& settings) NOEXCEPT;
 
     /// Close the socket.
-    ~socket() NOEXCEPT;
+    virtual ~socket() NOEXCEPT;
 
     /// Close the socket (optional, must close or destroy before context stop).
     bool stop() NOEXCEPT;

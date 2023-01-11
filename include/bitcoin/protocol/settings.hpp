@@ -29,9 +29,8 @@ namespace protocol {
 
 /// Most values are capped at max_int32.
 /// Common protocol configuration settings, properties not thread safe.
-class BCP_API settings
+struct BCP_API settings
 {
-public:
     settings() NOEXCEPT;
     settings(uint32_t send_high_water, uint32_t receive_high_water) NOEXCEPT;
 

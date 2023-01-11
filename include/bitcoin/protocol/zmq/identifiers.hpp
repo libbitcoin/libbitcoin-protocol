@@ -35,6 +35,11 @@ typedef intptr_t identifier;
 class BCP_API identifiers
 {
 public:
+    DEFAULT5(identifiers);
+
+    /// Construct.
+    identifiers() NOEXCEPT;
+
     /// True if the result set contains no identifiers.
     bool empty() const NOEXCEPT;
 

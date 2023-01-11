@@ -26,6 +26,11 @@ namespace libbitcoin {
 namespace protocol {
 namespace zmq {
 
+identifiers::identifiers() NOEXCEPT
+  : ids_{}
+{
+}
+
 bool identifiers::empty() const NOEXCEPT
 {
     return ids_.empty();
