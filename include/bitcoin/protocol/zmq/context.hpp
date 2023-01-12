@@ -36,7 +36,7 @@ class BCP_API context
   : public enable_shared_from_base<context>
 {
 public:
-    DELETE4(context);
+    DELETE_COPY_MOVE(context);
 
     /// A shared context pointer.
     typedef std::shared_ptr<context> ptr;

@@ -35,7 +35,7 @@ class BCP_API frame
   : public enable_shared_from_base<frame>
 {
 public:
-    DEFAULT4(frame);
+    DEFAULT_COPY_MOVE(frame);
 
     /// A shared frame pointer.
     typedef std::shared_ptr<frame> ptr;

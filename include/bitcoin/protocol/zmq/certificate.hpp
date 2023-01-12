@@ -34,7 +34,7 @@ namespace zmq {
 class BCP_API certificate
 {
 public:
-    DEFAULT5(certificate);
+    DEFAULT_COPY_MOVE_DESTRUCT(certificate);
 
     /// Construct an arbitary keypair as a new certificate.
     /// This always reduces keyspace, disallowing '#' in text encoding.

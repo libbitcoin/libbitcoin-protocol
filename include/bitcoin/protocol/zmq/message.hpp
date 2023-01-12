@@ -35,7 +35,7 @@ namespace zmq {
 class BCP_API message
 {
 public:
-    DEFAULT5(message);
+    DEFAULT_COPY_MOVE_DESTRUCT(message);
 
     /// A zeromq route identifier is always this size.
     static constexpr size_t address_size = 5;
