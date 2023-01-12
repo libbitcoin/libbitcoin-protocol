@@ -38,7 +38,7 @@ class BCP_API poller
   : public enable_shared_from_base<poller>
 {
 public:
-    DELETE5(poller);
+    DELETE_COPY_MOVE_DESTRUCT(poller);
 
     /// A shared poller pointer.
     typedef std::shared_ptr<poller> ptr;

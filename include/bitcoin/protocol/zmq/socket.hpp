@@ -44,7 +44,7 @@ class BCP_API socket
   : public enable_shared_from_base<socket>
 {
 public:
-    DELETE4(socket);
+    DELETE_COPY_MOVE(socket);
 
     /// The full set of socket roles defined by zeromq.
     enum class role

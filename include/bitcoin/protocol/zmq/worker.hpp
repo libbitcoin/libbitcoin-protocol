@@ -36,7 +36,7 @@ namespace zmq {
 class BCP_API worker
 {
 public:
-    DELETE4(worker);
+    DELETE_COPY_MOVE(worker);
 
     /// A shared worker pointer.
     typedef std::shared_ptr<worker> ptr;

@@ -40,7 +40,7 @@ class BCP_API authenticator
   : public worker
 {
 public:
-    DELETE4(authenticator);
+    DELETE_COPY_MOVE(authenticator);
 
     /// A shared authenticator pointer.
     typedef std::shared_ptr<authenticator> ptr;

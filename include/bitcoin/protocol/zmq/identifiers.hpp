@@ -35,7 +35,7 @@ typedef intptr_t identifier;
 class BCP_API identifiers
 {
 public:
-    DEFAULT5(identifiers);
+    DEFAULT_COPY_MOVE_DESTRUCT(identifiers);
 
     /// Construct.
     identifiers() NOEXCEPT;

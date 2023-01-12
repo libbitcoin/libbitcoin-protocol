@@ -32,7 +32,7 @@ namespace protocol {
 class BCP_API sodium
 {
 public:
-    DEFAULT5(sodium);
+    DEFAULT_COPY_MOVE_DESTRUCT(sodium);
 
     /// A list of base85 values.
     /// This must provide operator<< for ostream in order to be used as a
