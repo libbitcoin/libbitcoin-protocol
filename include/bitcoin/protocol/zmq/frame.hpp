@@ -72,7 +72,7 @@ private:
     bool destroy() NOEXCEPT;
 
     bool more_;
-    const bool valid_;
+    bool valid_;
 
     // Mutability is a hack around lack of const overloads in zeromq, allowing
     // the payload method to be properly const while other access is not.
