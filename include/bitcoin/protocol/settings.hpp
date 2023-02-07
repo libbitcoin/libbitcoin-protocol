@@ -31,6 +31,8 @@ namespace protocol {
 /// Common protocol configuration settings, properties not thread safe.
 struct BCP_API settings
 {
+    DEFAULT_COPY_MOVE_DESTRUCT(settings);
+
     settings() NOEXCEPT;
     settings(uint32_t send_high_water, uint32_t receive_high_water) NOEXCEPT;
 
