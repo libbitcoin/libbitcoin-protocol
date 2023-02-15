@@ -787,7 +787,7 @@ build_all()
     unpack_from_tarball "$ZMQ_ARCHIVE" "$ZMQ_URL" gzip "$BUILD_ZMQ"
     build_from_tarball "$ZMQ_ARCHIVE" . "$PARALLEL" "$BUILD_ZMQ" "${ZMQ_OPTIONS[@]}" "$@"
     if [[ ! ($CI == true) ]]; then
-        create_from_github libbitcoin libbitcoin-protocol version3
+        create_from_github libbitcoin libbitcoin-protocol version3 "yes"
         build_from_github libbitcoin-protocol "$PARALLEL" true "yes" "${BITCOIN_PROTOCOL_OPTIONS[@]}" "$@"
     else
         push_directory "$PRESUMED_CI_PROJECT_PATH"
