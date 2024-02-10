@@ -70,8 +70,8 @@ ICU_ARCHIVE="icu4c-55_2-src.tgz"
 
 # ZMQ archive.
 #------------------------------------------------------------------------------
-ZMQ_URL="https://github.com/zeromq/libzmq/releases/download/v4.3.4/zeromq-4.3.4.tar.gz"
-ZMQ_ARCHIVE="zeromq-4.3.4.tar.gz"
+ZMQ_URL="https://github.com/zeromq/libzmq/releases/download/v4.3.5/zeromq-4.3.5.tar.gz"
+ZMQ_ARCHIVE="zeromq-4.3.5.tar.gz"
 
 # Boost archive.
 #------------------------------------------------------------------------------
