@@ -303,6 +303,7 @@ if (with-tests)
 
     add_test( NAME libbitcoin-protocol-test COMMAND libbitcoin-protocol-test
             --run_test=*
+            --log_level=warning
             --show_progress=no
             --detect_memory_leak=0
             --report_level=no
