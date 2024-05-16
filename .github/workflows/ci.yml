@@ -77,7 +77,7 @@ jobs:
             packager: "apt"
             packages: ""
 
-          - os: macos-latest
+          - os: macos-13
             cxx: "clang++"
             link: "dynamic"
             optimization: "size"
@@ -87,12 +87,12 @@ jobs:
             icu: "--with-icu"
             zmq: "--build-zmq"
             cc: "clang"
-            flags: "-Os -fPIE"
+            flags: "-Os -fPIE -DBOOST_NO_CXX98_FUNCTION_BASE"
             options: "--enable-isystem"
             packager: "brew"
             packages: "icu4c"
 
-          - os: macos-latest
+          - os: macos-13
             cxx: "clang++"
             link: "static"
             optimization: "size"
@@ -102,7 +102,7 @@ jobs:
             icu: "--build-icu --with-icu"
             zmq: "--build-zmq"
             cc: "clang"
-            flags: "-Os -fvisibility=hidden -fPIE"
+            flags: "-Os -fvisibility=hidden -fPIE -DBOOST_NO_CXX98_FUNCTION_BASE"
             options: "--enable-isystem"
             packager: "brew"
             packages: ""
@@ -227,11 +227,12 @@ jobs:
 
 
       - name: Failure display otool output
-        if: ${{ failure() && (matrix.os == 'macos-latest') }}
+        if: ${{ failure() && startsWith(matrix.os, 'macos') }}
         run: |
           otool -L ${{ github.workspace }}/test/.libs/libbitcoin-protocol-test
+
       - name: Failure display DYLD_PRINT_LIBRARIES
-        if: ${{ failure() && (matrix.os == 'macos-latest') }}
+        if: ${{ failure() && startsWith(matrix.os, 'macos') }}
         run: |
           DYLD_PRINT_LIBRARIES=1 ${{ github.workspace }}/test/.libs/libbitcoin-protocol-test
 
@@ -308,7 +309,7 @@ jobs:
             packager: "apt"
             packages: ""
 
-          - os: macos-latest
+          - os: macos-13
             cxx: "clang++"
             link: "dynamic"
             optimization: "size"
@@ -318,12 +319,12 @@ jobs:
             icu: "--with-icu"
             zmq: "--build-zmq"
             cc: "clang"
-            flags: "-Os -fPIE"
+            flags: "-Os -fPIE -DBOOST_NO_CXX98_FUNCTION_BASE"
             options: ""
             packager: "brew"
             packages: "icu4c"
 
-          - os: macos-latest
+          - os: macos-13
             cxx: "clang++"
             link: "static"
             optimization: "size"
@@ -333,7 +334,7 @@ jobs:
             icu: "--build-icu --with-icu"
             zmq: "--build-zmq"
             cc: "clang"
-            flags: "-Os -fvisibility=hidden -fPIE"
+            flags: "-Os -fvisibility=hidden -fPIE -DBOOST_NO_CXX98_FUNCTION_BASE"
             options: ""
             packager: "brew"
             packages: ""
@@ -461,11 +462,12 @@ jobs:
 
 
       - name: Failure display otool output
-        if: ${{ failure() && (matrix.os == 'macos-latest') }}
+        if: ${{ failure() && startsWith(matrix.os, 'macos') }}
         run: |
           otool -L ${{ github.workspace }}/test/.libs/libbitcoin-protocol-test
+
       - name: Failure display DYLD_PRINT_LIBRARIES
-        if: ${{ failure() && (matrix.os == 'macos-latest') }}
+        if: ${{ failure() && startsWith(matrix.os, 'macos') }}
         run: |
           DYLD_PRINT_LIBRARIES=1 ${{ github.workspace }}/test/.libs/libbitcoin-protocol-test
 
@@ -664,11 +666,12 @@ jobs:
 
 
       - name: Failure display otool output
-        if: ${{ failure() && (matrix.os == 'macos-latest') }}
+        if: ${{ failure() && startsWith(matrix.os, 'macos') }}
         run: |
           otool -L ${{ github.workspace }}/test/.libs/libbitcoin-protocol-test
+
       - name: Failure display DYLD_PRINT_LIBRARIES
-        if: ${{ failure() && (matrix.os == 'macos-latest') }}
+        if: ${{ failure() && startsWith(matrix.os, 'macos') }}
         run: |
           DYLD_PRINT_LIBRARIES=1 ${{ github.workspace }}/test/.libs/libbitcoin-protocol-test
 
