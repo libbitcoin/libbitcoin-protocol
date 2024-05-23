@@ -482,7 +482,7 @@ unpack_from_tarball()
     local COMPRESSION=$3
     local BUILD=$4
 
-    display_heading_message "Prepairing to aquire $ARCHIVE"
+    display_heading_message "Preparing to acquire $ARCHIVE"
 
     if [[ ! ($BUILD) ]]; then
         display_message "Skipping unpack of $ARCHIVE..."
@@ -528,7 +528,7 @@ build_from_tarball()
         return
     fi
 
-    display_heading_message "Prepairing to build $ARCHIVE"
+    display_heading_message "Preparing to build $ARCHIVE"
 
     # Because ICU tools don't know how to locate internal dependencies.
     if [[ ($ARCHIVE == "$ICU_ARCHIVE") ]]; then
@@ -586,7 +586,7 @@ create_from_github()
 
     FORK="$ACCOUNT/$REPO"
 
-    display_heading_message "Prepairing to aquire $FORK/$BRANCH"
+    display_heading_message "Preparing to acquire $FORK/$BRANCH"
 
     if [[ -d "$REPO" ]]; then
         if [[ true ]]; then
@@ -621,7 +621,7 @@ build_from_github()
     # Join generated and command line options.
     local CONFIGURATION=("${OPTIONS[@]}" "$@")
 
-    display_heading_message "Prepairing to build $REPO"
+    display_heading_message "Preparing to build $REPO"
 
     # Build the local repository clone.
     make_project_directory "$REPO" "$JOBS" "$TEST" "${CONFIGURATION[@]}"
@@ -707,7 +707,7 @@ build_from_tarball_boost()
         return
     fi
 
-    display_heading_message "Prepairing to build $ARCHIVE"
+    display_heading_message "Preparing to build $ARCHIVE"
 
     local TARGET="build-$ARCHIVE"
 
