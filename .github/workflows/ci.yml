@@ -77,14 +77,14 @@ jobs:
             packager: "apt"
             packages: ""
 
-          - os: macos-13
+          - os: macos-latest
             cxx: "clang++"
             link: "dynamic"
             optimization: "size"
             assert: "ndebug"
             coverage: "nocov"
             boost: "--build-boost"
-            icu: "--with-icu"
+            icu: ""
             zmq: "--build-zmq"
             cc: "clang"
             flags: "-Os -fPIE -DBOOST_NO_CXX98_FUNCTION_BASE"
@@ -92,20 +92,20 @@ jobs:
             packager: "brew"
             packages: "icu4c"
 
-          - os: macos-13
+          - os: macos-latest
             cxx: "clang++"
             link: "static"
             optimization: "size"
             assert: "ndebug"
             coverage: "nocov"
             boost: "--build-boost"
-            icu: "--build-icu --with-icu"
+            icu: ""
             zmq: "--build-zmq"
             cc: "clang"
             flags: "-Os -fvisibility=hidden -fPIE -DBOOST_NO_CXX98_FUNCTION_BASE"
             options: "--enable-isystem"
             packager: "brew"
-            packages: ""
+            packages: "icu4c"
 
 
     runs-on: ${{ matrix.os }}
@@ -309,14 +309,14 @@ jobs:
             packager: "apt"
             packages: ""
 
-          - os: macos-13
+          - os: macos-latest
             cxx: "clang++"
             link: "dynamic"
             optimization: "size"
             assert: "ndebug"
             coverage: "nocov"
             boost: "--build-boost"
-            icu: "--with-icu"
+            icu: ""
             zmq: "--build-zmq"
             cc: "clang"
             flags: "-Os -fPIE -DBOOST_NO_CXX98_FUNCTION_BASE"
@@ -324,20 +324,20 @@ jobs:
             packager: "brew"
             packages: "icu4c"
 
-          - os: macos-13
+          - os: macos-latest
             cxx: "clang++"
             link: "static"
             optimization: "size"
             assert: "ndebug"
             coverage: "nocov"
             boost: "--build-boost"
-            icu: "--build-icu --with-icu"
+            icu: ""
             zmq: "--build-zmq"
             cc: "clang"
             flags: "-Os -fvisibility=hidden -fPIE -DBOOST_NO_CXX98_FUNCTION_BASE"
             options: ""
             packager: "brew"
-            packages: ""
+            packages: "icu4c"
 
 
     runs-on: ${{ matrix.os }}
