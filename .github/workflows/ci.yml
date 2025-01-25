@@ -23,6 +23,7 @@ jobs:
             optimization: "debug"
             assert: "debug"
             coverage: "nocov"
+            detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
             secp256k1: "--build-secp256k1"
@@ -39,6 +40,7 @@ jobs:
             optimization: "size"
             assert: "ndebug"
             coverage: "nocov"
+            detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: "--build-icu --with-icu"
             secp256k1: "--build-secp256k1"
@@ -55,6 +57,7 @@ jobs:
             optimization: "size"
             assert: "ndebug"
             coverage: "nocov"
+            detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
             secp256k1: "--build-secp256k1"
@@ -71,6 +74,7 @@ jobs:
             optimization: "size"
             assert: "ndebug"
             coverage: "nocov"
+            detectcpuflags: "detect"
             boost: "--build-boost"
             icu: "--build-icu --with-icu"
             secp256k1: "--build-secp256k1"
@@ -87,6 +91,7 @@ jobs:
             optimization: "size"
             assert: "ndebug"
             coverage: "nocov"
+            detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
             secp256k1: "--build-secp256k1"
@@ -103,6 +108,7 @@ jobs:
             optimization: "size"
             assert: "ndebug"
             coverage: "nocov"
+            detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
             secp256k1: "--build-secp256k1"
@@ -142,6 +148,29 @@ jobs:
         run: |
           brew install autoconf automake libtool ${{ matrix.packages }}
 
+      - name: Determine CPU flags
+        shell: bash
+        run: |
+          if [[ -n $(cat /proc/cpuinfo | grep flags | grep " sse4_1 ") ]]; then
+              echo "CPU_SUPPORT_SSE41=--enable-sse41" >> $GITHUB_ENV
+          fi
+
+          if [[ -n $(cat /proc/cpuinfo | grep flags | grep " avx " | grep " avx2 ") ]]; then
+              echo "CPU_SUPPORT_AVX2=--enable-avx2" >> $GITHUB_ENV
+          fi
+
+          if [[ -n $(cat /proc/cpuinfo | grep flags | grep " avx512bw ") ]]; then
+              echo "CPU_SUPPORT_AVX512=--enable-avx512" >> $GITHUB_ENV
+          fi
+
+          if [[ -n $(cat /proc/cpuinfo | grep flags | grep " sha_ni ") ]]; then
+              echo "CPU_SUPPORT_SHANI=--enable-shani" >> $GITHUB_ENV
+          fi
+
+          if [[ ${{ matrix.detectcpuflags }} == 'detect' ]]; then
+              echo "CPU_SUPPORTED_FLAGS='$CPU_SUPPORT_SSE41 $CPU_SUPPORT_AVX2 $CPU_SUPPORT_AVX512 $CPU_SUPPORT_SHANI'" >> $GITHUB_ENV
+          fi
+
       - name: Denormalize parameterization
         shell: bash
         run: |
@@ -180,6 +209,7 @@ jobs:
           --prefix=${{ env.LIBBITCOIN_SRC_PATH }}prefix
           ${{ env.LINKAGE }}
           ${{ env.ASSERT_NDEBUG }}
+          ${{ env.CPU_SUPPORTED_FLAGS }}
           ${{ matrix.boost }}
           ${{ matrix.icu }}
           ${{ matrix.secp256k1 }}
@@ -262,6 +292,7 @@ jobs:
             optimization: "debug"
             assert: "debug"
             coverage: "nocov"
+            detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
             secp256k1: "--build-secp256k1"
@@ -278,6 +309,7 @@ jobs:
             optimization: "size"
             assert: "ndebug"
             coverage: "nocov"
+            detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: "--build-icu --with-icu"
             secp256k1: "--build-secp256k1"
@@ -294,6 +326,7 @@ jobs:
             optimization: "size"
             assert: "ndebug"
             coverage: "nocov"
+            detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
             secp256k1: "--build-secp256k1"
@@ -310,6 +343,7 @@ jobs:
             optimization: "size"
             assert: "ndebug"
             coverage: "nocov"
+            detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: "--build-icu --with-icu"
             secp256k1: "--build-secp256k1"
@@ -326,6 +360,7 @@ jobs:
             optimization: "size"
             assert: "ndebug"
             coverage: "nocov"
+            detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
             secp256k1: "--build-secp256k1"
@@ -342,6 +377,7 @@ jobs:
             optimization: "size"
             assert: "ndebug"
             coverage: "nocov"
+            detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
             secp256k1: "--build-secp256k1"
@@ -380,6 +416,29 @@ jobs:
         if: ${{ matrix.packager == 'brew' }}
         run: |
           brew install autoconf automake libtool ${{ matrix.packages }}
+
+      - name: Determine CPU flags
+        shell: bash
+        run: |
+          if [[ -n $(cat /proc/cpuinfo | grep flags | grep " sse4_1 ") ]]; then
+              echo "CPU_SUPPORT_SSE41=-Denable-sse41=on" >> $GITHUB_ENV
+          fi
+
+          if [[ -n $(cat /proc/cpuinfo | grep flags | grep " avx " | grep " avx2 ") ]]; then
+              echo "CPU_SUPPORT_AVX2=-Denable-avx2=on" >> $GITHUB_ENV
+          fi
+
+          if [[ -n $(cat /proc/cpuinfo | grep flags | grep " avx512bw ") ]]; then
+              echo "CPU_SUPPORT_AVX512=-Denable-avx512=on" >> $GITHUB_ENV
+          fi
+
+          if [[ -n $(cat /proc/cpuinfo | grep flags | grep " sha_ni ") ]]; then
+              echo "CPU_SUPPORT_SHANI=-Denable-shani=on" >> $GITHUB_ENV
+          fi
+
+          if [[ ${{ matrix.detectcpuflags }} == 'detect' ]]; then
+              echo "CPU_SUPPORTED_FLAGS='$CPU_SUPPORT_SSE41 $CPU_SUPPORT_AVX2 $CPU_SUPPORT_AVX512 $CPU_SUPPORT_SHANI'" >> $GITHUB_ENV
+          fi
 
       - name: Denormalize parameterization
         shell: bash
@@ -422,6 +481,7 @@ jobs:
           --prefix=${{ env.LIBBITCOIN_SRC_PATH }}prefix
           ${{ env.LINKAGE }}
           ${{ env.ASSERT_NDEBUG }}
+          ${{ env.CPU_SUPPORTED_FLAGS }}
           ${{ matrix.boost }}
           ${{ matrix.icu }}
           ${{ matrix.secp256k1 }}
@@ -515,6 +575,7 @@ jobs:
             optimization: "debug"
             assert: "debug"
             coverage: "nocov"
+            detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
             secp256k1: "--build-secp256k1"
@@ -532,6 +593,7 @@ jobs:
             optimization: "size"
             assert: "ndebug"
             coverage: "nocov"
+            detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: "--build-icu --with-icu"
             secp256k1: "--build-secp256k1"
@@ -549,6 +611,7 @@ jobs:
             optimization: "size"
             assert: "ndebug"
             coverage: "nocov"
+            detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
             secp256k1: "--build-secp256k1"
@@ -587,6 +650,29 @@ jobs:
         if: ${{ matrix.packager == 'brew' }}
         run: |
           brew install autoconf automake libtool ${{ matrix.packages }}
+
+      - name: Determine CPU flags
+        shell: bash
+        run: |
+          if [[ -n $(cat /proc/cpuinfo | grep flags | grep " sse4_1 ") ]]; then
+              echo "CPU_SUPPORT_SSE41=-Denable-sse41=on" >> $GITHUB_ENV
+          fi
+
+          if [[ -n $(cat /proc/cpuinfo | grep flags | grep " avx " | grep " avx2 ") ]]; then
+              echo "CPU_SUPPORT_AVX2=-Denable-avx2=on" >> $GITHUB_ENV
+          fi
+
+          if [[ -n $(cat /proc/cpuinfo | grep flags | grep " avx512bw ") ]]; then
+              echo "CPU_SUPPORT_AVX512=-Denable-avx512=on" >> $GITHUB_ENV
+          fi
+
+          if [[ -n $(cat /proc/cpuinfo | grep flags | grep " sha_ni ") ]]; then
+              echo "CPU_SUPPORT_SHANI=-Denable-shani=on" >> $GITHUB_ENV
+          fi
+
+          if [[ ${{ matrix.detectcpuflags }} == 'detect' ]]; then
+              echo "CPU_SUPPORTED_FLAGS='$CPU_SUPPORT_SSE41 $CPU_SUPPORT_AVX2 $CPU_SUPPORT_AVX512 $CPU_SUPPORT_SHANI'" >> $GITHUB_ENV
+          fi
 
       - name: Denormalize parameterization
         shell: bash
@@ -630,6 +716,7 @@ jobs:
           --preset=${{ matrix.preset }}
           ${{ env.LINKAGE }}
           ${{ env.ASSERT_NDEBUG }}
+          ${{ env.CPU_SUPPORTED_FLAGS }}
           ${{ matrix.boost }}
           ${{ matrix.icu }}
           ${{ matrix.secp256k1 }}
