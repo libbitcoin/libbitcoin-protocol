@@ -86,7 +86,7 @@ jobs:
             packages: ""
 
           - os: macos-latest
-            cxx: "clang++"
+            cxx: "clang++-16"
             link: "dynamic"
             optimization: "size"
             assert: "ndebug"
@@ -96,14 +96,14 @@ jobs:
             icu: ""
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
-            cc: "clang"
+            cc: "clang-16"
             flags: "-Os -fPIE -DBOOST_NO_CXX98_FUNCTION_BASE"
             options: "--enable-isystem"
             packager: "brew"
-            packages: "icu4c"
+            packages: "llvm@16 icu4c"
 
           - os: macos-latest
-            cxx: "clang++"
+            cxx: "clang++-16"
             link: "static"
             optimization: "size"
             assert: "ndebug"
@@ -113,11 +113,11 @@ jobs:
             icu: ""
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
-            cc: "clang"
+            cc: "clang-16"
             flags: "-Os -fvisibility=hidden -fPIE -DBOOST_NO_CXX98_FUNCTION_BASE"
             options: "--enable-isystem"
             packager: "brew"
-            packages: "icu4c"
+            packages: "llvm@16 icu4c"
 
 
     runs-on: ${{ matrix.os }}
@@ -219,8 +219,8 @@ jobs:
         if: ${{ matrix.coverage == 'cov' }}
         run: |
           lcov --directory . --capture --output-file coverage.info
-          lcov --remove coverage.info "/usr/*" "${{ env.LIBBITCOIN_SRC_PATH }}prefix/*" "${{ github.workspace }}/examples/*" "${{ github.workspace }}/test/*" --output-file coverage.info
-          lcov --list coverage.info
+          lcov --remove coverage.info "/usr/*" "${{ env.LIBBITCOIN_SRC_PATH }}prefix/*" "${{ github.workspace }}/examples/*" "${{ github.workspace }}/test/*" --output-file --ignore-errors version coverage.info
+          lcov --list --ignore-errors version coverage.info
 
       - name: Coveralls.io Upload
         if: ${{ matrix.coverage == 'cov' }}
@@ -355,7 +355,7 @@ jobs:
             packages: ""
 
           - os: macos-latest
-            cxx: "clang++"
+            cxx: "clang++-16"
             link: "dynamic"
             optimization: "size"
             assert: "ndebug"
@@ -365,14 +365,14 @@ jobs:
             icu: ""
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
-            cc: "clang"
+            cc: "clang-16"
             flags: "-Os -fPIE -DBOOST_NO_CXX98_FUNCTION_BASE"
             options: ""
             packager: "brew"
-            packages: "icu4c"
+            packages: "llvm@16 icu4c"
 
           - os: macos-latest
-            cxx: "clang++"
+            cxx: "clang++-16"
             link: "static"
             optimization: "size"
             assert: "ndebug"
@@ -382,11 +382,11 @@ jobs:
             icu: ""
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
-            cc: "clang"
+            cc: "clang-16"
             flags: "-Os -fvisibility=hidden -fPIE -DBOOST_NO_CXX98_FUNCTION_BASE"
             options: ""
             packager: "brew"
-            packages: "icu4c"
+            packages: "llvm@16 icu4c"
 
 
     runs-on: ${{ matrix.os }}
@@ -491,8 +491,8 @@ jobs:
         if: ${{ matrix.coverage == 'cov' }}
         run: |
           lcov --directory . --capture --output-file coverage.info
-          lcov --remove coverage.info "/usr/*" "${{ env.LIBBITCOIN_SRC_PATH }}prefix/*" "${{ github.workspace }}/examples/*" "${{ github.workspace }}/test/*" --output-file coverage.info
-          lcov --list coverage.info
+          lcov --remove coverage.info "/usr/*" "${{ env.LIBBITCOIN_SRC_PATH }}prefix/*" "${{ github.workspace }}/examples/*" "${{ github.workspace }}/test/*" --output-file --ignore-errors version coverage.info
+          lcov --list --ignore-errors version coverage.info
 
       - name: Coveralls.io Upload
         if: ${{ matrix.coverage == 'cov' }}
@@ -726,8 +726,8 @@ jobs:
         if: ${{ matrix.coverage == 'cov' }}
         run: |
           lcov --directory . --capture --output-file coverage.info
-          lcov --remove coverage.info "/usr/*" "${{ env.LIBBITCOIN_SRC_PATH }}prefix/*" "${{ github.workspace }}/examples/*" "${{ github.workspace }}/test/*" --output-file coverage.info
-          lcov --list coverage.info
+          lcov --remove coverage.info "/usr/*" "${{ env.LIBBITCOIN_SRC_PATH }}prefix/*" "${{ github.workspace }}/examples/*" "${{ github.workspace }}/test/*" --output-file --ignore-errors version coverage.info
+          lcov --list --ignore-errors version coverage.info
 
       - name: Coveralls.io Upload
         if: ${{ matrix.coverage == 'cov' }}
