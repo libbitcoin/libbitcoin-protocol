@@ -26,6 +26,7 @@ jobs:
             detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
+            llvm: ""
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
             cc: "clang-16"
@@ -43,6 +44,7 @@ jobs:
             detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: "--build-icu --with-icu"
+            llvm: ""
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
             cc: "clang-16"
@@ -60,6 +62,7 @@ jobs:
             detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
+            llvm: ""
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
             cc: "gcc-12"
@@ -77,6 +80,7 @@ jobs:
             detectcpuflags: "detect"
             boost: "--build-boost"
             icu: "--build-icu --with-icu"
+            llvm: ""
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
             cc: "gcc-12"
@@ -94,13 +98,14 @@ jobs:
             detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
+            llvm: "llvm@16"
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
             cc: "clang"
             flags: "-Os -fPIE -DBOOST_NO_CXX98_FUNCTION_BASE"
             options: "--enable-isystem"
             packager: "brew"
-            packages: "icu4c"
+            packages: "llvm@16 icu4c"
 
           - os: macos-latest
             cxx: "clang++"
@@ -111,13 +116,14 @@ jobs:
             detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
+            llvm: "llvm@16"
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
             cc: "clang"
             flags: "-Os -fvisibility=hidden -fPIE -DBOOST_NO_CXX98_FUNCTION_BASE"
             options: "--enable-isystem"
             packager: "brew"
-            packages: "icu4c"
+            packages: "llvm@16 icu4c"
 
 
     runs-on: ${{ matrix.os }}
@@ -147,6 +153,9 @@ jobs:
         if: ${{ matrix.packager == 'brew' }}
         run: |
           brew install autoconf automake libtool ${{ matrix.packages }}
+          if [[ -n ${{ matrix.llvm }} ]]; then
+              echo "PATH=/opt/homebrew/opt/${{ matrix.llvm }}/bin:$PATH" >> $GITHUB_ENV
+          fi
 
       - name: Determine CPU flags
         shell: bash
@@ -218,9 +227,9 @@ jobs:
       - name: Coveralls Calculation
         if: ${{ matrix.coverage == 'cov' }}
         run: |
-          lcov --directory . --capture --output-file coverage.info
-          lcov --remove coverage.info "/usr/*" "${{ env.LIBBITCOIN_SRC_PATH }}prefix/*" "${{ github.workspace }}/examples/*" "${{ github.workspace }}/test/*" --output-file coverage.info
-          lcov --list coverage.info
+          lcov --directory . --capture --ignore-errors version --output-file coverage.info
+          lcov --remove coverage.info "/usr/*" "${{ env.LIBBITCOIN_SRC_PATH }}prefix/*" "${{ github.workspace }}/examples/*" "${{ github.workspace }}/test/*" --output-file --ignore-errors version coverage.info
+          lcov --list --ignore-errors version coverage.info
 
       - name: Coveralls.io Upload
         if: ${{ matrix.coverage == 'cov' }}
@@ -295,6 +304,7 @@ jobs:
             detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
+            llvm: ""
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
             cc: "clang-16"
@@ -312,6 +322,7 @@ jobs:
             detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: "--build-icu --with-icu"
+            llvm: ""
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
             cc: "clang-16"
@@ -329,6 +340,7 @@ jobs:
             detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
+            llvm: ""
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
             cc: "gcc-12"
@@ -346,6 +358,7 @@ jobs:
             detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: "--build-icu --with-icu"
+            llvm: ""
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
             cc: "gcc-12"
@@ -363,13 +376,14 @@ jobs:
             detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
+            llvm: "llvm@16"
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
             cc: "clang"
             flags: "-Os -fPIE -DBOOST_NO_CXX98_FUNCTION_BASE"
             options: ""
             packager: "brew"
-            packages: "icu4c"
+            packages: "llvm@16 icu4c"
 
           - os: macos-latest
             cxx: "clang++"
@@ -380,13 +394,14 @@ jobs:
             detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
+            llvm: "llvm@16"
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
             cc: "clang"
             flags: "-Os -fvisibility=hidden -fPIE -DBOOST_NO_CXX98_FUNCTION_BASE"
             options: ""
             packager: "brew"
-            packages: "icu4c"
+            packages: "llvm@16 icu4c"
 
 
     runs-on: ${{ matrix.os }}
@@ -416,6 +431,9 @@ jobs:
         if: ${{ matrix.packager == 'brew' }}
         run: |
           brew install autoconf automake libtool ${{ matrix.packages }}
+          if [[ -n ${{ matrix.llvm }} ]]; then
+              echo "PATH=/opt/homebrew/opt/${{ matrix.llvm }}/bin:$PATH" >> $GITHUB_ENV
+          fi
 
       - name: Determine CPU flags
         shell: bash
@@ -490,9 +508,9 @@ jobs:
       - name: Coveralls Calculation
         if: ${{ matrix.coverage == 'cov' }}
         run: |
-          lcov --directory . --capture --output-file coverage.info
-          lcov --remove coverage.info "/usr/*" "${{ env.LIBBITCOIN_SRC_PATH }}prefix/*" "${{ github.workspace }}/examples/*" "${{ github.workspace }}/test/*" --output-file coverage.info
-          lcov --list coverage.info
+          lcov --directory . --capture --ignore-errors version --output-file coverage.info
+          lcov --remove coverage.info "/usr/*" "${{ env.LIBBITCOIN_SRC_PATH }}prefix/*" "${{ github.workspace }}/examples/*" "${{ github.workspace }}/test/*" --output-file --ignore-errors version coverage.info
+          lcov --list --ignore-errors version coverage.info
 
       - name: Coveralls.io Upload
         if: ${{ matrix.coverage == 'cov' }}
@@ -578,6 +596,7 @@ jobs:
             detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
+            llvm: ""
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
             cc: "clang-16"
@@ -596,6 +615,7 @@ jobs:
             detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: "--build-icu --with-icu"
+            llvm: ""
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
             cc: "clang-16"
@@ -614,6 +634,7 @@ jobs:
             detectcpuflags: "ignore"
             boost: "--build-boost"
             icu: ""
+            llvm: ""
             secp256k1: "--build-secp256k1"
             zmq: "--build-zmq"
             cc: "gcc-12"
@@ -650,6 +671,9 @@ jobs:
         if: ${{ matrix.packager == 'brew' }}
         run: |
           brew install autoconf automake libtool ${{ matrix.packages }}
+          if [[ -n ${{ matrix.llvm }} ]]; then
+              echo "PATH=/opt/homebrew/opt/${{ matrix.llvm }}/bin:$PATH" >> $GITHUB_ENV
+          fi
 
       - name: Determine CPU flags
         shell: bash
@@ -725,9 +749,9 @@ jobs:
       - name: Coveralls Calculation
         if: ${{ matrix.coverage == 'cov' }}
         run: |
-          lcov --directory . --capture --output-file coverage.info
-          lcov --remove coverage.info "/usr/*" "${{ env.LIBBITCOIN_SRC_PATH }}prefix/*" "${{ github.workspace }}/examples/*" "${{ github.workspace }}/test/*" --output-file coverage.info
-          lcov --list coverage.info
+          lcov --directory . --capture --ignore-errors version --output-file coverage.info
+          lcov --remove coverage.info "/usr/*" "${{ env.LIBBITCOIN_SRC_PATH }}prefix/*" "${{ github.workspace }}/examples/*" "${{ github.workspace }}/test/*" --output-file --ignore-errors version coverage.info
+          lcov --list --ignore-errors version coverage.info
 
       - name: Coveralls.io Upload
         if: ${{ matrix.coverage == 'cov' }}
