@@ -45,7 +45,7 @@ public:
     /// The scheme and port may be undefined, in which case the port is
     /// reported as zero and the scheme is reported as an empty string.
     /// The value is of the form: [scheme://]host[:port]
-    endpoint(const std::string& uri) NOEXCEPT(false);
+    endpoint(const std::string& uri) THROWS;
     endpoint(const authority& authority) NOEXCEPT;
 
     /// host may be host name or ip address.
@@ -76,7 +76,7 @@ public:
     endpoint to_local() const NOEXCEPT;
 
     friend std::istream& operator>>(std::istream& input,
-        endpoint& argument) NOEXCEPT(false);
+        endpoint& argument) THROWS;
     friend std::ostream& operator<<(std::ostream& output,
         const endpoint& argument) NOEXCEPT;
 

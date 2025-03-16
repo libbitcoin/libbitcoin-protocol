@@ -49,7 +49,7 @@ static std::string to_host_name(const std::string& host) NOEXCEPT
 
 // host: [2001:db8::2] or 2001:db8::2 or 1.2.240.1
 static std::string to_text(const std::string& host,
-    uint16_t port) NOEXCEPT(false)
+    uint16_t port) THROWS
 {
     std::stringstream authority;
     authority << to_host_name(host);
@@ -123,14 +123,14 @@ BC_POP_WARNING()
 }
 
 // authority: [2001:db8::2]:port or 1.2.240.1:port
-authority::authority(const std::string& value) NOEXCEPT(false)
+authority::authority(const std::string& value) THROWS
   : authority()
 {
     std::stringstream(value) >> *this;
 }
 
 // host: [2001:db8::2] or 2001:db8::2 or 1.2.240.1
-authority::authority(const std::string& host, uint16_t port) NOEXCEPT(false)
+authority::authority(const std::string& host, uint16_t port) THROWS
   : authority()
 {
     std::stringstream(to_text(host, port)) >> *this;
@@ -168,7 +168,7 @@ std::string authority::to_string() const NOEXCEPT
 }
 
 std::istream& operator>>(std::istream& input,
-    authority& argument) NOEXCEPT(false)
+    authority& argument) THROWS
 {
     std::string value;
     input >> value;

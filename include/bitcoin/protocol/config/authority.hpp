@@ -46,11 +46,11 @@ public:
     /// The port is optional and will be set to zero if not provided.
     /// The host can be in one of two forms:
     /// [2001:db8::2]:port or 1.2.240.1:port.
-    authority(const std::string& value) NOEXCEPT(false);
+    authority(const std::string& value) THROWS;
 
     /// The host can be in one of three forms:
     /// [2001:db8::2] or 2001:db8::2 or 1.2.240.1
-    authority(const std::string& host, uint16_t port) NOEXCEPT(false);
+    authority(const std::string& host, uint16_t port) THROWS;
 
     /// True if the port is non-zero.
     operator bool() const NOEXCEPT;
@@ -73,7 +73,7 @@ public:
     std::string to_string() const NOEXCEPT;
 
     friend std::istream& operator>>(std::istream& input,
-        authority& argument) NOEXCEPT(false);
+        authority& argument) THROWS;
     friend std::ostream& operator<<(std::ostream& output,
         const authority& argument) NOEXCEPT;
 
