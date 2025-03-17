@@ -35,7 +35,7 @@ sodium::sodium() NOEXCEPT
 {
 }
 
-sodium::sodium(const std::string& base85) NOEXCEPT(false)
+sodium::sodium(const std::string& base85) THROWS
   : sodium()
 {
     std::stringstream(base85) >> *this;
@@ -66,7 +66,7 @@ std::string sodium::to_string() const NOEXCEPT
     BC_POP_WARNING()
 }
 
-std::istream& operator>>(std::istream& input, sodium& argument) NOEXCEPT(false)
+std::istream& operator>>(std::istream& input, sodium& argument) THROWS
 {
     std::string base85;
     input >> base85;
@@ -82,7 +82,7 @@ std::istream& operator>>(std::istream& input, sodium& argument) NOEXCEPT(false)
 }
 
 std::ostream& operator<<(std::ostream& output,
-    const sodium& argument) NOEXCEPT(false)
+    const sodium& argument) THROWS
 {
     std::string decoded;
 

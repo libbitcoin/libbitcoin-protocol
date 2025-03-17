@@ -37,7 +37,7 @@ BC_POP_WARNING()
 {
 }
 
-endpoint::endpoint(const std::string& uri) NOEXCEPT(false)
+endpoint::endpoint(const std::string& uri) THROWS
   : scheme_(), host_(), port_(0)
 {
     std::stringstream(uri) >> *this;
@@ -98,7 +98,7 @@ endpoint::operator bool() const NOEXCEPT
 }
 
 std::istream& operator>>(std::istream& input,
-    endpoint& argument) NOEXCEPT(false)
+    endpoint& argument) THROWS
 {
     std::string value;
     input >> value;

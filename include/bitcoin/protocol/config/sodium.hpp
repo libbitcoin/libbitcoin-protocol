@@ -40,7 +40,7 @@ public:
     typedef std::vector<sodium> list;
 
     sodium() NOEXCEPT;
-    sodium(const std::string& base85) NOEXCEPT(false);
+    sodium(const std::string& base85) THROWS;
     sodium(const system::hash_digest& value) NOEXCEPT;
 
     /// True if the key is initialized.
@@ -53,9 +53,9 @@ public:
     std::string to_string() const NOEXCEPT;
 
     friend std::istream& operator>>(std::istream& input,
-        sodium& argument) NOEXCEPT(false);
+        sodium& argument) THROWS;
     friend std::ostream& operator<<(std::ostream& output,
-        const sodium& argument) NOEXCEPT(false);
+        const sodium& argument) THROWS;
 
 private:
     system::hash_digest value_;
