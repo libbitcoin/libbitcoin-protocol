@@ -51,7 +51,7 @@ authenticator::~authenticator() NOEXCEPT
     stop();
 }
 
-authenticator::operator context& () NOEXCEPT
+authenticator::operator context&() NOEXCEPT
 {
     return context_;
 }

@@ -33,8 +33,6 @@ namespace zmq {
 
 using namespace bc::system;
 
-#define NAME "worker"
-
 // Derive from this abstract worker to implement concrete worker.
 worker::worker(thread_priority priority) NOEXCEPT
   : priority_(priority),
