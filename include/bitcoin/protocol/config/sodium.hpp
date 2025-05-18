@@ -37,8 +37,6 @@ public:
     /// A list of base85 values.
     /// This must provide operator<< for ostream in order to be used as a
     /// boost::program_options default_value.
-    typedef std::vector<sodium> list;
-
     sodium() NOEXCEPT;
     sodium(const std::string& base85) THROWS;
     sodium(const system::hash_digest& value) NOEXCEPT;
@@ -60,6 +58,8 @@ public:
 private:
     system::hash_digest value_;
 };
+
+typedef std::vector<sodium> sodiums;
 
 } // namespace protocol
 } // namespace libbitcoin
