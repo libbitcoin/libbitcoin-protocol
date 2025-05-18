@@ -37,17 +37,6 @@
     #define BCP_INTERNAL BC_HELPER_DLL_LOCAL
 #endif
 
-// Log name.
-////#define LOG_PROTOCOL "protocol"
-////#define LOG_PROTOCOL_HTTP "http"
-////
-////// TODO: generalize logging.
-////#define LOG_INFO(name) std::cout << name << " : "
-////#define LOG_DEBUG(name) std::cout << name << " : "
-////#define LOG_VERBOSE(name) std::cout << name << " : "
-////#define LOG_ERROR(name) std::cerr << name << " : "
-////#define LOG_WARNING(name) std::cerr << name << " : "
-
 #endif
 
 // context       ->
