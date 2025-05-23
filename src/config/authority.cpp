@@ -19,7 +19,6 @@
 #include <bitcoin/protocol/config/authority.hpp>
 
 #include <sstream>
-#include <string>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/boost.hpp>
 #include <bitcoin/protocol/network.hpp>

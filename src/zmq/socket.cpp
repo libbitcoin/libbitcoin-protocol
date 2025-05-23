@@ -19,8 +19,6 @@
 #include <bitcoin/protocol/zmq/socket.hpp>
 
 #include <algorithm>
-#include <cstdint>
-#include <string>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/config/config.hpp>
 #include <bitcoin/protocol/define.hpp>

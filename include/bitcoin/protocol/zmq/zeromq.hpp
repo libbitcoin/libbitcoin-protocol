@@ -19,8 +19,6 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_ZEROMQ_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_ZEROMQ_HPP
 
-#include <cstddef>
-#include <cstdint>
 #if defined HAVE_MSC
     #include <winsock2.h>
 #endif

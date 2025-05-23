@@ -21,10 +21,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <array>
 #include <filesystem>
-#include <iostream>
-#include <vector>
 #include <bitcoin/protocol.hpp>
 
  // copied from libbitcoin-system-test

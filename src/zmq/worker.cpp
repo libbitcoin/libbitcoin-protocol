@@ -18,7 +18,6 @@
  */
 #include <bitcoin/protocol/zmq/worker.hpp>
 
-#include <functional>
 #include <future>
 #include <mutex>
 #include <bitcoin/system.hpp>

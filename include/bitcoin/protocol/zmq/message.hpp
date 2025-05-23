@@ -19,9 +19,7 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_MESSAGE_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_MESSAGE_HPP
 
-#include <cstddef>
 #include <queue>
-#include <string>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/error.hpp>

@@ -19,9 +19,6 @@
 #ifndef LIBBITCOIN_PROTOCOL_CONFIG_SODIUM_HPP
 #define LIBBITCOIN_PROTOCOL_CONFIG_SODIUM_HPP
 
-#include <iostream>
-#include <string>
-#include <vector>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
 

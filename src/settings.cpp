@@ -18,7 +18,6 @@
  */
 #include <bitcoin/protocol/settings.hpp>
 
-#include <cstdint>
 #include <bitcoin/system.hpp>
 
 namespace libbitcoin {

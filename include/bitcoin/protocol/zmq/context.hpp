@@ -20,7 +20,6 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_CONTEXT_HPP
 
 #include <atomic>
-#include <cstdint>
 #include <memory>
 #include <shared_mutex>
 #include <bitcoin/system.hpp>

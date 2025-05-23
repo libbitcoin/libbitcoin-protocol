@@ -19,7 +19,6 @@
 #include <bitcoin/protocol/zmq/authenticator.hpp>
 
 #include <mutex>
-#include <string>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/config/config.hpp>
 #include <bitcoin/protocol/define.hpp>

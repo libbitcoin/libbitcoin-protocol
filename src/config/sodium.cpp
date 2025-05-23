@@ -19,9 +19,7 @@
 #include <bitcoin/protocol/config/sodium.hpp>
 
 #include <algorithm>
-#include <iostream>
 #include <sstream>
-#include <string>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
 

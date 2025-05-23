@@ -18,7 +18,6 @@
  */
 #include <bitcoin/protocol/zmq/poller.hpp>
 
-#include <cstdint>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
