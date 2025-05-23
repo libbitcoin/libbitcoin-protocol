@@ -19,11 +19,7 @@
 #ifndef LIBBITCOIN_PROTOCOL_CONFIG_AUTHORITY_HPP
 #define LIBBITCOIN_PROTOCOL_CONFIG_AUTHORITY_HPP
 
-#include <cstdint>
-#include <iostream>
 #include <memory>
-#include <string>
-#include <vector>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/boost.hpp>
 #include <bitcoin/protocol/define.hpp>

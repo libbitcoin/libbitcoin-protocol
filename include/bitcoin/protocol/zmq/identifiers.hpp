@@ -19,8 +19,6 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_IDENTIFIER_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_IDENTIFIER_HPP
 
-#include <cstdint>
-#include <vector>
 #include <bitcoin/protocol/define.hpp>
 
 namespace libbitcoin {

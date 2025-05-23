@@ -18,7 +18,6 @@
  */
 #include <bitcoin/protocol/zmq/frame.hpp>
 
-#include <cstdint>
 #include <cstring>
 #include <iterator>
 #include <bitcoin/system.hpp>

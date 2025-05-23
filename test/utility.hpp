@@ -19,7 +19,6 @@
 #ifndef LIBBITCOIN_PROTOCOL_TEST_UTILITY_HPP
 #define LIBBITCOIN_PROTOCOL_TEST_UTILITY_HPP
 
-#include <cstddef>
 #include <future>
 #include <thread>
 #include <utility>

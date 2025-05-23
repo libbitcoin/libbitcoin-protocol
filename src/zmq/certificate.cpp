@@ -18,7 +18,6 @@
  */
 #include <bitcoin/protocol/zmq/certificate.hpp>
 
-#include <string>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/zmq/zeromq.hpp>
 

@@ -19,9 +19,7 @@
 #ifndef LIBBITCOIN_PROTOCOL_ZMQ_SOCKET_HPP
 #define LIBBITCOIN_PROTOCOL_ZMQ_SOCKET_HPP
 
-#include <cstdint>
 #include <memory>
-#include <string>
 #include <bitcoin/protocol/config/config.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/settings.hpp>

@@ -20,9 +20,7 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_POLLER_HPP
 
 #include <algorithm>
-#include <cstdint>
 #include <memory>
-#include <vector>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/identifiers.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>

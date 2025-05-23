@@ -19,7 +19,6 @@
 #ifndef LIBBITCOIN_PROTOCOL_SETTINGS_HPP
 #define LIBBITCOIN_PROTOCOL_SETTINGS_HPP
 
-#include <cstdint>
 #include <filesystem>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/define.hpp>
