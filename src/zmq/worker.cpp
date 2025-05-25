@@ -20,6 +20,7 @@
 
 #include <future>
 #include <mutex>
+#include <thread>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/boost.hpp>
 #include <bitcoin/protocol/zmq/message.hpp>
@@ -56,7 +57,7 @@ bool worker::start() NOEXCEPT
         stopped_ = false;
 
         // Create the worker thread and socket and start polling.
-        thread_ = std::make_shared<thread>(&worker::work, this);
+        thread_ = std::make_shared<std::thread>(&worker::work, this);
 
         // Wait on worker start.
         const auto result = started_.get_future().get();

@@ -23,6 +23,7 @@
 #include <memory>
 #include <future>
 #include <shared_mutex>
+#include <thread>
 #include <bitcoin/system.hpp>
 #include <bitcoin/protocol/boost.hpp>
 #include <bitcoin/protocol/define.hpp>
@@ -67,7 +68,7 @@ private:
     std::atomic<bool> stopped_;
     std::promise<bool> started_;
     std::promise<bool> finished_;
-    std::shared_ptr<thread> thread_;
+    std::shared_ptr<std::thread> thread_;
     const thread_priority priority_;
     mutable std::shared_mutex mutex_;
 };
