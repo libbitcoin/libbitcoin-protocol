@@ -22,12 +22,10 @@
 #include <boost/asio.hpp>
 #include <boost/format.hpp>
 #include <boost/regex.hpp>
-#include <boost/thread.hpp>
 
 namespace libbitcoin {
 namespace protocol {
-    
-typedef boost::thread thread;
+
 typedef boost::asio::ip::address ip;
 typedef boost::asio::ip::address_v4 ipv4;
 typedef boost::asio::ip::address_v6 ipv6;
