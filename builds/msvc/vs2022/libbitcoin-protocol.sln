@@ -13,6 +13,10 @@ Global
 		StaticDebug|x64 = StaticDebug|x64
 		StaticRelease|Win32 = StaticRelease|Win32
 		StaticRelease|x64 = StaticRelease|x64
+		StaticDebug|ARM = StaticDebug|ARM
+		StaticDebug|ARM64 = StaticDebug|ARM64
+		StaticRelease|ARM = StaticRelease|ARM
+		StaticRelease|ARM64 = StaticRelease|ARM64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6B94E2A5-C054-4790-963D-A7BE493259B0}.StaticDebug|Win32.ActiveCfg = DebugLIB|Win32
@@ -23,6 +27,14 @@ Global
 		{6B94E2A5-C054-4790-963D-A7BE493259B0}.StaticRelease|Win32.Build.0 = ReleaseLIB|Win32
 		{6B94E2A5-C054-4790-963D-A7BE493259B0}.StaticRelease|x64.ActiveCfg = ReleaseLIB|x64
 		{6B94E2A5-C054-4790-963D-A7BE493259B0}.StaticRelease|x64.Build.0 = ReleaseLIB|x64
+		{6B94E2A5-C054-4790-963D-A7BE493259B0}.StaticDebug|ARM.ActiveCfg = DebugLIB|ARM
+		{6B94E2A5-C054-4790-963D-A7BE493259B0}.StaticDebug|ARM.Build.0 = DebugLIB|ARM
+		{6B94E2A5-C054-4790-963D-A7BE493259B0}.StaticDebug|ARM64.ActiveCfg = DebugLIB|ARM64
+		{6B94E2A5-C054-4790-963D-A7BE493259B0}.StaticDebug|ARM64.Build.0 = DebugLIB|ARM64
+		{6B94E2A5-C054-4790-963D-A7BE493259B0}.StaticRelease|ARM.ActiveCfg = ReleaseLIB|ARM
+		{6B94E2A5-C054-4790-963D-A7BE493259B0}.StaticRelease|ARM.Build.0 = ReleaseLIB|ARM
+		{6B94E2A5-C054-4790-963D-A7BE493259B0}.StaticRelease|ARM64.ActiveCfg = ReleaseLIB|ARM64
+		{6B94E2A5-C054-4790-963D-A7BE493259B0}.StaticRelease|ARM64.Build.0 = ReleaseLIB|ARM64
 		{C42BE17B-063D-44F1-A5BB-9F8295144B70}.StaticDebug|Win32.ActiveCfg = DebugSEXE|Win32
 		{C42BE17B-063D-44F1-A5BB-9F8295144B70}.StaticDebug|Win32.Build.0 = DebugSEXE|Win32
 		{C42BE17B-063D-44F1-A5BB-9F8295144B70}.StaticDebug|x64.ActiveCfg = DebugSEXE|x64
@@ -31,6 +43,14 @@ Global
 		{C42BE17B-063D-44F1-A5BB-9F8295144B70}.StaticRelease|Win32.Build.0 = ReleaseSEXE|Win32
 		{C42BE17B-063D-44F1-A5BB-9F8295144B70}.StaticRelease|x64.ActiveCfg = ReleaseSEXE|x64
 		{C42BE17B-063D-44F1-A5BB-9F8295144B70}.StaticRelease|x64.Build.0 = ReleaseSEXE|x64
+		{C42BE17B-063D-44F1-A5BB-9F8295144B70}.StaticDebug|ARM.ActiveCfg = DebugSEXE|ARM
+		{C42BE17B-063D-44F1-A5BB-9F8295144B70}.StaticDebug|ARM.Build.0 = DebugSEXE|ARM
+		{C42BE17B-063D-44F1-A5BB-9F8295144B70}.StaticDebug|ARM64.ActiveCfg = DebugSEXE|ARM64
+		{C42BE17B-063D-44F1-A5BB-9F8295144B70}.StaticDebug|ARM64.Build.0 = DebugSEXE|ARM64
+		{C42BE17B-063D-44F1-A5BB-9F8295144B70}.StaticRelease|ARM.ActiveCfg = ReleaseSEXE|ARM
+		{C42BE17B-063D-44F1-A5BB-9F8295144B70}.StaticRelease|ARM.Build.0 = ReleaseSEXE|ARM
+		{C42BE17B-063D-44F1-A5BB-9F8295144B70}.StaticRelease|ARM64.ActiveCfg = ReleaseSEXE|ARM64
+		{C42BE17B-063D-44F1-A5BB-9F8295144B70}.StaticRelease|ARM64.Build.0 = ReleaseSEXE|ARM64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
