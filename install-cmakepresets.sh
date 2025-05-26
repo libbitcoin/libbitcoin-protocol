@@ -81,8 +81,8 @@ ZMQ_ARCHIVE="zeromq-4.3.5.tar.gz"
 
 # Boost archive.
 #------------------------------------------------------------------------------
-BOOST_URL="https://archives.boost.io/release/1.78.0/source/boost_1_78_0.tar.bz2"
-BOOST_ARCHIVE="boost_1_78_0.tar.bz2"
+BOOST_URL="https://archives.boost.io/release/1.86.0/source/boost_1_86_0.tar.bz2"
+BOOST_ARCHIVE="boost_1_86_0.tar.bz2"
 
 
 # Define utility functions.
@@ -1079,6 +1079,7 @@ BOOST_OPTIONS=(
 "--with-iostreams" \
 "--with-locale" \
 "--with-program_options" \
+"--with-thread" \
 "--with-test")
 
 # Define secp256k1 options.
