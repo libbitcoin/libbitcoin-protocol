@@ -20,7 +20,7 @@
 #define LIBBITCOIN_PROTOCOL_ZMQ_SOCKET_HPP
 
 #include <memory>
-#include <bitcoin/protocol/config/config.hpp>
+#include <bitcoin/protocol/config/sodium.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/settings.hpp>
 #include <bitcoin/protocol/zmq/certificate.hpp>
@@ -91,10 +91,10 @@ public:
     identifier id() const NOEXCEPT;
 
     /// Bind the socket to the specified local address.
-    error::code bind(const endpoint& address) NOEXCEPT;
+    error::code bind(const system::config::endpoint& address) NOEXCEPT;
 
     /// Connect the socket to the specified remote address.
-    error::code connect(const endpoint& address) NOEXCEPT;
+    error::code connect(const system::config::endpoint& address) NOEXCEPT;
 
     /// Sets the domain for ZAP (ZMQ RFC 27) authentication.
     bool set_authentication_domain(const std::string& domain) NOEXCEPT;
@@ -115,7 +115,7 @@ public:
     bool set_certificate(const certificate& certificate) NOEXCEPT;
 
     /// Configure the socket to connect through the specified socks5 proxy.
-    bool set_socks_proxy(const authority& socks_proxy) NOEXCEPT;
+    bool set_socks_proxy(const system::config::authority& socks_proxy) NOEXCEPT;
 
     /// Configure subscriber socket to apply the message filter.
     bool set_subscription(const system::data_chunk& filter) NOEXCEPT;

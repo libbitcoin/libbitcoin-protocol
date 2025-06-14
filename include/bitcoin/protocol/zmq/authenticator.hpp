@@ -24,7 +24,6 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <bitcoin/system.hpp>
-#include <bitcoin/protocol/config/config.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
 #include <bitcoin/protocol/zmq/socket.hpp>
@@ -45,7 +44,7 @@ public:
     typedef std::shared_ptr<authenticator> ptr;
 
     /// The fixed inprocess authentication endpoint.
-    static const endpoint authentication_point;
+    static const system::config::endpoint authentication_point;
 
     /// There may be only one authenticator per process.
     authenticator(thread_priority priority=thread_priority::normal) NOEXCEPT;
@@ -77,10 +76,10 @@ public:
     virtual void allow(const system::hash_digest& public_key) NOEXCEPT;
 
     /// Allow clients with the following ip addresses (whitelist).
-    virtual void allow(const authority& address) NOEXCEPT;
+    virtual void allow(const system::config::authority& address) NOEXCEPT;
 
     /// Allow clients with the following ip addresses (blacklist).
-    virtual void deny(const authority& address) NOEXCEPT;
+    virtual void deny(const system::config::authority& address) NOEXCEPT;
 
 protected:
     void work() NOEXCEPT override;
