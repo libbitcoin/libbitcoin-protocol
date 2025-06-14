@@ -20,7 +20,7 @@
 
 #include <algorithm>
 #include <bitcoin/system.hpp>
-#include <bitcoin/protocol/config/config.hpp>
+#include <bitcoin/protocol/config/sodium.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/settings.hpp>
 #include <bitcoin/protocol/zmq/authenticator.hpp>
@@ -193,17 +193,17 @@ identifier socket::id() const NOEXCEPT
     return identifier_;
 }
 
-error::code socket::bind(const endpoint& address) NOEXCEPT
+error::code socket::bind(const config::endpoint& address) NOEXCEPT
 {
-    if (zmq_bind(self_, address.to_string().c_str()) == zmq_fail)
+    if (zmq_bind(self_, address.to_uri().c_str()) == zmq_fail)
         return error::get_last_error();
 
     return error::success;
 }
 
-error::code socket::connect(const endpoint& address) NOEXCEPT
+error::code socket::connect(const config::endpoint& address) NOEXCEPT
 {
-    if (zmq_connect(self_, address.to_string().c_str()) == zmq_fail)
+    if (zmq_connect(self_, address.to_uri().c_str()) == zmq_fail)
         return error::get_last_error();
 
     return error::success;
@@ -272,14 +272,17 @@ bool socket::set_private_key(const sodium& key) NOEXCEPT
 // to generate an arbitrary client certificate for a secure socket.
 bool socket::set_certificate(const certificate& certificate) NOEXCEPT
 {
+    BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     return certificate &&
         set_public_key(certificate.public_key().to_string()) &&
         set_private_key(certificate.private_key().to_string());
+    BC_POP_WARNING()
 }
 
-bool socket::set_socks_proxy(const authority& socks_proxy) NOEXCEPT
+bool socket::set_socks_proxy(const config::authority& socks_proxy) NOEXCEPT
 {
-    return socks_proxy && set(ZMQ_SOCKS_PROXY, socks_proxy.to_string());
+    return is_nonzero(socks_proxy.port()) &&
+        set(ZMQ_SOCKS_PROXY, socks_proxy.to_string());
 }
 
 bool socket::set_subscription(const data_chunk& filter) NOEXCEPT

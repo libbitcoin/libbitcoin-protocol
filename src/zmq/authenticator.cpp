@@ -20,7 +20,7 @@
 
 #include <mutex>
 #include <bitcoin/system.hpp>
-#include <bitcoin/protocol/config/config.hpp>
+#include <bitcoin/protocol/config/sodium.hpp>
 #include <bitcoin/protocol/define.hpp>
 #include <bitcoin/protocol/zmq/message.hpp>
 #include <bitcoin/protocol/zmq/context.hpp>
@@ -35,7 +35,7 @@ namespace zmq {
 using namespace bc::system;
 
 // ZAP endpoint, see: rfc.zeromq.org/spec:27/ZAP
-const endpoint authenticator::authentication_point("inproc://zeromq.zap.01");
+const config::endpoint authenticator::authentication_point("inproc://zeromq.zap.01");
 
 // There may be only one authenticator per process.
 authenticator::authenticator(thread_priority priority) NOEXCEPT
@@ -333,7 +333,7 @@ void authenticator::allow(const hash_digest& public_key) NOEXCEPT
     BC_POP_WARNING()
 }
 
-void authenticator::allow(const authority& address) NOEXCEPT
+void authenticator::allow(const config::authority& address) NOEXCEPT
 {
     BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     ///////////////////////////////////////////////////////////////////////////
@@ -343,12 +343,12 @@ void authenticator::allow(const authority& address) NOEXCEPT
     require_allow_ = true;
 
     // Due to emplace behavior, first writer wins allow/deny conflict.
-    adresses_.emplace(address.to_hostname(), true);
+    adresses_.emplace(address.to_host(), true);
     ///////////////////////////////////////////////////////////////////////////
     BC_POP_WARNING()
 }
 
-void authenticator::deny(const authority& address) NOEXCEPT
+void authenticator::deny(const config::authority& address) NOEXCEPT
 {
     BC_PUSH_WARNING(NO_THROW_IN_NOEXCEPT)
     ///////////////////////////////////////////////////////////////////////////
@@ -357,7 +357,7 @@ void authenticator::deny(const authority& address) NOEXCEPT
 
     // Denial is effective independent of whitelisting.
     // Due to emplace behavior, first writer wins allow/deny conflict.
-    adresses_.emplace(address.to_hostname(), false);
+    adresses_.emplace(address.to_host(), false);
     ///////////////////////////////////////////////////////////////////////////
     BC_POP_WARNING()
 }

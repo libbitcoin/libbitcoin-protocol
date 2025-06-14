@@ -231,8 +231,6 @@ link_libraries(
 #------------------------------------------------------------------------------
 add_library( ${CANONICAL_LIB_NAME}
     "../../src/settings.cpp"
-    "../../src/config/authority.cpp"
-    "../../src/config/endpoint.cpp"
     "../../src/config/sodium.cpp"
     "../../src/zmq/authenticator.cpp"
     "../../src/zmq/certificate.cpp"

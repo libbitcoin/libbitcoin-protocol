@@ -36,8 +36,6 @@ src_libbitcoin_protocol_la_CPPFLAGS = -I${srcdir}/include ${zmq_BUILD_CPPFLAGS} 
 src_libbitcoin_protocol_la_LIBADD = ${zmq_LIBS} ${bitcoin_system_LIBS}
 src_libbitcoin_protocol_la_SOURCES = \
     src/settings.cpp \
-    src/config/authority.cpp \
-    src/config/endpoint.cpp \
     src/config/sodium.cpp \
     src/zmq/authenticator.cpp \
     src/zmq/certificate.cpp \
@@ -94,9 +92,6 @@ include_bitcoin_protocol_HEADERS = \
 
 include_bitcoin_protocol_configdir = ${includedir}/bitcoin/protocol/config
 include_bitcoin_protocol_config_HEADERS = \
-    include/bitcoin/protocol/config/authority.hpp \
-    include/bitcoin/protocol/config/config.hpp \
-    include/bitcoin/protocol/config/endpoint.hpp \
     include/bitcoin/protocol/config/sodium.hpp
 
 include_bitcoin_protocol_zmqdir = ${includedir}/bitcoin/protocol/zmq

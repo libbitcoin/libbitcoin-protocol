@@ -36,12 +36,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\config\authority.cpp">
-      <Filter>src\config</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\config\endpoint.cpp">
-      <Filter>src\config</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\config\sodium.cpp">
       <Filter>src\config</Filter>
     </ClCompile>
@@ -85,15 +79,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\boost.hpp">
       <Filter>include\bitcoin\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\authority.hpp">
-      <Filter>include\bitcoin\protocol\config</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\config.hpp">
-      <Filter>include\bitcoin\protocol\config</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\endpoint.hpp">
-      <Filter>include\bitcoin\protocol\config</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\sodium.hpp">
       <Filter>include\bitcoin\protocol\config</Filter>

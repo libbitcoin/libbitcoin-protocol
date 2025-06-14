@@ -121,8 +121,6 @@
     <Import Project="$(ProjectDir)$(ProjectName).props" />
   </ImportGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\config\authority.cpp" />
-    <ClCompile Include="..\..\..\..\src\config\endpoint.cpp" />
     <ClCompile Include="..\..\..\..\src\config\sodium.cpp" />
     <ClCompile Include="..\..\..\..\src\settings.cpp" />
     <ClCompile Include="..\..\..\..\src\zmq\authenticator.cpp" />
@@ -139,9 +137,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\boost.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\authority.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\config.hpp" />
-    <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\endpoint.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\config\sodium.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\define.hpp" />
     <ClInclude Include="..\..\..\..\include\bitcoin\protocol\network.hpp" />
